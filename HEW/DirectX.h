@@ -64,7 +64,7 @@
 #define CLASS_NAME "ClassNmae"
 
 //  ■　ウィンドウネーム
-#define WIND_NAME "WhiteBox"
+#define WIND_NAME "HEW"
 
 //  ■　sampDesc.AddressU
 #define ADDRESS_U D3D11_TEXTURE_ADDRESS_WRAP
@@ -856,7 +856,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//×ボタンが押されたときのメッセージ
 	case WM_CLOSE:
 
-		if (IDNO == MessageBox(hWnd, "家に帰りますか", "Go Home", MB_YESNO))
+		if (IDNO == MessageBox(hWnd, "終了しますか", "", MB_YESNO))
 		{
 			return 0;
 		}
