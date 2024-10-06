@@ -12,6 +12,9 @@
 /* Include */
 #include"DirectX.h"
 
+/* Global */
+
+
 /* prototype */
 void Update();	/* 更新処理用の関数 */
 void Draw();	/* 描画処理用の関数 */

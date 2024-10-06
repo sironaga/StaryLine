@@ -12,6 +12,7 @@
 // *Data 2024/06/14 FLOAT3,4の構造体の追加、MakeFloat関数の追加
 // *Data 2024/07/04 入力に関する関数の追加
 // *Data 2024/09/16 サウンドに関する関数の追加
+// *Data 2024/10/06 CONIOEX関数の削除
 //ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
 /*Looks*/
@@ -744,7 +745,7 @@ void BeginDrawDirectX()
 
 	//描画開始時に画面をクリア
 	//                  R     G     B   透明度
-	float color[4] = { 0.5, 0.5, 0.8, 1.0f };
+	float color[4] = { 0.5f, 0.5f, 0.8f, 1.0f };
 	g_pContext->ClearRenderTargetView(g_pRTV, color);
 }
 #endif
@@ -1102,210 +1103,6 @@ FLOAT4 MakeFloat(float x, float y, float z, float w)
 #endif
 
 #endif/*_FLOATS_*/
-
-#ifndef _CONIOEX_
-/*CONIOEX*/
-INT_PTR opensound(char* path)
-#ifdef _DIRECTX_
-;
-#else /* !CONIOEX */
-{
-	const char	szMidiExt[] = ".mid|.midi|.rmi";
-	const char	szWaveExt[] = ".wav|.wave";
-	const char	szMP3Ext[] = ".mp3";
-	char		szExt[_MAX_EXT];
-	union {
-		MCI_WAVE_OPEN_PARMSA	wop;
-		MCI_OPEN_PARMSA			op;
-	} m;
-	DWORD_PTR	dwCmd;
-	__conioex_h_SoundInfo* psi;
-
-	psi = (__conioex_h_SoundInfo*)malloc(sizeof(__conioex_h_SoundInfo));
-	if (psi == NULL)
-		return 0;
-	ZeroMemory(psi, sizeof(*psi));
-
-	ZeroMemory(&m, sizeof(m));
-	_splitpath(path, NULL, NULL, NULL, szExt);
-	strlwr(szExt);
-	dwCmd = MCI_OPEN_TYPE | MCI_OPEN_ELEMENT;
-	if (strstr(szMidiExt, szExt)) {
-		psi->nDevType = MCI_DEVTYPE_SEQUENCER;
-		lstrcpynA(psi->szPath, path, MAX_PATH);
-		m.op.lpstrDeviceType = (LPCSTR)MCI_DEVTYPE_SEQUENCER;
-		m.op.lpstrElementName = psi->szPath;
-		dwCmd |= MCI_OPEN_TYPE_ID;
-	}
-	else if (strstr(szWaveExt, szExt)) {
-		psi->nDevType = MCI_DEVTYPE_WAVEFORM_AUDIO;
-		lstrcpynA(psi->szPath, path, MAX_PATH);
-		m.wop.lpstrDeviceType = (LPCSTR)MCI_DEVTYPE_WAVEFORM_AUDIO;
-		m.wop.lpstrElementName = psi->szPath;
-		dwCmd |= MCI_OPEN_TYPE_ID;
-		//		m.wop.dwBufferSeconds  = 60;
-		//		dwCmd |= MCI_WAVE_OPEN_BUFFER;
-	}
-	else if (strstr(szMP3Ext, szExt)) {
-		psi->nDevType = MCI_DEVTYPE_DIGITAL_VIDEO;
-		lstrcpynA(psi->szPath, path, MAX_PATH);
-		m.op.lpstrDeviceType = "MPEGVideo";
-		m.op.lpstrElementName = psi->szPath;
-	}
-	else {
-		free(psi);
-		return 0;
-	}
-	if (mciSendCommandA(0, MCI_OPEN, dwCmd, (DWORD_PTR)&m)) {
-		free(psi);
-		return 0;
-	}
-	psi->wDeviceID = m.op.wDeviceID;
-	return (INT_PTR)psi;
-}
-#endif /* _DIRECTX_ */
-
-void closesound(INT_PTR hsound)
-#ifdef _DIRECTX_
-;
-#else /* !CONIOEX */
-{
-	__conioex_h_SoundInfo* psi;
-
-	if (!hsound)
-		return;
-	psi = (__conioex_h_SoundInfo*)hsound;
-	if (psi->wDeviceID) {
-		mciSendCommand(psi->wDeviceID, MCI_CLOSE, 0, 0);
-		psi->wDeviceID = 0;
-	}
-	free(psi);
-}
-#endif /* _DIRECTX_ */
-
-void playsound(INT_PTR hsound, int repeat)
-#ifdef _DIRECTX_
-;
-#else /* !CONIOEX */
-{
-	__conioex_h_SoundInfo* psi;
-	DWORD_PTR				dwCmd;
-	MCI_PLAY_PARMS			mpp;
-
-	if (!hsound)
-		return;
-	psi = (__conioex_h_SoundInfo*)hsound;
-	if (!psi->wDeviceID)
-		return;
-	psi->nRepeat = repeat;
-	ZeroMemory(&mpp, sizeof(mpp));
-	dwCmd = 0;
-	if (repeat) {
-		switch (psi->nDevType) {
-		case MCI_DEVTYPE_DIGITAL_VIDEO:
-			dwCmd |= (MCI_FROM | MCI_DGV_PLAY_REPEAT);
-			mpp.dwFrom = 0;
-			break;
-		case MCI_DEVTYPE_SEQUENCER:
-		case MCI_DEVTYPE_WAVEFORM_AUDIO:
-			break;
-		default:
-			break;
-		}
-	}
-	mciSendCommand(psi->wDeviceID, MCI_SEEK, MCI_SEEK_TO_START, 0);
-	mciSendCommand(psi->wDeviceID, MCI_PLAY, dwCmd, (DWORD_PTR)&mpp);
-}
-#endif /*_DIRECTX_*/
-
-void stopsound(INT_PTR hsound)
-#ifdef _DIRECTX_
-;
-#else /* !CONIOEX */
-{
-	__conioex_h_SoundInfo* psi;
-
-	if (!hsound)
-		return;
-	psi = (__conioex_h_SoundInfo*)hsound;
-	if (!psi->wDeviceID)
-		return;
-	psi->nRepeat = 0;
-	mciSendCommand(psi->wDeviceID, MCI_STOP, MCI_WAIT, 0);
-	mciSendCommand(psi->wDeviceID, MCI_SEEK, MCI_SEEK_TO_START, 0);
-}
-#endif /* CONIOEX */
-
-/**
- * @brief	サウンド再生状態の取得
- *
- * @param	hsound [入力] サウンド ハンドル
- * @return	再生中ならば 0 以外を返す。
- */
-int checksound(INT_PTR hsound)
-#ifdef _DIRECTX_
-;
-#else /* !CONIOEX */
-{
-	__conioex_h_SoundInfo* psi;
-	MCI_STATUS_PARMS		msp;
-
-	if (!hsound)
-		return 0;
-	psi = (__conioex_h_SoundInfo*)hsound;
-	if (!psi->wDeviceID)
-		return 0;
-	ZeroMemory(&msp, sizeof(msp));
-	msp.dwItem = MCI_STATUS_MODE;
-	if (mciSendCommand(psi->wDeviceID, MCI_STATUS, MCI_STATUS_ITEM, (DWORD_PTR)&msp))
-		return 0;
-	return msp.dwReturn == MCI_MODE_PLAY;
-}
-#endif /* CONIOEX */
-
-void setvolume(INT_PTR hsound, int percent)
-#ifdef _DIRECTX_
-;
-#else /* !CONIOEX */
-{
-	__conioex_h_SoundInfo* psi;
-
-	if (!hsound)
-		return;
-	psi = (__conioex_h_SoundInfo*)hsound;
-	if (!psi->wDeviceID)
-		return;
-	switch (psi->nDevType) {
-	case MCI_DEVTYPE_DIGITAL_VIDEO: {
-		MCI_DGV_SETAUDIO_PARMS	mdsp;
-
-		ZeroMemory(&mdsp, sizeof(mdsp));
-		mdsp.dwItem = MCI_DGV_SETAUDIO_VOLUME;
-		mdsp.dwValue = percent * 10;
-		mciSendCommand(psi->wDeviceID, MCI_SETAUDIO,
-			MCI_DGV_SETAUDIO_ITEM | MCI_DGV_SETAUDIO_VALUE, (DWORD_PTR)&mdsp);
-		break;
-	}
-	case MCI_DEVTYPE_SEQUENCER: {
-		DWORD dwVolume;
-
-		dwVolume = 0x0ffff * percent / 100;
-		midiOutSetVolume(0, (DWORD)MAKELONG(dwVolume, dwVolume));
-		break;
-	}
-	case MCI_DEVTYPE_WAVEFORM_AUDIO: {
-		DWORD dwVolume;
-
-		dwVolume = 0x0ffff * percent / 100;
-		waveOutSetVolume(0, (DWORD)MAKELONG(dwVolume, dwVolume));
-		break;
-	}
-	default:
-		break;
-	}
-}
-#endif /* CONIOEX */
-#endif /*CONIOEX*/
 
 /* Sound */
 #ifndef _SOUND_
