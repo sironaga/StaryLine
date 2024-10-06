@@ -22,7 +22,7 @@ void Draw();	/* 描画処理用の関数 */
 /* */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	ALLInit(hInstance, nCmdShow); /* DirectX及び周辺関数の初期化 DirectX.h*/
+	ALLInit(hInstance, nCmdShow); /* DirectX及び周辺関数の初期化 DirectX.h */
 
 	FPSTIMER f_Time; /* フレーム制御用構造体 */
 	f_Time.FPS = 0;
@@ -64,10 +64,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				EndDrawDirectX();
 
 				f_Time.oldTime = f_Time.time;
-
-
-
-
 			}
 		}
 
