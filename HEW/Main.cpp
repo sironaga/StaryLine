@@ -7,7 +7,7 @@
 		吉田京志郎
 	Log
 		2024/10/05 秋野翔太　基本的なDirectXに必要な処理の追加
-		/ AAAAAAAA /
+		
 */
 
 /* Include */
