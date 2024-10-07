@@ -13,8 +13,13 @@
 /* Include */
 #include"DirectX.h"
 #include"Main.h"
-/* Global */
-int g_SoundVolume; /* ゲーム全体の音量変数 */
+
+/* define */
+
+
+/* Global */	
+int g_nSoundVolume; /* ゲーム全体の音量変数 */
+Screen g_Screen;	/* モード管理用変数 */
 
 /* prototype */
 void Update();	/* 更新処理用の関数 */
@@ -59,8 +64,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				SetFreamTime();
 				BeginDrawDirectX();
 				
-
-
+				Update();	/* 更新処理 */
+				Draw();		/* 描画処理 */
 			
 				EndDrawDirectX();
 
@@ -74,22 +79,60 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void Update()
 {
-
+	switch (g_Screen)
+	{
+	case TITLE:
+		break;
+	default:
+		break;
+	}
 }
 
 void Draw()
 {
-
+	switch (g_Screen)
+	{
+	case TITLE:
+		break;
+	default:
+		break;
+	}
 }
 
 /*  */
 
 void SetVolume(int InVolume)
 {
-	g_SoundVolume = InVolume;
+	g_nSoundVolume = InVolume;
 }
 
 int GetVolume()
 {
-	return g_SoundVolume;
+	return g_nSoundVolume;
+}
+
+void SetScreen(Screen InScreen)
+{
+	/* 現在使用しているクラスを閉じる用Switch文 */
+	switch (g_Screen)
+	{
+	case TITLE:
+		break;
+	default:
+		/* クラスを使用していないモードの場合Defaultが呼び出されるようにしてください */
+		break;
+	}
+
+	g_Screen = InScreen;
+
+	/* 変更先のモードのクラスをnewする用Switch文 */
+	switch (g_Screen)
+	{
+	case TITLE:
+		break;
+	default:
+		/* クラスを使用していないモードの場合Defaultが呼び出されるようにしてください */
+		break;
+	}
+
 }
