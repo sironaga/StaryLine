@@ -7,14 +7,14 @@
 		吉田京志郎
 	Log
 		2024/10/05 秋野翔太　基本的なDirectXに必要な処理の追加
-		
+		2024/10/07 秋野翔太　g_SoundVolume変数の追加それに伴いセッターゲッターの追加
 */
 
 /* Include */
 #include"DirectX.h"
-
+#include"Main.h"
 /* Global */
-
+int g_SoundVolume; /* ゲーム全体の音量変数 */
 
 /* prototype */
 void Update();	/* 更新処理用の関数 */
@@ -82,3 +82,14 @@ void Draw()
 
 }
 
+/*  */
+
+void SetVolume(int InVolume)
+{
+	g_SoundVolume = InVolume;
+}
+
+int GetVolume()
+{
+	return g_SoundVolume;
+}
