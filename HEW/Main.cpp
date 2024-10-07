@@ -20,7 +20,7 @@
 void Update();	/* 更新処理用の関数 */
 void Draw();	/* 描画処理用の関数 */
 
-/* */
+/*  */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	ALLInit(hInstance, nCmdShow); /* DirectX及び周辺関数の初期化 DirectX.h */
@@ -81,3 +81,4 @@ void Draw()
 {
 
 }
+
