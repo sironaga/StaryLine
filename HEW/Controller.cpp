@@ -17,7 +17,7 @@ XINPUT_STATE state;
 /* ゲームパッドの更新処理 */
 void Controller_Update()
 {
-
+	state = def;
 	XInputGetState(PAD_USER_NUMBER, &state);
 }
 
