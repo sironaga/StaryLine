@@ -64,7 +64,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				SetFreamTime();
 				BeginDrawDirectX();
 				
-				
+				Controller_Update();
 
 				Update();	/* XVˆ— */
 				Draw();		/* •`‰æˆ— */
