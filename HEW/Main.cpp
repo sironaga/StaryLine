@@ -13,7 +13,7 @@
 /* Include */
 #include"DirectX.h"
 #include"Main.h"
-
+#include"Controller.h"
 /* define */
 
 
@@ -64,6 +64,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				SetFreamTime();
 				BeginDrawDirectX();
 				
+				
+
 				Update();	/* XVˆ— */
 				Draw();		/* •`‰æˆ— */
 			

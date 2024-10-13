@@ -4,10 +4,68 @@
 */
 
 /* Include */
-#include<Windows.h>
-#include<Xinput.h>
-#pragma comment(lib, "xinput.lib")
+#include"Controller.h"
+
+
+/* define */
+#define PAD_USER_NUMBER (0)
 
 /* 構造体 */
-XINPUT_STATE state;
+XINPUT_STATE* def;
+XINPUT_STATE *state;
+
+
+void Controller_Init()
+{
+	
+}
+/* ゲームパッドの更新処理 */
+void Controller_Update()
+{
+	state = def;
+	XInputGetState(PAD_USER_NUMBER, state);
+}
+
+void Controller_UnInit()
+{
+
+}
+
+/* 左アナログスティックの座標獲得 */
+/* -32768 ～ 32767 */
+FLOAT2 CGetLStick()
+{
+	FLOAT2 Pos;
+
+	Pos.X = state->Gamepad.sThumbLX;
+	Pos.Y = state->Gamepad.sThumbLY;
+
+	return Pos;
+}
+
+/* 右アナログスティックの座標獲得 */
+/* -32768 ～ 32767 */
+FLOAT2 CGetRStick()
+{
+	FLOAT2 Pos;
+
+	Pos.X = state->Gamepad.sThumbRX;
+	Pos.Y = state->Gamepad.sThumbRY;
+
+	return Pos;
+}
+
+/* トリガーの値を返します */
+/* x 左トリガー */
+/* y 右トリガー */
+/* 0 ～　255 */
+FLOAT2 CGetTrigger()
+{
+	FLOAT2 Pos;
+
+	Pos.X = state->Gamepad.bLeftTrigger;
+	Pos.Y = state->Gamepad.bRightTrigger;
+
+	return Pos;
+}
 
