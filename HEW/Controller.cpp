@@ -11,12 +11,13 @@
 #define PAD_USER_NUMBER (0)
 
 /* 構造体 */
-XINPUT_STATE def;
+
 XINPUT_STATE state;
 
 /* ゲームパッドの更新処理 */
 void Controller_Update()
 {
+	XINPUT_STATE def;
 	state = def;
 	XInputGetState(PAD_USER_NUMBER, &state);
 }
