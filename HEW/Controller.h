@@ -2,8 +2,7 @@
 #include<Windows.h>
 #include<Xinput.h>
 #pragma comment(lib, "xinput.lib")
-#define _DIRECTX_
-#include"DirectX.h"
+#include"Main.h"
 
 void Controller_Update();
 FLOAT2 CGetLStick();

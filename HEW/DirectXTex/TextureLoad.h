@@ -30,11 +30,11 @@ inline HRESULT LoadTextureFromFile(
 	MultiByteToWideChar(0, 0, pszFileName, -1, wPath, MAX_PATH);
 	if (strstr(pszFileName, ".tga"))
 	{
-		//hr = DirectX::LoadFromTGAFile(wPath, &mdata, image);
+		hr = DirectX::LoadFromTGAFile(wPath, &mdata, image);
 	}
 	else
 	{
-		hr = DirectX::LoadFromWICFile(wPath, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &mdata, image);
+		hr = DirectX::LoadFromWICFile(wPath, DirectX::WIC_FLAGS::WIC_FLAGS_IGNORE_SRGB, &mdata, image);
 	}
 	if (FAILED(hr)) {
 		return hr;

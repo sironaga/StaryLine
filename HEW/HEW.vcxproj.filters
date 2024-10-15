@@ -19,24 +19,98 @@
     <Filter Include="ヘッダー ファイル\System">
       <UniqueIdentifier>{20d2444d-38f4-4095-b019-adbebb140a0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System\DirectX">
+      <UniqueIdentifier>{d8e7e980-ea9d-4aaf-b0f8-7aafe8d372e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\Input_OutPut">
+      <UniqueIdentifier>{3da1751e-85a5-475f-9eae-8ecfe8a899fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\DirectX">
+      <UniqueIdentifier>{a7fd3c1d-e108-44f1-be57-ec5aa7dcb953}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\System\Input_OutPut">
+      <UniqueIdentifier>{279fcd55-bb8d-4df3-ba34-188c165d31fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
-      <Filter>ソース ファイル\System</Filter>
+      <Filter>ソース ファイル\System\Input_OutPut</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル\System\Input_OutPut</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometory.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshBuffer.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderList.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="_geometory.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="_model.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectX.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Controller.h">
-      <Filter>ヘッダー ファイル\System</Filter>
+      <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometory.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshBuffer.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderList.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="全体記録.txt">
+      <Filter>リソース ファイル</Filter>
+    </Text>
   </ItemGroup>
 </Project>
