@@ -77,6 +77,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	}
+
+	XInputEnable(false); // XInput‚Ì–³Œø‰»
+
 }
 
 void Update()

@@ -1,6 +1,7 @@
 /*
 	XInputを使用したControllerの入出力
 	2024/10/13 制作開始 動作未確認　　秋野
+	2024/10/15 バイブレーションの追加　動作未確認　秋野
 */
 
 /* Include */
@@ -10,15 +11,41 @@
 /* define */
 #define PAD_USER_NUMBER (0)
 
+/* Global変数 */
+int g_LeftVibrationFream;
+int g_RightVibrationFream;
+
 /* 構造体 */
 XINPUT_STATE def;
 XINPUT_STATE state;
+XINPUT_VIBRATION vibration;
 
 /* ゲームパッドの更新処理 */
 void Controller_Update()
 {
 	state = def;
 	XInputGetState(PAD_USER_NUMBER, &state);
+
+	/* 一定Frame経過時のバイブの無効化 */
+	if (g_LeftVibrationFream > 0)
+	{
+		g_LeftVibrationFream--;
+	}
+	else
+	{
+		vibration.wLeftMotorSpeed = 0;
+	}
+
+	if (g_RightVibrationFream > 0)
+	{
+		g_RightVibrationFream--;
+	}
+	else
+	{
+		vibration.wRightMotorSpeed = 0;
+	}
+
+
 }
 
 /* 左アナログスティックの座標獲得 */
@@ -79,4 +106,27 @@ FLOAT2 CGetTrigger()
 bool CGetButtons(WORD InButton)
 {
 	return (state.Gamepad.wButtons & InButton);
+}
+
+/* バイブレーションの設定を行います */
+/* Freame 実行するFrame数 Strength バイブの強度*/
+void CSetLeftVibration(int Frame, int Strength)
+{
+	g_LeftVibrationFream = Frame;
+	vibration.wLeftMotorSpeed = Strength;
+}
+
+/* バイブレーションの設定を行います */
+/* Freame 実行するFrame数 Strength バイブの強度*/
+void CSetRigthVibration(int Frame, int Strength)
+{
+	g_RightVibrationFream = Frame;
+	vibration.wRightMotorSpeed = Strength;
+}
+
+/* バイブレーションを止めます */
+void CSetStopVibration()
+{
+	g_LeftVibrationFream = g_RightVibrationFream = 0;
+	vibration.wLeftMotorSpeed = vibration.wRightMotorSpeed = 0;
 }
