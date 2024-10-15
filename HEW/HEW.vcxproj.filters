@@ -72,6 +72,9 @@
     <ClCompile Include="_model.cpp">
       <Filter>ソース ファイル\System\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\System\Input_OutPut</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
@@ -106,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
