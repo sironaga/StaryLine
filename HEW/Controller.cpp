@@ -110,6 +110,7 @@ bool CGetButtons(WORD InButton)
 
 /* バイブレーションの設定を行います */
 /* Freame 実行するFrame数 Strength バイブの強度*/
+/* 強度 0　～　65535 */
 void CSetLeftVibration(int Frame, int Strength)
 {
 	g_LeftVibrationFream = Frame;
@@ -118,6 +119,7 @@ void CSetLeftVibration(int Frame, int Strength)
 
 /* バイブレーションの設定を行います */
 /* Freame 実行するFrame数 Strength バイブの強度*/
+/* 強度 0　～　65535 */
 void CSetRigthVibration(int Frame, int Strength)
 {
 	g_RightVibrationFream = Frame;
