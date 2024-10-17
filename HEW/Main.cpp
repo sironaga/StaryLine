@@ -32,6 +32,8 @@ int g_nSoundVolume; /* ゲーム全体の音量変数 */
 Screen g_Screen;	/* モード管理用変数 */
 HWND hWnd;
 WNDCLASSEX wcex;;
+FLOAT3 g_fCamPos; /* カメラのポジション */
+
 
 /* prototype */
 void Init(HINSTANCE InhInstance, int InCmd);	/* システムの初期化 */
@@ -41,6 +43,8 @@ void UnInit(HINSTANCE InhInstance);	/* 終了処理 */
 void Draw_Debug(); /* Draw Debug用 */
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);	/* ウィンドウプロシージャー */
 void CreatWindows(HINSTANCE InhInstance, int InCmd);								/* ウインドウ制作 */
+void CamPos_Debug();
+
 
 /*  */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -112,6 +116,7 @@ void Update()
 {
 	Controller_Update();	/*コントローラーの更新*/
 	UpdateInput();			/*キーボードの更新*/
+	CamPos_Debug();
 
 	switch (g_Screen)
 	{
@@ -129,7 +134,7 @@ void Draw()
 #ifdef _DEBUG
 	Draw_Debug();
 #endif
-
+	Geometory::DrawBox();
 	switch (g_Screen)
 	{
 	case TITLE:
@@ -286,10 +291,10 @@ void Draw_Debug()
 
 	DirectX::XMVECTOR camPos;
 	if (camPosSwitch) {
-		camPos = DirectX::XMVectorSet(2.5f, 30.5f, -40.0f, 0.0f);
+		camPos = DirectX::XMVectorSet(2.5f + g_fCamPos.X, 30.5f + g_fCamPos.Y, -40.0f + g_fCamPos.Z, 0.0f);
 	}
 	else {
-		camPos = DirectX::XMVectorSet(2.5f, 3.5f, -4.0f, 0.0f);
+		camPos = DirectX::XMVectorSet(2.5f + g_fCamPos.X, 3.5f + g_fCamPos.Y, -4.0f + g_fCamPos.Z, 0.0f);
 	}
 
 	// ジオメトリ用カメラ初期化
@@ -307,4 +312,32 @@ void Draw_Debug()
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
+}
+
+void CamPos_Debug()
+{
+	if (IsKeyPress('A'))
+	{
+		g_fCamPos.X -= 0.1f;
+	}
+	if (IsKeyPress('D'))
+	{
+		g_fCamPos.X += 0.1f;
+	}
+	if (IsKeyPress('W'))
+	{
+		g_fCamPos.Z += 0.1f;
+	}
+	if (IsKeyPress('S'))
+	{
+		g_fCamPos.Z -= 0.1f;
+	}
+	if (IsKeyPress(VK_SPACE))
+	{
+		g_fCamPos.Y += 0.1f;
+	}
+	if (IsKeyPress(VK_SHIFT))
+	{
+		g_fCamPos.Y -= 0.1f;
+	}
 }
