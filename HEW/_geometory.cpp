@@ -1,21 +1,10 @@
 #include "Geometory.h"
 #include"Input.h"
-float Size;
 
 
 void Geometory::MakeBox()
 {
-	If(IsKeyTrigger('T'))
-	{
-		Size -= 1.0f;
-	}
-	if (IsKeyTrigger('Y'))
-	{
-		Size += 1.0f;
-	}
-
-
-
+	
 	//--- í∏ì_ÇÃçÏê¨
 	Vertex vtx[] = {
 
