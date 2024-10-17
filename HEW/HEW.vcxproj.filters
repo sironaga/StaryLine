@@ -31,12 +31,6 @@
     <Filter Include="ヘッダー ファイル\System\Input_OutPut">
       <UniqueIdentifier>{279fcd55-bb8d-4df3-ba34-188c165d31fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Mode">
-      <UniqueIdentifier>{75b8a5b6-969a-46a7-be6a-d04f1bcf30ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Mode">
-      <UniqueIdentifier>{8e9eabe8-9a02-46d8-bdc4-a6cdcc4d71b9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

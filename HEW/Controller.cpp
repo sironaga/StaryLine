@@ -25,6 +25,8 @@ void Controller_Update()
 {
 	state = def;
 	XInputGetState(PAD_USER_NUMBER, &state);
+	XInputSetState(PAD_USER_NUMBER, &vibration);
+
 
 	/* 一定Frame経過時のバイブの無効化 */
 	if (g_LeftVibrationFream > 0)
