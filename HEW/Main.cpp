@@ -33,6 +33,8 @@ Screen g_Screen;	/* モード管理用変数 */
 HWND hWnd;
 WNDCLASSEX wcex;;
 FLOAT3 g_fCamPos; /* カメラのポジション */
+FLOAT3 g_fCamAngle;/*カメラのアングル*/
+bool g_bCamSwitch = true;/*カメラのアングルと移動の切り替え*/
 
 
 /* prototype */
@@ -82,7 +84,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			if (f_Time.time - f_Time.oldTime >= 1000 / 60)
 			{
-
+				
 				
 				
 				Controller_Update();
@@ -116,7 +118,7 @@ void Update()
 {
 	Controller_Update();	/*コントローラーの更新*/
 	UpdateInput();			/*キーボードの更新*/
-	CamPos_Debug();
+	CamPos_Debug();			/*カメラの移動を行っている関数*/
 
 	switch (g_Screen)
 	{
@@ -302,8 +304,8 @@ void Draw_Debug()
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			camPos,
-			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+			DirectX::XMVectorSet(0.0f + g_fCamPos.X + g_fCamAngle.X, 0.0f + g_fCamPos.Y + g_fCamAngle.Y, 0.0f + g_fCamPos.Z + g_fCamAngle.Z, 0.0f),
+			DirectX::XMVectorSet(0.0f , 1.0f , 0.0f , 0.0f)
 		)));
 	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixPerspectiveFovLH(
@@ -316,28 +318,97 @@ void Draw_Debug()
 
 void CamPos_Debug()
 {
+	/* Shitでカメラのアングルと移動の切り替え */
+	/* Rで値をリセット */
+
+	if (IsKeyTrigger('R'))
+	{
+		g_fCamAngle.X = 0.0f;
+		g_fCamAngle.Y = 0.0f;
+		g_fCamAngle.Z = 0.0f;
+		g_fCamPos = g_fCamAngle;
+	}
+
+
 	if (IsKeyPress('A'))
 	{
-		g_fCamPos.X -= 0.1f;
+		if (g_bCamSwitch)
+		{
+			g_fCamPos.X -= 0.1f;
+		}
+		else
+		{
+			g_fCamAngle.X -= 0.1f;
+		}
+
+		
 	}
 	if (IsKeyPress('D'))
 	{
-		g_fCamPos.X += 0.1f;
+		if (g_bCamSwitch)
+		{
+			g_fCamPos.X += 0.1f;
+		}
+		else
+		{
+			g_fCamAngle.X += 0.1f;
+		}
 	}
 	if (IsKeyPress('W'))
 	{
-		g_fCamPos.Z += 0.1f;
+		if (g_bCamSwitch)
+		{
+			g_fCamPos.Z += 0.1f;
+		}
+		else
+		{
+			g_fCamAngle.Z += 0.1f;
+		}
 	}
 	if (IsKeyPress('S'))
 	{
-		g_fCamPos.Z -= 0.1f;
+		if (g_bCamSwitch)
+		{
+			g_fCamPos.Z -= 0.1f;
+		}
+		else
+		{
+			g_fCamAngle.Z -= 0.1f;
+		}
 	}
-	if (IsKeyPress(VK_SPACE))
+	if (IsKeyPress('Z'))
 	{
-		g_fCamPos.Y += 0.1f;
+		if (g_bCamSwitch)
+		{
+			g_fCamPos.Y += 0.1f;
+		}
+		else
+		{
+			g_fCamAngle.Y += 0.1f;
+		}
 	}
-	if (IsKeyPress(VK_SHIFT))
+	if (IsKeyPress('X'))
 	{
-		g_fCamPos.Y -= 0.1f;
+		if (g_bCamSwitch)
+		{
+			g_fCamPos.Y -= 0.1f;
+		}
+		else
+		{
+			g_fCamAngle.Y -=0.1f;
+		}
+	}
+
+
+	if (IsKeyTrigger(VK_SHIFT))
+	{
+		if (g_bCamSwitch)
+		{
+			g_bCamSwitch = false;
+		}
+		else
+		{
+			g_bCamSwitch = true;
+		}
 	}
 }
