@@ -27,6 +27,8 @@
 #define Windows_FullScreen (false)
 #define Windows_Name "HalEventWeek"
 
+
+
 /* Global */	
 int g_nSoundVolume; /* ゲーム全体の音量変数 */
 Screen g_Screen;	/* モード管理用変数 */
@@ -35,7 +37,7 @@ WNDCLASSEX wcex;;
 FLOAT3 g_fCamPos; /* カメラのポジション */
 FLOAT3 g_fCamAngle;/*カメラのアングル*/
 bool g_bCamSwitch = true;/*カメラのアングルと移動の切り替え*/
-
+float g_fViewAngle = 60.0f;/* 視野角 */
 
 /* prototype */
 void Init(HINSTANCE InhInstance, int InCmd);	/* システムの初期化 */
@@ -309,7 +311,7 @@ void Draw_Debug()
 		)));
 	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixPerspectiveFovLH(
-			DirectX::XMConvertToRadians(60.0f), (float)Windows_Size_X / Windows_Size_Y, 0.1f, 100.0f)
+			DirectX::XMConvertToRadians(g_fViewAngle), (float)Windows_Size_X / Windows_Size_Y, 0.1f, 100.0f)
 	));
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
@@ -320,6 +322,17 @@ void CamPos_Debug()
 {
 	/* Shitでカメラのアングルと移動の切り替え */
 	/* Rで値をリセット */
+	/* G Hで視野角変更*/
+
+	if (IsKeyPress('G'))
+	{
+		g_fViewAngle += 1.0f;
+	}
+
+	if (IsKeyPress('H'))
+	{
+		g_fViewAngle -= 1.0f;
+	}
 
 	if (IsKeyTrigger('R'))
 	{
@@ -334,7 +347,7 @@ void CamPos_Debug()
 	{
 		if (g_bCamSwitch)
 		{
-			g_fCamPos.X -= 0.1f;
+			g_fCamPos.X -= cos(g_fCamAngle.X*3.14/180) * 0.1f;
 		}
 		else
 		{
@@ -347,7 +360,7 @@ void CamPos_Debug()
 	{
 		if (g_bCamSwitch)
 		{
-			g_fCamPos.X += 0.1f;
+			g_fCamPos.X += cos(g_fCamAngle.X * 3.14 / 180) * 0.1f;
 		}
 		else
 		{
@@ -411,4 +424,12 @@ void CamPos_Debug()
 			g_bCamSwitch = true;
 		}
 	}
+
+	char mes[256];
+	sprintf(mes, "%f", g_fCamAngle.X);
+	SetWindowText(hWnd, mes);
+
+
+
+
 }
