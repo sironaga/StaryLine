@@ -123,9 +123,9 @@ void Init(HINSTANCE InhInstance,int InCmd)
 
 #ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください*/
 	m_pModel_Debug = new Model();
-	if (!m_pModel_Debug->Load("Asset/Model/Rock_02.fbx"))
+	if (!m_pModel_Debug->Load("Asset/Model/Rock_01.fbx"))
 	{
-		MessageBox(NULL, "デバッグもでるの読み込みエラー", "Error", MB_OK);
+		MessageBox(NULL, "デバッグモデルの読み込みエラー", "Error", MB_OK);
 	}
 
 #endif
@@ -154,7 +154,14 @@ void Draw()
 
 #ifdef _DEBUG
 	Draw_Debug();
-	m_pModel_Debug->Draw();
+	if (m_pModel_Debug)
+	{
+		m_pModel_Debug->Draw();
+	}
+	else
+	{
+		MessageBox(NULL, "デバッグモデル描画エラー", "Error", MB_OK);
+	}
 #endif
 	//Geometory::DrawBox();
 	switch (g_Screen)

@@ -25,10 +25,10 @@ void Model::MakeMesh(const void* ptr, float scale, Flip flip)
 		// 頂点データの書き込み
 		for (unsigned int j = 0; j < m_meshes[i].vertices.size(); ++j) {
 			// ☆モデルデータから値の取得
-			aiVector3D pos			= pScene->mMeshes[i]->mVertices[j];
-			aiVector3D normal		= pScene->mMeshes[i]->HasNormals() ? pScene->mMeshes[i]->mNormals[j] : zero3;
-			aiVector3D uv			= pScene->mMeshes[i]->HasTextureCoords(0) ? pScene->mMeshes[i]->mTextureCoords[0][j] : zero3;
-			aiColor4D color			= pScene->mMeshes[i]->HasVertexColors(0) ? pScene->mMeshes[i]->mColors[0][j] : one4;
+			aiVector3D pos = pScene->mMeshes[i]->mVertices[j];
+			aiVector3D normal = pScene->mMeshes[i]->HasNormals() ? pScene->mMeshes[i]->mNormals[j] : zero3;
+			aiVector3D uv = pScene->mMeshes[i]->HasTextureCoords(0) ? pScene->mMeshes[i]->mTextureCoords[0][j] : zero3;
+			aiColor4D color = pScene->mMeshes[i]->HasVertexColors(0) ? pScene->mMeshes[i]->mColors[0][j] : one4;
 
 			// ☆値を設定
 			m_meshes[i].vertices[j] = {
@@ -36,45 +36,43 @@ void Model::MakeMesh(const void* ptr, float scale, Flip flip)
 				 DirectX::XMFLOAT3(normal.x, normal.y, normal.z),
 				 DirectX::XMFLOAT2(uv.x, uv.y),
 				 DirectX::XMFLOAT4(color.r, color.g, color.b, color.a)
-
 			};
+		}
 
-			// ボーン生成
-			MakeWeight(pScene, i);
+		// ボーン生成
+		MakeWeight(pScene, i);
 
-			// インデックスの書き込み先の用意
-			// mNumFacesはポリゴンの数を表す(１ポリゴンで3インデックス
-			m_meshes[i].indices.resize(pScene->mMeshes[i]->mNumFaces * 3);
+		// インデックスの書き込み先の用意
+		// mNumFacesはポリゴンの数を表す(１ポリゴンで3インデックス
+		m_meshes[i].indices.resize(pScene->mMeshes[i]->mNumFaces * 3);
 
-			// インデックスの書き込み
-			for (unsigned int j = 0; j < pScene->mMeshes[i]->mNumFaces; ++j) {
-				// ☆モデルデータから値の取得
-				aiFace face = pScene->mMeshes[i]->mFaces[j];
-				// ☆値の設定
-				int idx = j * 3;
-				m_meshes[i].indices[idx + 0] = face.mIndices[0];
-				m_meshes[i].indices[idx + 1] = face.mIndices[idx1];
-				m_meshes[i].indices[idx + 2] = face.mIndices[idx2];
-
-			}
-
-			// マテリアルの割り当て
-			m_meshes[i].materialID = pScene->mMeshes[i]->mMaterialIndex;
-
-			// ☆頂点バッファに必要なデータを設定
-			MeshBuffer::Description desc = {};
-			desc.pVtx = m_meshes[i].vertices.data();
-			desc.vtxSize = sizeof(Vertex);
-			desc.vtxCount = m_meshes[i].vertices.size();
-			desc.pIdx = m_meshes[i].indices.data();
-			desc.idxSize = sizeof(unsigned long);
-			desc.idxCount = m_meshes[i].indices.size();
-			desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-			// ☆頂点バッファ作成
-			m_meshes[i].pMesh = new MeshBuffer();
-			m_meshes[i].pMesh->Create(desc);
+		// インデックスの書き込み
+		for (unsigned int j = 0; j < pScene->mMeshes[i]->mNumFaces; ++j) {
+			// ☆モデルデータから値の取得
+			aiFace face = pScene->mMeshes[i]->mFaces[j];
+			// ☆値の設定
+			int idx = j * 3;
+			m_meshes[i].indices[idx + 0] = face.mIndices[0];
+			m_meshes[i].indices[idx + 1] = face.mIndices[idx1];
+			m_meshes[i].indices[idx + 2] = face.mIndices[idx2];
 
 		}
+
+		// マテリアルの割り当て
+		m_meshes[i].materialID = pScene->mMeshes[i]->mMaterialIndex;
+
+		// ☆頂点バッファに必要なデータを設定
+		MeshBuffer::Description desc = {};
+		desc.pVtx			= m_meshes[i].vertices.data();
+		desc.vtxSize		= sizeof(Vertex);
+		desc.vtxCount		= m_meshes[i].vertices.size();
+		desc.pIdx			= m_meshes[i].indices.data();
+		desc.idxSize		= sizeof(unsigned long);
+		desc.idxCount		= m_meshes[i].indices.size();
+		desc.topology		= D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		// ☆頂点バッファ作成
+		m_meshes[i].pMesh	= new MeshBuffer();
+		m_meshes[i].pMesh->Create(desc);
 	}
 }
 void Model::MakeMaterial(const void* ptr, std::string directory)
