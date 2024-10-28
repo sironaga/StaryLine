@@ -42,7 +42,7 @@ CameraPosition camerapos;
 CameraMovePosition cameramovepos;
 bool first = true;
 bool MoveAngle = false;
-Model* m_pModel_Debug; /* デバッグ用モデル */
+Model* m_pModel; /* デバッグ用モデル */
 
 
 /* prototype */
@@ -122,8 +122,8 @@ void Init(HINSTANCE InhInstance,int InCmd)
 	ShaderList::Init();
 
 #ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください */
-	m_pModel_Debug = new Model();
-	if (!m_pModel_Debug->Load("Asset/Model/Rock_02.fbx"))
+	m_pModel = new Model();
+	if (!m_pModel->Load("Asset/Model/aid_hearing.fbx"))
 	{
 		MessageBox(NULL, "デバッグモデルの読み込みエラー", "Error", MB_OK);
 	}
@@ -156,15 +156,10 @@ void Draw()
 	Draw_Debug();
 
 #endif
-	if (m_pModel_Debug)
-	{
-		m_pModel_Debug->Draw();
-	}
-	else
-	{
-		MessageBox(NULL, "デバッグモデル描画エラー", "Error", MB_OK);
-	}
+
+	m_pModel->Draw();
 	//Geometory::DrawBox();
+
 	switch (g_Screen)
 	{
 	case TITLE:
