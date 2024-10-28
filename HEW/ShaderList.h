@@ -11,16 +11,16 @@ class ShaderList
 public:
 	enum VSKind
 	{
-		VS_WORLD,
-		VS_ANIME,
+		VS_WORLD, // SetWVP
+		VS_ANIME, // SetWVP,SetBones
 		VS_KIND_MAX
 	};
 	enum PSKind
 	{
-		PS_LAMBERT,
-		PS_SPECULAR,
-		PS_TOON,
-		PS_FOG,
+		PS_LAMBERT, //SetMaterial, SetLight
+		PS_SPECULAR, //SetMaterial, SetLight, SetCameraPos
+		PS_TOON, // SetMaterial, SetLight
+		PS_FOG, // SetMaterial, SetLight,SetFog
 		PS_KIND_MAX
 	};
 

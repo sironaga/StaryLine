@@ -239,12 +239,12 @@ float4 main(PS_IN pin) : SV_TARGET
 		color = tex.Sample(samp, pin.uv);
 	float3 N = normalize(pin.normal);
 	float3 L = normalize(-lightDir);
-	float dotNL = saturate(dot(N, L));
+	float dotNL = saturate((dot(N, L) + 0.5f) / 1.5f);
 	float3 diffuse = objDiffuse.rgb * lightDiffuse.rgb;
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
 	float3 specular = objSpecular.rgb * lightDiffuse.rgb;
 	color.rgb *= saturate(diffuse * dotNL + ambient);
-	color.rgb += specular * pow(dotNL, 3.14f) * objSpecular.a;
+	color.rgb += specular * pow(saturate(dotNL), max(0.01f, objSpecular.a));
 	return color;
 })EOT";
 	m_pPS[PS_LAMBERT] = new PixelShader();
@@ -286,7 +286,7 @@ float4 main(PS_IN pin) : SV_TARGET
 	float3 L = normalize(-lightDir);
 	float3 V = normalize(cameraPos.xyz - pin.wPos.xyz);
 	float3 R = reflect(-V, N);
-	float dotNL = saturate(dot(N, L));
+	float dotNL = saturate((dot(N, L) + 0.5f) / 1.5f);
 	float dotRL = saturate(dot(R, L));
 	float3 diffuse = objDiffuse.rgb * lightDiffuse.rgb;
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
@@ -327,12 +327,14 @@ float4 main(PS_IN pin) : SV_TARGET
 		color = tex.Sample(samp, pin.uv);
 	float3 N = normalize(pin.normal);
 	float3 L = normalize(-lightDir);
-	float dotNL = dot(N, L);
+	float dotNL = dot(N, L); // ƒ}ƒCƒiƒXž‚ÅŒvŽZ
 	float3 diffuse = objDiffuse.rgb * lightDiffuse.rgb;
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
 	float3 specular = objSpecular.rgb * lightDiffuse.rgb;
-	color.rgb *= saturate(diffuse * saturate(dotNL * 100.0f) + ambient);
-	color.rgb += specular * step(0.99f, dotNL) * objSpecular.a;
+	float toonNL = saturate((dot(N, L) + 0.5f) / 1.5f * 100.0f); // ‰A‚Ì‹«–Ú‚ð_‚ç‚©‚­
+	color.rgb *= saturate(diffuse * toonNL + ambient);
+	if(objSpecular.a >= 1.0f)
+		color.rgb += specular * saturate(pow(dotNL, max(0.01f, objSpecular.a)));
 	return color;
 })EOT";
 	m_pPS[PS_TOON] = new PixelShader();
@@ -379,7 +381,7 @@ float4 main(PS_IN pin) : SV_TARGET
 		color = tex.Sample(samp, pin.uv);
 	float3 N = normalize(pin.normal);
 	float3 L = normalize(-lightDir);
-	float dotNL = saturate(dot(N, L));
+	float dotNL = saturate((dot(N, L) + 0.5f) / 1.5f);
 	float3 diffuse = objDiffuse.rgb * lightDiffuse.rgb;
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
 	color.rgb *= saturate(diffuse * dotNL + ambient);

@@ -42,7 +42,7 @@ CameraPosition camerapos;
 CameraMovePosition cameramovepos;
 bool first = true;
 bool MoveAngle = false;
-
+Model* m_pModel_Debug; /* デバッグ用モデル */
 
 
 /* prototype */
@@ -120,6 +120,17 @@ void Init(HINSTANCE InhInstance,int InCmd)
 	Geometory::Init();
 	Sprite::Init();
 	ShaderList::Init();
+
+#ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください*/
+	m_pModel_Debug = new Model();
+	if (!m_pModel_Debug->Load("Asset/Model/Rock_02.fbx"))
+	{
+		MessageBox(NULL, "デバッグもでるの読み込みエラー", "Error", MB_OK);
+	}
+
+#endif
+
+
 }
 
 void Update()
@@ -143,8 +154,9 @@ void Draw()
 
 #ifdef _DEBUG
 	Draw_Debug();
+	m_pModel_Debug->Draw();
 #endif
-	Geometory::DrawBox();
+	//Geometory::DrawBox();
 	switch (g_Screen)
 	{
 	case TITLE:

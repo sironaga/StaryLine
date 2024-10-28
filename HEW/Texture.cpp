@@ -1,5 +1,5 @@
 #include "Texture.h"
-#include"DirectXTex/TextureLoad.h"
+#include "DirectXTex/TextureLoad.h"
 
 /// <summary>
 /// テクスチャ
@@ -144,7 +144,7 @@ HRESULT RenderTarget::CreateFromScreen()
 	// バックバッファへのポインタを指定してレンダーターゲットビューを作成
 	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	rtvDesc.Texture2D.MipSlice = 0;
 	hr = GetDevice()->CreateRenderTargetView(m_pTex, &rtvDesc, &m_pRTV);
 	if (SUCCEEDED(hr))
