@@ -121,9 +121,9 @@ void Init(HINSTANCE InhInstance,int InCmd)
 	Sprite::Init();
 	ShaderList::Init();
 
-#ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください*/
+#ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください */
 	m_pModel_Debug = new Model();
-	if (!m_pModel_Debug->Load("Asset/Model/Rock_01.fbx"))
+	if (!m_pModel_Debug->Load("Asset/Model/Rock_02.fbx"))
 	{
 		MessageBox(NULL, "デバッグモデルの読み込みエラー", "Error", MB_OK);
 	}
@@ -154,6 +154,8 @@ void Draw()
 
 #ifdef _DEBUG
 	Draw_Debug();
+
+#endif
 	if (m_pModel_Debug)
 	{
 		m_pModel_Debug->Draw();
@@ -162,7 +164,6 @@ void Draw()
 	{
 		MessageBox(NULL, "デバッグモデル描画エラー", "Error", MB_OK);
 	}
-#endif
 	//Geometory::DrawBox();
 	switch (g_Screen)
 	{

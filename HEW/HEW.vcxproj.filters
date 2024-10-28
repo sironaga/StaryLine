@@ -69,9 +69,6 @@
     <ClCompile Include="_geometory.cpp">
       <Filter>ソース ファイル\System\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="_model.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
-    </ClCompile>
     <ClCompile Include="Sound.cpp">
       <Filter>ソース ファイル\System\Input_OutPut</Filter>
     </ClCompile>
