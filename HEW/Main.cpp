@@ -37,8 +37,13 @@ HWND hWnd;
 WNDCLASSEX wcex;;
 FLOAT3 g_fCamPos; /* カメラのポジション */
 FLOAT3 g_fCamAngle;/*カメラのアングル*/
-bool g_bCamSwitch = true;/*カメラのアングルと移動の切り替え*/
-float g_fViewAngle = 60.0f;/* 視野角 */
+CameraRay camRay;
+CameraPosition camerapos;
+CameraMovePosition cameramovepos;
+bool first = true;
+bool MoveAngle = false;
+
+
 
 /* prototype */
 void Init(HINSTANCE InhInstance, int InCmd);	/* システムの初期化 */
@@ -296,24 +301,44 @@ void Draw_Debug()
 
 	DirectX::XMVECTOR camPos;
 	if (camPosSwitch) {
-		camPos = DirectX::XMVectorSet(2.5f + g_fCamPos.X, 30.5f + g_fCamPos.Y, -40.0f + g_fCamPos.Z, 0.0f);
+		camPos = DirectX::XMVectorSet(2.5f, 30.5f, -40.0f, 0.0f);
 	}
 	else {
-		camPos = DirectX::XMVectorSet(2.5f + g_fCamPos.X, 3.5f + g_fCamPos.Y, -4.0f + g_fCamPos.Z, 0.0f);
+		camPos = DirectX::XMVectorSet(camerapos.posx, camerapos.posy, camerapos.posz, 0.0f);
 	}
+
+
 
 	// ジオメトリ用カメラ初期化
 	DirectX::XMFLOAT4X4 mat[2];
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			camPos,
-			DirectX::XMVectorSet(0.0f + g_fCamPos.X + g_fCamAngle.X, 0.0f + g_fCamPos.Y + g_fCamAngle.Y, 0.0f + g_fCamPos.Z + g_fCamAngle.Z, 0.0f),
-			DirectX::XMVectorSet(0.0f , 1.0f , 0.0f , 0.0f)
+			DirectX::XMVectorSet(camRay.posx, camRay.posy, camRay.posz, 0.0f),
+			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		)));
 	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixPerspectiveFovLH(
-			DirectX::XMConvertToRadians(g_fViewAngle), (float)Windows_Size_X / Windows_Size_Y, 0.1f, 100.0f)
+			DirectX::XMConvertToRadians(60.0f), (float)Windows_Size_X / Windows_Size_Y, 0.1f, 100.0f)
 	));
+	//移動、回転
+//移動行列を作成
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(cameramovepos.posx, cameramovepos.posy, cameramovepos.posz);
+	//ビュー行列を作成
+	DirectX::XMMATRIX A = DirectX::XMMatrixLookAtLH(
+		camPos,
+		DirectX::XMVectorSet(camRay.posx, camRay.posy, camRay.posz, 0.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	);
+	//回転行列を作成
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(camRay.posx);
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(camRay.posy);
+	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(camRay.posz);
+	DirectX::XMMATRIX matr = Rx * Ry * Rz; // それぞれの行列を掛け合わせて格納 
+	//ビュー行列に回転行列を掛ける
+	A = A * matr;
+	//ビュー行列に移動行列を掛けて、元のビュー行列に新しいビュー行列を代入
+	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(A * T));
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
@@ -321,116 +346,58 @@ void Draw_Debug()
 
 void CamPos_Debug()
 {
-	/* Shitでカメラのアングルと移動の切り替え */
-	/* Rで値をリセット */
-	/* G Hで視野角変更*/
-
-	if (IsKeyPress('G'))
-	{
-		g_fViewAngle += 1.0f;
-	}
-
-	if (IsKeyPress('H'))
-	{
-		g_fViewAngle -= 1.0f;
-	}
-
-	if (IsKeyTrigger('R'))
-	{
-		g_fCamAngle.X = 0.0f;
-		g_fCamAngle.Y = 0.0f;
-		g_fCamAngle.Z = 0.0f;
-		g_fCamPos = g_fCamAngle;
-	}
-
-
-	if (IsKeyPress('A'))
-	{
-		if (g_bCamSwitch)
-		{
-			g_fCamPos.X -= cos(g_fCamAngle.X*3.14/180) * 0.1f;
-		}
-		else
-		{
-			g_fCamAngle.X -= 0.1f;
-		}
-
-		
-	}
-	if (IsKeyPress('D'))
-	{
-		if (g_bCamSwitch)
-		{
-			g_fCamPos.X += cos(g_fCamAngle.X * 3.14 / 180) * 0.1f;
-		}
-		else
-		{
-			g_fCamAngle.X += 0.1f;
-		}
-	}
 	if (IsKeyPress('W'))
 	{
-		if (g_bCamSwitch)
+		if (!MoveAngle)
 		{
-			g_fCamPos.Z += 0.1f;
+			cameramovepos.posz -= 0.1f;
 		}
 		else
 		{
-			g_fCamAngle.Z += 0.1f;
+			camRay.posx += 0.01f;
 		}
 	}
 	if (IsKeyPress('S'))
 	{
-		if (g_bCamSwitch)
+		if (!MoveAngle)
 		{
-			g_fCamPos.Z -= 0.1f;
+			cameramovepos.posz += 0.1f;
 		}
 		else
 		{
-			g_fCamAngle.Z -= 0.1f;
+			camRay.posx -= 0.01f;
 		}
 	}
-	if (IsKeyPress('Z'))
+	if (IsKeyPress('A'))
 	{
-		if (g_bCamSwitch)
+		if (!MoveAngle)
 		{
-			g_fCamPos.Y += 0.1f;
+			cameramovepos.posx += 0.1f;
 		}
 		else
 		{
-			g_fCamAngle.Y += 0.1f;
+			camRay.posy += 0.01f;
 		}
 	}
-	if (IsKeyPress('X'))
+	if (IsKeyPress('D'))
 	{
-		if (g_bCamSwitch)
+		if (!MoveAngle)
 		{
-			g_fCamPos.Y -= 0.1f;
+			cameramovepos.posx -= 0.1f;
 		}
 		else
 		{
-			g_fCamAngle.Y -=0.1f;
+			camRay.posy -= 0.01f;
 		}
 	}
-
-
-	if (IsKeyTrigger(VK_SHIFT))
+	if (IsKeyTrigger(VK_SHIFT) && !MoveAngle)
 	{
-		if (g_bCamSwitch)
-		{
-			g_bCamSwitch = false;
-		}
-		else
-		{
-			g_bCamSwitch = true;
-		}
+		MoveAngle = true;
 	}
-
-	char mes[256];
-	sprintf(mes, "%f", g_fCamAngle.X);
-	SetWindowText(hWnd, mes);
-
-
-
-
+	else if (IsKeyTrigger(VK_SHIFT) && MoveAngle)
+	{
+		MoveAngle = false;
+	}
+	if (IsKeyPress('I')) camRay.posz += 0.01f;
+	if (IsKeyPress('J'))camRay.posz -= 0.01f;
 }

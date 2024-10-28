@@ -47,6 +47,33 @@ typedef struct
 	int fpsTime;
 }FPSTIMER;
 
+typedef struct CameraRay
+{
+	float posx = 0.0f;
+	float posy = 0.0f;
+	float posz = 0.0f;
+};
+
+//カメラの初期位置
+typedef struct CameraPosition
+{
+	float posx = 2.5f;
+	float posy = 3.5f;
+	float posz = -4.0f;
+};
+
+//カメラの移動量
+typedef struct CameraMovePosition
+{
+	float posx = 0.0f;
+	float posy = 0.0f;
+	float posz = 0.0f;
+};
+
+
+
+
+
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
 // リソースパス
