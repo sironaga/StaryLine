@@ -61,7 +61,7 @@ void CamPos_Debug();
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	Init(hInstance,nCmdShow);
-
+	
 	g_Screen = TITLE;
 
 	FPSTIMER f_Time; /* フレーム制御用構造体 */
@@ -122,6 +122,7 @@ void Init(HINSTANCE InhInstance,int InCmd)
 	Geometory::Init();
 	Sprite::Init();
 	ShaderList::Init();
+	InitDirectXPlus();
 }
 
 void Update()
@@ -145,7 +146,6 @@ void Draw()
 
 #ifdef _DEBUG
 	Draw_Debug();
-
 #endif
 
 
