@@ -8,6 +8,13 @@ DirectX::XMMATRIX Translation;
 DirectX::XMMATRIX Scaling;
 DirectX::XMMATRIX Rotation;
 
+void InitDirectXPlus()
+{
+	/* グローバル変数の初期化 */
+	POS.X = POS.Y = POS.Z = 0.0f;
+	SCL.X = SCL.Y = SCL.Z = 1.0f;
+	ROT.X = ROT.Y = ROT.Z = 0.0f;
+}
 
 /* 移動行列 */
 void SetTranslation(float X, float Y, float Z)

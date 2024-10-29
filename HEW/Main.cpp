@@ -70,6 +70,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	f_Time.fpsTime = 0;
 	f_Time.oldTime = 0;
 	f_Time.time = 0;
+	f_Time.oldTime = f_Time.time = timeGetTime();
 
 	MSG message;
 
@@ -147,9 +148,7 @@ void Draw()
 
 #endif
 
-	ResetData();
-	SetTranslation(1.0f, 1.0f, 1.0f);
-	Geometory::DrawBox();
+
 
 	switch (g_Screen)
 	{

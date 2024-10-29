@@ -24,6 +24,7 @@
 #include"ShaderList.h"
 #include"Controller.h"
 
+void InitDirectXPlus();
 void SetTranslation(float X, float Y, float Z);
 void SetTranslation(FLOAT3 SetTranslation);
 void SetScaling(float X, float Y, float Z);
