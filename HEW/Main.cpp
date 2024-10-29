@@ -123,7 +123,7 @@ void Init(HINSTANCE InhInstance,int InCmd)
 
 #ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください */
 	m_pModel = new Model();
-	if (!m_pModel->Load("Asset/Model/aid_hearing.fbx"))
+	if (!m_pModel->Load("Asset/Model/Rock_01.fbx"))
 	{
 		MessageBox(NULL, "デバッグモデルの読み込みエラー", "Error", MB_OK);
 	}
