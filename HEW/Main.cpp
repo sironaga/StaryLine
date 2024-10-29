@@ -146,12 +146,6 @@ void Draw()
 	Draw_Debug();
 
 #endif
-
-
-
-
-
-
 	switch (g_Screen)
 	{
 	case TITLE:

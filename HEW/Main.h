@@ -71,9 +71,6 @@ typedef struct CameraMovePosition
 };
 
 
-
-
-
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
 // リソースパス
