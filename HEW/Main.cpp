@@ -150,9 +150,7 @@ void Draw()
 
 
 
-	SetTranslation(10.0f, 10.0f, 10.0f);
-	Geometory::DrawBox();
-	ResetData();
+
 
 	switch (g_Screen)
 	{
