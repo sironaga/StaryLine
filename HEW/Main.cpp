@@ -21,6 +21,7 @@
 #include"Input.h"
 #include"ShaderList.h"
 #include"Controller.h"
+#include"DirectXPlus.h"
 
 /* define */
 #define Windows_Size_X (1920)
@@ -42,7 +43,7 @@ CameraPosition camerapos;
 CameraMovePosition cameramovepos;
 bool first = true;
 bool MoveAngle = false;
-Model* m_pModel; /* デバッグ用モデル */
+
 
 
 /* prototype */
@@ -145,6 +146,13 @@ void Draw()
 	Draw_Debug();
 
 #endif
+
+
+
+
+	SetTranslation(10.0f, 10.0f, 10.0f);
+	Geometory::DrawBox();
+	ResetData();
 
 	switch (g_Screen)
 	{

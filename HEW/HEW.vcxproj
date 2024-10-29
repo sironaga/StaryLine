@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="DirectXPlus.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Controller.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="DirectXPlus.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
