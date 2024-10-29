@@ -9,7 +9,7 @@
 		2024/10/05 秋野翔太　基本的なDirectXに必要な処理の追加
 		2024/10/07 秋野翔太　g_SoundVolume変数の追加それに伴いセッターゲッターの追加
 		2024/10/16 秋野翔太　DirectXを3Dに対応　プロジェクト一部変更
-
+		2024/10/29 秋野翔太　Modelの動作確認完了
 */
 
 /* Include */
@@ -120,17 +120,6 @@ void Init(HINSTANCE InhInstance,int InCmd)
 	Geometory::Init();
 	Sprite::Init();
 	ShaderList::Init();
-
-#ifdef _DEBUG /* テスト表示用です必要がなくなった場合消してください */
-	m_pModel = new Model();
-	if (!m_pModel->Load("Asset/Model/Rock_01.fbx"))
-	{
-		MessageBox(NULL, "デバッグモデルの読み込みエラー", "Error", MB_OK);
-	}
-
-#endif
-
-
 }
 
 void Update()
@@ -156,9 +145,6 @@ void Draw()
 	Draw_Debug();
 
 #endif
-
-	m_pModel->Draw();
-	//Geometory::DrawBox();
 
 	switch (g_Screen)
 	{
