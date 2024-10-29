@@ -146,6 +146,11 @@ void Draw()
 	Draw_Debug();
 
 #endif
+
+	ResetData();
+	SetTranslation(1.0f, 1.0f, 1.0f);
+	Geometory::DrawBox();
+
 	switch (g_Screen)
 	{
 	case TITLE:
