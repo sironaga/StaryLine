@@ -14,6 +14,7 @@
 /* モード管理用 */
 enum Screen
 {
+	TEST,/* テスト */
 	TITLE, /* TITLE */
 };
 

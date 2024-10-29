@@ -9,7 +9,7 @@
 		2024/10/05 秋野翔太　基本的なDirectXに必要な処理の追加
 		2024/10/07 秋野翔太　g_SoundVolume変数の追加それに伴いセッターゲッターの追加
 		2024/10/16 秋野翔太　DirectXを3Dに対応　プロジェクト一部変更
-		2024/10/29 秋野翔太　Modelの動作確認完了
+		2024/10/29 秋野翔太　Modelの動作確認完了 DirectXPlusの追加
 */
 
 /* Include */
@@ -22,6 +22,7 @@
 #include"ShaderList.h"
 #include"Controller.h"
 #include"DirectXPlus.h"
+#include"Code_Test.h"
 
 /* define */
 #define Windows_Size_X (1920)
@@ -62,7 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	Init(hInstance,nCmdShow);
 	
-	g_Screen = TITLE;
+	g_Screen = TEST; /* TEST */
 
 	FPSTIMER f_Time; /* フレーム制御用構造体 */
 	f_Time.FPS = 0;
@@ -123,6 +124,8 @@ void Init(HINSTANCE InhInstance,int InCmd)
 	Sprite::Init();
 	ShaderList::Init();
 	InitDirectXPlus();
+
+	CodeTestInit();
 }
 
 void Update()
@@ -133,6 +136,9 @@ void Update()
 
 	switch (g_Screen)
 	{
+	case TEST:
+		CodeTestUpdate();
+		break;
 	case TITLE:
 		break;
 	default:
@@ -147,11 +153,10 @@ void Draw()
 #ifdef _DEBUG
 	Draw_Debug();
 #endif
-
-
-
 	switch (g_Screen)
 	{
+	case TEST:
+		CodeTestDraw();
 	case TITLE:
 		break;
 	default:
@@ -163,6 +168,7 @@ void Draw()
 
 void UnInit(HINSTANCE InhInstance)
 {
+	CodeTestUnInit();
 	timeEndPeriod(1);
 	XInputEnable(false); // XInputの無効化
 	UninitInput();
@@ -171,7 +177,6 @@ void UnInit(HINSTANCE InhInstance)
 }
 
 /* === seting === */
-
 void SetVolume(int InVolume)
 {
 	g_nSoundVolume = InVolume;
@@ -265,7 +270,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 /* DEBUG */
-
 void Draw_Debug()
 {
 #ifdef _DEBUG

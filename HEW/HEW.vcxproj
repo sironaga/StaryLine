@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code_Test.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="DirectXPlus.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="_geometory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code_Test.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="DirectXPlus.h" />

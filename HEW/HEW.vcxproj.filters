@@ -31,6 +31,12 @@
     <Filter Include="ヘッダー ファイル\System\Input_OutPut">
       <UniqueIdentifier>{279fcd55-bb8d-4df3-ba34-188c165d31fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Mode">
+      <UniqueIdentifier>{f6891958-1041-43bb-a5b8-41d3ed5a958d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Mode">
+      <UniqueIdentifier>{6bddb5e3-1f33-41f6-b3e6-2d61a56d8d27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -72,6 +78,12 @@
     <ClCompile Include="Sound.cpp">
       <Filter>ソース ファイル\System\Input_OutPut</Filter>
     </ClCompile>
+    <ClCompile Include="DirectXPlus.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Code_Test.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
@@ -109,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXPlus.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Code_Test.h">
+      <Filter>ヘッダー ファイル\Mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
