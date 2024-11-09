@@ -37,11 +37,6 @@ int g_nSoundVolume; /* ゲーム全体の音量変数 */
 Screen g_Screen;	/* モード管理用変数 */
 HWND hWnd;
 WNDCLASSEX wcex;;
-FLOAT3 g_fCamPos; /* カメラのポジション */
-FLOAT3 g_fCamAngle;/*カメラのアングル*/
-CameraRay camRay;
-CameraPosition camerapos;
-CameraMovePosition cameramovepos;
 bool first = true;
 bool MoveAngle = false;
 
@@ -55,7 +50,7 @@ void UnInit(HINSTANCE InhInstance);	/* 終了処理 */
 void Draw_Debug(); /* Draw Debug用 */
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);	/* ウィンドウプロシージャー */
 void CreatWindows(HINSTANCE InhInstance, int InCmd);								/* ウインドウ制作 */
-void CamPos_Debug();
+
 
 
 /*  */
@@ -132,7 +127,6 @@ void Update()
 {
 	Controller_Update();	/*コントローラーの更新*/
 	UpdateInput();			/*キーボードの更新*/
-	CamPos_Debug();			/*カメラの移動を行っている関数*/
 
 	switch (g_Screen)
 	{
@@ -310,103 +304,26 @@ void Draw_Debug()
 
 	DirectX::XMVECTOR camPos;
 	if (camPosSwitch) {
-		camPos = DirectX::XMVectorSet(2.5f, 30.5f, -40.0f, 0.0f);
+		camPos = DirectX::XMVectorSet(10.0f, 20.0f, 0.0f, 0.0f);
 	}
 	else {
-		camPos = DirectX::XMVectorSet(camerapos.posx, camerapos.posy, camerapos.posz, 0.0f);
+		camPos = DirectX::XMVectorSet(2.5, 3.5f, -4.0f, 0.0f);
 	}
-
-
 
 	// ジオメトリ用カメラ初期化
 	DirectX::XMFLOAT4X4 mat[2];
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			camPos,
-			DirectX::XMVectorSet(camRay.posx, camRay.posy, camRay.posz, 0.0f),
+			DirectX::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f),
 			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
 		)));
 	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixPerspectiveFovLH(
 			DirectX::XMConvertToRadians(60.0f), (float)Windows_Size_X / Windows_Size_Y, 0.1f, 100.0f)
 	));
-	//移動、回転
-//移動行列を作成
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(cameramovepos.posx, cameramovepos.posy, cameramovepos.posz);
-	//ビュー行列を作成
-	DirectX::XMMATRIX A = DirectX::XMMatrixLookAtLH(
-		camPos,
-		DirectX::XMVectorSet(camRay.posx, camRay.posy, camRay.posz, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-	);
-	//回転行列を作成
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(camRay.posx);
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(camRay.posy);
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(camRay.posz);
-	DirectX::XMMATRIX matr = Rx * Ry * Rz; // それぞれの行列を掛け合わせて格納 
-	//ビュー行列に回転行列を掛ける
-	A = A * matr;
-	//ビュー行列に移動行列を掛けて、元のビュー行列に新しいビュー行列を代入
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(A * T));
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
 }
 
-void CamPos_Debug()
-{
-	if (IsKeyPress('W'))
-	{
-		if (!MoveAngle)
-		{
-			cameramovepos.posz -= 0.1f;
-		}
-		else
-		{
-			camRay.posx += 0.01f;
-		}
-	}
-	if (IsKeyPress('S'))
-	{
-		if (!MoveAngle)
-		{
-			cameramovepos.posz += 0.1f;
-		}
-		else
-		{
-			camRay.posx -= 0.01f;
-		}
-	}
-	if (IsKeyPress('A'))
-	{
-		if (!MoveAngle)
-		{
-			cameramovepos.posx += 0.1f;
-		}
-		else
-		{
-			camRay.posy += 0.01f;
-		}
-	}
-	if (IsKeyPress('D'))
-	{
-		if (!MoveAngle)
-		{
-			cameramovepos.posx -= 0.1f;
-		}
-		else
-		{
-			camRay.posy -= 0.01f;
-		}
-	}
-	if (IsKeyTrigger(VK_SHIFT) && !MoveAngle)
-	{
-		MoveAngle = true;
-	}
-	else if (IsKeyTrigger(VK_SHIFT) && MoveAngle)
-	{
-		MoveAngle = false;
-	}
-	if (IsKeyPress('I')) camRay.posz += 0.01f;
-	if (IsKeyPress('J'))camRay.posz -= 0.01f;
-}
