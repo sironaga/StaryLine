@@ -243,8 +243,16 @@ float4 main(PS_IN pin) : SV_TARGET
 	float3 diffuse = objDiffuse.rgb * lightDiffuse.rgb;
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
 	float3 specular = objSpecular.rgb * lightDiffuse.rgb;
-	color.rgb *= saturate(diffuse * dotNL + ambient);
-	color.rgb += specular * pow(saturate(dotNL), max(0.01f, objSpecular.a));
+	// –{—ˆ‚ÌLambertŠgŽU”½ŽËiŽv‚Á‚½•\Œ»‚ªo—ˆ‚È‚©‚Á‚½‚Ì‚ÅÌ—p‚¹‚¸
+	// color.rgb *= saturate(diffuse * dotNL + ambient);
+	// ŠÂ‹«Œõ‚ÅŠgŽU”½ŽË•”•ª‚ÌF‚ª•Ï‚í‚ç‚È‚¢‚æ‚¤‚Élerp(ŠÂ‹«Œõ,diffuse,dotNL)‚ÅŒvŽZ
+	// ŠÂ‹«Œõ‚ªŽã‚¯‚ê‚Î•(æŽZ)A‹­‚¯‚ê‚Î”’(‰ÁŽZ)‚Æ‚È‚é‚æ‚¤‚ÉAŠeŒvŽZ‚ðüŒ`‚Å•âŠÔ
+	diffuse *= color.rgb;
+	color.rgb = saturate(lerp(
+		lerp(diffuse * ambient, diffuse + ambient, pow(ambient, 4.0f)),
+		diffuse, dotNL));
+	// –{—ˆ‚È‚ç•K—v‚È‚¢‹¾–Ê”½ŽËALambertŒü‚¯‚ÉŽáŠ±‚¾‚¯“K—p
+	color.rgb += specular * pow(saturate(dotNL), max(0.01f, objSpecular.a) * 0.5f) * 0.5f;
 	return color;
 })EOT";
 	m_pPS[PS_LAMBERT] = new PixelShader();
@@ -291,7 +299,10 @@ float4 main(PS_IN pin) : SV_TARGET
 	float3 diffuse = objDiffuse.rgb * lightDiffuse.rgb;
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
 	float3 specular = objSpecular.rgb * lightDiffuse.rgb;
-	color.rgb *= saturate(diffuse * dotNL + ambient);
+	// Lambert‚ÌŒvŽZ‚ðŽQl
+	color.rgb *= saturate(lerp(
+		lerp(diffuse * ambient, diffuse + ambient, pow(ambient, 4.0f)),
+		diffuse, dotNL));
 	color.rgb += specular * saturate(pow(dotRL, max(0.01f, objSpecular.a)));
 	return color;
 })EOT";
@@ -332,9 +343,12 @@ float4 main(PS_IN pin) : SV_TARGET
 	float3 ambient = objAmbient.rgb * lightDiffuse.rgb;
 	float3 specular = objSpecular.rgb * lightDiffuse.rgb;
 	float toonNL = saturate((dot(N, L) + 0.5f) / 1.5f * 100.0f); // ‰A‚Ì‹«–Ú‚ð_‚ç‚©‚­
-	color.rgb *= saturate(diffuse * toonNL + ambient);
+	// Lambert‚ÌŒvŽZ‚ðŽQl
+	color.rgb *= saturate(lerp(
+		lerp(diffuse * ambient, diffuse + ambient, pow(ambient, 4.0f)),
+		diffuse, toonNL));
 	if(objSpecular.a >= 1.0f)
-		color.rgb += specular * saturate(pow(dotNL, max(0.01f, objSpecular.a)));
+		color.rgb += specular * saturate(pow(dotNL, max(0.01f, objSpecular.a)) * 100.0f);
 	return color;
 })EOT";
 	m_pPS[PS_TOON] = new PixelShader();

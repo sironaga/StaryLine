@@ -2,7 +2,7 @@
 #include<Windows.h>
 #include<Xinput.h>
 #pragma comment(lib, "xinput.lib")
-#include"Main.h"
+#include"_StructList.h"
 
 void Controller_Update();
 FLOAT2 CGetLStick();

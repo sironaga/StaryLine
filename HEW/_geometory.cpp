@@ -1,10 +1,9 @@
 #include "Geometory.h"
-#include"Input.h"
 
 
 void Geometory::MakeBox()
 {
-	
+
 	//--- 頂点の作成
 	Vertex vtx[] = {
 
@@ -44,7 +43,7 @@ void Geometory::MakeBox()
 	};
 
 	//--- インデックスの作成
-	int idx[] = 
+	int idx[] =
 	{
 		0,   1,  2,  1,  3,  2,// -Z面 
 		4,   5,  6,  5,  7,  6,// Z面 

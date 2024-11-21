@@ -18,6 +18,47 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Geometory.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MeshBuffer.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelEx.cpp" />
+    <ClCompile Include="SceneGame.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderList.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Startup.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="_geometory.cpp" />
+    <ClCompile Include="_model.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Geometory.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="MeshBuffer.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelEx.h" />
+    <ClInclude Include="SceneGame.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderList.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="_StructList.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -142,42 +183,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Code_Test.cpp" />
-    <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="DirectXPlus.cpp" />
-    <ClCompile Include="Geometory.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MeshBuffer.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderList.cpp" />
-    <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="_geometory.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Code_Test.h" />
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="DirectX.h" />
-    <ClInclude Include="DirectXPlus.h" />
-    <ClInclude Include="Geometory.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Main.h" />
-    <ClInclude Include="MeshBuffer.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderList.h" />
-    <ClInclude Include="Sound.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="Texture.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="全体記録.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

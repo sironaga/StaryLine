@@ -13,125 +13,150 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ソース ファイル\System">
-      <UniqueIdentifier>{da674d61-e8cd-4275-b692-2ad0cd10d456}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Systems">
+      <UniqueIdentifier>{4ca1c875-84cd-4f12-88f6-2218f191e9c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\System">
-      <UniqueIdentifier>{20d2444d-38f4-4095-b019-adbebb140a0d}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Systems\DirectX">
+      <UniqueIdentifier>{381d99a9-8214-4392-a5d7-66d0e2235378}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\System\DirectX">
-      <UniqueIdentifier>{d8e7e980-ea9d-4aaf-b0f8-7aafe8d372e7}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Systems\DirectX\Default">
+      <UniqueIdentifier>{1a83c89b-9bd8-4a28-9b16-0f539bebfd33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\System\Input_OutPut">
-      <UniqueIdentifier>{3da1751e-85a5-475f-9eae-8ecfe8a899fc}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Systems\DirectX\Plus">
+      <UniqueIdentifier>{515a462e-eb17-401d-915f-ca9307c28b60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\System\DirectX">
-      <UniqueIdentifier>{a7fd3c1d-e108-44f1-be57-ec5aa7dcb953}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\Systems">
+      <UniqueIdentifier>{58b3257d-dd61-4c53-8b2c-e19e2cf1822c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\System\Input_OutPut">
-      <UniqueIdentifier>{279fcd55-bb8d-4df3-ba34-188c165d31fa}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\Systems\DirectX">
+      <UniqueIdentifier>{ee53f9b3-b32d-4d4f-85c6-20ef7ac4918e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Mode">
-      <UniqueIdentifier>{f6891958-1041-43bb-a5b8-41d3ed5a958d}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\Systems\DirectX\Default">
+      <UniqueIdentifier>{1da085cf-fe5e-49d8-82b7-13fce8c44dab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Mode">
-      <UniqueIdentifier>{6bddb5e3-1f33-41f6-b3e6-2d61a56d8d27}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\Systems\DirectX\Plus">
+      <UniqueIdentifier>{fd9a4480-4fb7-4a17-b89e-9cd601e6d476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\App">
+      <UniqueIdentifier>{fd879046-47f0-4241-bbc0-20ef2203ac0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\App">
+      <UniqueIdentifier>{52e83d49-38a5-4072-865e-c8a88c67d700}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>ソース ファイル\System</Filter>
+    <ClCompile Include="_geometory.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>ソース ファイル\System\Input_OutPut</Filter>
+    <ClCompile Include="_model.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル\System\Input_OutPut</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraDebug.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="DirectX.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="Geometory.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="MeshBuffer.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderList.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
-    <ClCompile Include="_geometory.cpp">
-      <Filter>ソース ファイル\System\DirectX</Filter>
+    <ClCompile Include="ShaderList.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
-      <Filter>ソース ファイル\System\Input_OutPut</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXPlus.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
-    <ClCompile Include="Code_Test.cpp">
-      <Filter>ソース ファイル\Mode</Filter>
+    <ClCompile Include="Texture.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelEx.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="Startup.cpp">
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGame.cpp">
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Main.h">
-      <Filter>ヘッダー ファイル\System</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
+    <ClInclude Include="CameraDebug.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
+    <ClInclude Include="Defines.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="DirectX.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="Geometory.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="MeshBuffer.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderList.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderList.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="Sound.h">
-      <Filter>ヘッダー ファイル\System\Input_OutPut</Filter>
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXPlus.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
-    <ClInclude Include="Code_Test.h">
-      <Filter>ヘッダー ファイル\Mode</Filter>
+    <ClInclude Include="Texture.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="全体記録.txt">
-      <Filter>リソース ファイル</Filter>
-    </Text>
+    <ClInclude Include="Controller.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelEx.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneGame.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="_StructList.h">
+      <Filter>ヘッダー ファイル\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
