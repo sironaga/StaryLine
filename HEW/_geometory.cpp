@@ -1,4 +1,3 @@
-//AT12A 192 25 íÜìáêπóÖ
 
 #include "Geometory.h"
 
@@ -63,7 +62,7 @@ void Geometory::MakeBox()
 	desc.pVtx = vtxBox;
 	desc.vtxCount = 24;
 	desc.vtxSize = sizeof(Vertex);
-	desc.pIdx = idxBox;
+	desc.pIdx = idx;
 	desc.idxCount = 36;
 	desc.idxSize = sizeof(int);
 	desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;

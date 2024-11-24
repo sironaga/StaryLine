@@ -10,13 +10,14 @@ char MapData[19][19];
 float MoveX, MoveY;
 
 
+
 SceneGame::SceneGame()
 {
 	
 	RenderTarget* pRTV = GetDefaultRTV(); // デフォルトのRenderTargetViewを取得 
 	DepthStencil* pDSV = GetDefaultDSV(); // デフォルトのDepthStencilViewを取得 
 	SetRenderTargets(1, &pRTV, pDSV);  // 第3引数がnullの場合、2D表示となる
-
+	
 }
 
 SceneGame::~SceneGame()

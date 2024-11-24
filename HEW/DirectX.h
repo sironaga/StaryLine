@@ -8,7 +8,10 @@
 #define SAFE_DELETE(p)			do{if(p){delete p; p = nullptr;}}while(0)
 #define SAFE_DELETE_ARRAY(p)	do{if(p){delete[] p; p = nullptr;}}while(0)
 #define SAFE_RELEASE(p)			do{if(p){p->Release(); p = nullptr;}}while(0)
-
+//	テクスチャデータ用
+#define POLYGON_TEXTURE ID3D11ShaderResourceView
+//	ポリゴンデータ用
+#define POLYGON_BUFFER	ID3D11Buffer
 class RenderTarget;
 class DepthStencil;
 
@@ -29,6 +32,12 @@ enum SamplerState
 	SAMPLER_POINT,
 	SAMPLER_MAX
 };
+
+struct Vertex {
+	float pos[3];
+	float uv[2];
+};
+
 
 ID3D11Device* GetDevice();
 ID3D11DeviceContext* GetContext();
