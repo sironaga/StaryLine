@@ -23,6 +23,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Conection_Sys.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
@@ -58,8 +59,10 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Conection_Sys.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Definition.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Emitter.h" />

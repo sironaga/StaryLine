@@ -55,6 +55,12 @@
     <Filter Include="ヘッダー ファイル\GameSystem\Mode">
       <UniqueIdentifier>{2f30d4dd-f13c-40e1-9b1e-d0fc6380a045}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Systems\Communication_Systems">
+      <UniqueIdentifier>{66c40724-feb2-4d86-9821-567738f5c134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Systems\Communication_Systems">
+      <UniqueIdentifier>{1102fa29-bfb1-4b5f-9617-f52961bfac5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_geometory.cpp">
@@ -138,20 +144,8 @@
     <ClCompile Include="FieldVertex.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
-    <ClCompile Include="SceneTitle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Emitter.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
-    <ClCompile Include="Effect.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundList.cpp">
-      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    <ClCompile Include="Conection_Sys.cpp">
+      <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,20 +230,11 @@
     <ClInclude Include="VectorOperator.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
-    <ClInclude Include="SceneTitle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Definition.h">
+      <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Emitter.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
-    <ClInclude Include="Effect.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundList.h">
-      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
+    <ClInclude Include="Conection_Sys.h">
+      <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

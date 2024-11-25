@@ -56,3 +56,9 @@ struct Connecting_System_Data
 
 
 };
+
+struct Communication_Data
+{
+	Personal_Information_Data PersonalData;
+	Connecting_System_Data ConectionData;
+};

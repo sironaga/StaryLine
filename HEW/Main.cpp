@@ -8,12 +8,9 @@
 #include "Defines.h"
 #include "ShaderList.h"
 #include "SpriteDrawer.h"
-#include "Controller.h"
-#include "StageSelect.h"
-#include "SceneTitle.h"
-#include "SoundList.h"
+
 //--- グローバル変数
-E_SCENE_TYPE g_SceneType;
+
 
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
@@ -27,25 +24,23 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	Geometory::Init();
 	Sprite::Init();
 	InitInput();
-	InitSound();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 
 	// シーン作成
-	g_SceneType = SCENE_TITLE;
-	InitSceneTitle();
+	InitSceneGame();
 
 	return hr;
 }
 
 void Uninit()
 {
-	UninitSceneGame();
+	UnInitSceneGame();
+
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
-	UnInitSound();
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
@@ -54,21 +49,8 @@ void Uninit()
 
 void Update()
 {
-    Controller_Update();
 	UpdateInput();
-	switch (g_SceneType)
-	{
-	case SCENE_TITLE:UpdateSceneTitle();
-		break;
-	case STAGE_SELECT:UpdateStageSelect();
-		break;
-	case SCENE_GAME:UpdateSceneGame();
-		break;
-	case SCENE_MAX:
-		break;
-	default:
-		break;
-	}
+	Update();
 }
 
 void Draw()
@@ -121,7 +103,7 @@ void Draw()
 	}
 
 	// ジオメトリ用カメラ初期化
-	DirectX::XMFLOAT4X4 mat[2] = {};
+	DirectX::XMFLOAT4X4 mat[2];
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			camPos,
@@ -136,44 +118,8 @@ void Draw()
 	Geometory::SetProjection(mat[1]);
 #endif
 
-	switch (g_SceneType)
-	{
-	case SCENE_TITLE:DrawSceneTitle();
-		break;
-	case STAGE_SELECT:DrawStageSelect();
-		break;
-	case SCENE_GAME:DrawSceneGame();
-		break;
-	case SCENE_MAX:
-		break;
-	default:
-		break;
-	}
+	Draw();
 	EndDrawDirectX();
-}
-
-void ChangeScene(E_SCENE_TYPE next)
-{
-	//現在のシーンの終了
-	switch (g_SceneType)
-	{
-	case(SCENE_TITLE):UninitSceneTitle();	break;
-	case(STAGE_SELECT):UninitStageSelect(); break;
-	case(SCENE_GAME):UninitSceneGame();		break;
-	default:break;
-	}
-
-	//現在のシーンの更新
-	g_SceneType = next;
-
-	//次のシーンの初期化
-	switch (g_SceneType)
-	{
-	case(SCENE_TITLE):InitSceneTitle();	break;
-	case(STAGE_SELECT):InitStageSelect();	break;
-	case(SCENE_GAME):InitSceneGame(GetStageNum());		break;
-	default:break;
-	}
 }
 
 // EOF
