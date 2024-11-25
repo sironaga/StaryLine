@@ -8,4 +8,17 @@ void Uninit();
 void Update();
 void Draw();
 
+//列挙型宣言
+enum E_SCENE_TYPE
+{
+	SCENE_TITLE = 0,
+	STAGE_SELECT,
+	SCENE_GAME,
+
+	SCENE_MAX
+};
+
+//プロトタイプ宣言
+void ChangeScene(E_SCENE_TYPE next);	//シーン遷移を行う関数
+
 #endif // __MAIN_H__

@@ -2,7 +2,8 @@
 #include "Main.h"
 #define _DIRECTX_
 #include "DirectX.h"
-#include"SpriteDrawer.h"
+#include "SpriteDrawer.h"
+#include "Input.h"
 
 E_SELECT_TYPE g_Select_type;
 

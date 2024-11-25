@@ -8,9 +8,12 @@
 #include "Defines.h"
 #include "ShaderList.h"
 #include "SpriteDrawer.h"
+#include "Controller.h"
+#include "StageSelect.h"
+#include "SceneTitle.h"
 
 //--- グローバル変数
-
+E_SCENE_TYPE g_SceneType;
 
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
@@ -29,14 +32,14 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 
 	// シーン作成
-	InitSceneGame();
+	InitSceneGame(GetStageNum());
 
 	return hr;
 }
 
 void Uninit()
 {
-	UnInitSceneGame();
+	UninitSceneGame();
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
@@ -48,6 +51,7 @@ void Uninit()
 
 void Update()
 {
+	Controller_Update();
 	UpdateInput();
 	Update();
 }
@@ -119,6 +123,30 @@ void Draw()
 
 	Draw();
 	EndDrawDirectX();
+}
+
+void ChangeScene(E_SCENE_TYPE next)
+{
+	//現在のシーンの終了
+	switch (g_SceneType)
+	{
+	case(SCENE_TITLE):UninitSceneTitle();	break;
+	case(STAGE_SELECT):UninitStageSelect(); break;
+	case(SCENE_GAME):UninitSceneGame();	break;
+	default:break;
+	}
+
+	//現在のシーンの更新
+	g_SceneType = next;
+
+	//次のシーンの初期化
+	switch (g_SceneType)
+	{
+	case(SCENE_TITLE):InitSceneTitle();	break;
+	case(STAGE_SELECT):InitStageSelect();	break;
+	case(SCENE_GAME):InitSceneGame(GetStageNum());		break;
+	default:break;
+	}
 }
 
 // EOF
