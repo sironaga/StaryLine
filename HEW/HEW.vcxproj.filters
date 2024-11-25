@@ -43,6 +43,18 @@
     <Filter Include="ヘッダー ファイル\App">
       <UniqueIdentifier>{52e83d49-38a5-4072-865e-c8a88c67d700}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\GameSystem">
+      <UniqueIdentifier>{5528e9d0-0b3f-471b-84d9-3a2fbbb16664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameSystem">
+      <UniqueIdentifier>{6fe166e1-42f1-4adc-bd29-025338b37659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameSystem\Mode">
+      <UniqueIdentifier>{98849ed4-9171-400f-8d84-2e8b55a04dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameSystem\Mode">
+      <UniqueIdentifier>{2f30d4dd-f13c-40e1-9b1e-d0fc6380a045}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_geometory.cpp">
@@ -105,6 +117,27 @@
     <ClCompile Include="SpriteDrawer.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="StageSelect.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="StartTitle.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Battle.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldVertex.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -163,6 +196,30 @@
     </ClInclude>
     <ClInclude Include="SpriteDrawer.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Battle.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldVertex.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="StageSelect.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="StartTitle.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorOperator.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 #include "SpriteDrawer.h"
 
 //--- グローバル変数
-SceneGame* g_pGame;
+
 
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
@@ -29,14 +29,14 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 
 	// シーン作成
-	g_pGame = new SceneGame();
+	InitSceneGame();
 
 	return hr;
 }
 
 void Uninit()
 {
-	delete g_pGame;
+	UnInitSceneGame();
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
@@ -49,7 +49,7 @@ void Uninit()
 void Update()
 {
 	UpdateInput();
-	g_pGame->Update();
+	Update();
 }
 
 void Draw()
@@ -117,7 +117,7 @@ void Draw()
 	Geometory::SetProjection(mat[1]);
 #endif
 
-	g_pGame->Draw();
+	Draw();
 	EndDrawDirectX();
 }
 

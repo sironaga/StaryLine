@@ -303,3 +303,13 @@ HRESULT CreatePixelShader(ID3D11Device* pDevice, void* data, UINT size)
 {
 	return pDevice->CreatePixelShader(data, size, NULL, &g_pSpritePS);
 }
+
+void ReSetSprite()
+{
+	SetSpriteScale(1.0f, 1.0f);
+	SetSpriteAngle(0.0f);
+	SetSpritePos(0.0f, 0.0f);
+	SetSpriteUVPos(0.0f, 0.0f);
+	SetSpriteUVScale(1.0f, 1.0f);
+	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+}

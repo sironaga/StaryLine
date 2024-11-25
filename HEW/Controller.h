@@ -3,7 +3,7 @@
 #include<Xinput.h>
 #pragma comment(lib, "xinput.lib")
 #include"_StructList.h"
-
+#define DEADZONE (13000.0f)
 void Controller_Update();
 FLOAT2 CGetLStick();
 FLOAT2 CGetRStick();

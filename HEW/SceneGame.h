@@ -1,29 +1,23 @@
-#ifndef __SCENE_GAME_H__
-#define __SCENE_GAME_H__
+//SceneGame.h
+//作成者：AT12B浦口龍輝
 
-#include "Model.h"
-#include "Camera.h"
-#include"CameraDebug.h"
-#include"ModelEx.h"
-class SceneGame
+//開発履歴 
+//10/31プロトタイプ宣言の追加
+
+
+#pragma once
+
+void InitSceneGame(int StageNum);
+void UninitSceneGame();
+void UpdateSceneGame();
+void DrawSceneGame();
+
+enum E_GAME_PHASE
 {
-public:
-	SceneGame();
-	~SceneGame();
-	void Update();
-	void Draw();
-
-private:
-	Camera* m_pCamera;
-	CModelEx* pMode;
-	CModelEx* pWood;
-	CModelEx* pTree;
-	CModelEx* pBall;
-	CModelEx* pTree2;
-	CModelEx* pFlag;
-	DirectX::XMFLOAT4 Light;
-	DirectX::XMFLOAT3 Pos;
-	bool bTime;
+	DRAWING = 0,
+	SHAPESCHECK,
+	BATTLE
 };
 
-#endif // __SCENE_GAME_H__
+void ChangePhase(E_GAME_PHASE next);
+E_GAME_PHASE GetNowPhase();
