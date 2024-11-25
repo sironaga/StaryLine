@@ -1,6 +1,8 @@
 #include "StartTitle.h"
 #include "DirectXTex/TextureLoad.h"
-#include"SpriteDrawer.h"
+#include "SpriteDrawer.h"
+#include "Defines.h"
+
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
 #define ACS1_WID (700)
@@ -49,10 +51,10 @@ CStartTitle::CStartTitle()
 
 	Vertex vtx2[] = {
 		//îwåiï\é¶ÇÃç¿ïW
-		{{-WIND_W, -WIND_H, 0.0f}, {0.0f, 0.0f}},
-		{{-WIND_W,  WIND_H, 0.0f}, {0.0f, 1.0f}},
-		{{ WIND_W, -WIND_H, 0.0f}, {1.0f, 0.0f}},
-		{{ WIND_W,  WIND_H, 0.0f}, {1.0f, 1.0f}},
+		{{-SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {0.0f, 0.0f}},
+		{{-SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {0.0f, 1.0f}},
+		{{ SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {1.0f, 0.0f}},
+		{{ SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {1.0f, 1.0f}},
 	};
 
 	Vertex vtx3[] = {
@@ -79,7 +81,7 @@ CStartTitle::~CStartTitle()
 void CStartTitle::UpdateStartTitle()
 {
 	f_Rotation += 0.1f;
-	f_Rad = RadianConversion(f_Rotation);
+	f_Rad = DirectX::XMConvertToRadians(f_Rotation);
 }
 
 void CStartTitle::DrawStartTitle()
