@@ -54,7 +54,19 @@ void Update()
 {
 //Controller_Update();
 //	UpdateInput();
-	Update();
+	switch (g_SceneType)
+	{
+	case SCENE_TITLE:UpdateSceneTitle();
+		break;
+	case STAGE_SELECT:UpdateStageSelect();
+		break;
+	case SCENE_GAME:UpdateSceneGame();
+		break;
+	case SCENE_MAX:
+		break;
+	default:
+		break;
+	}
 }
 
 void Draw()
@@ -122,7 +134,19 @@ void Draw()
 	Geometory::SetProjection(mat[1]);
 #endif
 
-	Draw();
+	switch (g_SceneType)
+	{
+	case SCENE_TITLE:DrawSceneTitle();
+		break;
+	case STAGE_SELECT:DrawStageSelect();
+		break;
+	case SCENE_GAME:DrawSceneGame();
+		break;
+	case SCENE_MAX:
+		break;
+	default:
+		break;
+	}
 	EndDrawDirectX();
 }
 
