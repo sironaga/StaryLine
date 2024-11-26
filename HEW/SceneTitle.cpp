@@ -4,6 +4,7 @@
 #include "DirectX.h"
 #include "Main.h"
 #include "Controller.h"
+#include "Input.h"
 
 CStartTitle* g_pStartTilte;
 XAUDIO2_BUFFER* Sound;
@@ -13,9 +14,9 @@ IXAudio2SourceVoice* pSound;
 void InitSceneTitle()
 {
 	g_pStartTilte = new CStartTitle();
-	Sound = LoadSound("Asset/Sound/メイプルチョコレートLoop.mp3", 1);
-	pSound = PlaySound(Sound);
-	pSound->SetVolume(0.01f);
+//	Sound = LoadSound("Asset/Sound/メイプルチョコレートLoop.mp3", 1);
+//	pSound = PlaySound(Sound);
+//	pSound->SetVolume(0.01f);
 }
 
 //終了処理
@@ -30,8 +31,8 @@ void UpdateSceneTitle()
 	g_pStartTilte->UpdateStartTitle();
 	if (IsKeyTrigger(VK_RETURN) || CGetButtons(XINPUT_GAMEPAD_B))
 	{
-		UninitSound();
-		InitSound();
+	//	UninitSound();
+	//	InitSound();
 		ChangeScene(SCENE_GAME);
 	}
 }

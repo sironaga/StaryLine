@@ -52,8 +52,8 @@ void Uninit()
 
 void Update()
 {
-	Controller_Update();
-	UpdateInput();
+//Controller_Update();
+//	UpdateInput();
 	Update();
 }
 
@@ -133,7 +133,7 @@ void ChangeScene(E_SCENE_TYPE next)
 	{
 	case(SCENE_TITLE):UninitSceneTitle();	break;
 	case(STAGE_SELECT):UninitStageSelect(); break;
-	case(SCENE_GAME):UninitSceneGame();	break;
+	case(SCENE_GAME):UninitSceneGame();		break;
 	default:break;
 	}
 

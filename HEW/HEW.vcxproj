@@ -35,6 +35,7 @@
     <ClCompile Include="ModelEx.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SceneGame.cpp" />
+    <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -65,6 +66,7 @@
     <ClInclude Include="ModelEx.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SceneGame.h" />
+    <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sound.h" />
