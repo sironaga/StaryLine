@@ -7,7 +7,6 @@
 //編集者：AT12C05宇留野陸斗
 //編集者：AT12A07小川蓮
 
-#define MAX_VERTEX (25)
 #define MAX_ALLY  (200)	//味方の最大数
 #define MAX_ENEMY (200)	//敵の最大数
 
@@ -16,13 +15,7 @@ class CFieldVertex;
 void IninCharacterTexture(CFieldVertex* InAddress);	//テクスチャ読み込み
 
 //属性用構造体
-struct TPolygon
-{
-	//int 角数
-	int nCornerCount;
-	//int 頂点番号[MAX_VERTEX]
-	int nVertexNumber[MAX_VERTEX];
-};
+
 
 //キャラクター基底クラス
 class CFighter
@@ -67,7 +60,7 @@ protected:
 
 	
 public:
-	CFighter(TPolygon InPolygon, float InSize, CVector3<float> FirstPos);	//コンストラクタ
+	CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos);	//コンストラクタ
 	virtual ~CFighter() = 0;						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
@@ -92,7 +85,7 @@ protected:
 	Collision m_tAtkCollision;		//攻撃当たり判定
 	CVector3<float> m_tPos;			//位置座標
 	CVector3<float> m_tSize;		//サイズ
-	TPolygon m_tPolygon;			//属性
+	int nCornerCount;				//属性
 	float m_fHp;					//体力
 	float m_fPhysicsAtk;			//物理攻撃
 	float m_fMagicAtk;				//魔法攻撃
@@ -128,7 +121,7 @@ public:
 	CVector3<float> GetSize(void) { return m_tSize; }
 
 	//属性のGet
-	TPolygon GetPolygon(void) { return m_tPolygon; }
+	int GetCornerCount(void) { return nCornerCount; }
 
 	//体力のGet
 	float GetHp(void) { return m_fHp; }
@@ -161,7 +154,7 @@ public:
 class CAlly : public CFighter
 {
 public:
-	CAlly(TPolygon InPolygon, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
 	~CAlly();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -180,7 +173,7 @@ private:
 class CEnemy : public CFighter
 {
 public:
-	CEnemy(TPolygon InPolygon, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
 	~CEnemy();						//デストラクタ
 
 	void Update(void)	override;	//更新処理

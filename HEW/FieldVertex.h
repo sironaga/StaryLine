@@ -7,6 +7,7 @@
 #include "Battle.h"
 #include <d3d11.h>
 
+#define MAX_VERTEX (25)//頂点数
 #define MAX_CENTER_VERTEX (16)
 #define MAX_SHAPE_VERTEX (10)//最大N角形
 #define MAX_LINE (300)//最大の線の本数
@@ -79,8 +80,6 @@ private:
 
 	bool RoadStop;//プレイヤーの行ける方向
 	CVector3<float> PlayerPos;//プレイヤーの位置保存
-
-	TPolygon m_tPolygon;//できた図形の情報保存用
 
 	CBattle* m_pBattle;//バトルクラスのポインター
 

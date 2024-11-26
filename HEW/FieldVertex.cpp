@@ -8,7 +8,6 @@
 #include"SpriteDrawer.h"
 #include"_StructList.h"
 #include"Defines.h"
-TPolygon g_tpolygon;
 
 E_GAME_PHASE NowPhase;//今のフェーズ
 E_GAME_PHASE PrevPhase;//過去のフェーズ
@@ -19,7 +18,6 @@ CFieldVertex::CFieldVertex()
 	:RoadStop(false)
 	,m_tVertex{}
 	,m_tCenter_Vertex{}
-	,m_tPolygon{}
 	,m_pTex_FieldVertex(nullptr)
 	,m_pVtx_FieldVertex(nullptr)
 	,m_offsetU_Field(0.0f)
@@ -292,12 +290,12 @@ void CFieldVertex::Update()
 		//線の回転
 		PosA[0].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
 		PosA[0].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-		PosA[1].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-		PosA[1].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-		PosA[2].X = Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-		PosA[2].Y = Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-		PosA[3].X = Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-		PosA[3].Y = Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		PosA[1].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - ( Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[1].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + ( Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		PosA[2].X =  Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[2].Y =  Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		PosA[3].X =  Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - ( Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[3].Y =  Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + ( Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
 
 		vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.X + PosA[0].X;//左上のｘ座標
 		vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.Y + PosA[0].Y;//左上のｙ座標
@@ -577,7 +575,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				{
 					Comparison_Shapes_Vertex_Save[NowShapes][l] = Comparison2[l];//図形の頂点を保存
 					Shapes_Vertex_Save[NowShapes][l] = Comparison3[l];//Draw順の図形頂点保存
-					m_tPolygon.nVertexNumber[l] = Comparison3[l];//渡すための図形の頂点保存
 				}
 				//何角形か判定
 				int Count = 0;
@@ -731,7 +728,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				if (!BadShapes)
 				{
 					Shapes_Count[NowShapes] = Count;
-					m_tPolygon.nCornerCount = Shapes_Count[NowShapes];
 					//図形の面積
 					Shapes_Size = 0;
 					float InVertex = 0;//中の頂点
@@ -786,7 +782,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
-					m_pBattle->SaveAllyData(m_tPolygon, Shapes_Size);//図形の頂点と角数を渡す
+					m_pBattle->SaveAllyData(Shapes_Count[NowShapes],Shapes_Size);//図形の頂点と角数を渡す
 					NowShapes++;//保存場所を次の場所にする
 				}
 			}

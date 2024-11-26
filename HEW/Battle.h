@@ -17,7 +17,7 @@ private:
 private:
 	struct EntityData
 	{
-		TPolygon Attribute;				//バリエーション番号
+		int nCornerCount;				//バリエーション番号
 		CVector3<float> m_tCreatePos;	//生成位置
 		float Size;						//サイズ
 	};
@@ -53,9 +53,9 @@ private:
 public:
 	int GetAllyCount(void) { return m_nAllyCount; }		//味方カウントのGet
 
-	void SaveAllyData(TPolygon InPolygon, float InSize);//味方要素保存
+	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
 private:
-	void CreateAllyData(EntityData InPolygon);			//味方作成
+	void CreateAllyData(EntityData InData);			//味方作成
 
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
@@ -69,7 +69,7 @@ private:
 public:
 	int GetEnemyCount(void) { return m_nEnemyCount; }			//敵カウントのGet
 
-	void SaveEnemyData(TPolygon InPolygon, int Wave, float InSize);		//敵要素保存
+	void SaveEnemyData(int InCornerCount, int Wave, float InSize);		//敵要素保存
 private:
 	void CreateEnemyData(EntityData InDate);	//敵作成
 

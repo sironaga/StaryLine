@@ -4,7 +4,7 @@
 //=====インクルード部=====
 #include <string>
 #include "File.h"
-#include"SpriteDrawer.h"
+
 //=====デファイン=====
 #define FILENAME_ENEMY ("Asset/Data/EnemyData.txt")
 //=====グローバル変数=====
@@ -61,7 +61,7 @@ bool InitLoadData(bool First, bool WaveSwitch,  int* pWaveNum, int* pEnemyNum, i
 	return true;
 }
 //敵データを読み込み
-bool EnemyLoadData(TPolygon* pEnemy)
+bool EnemyLoadData(int * InCornerCount)
 {
 	int i=0;//ループ用
 	char word;
@@ -77,26 +77,27 @@ bool EnemyLoadData(TPolygon* pEnemy)
 	{
 		getline(ifs, num);
 		num2 = atoi(num.c_str());
-		pEnemy->nCornerCount = num2;
+		*InCornerCount = num2;
 		num.clear();
-		//配列一個一個に数字を代入
-		while (ifs.get(word))
-		{
-			if (word == ' ')
-			{
-				i++;
-				num.clear();
-				continue;
-			}
-			if (word == '\n')break;
-			num += word;
-			num2 = atoi(num.c_str());
-			pEnemy->nVertexNumber[i] = num2;
-		}
+		////配列一個一個に数字を代入
+		//while (ifs.get(word))
+		//{
+		//	if (word == ' ')
+		//	{
+		//		i++;
+		//		num.clear();
+		//		continue;
+		//	}
+		//	if (word == '\n')break;
+		//	num += word;
+		//	num2 = atoi(num.c_str());
+		//	pEnemy->nVertexNumber[i] = num2;
+		
 		g_NowLine = ifs.tellg();//現在の場所を記憶
 		//g_NowLine += 4;
 		//ファイルクローズ
 		ifs.close();
+	
 	}
 	else
 	{
@@ -110,14 +111,15 @@ void InitSave()
 	int Wave = 0;
 	int MaxEnemy=0;
 	InitLoadData(true, false, &Wave, &MaxEnemy, &AllWave);
-	TPolygon tPolygon[MAX_WAVE] [MAX_ENEMY] ;
+	/*TPolygon tPolygon[MAX_WAVE] [MAX_ENEMY] ;*/
+	int CornerCount = 0;
 	g_pFileBattle->SetMaxWave(AllWave);
 	for (int i = 0; i < AllWave; i++)
 	{
 		for (int l = 0; l < MaxEnemy; l++)
 		{
-			EnemyLoadData(&tPolygon[i][l]);
-			g_pFileBattle->SaveEnemyData(tPolygon[i][l], i, 1);//最後は敵のサイズ(float型)
+			EnemyLoadData(&CornerCount);
+			g_pFileBattle->SaveEnemyData(CornerCount, i, 1);//最後は敵のサイズ(float型)
 		}
 		InitLoadData(false, true, &Wave, &MaxEnemy, &AllWave);
 	}

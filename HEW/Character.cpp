@@ -44,12 +44,12 @@ void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
 
 }
 
-CFighter::CFighter(TPolygon InPolygon, float InSize, CVector3<float> FirstPos)
+CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos)
 	:m_tStatus(Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
 	, m_tPos(FirstPos)
-	, m_tPolygon(InPolygon)
+	, nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
 	, m_fPhysicsAtk(0.0f)
 	, m_fMagicAtk(0.0f)
@@ -64,7 +64,7 @@ CFighter::CFighter(TPolygon InPolygon, float InSize, CVector3<float> FirstPos)
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 
-	if (m_tPolygon.nCornerCount > 8)//角数が8を超えていたら
+	if (nCornerCount > 8)//角数が8を超えていたら
 	{
 		//switch (m_tPolygon.nCornerCount)//追加角数別に追加要素を設定する
 		//{
@@ -101,7 +101,7 @@ CFighter::CFighter(TPolygon InPolygon, float InSize, CVector3<float> FirstPos)
 		//case 24:
 		//	break;
 		//}
-		m_tPolygon.nCornerCount = 8;//角数を8に設定
+		nCornerCount = 8;//角数を8に設定
 	}
 }
 
@@ -269,8 +269,8 @@ void CFighter::Damage(float InDamage)
 	m_fHp -= InDamage;
 }
 
-CAlly::CAlly(TPolygon InPolygon, float InSize, CVector3<float> FirstPos)
-	:CFighter(InPolygon,InSize, FirstPos)
+CAlly::CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos)
+	:CFighter(InCornerCount,InSize, FirstPos)
 {
 	SettingStatus();
 	Vertex vtx[] = {
@@ -304,7 +304,7 @@ void CAlly::Update(void)
 void CAlly::Draw(void)
 {
 	//テクスチャの指定
-	SetSpriteTexture(g_pAllyTex[m_tPolygon.nCornerCount - 3]);
+	SetSpriteTexture(g_pAllyTex[nCornerCount - 3]);
 
 	//スプライトの設定
 	SetSpritePos(m_tPos.X, m_tPos.Y);
@@ -349,7 +349,7 @@ void CAlly::DeathUpdate(void)
 
 void CAlly::SettingStatus(void)
 {
-	switch (m_tPolygon.nCornerCount)
+	switch (nCornerCount)
 	{
 	default:
 		m_fHp = 10.0f;
@@ -424,8 +424,8 @@ void CAlly::SettingStatus(void)
 	}
 }
 
-CEnemy::CEnemy(TPolygon InPolygon, float InSize, CVector3<float> FirstPos)
-	:CFighter(InPolygon, InSize, FirstPos)
+CEnemy::CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos)
+	:CFighter(InCornerCount, InSize, FirstPos)
 {
 	SettingStatus();
 	Vertex vtx[] = {
@@ -459,7 +459,7 @@ void CEnemy::Update(void)
 void CEnemy::Draw(void)
 {
 	//テクスチャの指定
-	SetSpriteTexture(g_pEnemyTex[m_tPolygon.nCornerCount - 3]);
+	SetSpriteTexture(g_pEnemyTex[nCornerCount - 3]);
 
 	//スプライトの設定
 	SetSpritePos(m_tPos.X, m_tPos.Y);
@@ -505,7 +505,7 @@ void CEnemy::DeathUpdate(void)
 
 void CEnemy::SettingStatus(void)
 {
-	switch (m_tPolygon.nCornerCount)
+	switch (nCornerCount)
 	{
 	default:
 		m_fHp = 0.0f;
