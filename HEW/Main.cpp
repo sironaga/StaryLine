@@ -52,8 +52,8 @@ void Uninit()
 
 void Update()
 {
-//Controller_Update();
-//	UpdateInput();
+    Controller_Update();
+	UpdateInput();
 	switch (g_SceneType)
 	{
 	case SCENE_TITLE:UpdateSceneTitle();
