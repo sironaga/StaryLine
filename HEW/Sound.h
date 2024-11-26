@@ -1,25 +1,40 @@
-/*
- * @
- * 内部でCOMオブジェクトを利用するため、LoadTexture関数より後にInitSound関数呼び出すと
- * エラーになる
- */
-#ifndef __SOUND_H__
-#define __SOUND_H__
+#pragma once
+#pragma comment (lib,"xaudio2.lib")
+#pragma comment (lib,"winmm.lib")
+
 
 #include <xaudio2.h>
-#pragma comment(lib, "xaudio2.lib")
+#include <mmsystem.h>
+#include <string>
+#include <iostream>
 
-//----------
-// プロトタイプ宣言
-//----------
-HRESULT InitSound(void);
-void UninitSound(void);
+#define MAX_SOURCEVOICE (10)
 
-// サウンドファイルの読み込み
-XAUDIO2_BUFFER* LoadSound(const char *file, bool loop = false);
+struct WaveData
+{
+	WAVEFORMATEX m_wavFormat;
+	char* m_soundBuffer;
+	DWORD m_size;
 
-// サウンドの再生
-#undef PlaySound // winapiのPlaySoundを無効にする
-IXAudio2SourceVoice* PlaySound(XAUDIO2_BUFFER* pSound);
+	~WaveData() { free(m_soundBuffer); }
+};
 
-#endif // __SOUND_H__
+class CSound
+{
+public:
+	CSound(const std::wstring& fileName);
+	~CSound();
+
+private:
+	IXAudio2* m_pXAudio2;
+	IXAudio2MasteringVoice* m_pMasteringVoice;
+	IXAudio2SourceVoice* m_pSourceVoice[MAX_SOURCEVOICE];
+	WaveData waveData;
+	XAUDIO2_BUFFER m_xAudio2Buffer{};
+	bool LoadWaveFile(const std::wstring& wFilePath, WaveData* outData);
+	bool CreateSourceVoice();
+
+public:
+	IXAudio2SourceVoice* PlayWaveSound(bool loop);
+};
+

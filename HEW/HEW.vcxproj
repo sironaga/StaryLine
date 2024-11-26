@@ -42,6 +42,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SoundList.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteDrawer.cpp" />
     <ClCompile Include="StageSelect.cpp" />
@@ -76,6 +77,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteDrawer.h" />
     <ClInclude Include="StageSelect.h" />
