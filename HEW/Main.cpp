@@ -32,7 +32,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 
 	// シーン作成
-	InitSceneGame(GetStageNum());
+	g_SceneType = SCENE_TITLE;
+	InitSceneTitle();
 
 	return hr;
 }
@@ -106,7 +107,7 @@ void Draw()
 	}
 
 	// ジオメトリ用カメラ初期化
-	DirectX::XMFLOAT4X4 mat[2];
+	DirectX::XMFLOAT4X4 mat[2] = {};
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
 			camPos,
