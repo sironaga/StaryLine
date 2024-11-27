@@ -12,7 +12,7 @@ static const float fFPS = static_cast<float>(FPS);
 #define ASSET(path)	"Assets/"path
 
 #define PI (3.1415f)
-#define TORAD(deg) ((deg / 180) * PI)
+#define TORAD(deg) ((deg / 180.0f) * PI)
 
 // 3D‹óŠÔ’è‹`
 #define CMETER(value) (value * 0.01f)
