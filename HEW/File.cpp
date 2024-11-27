@@ -1,73 +1,69 @@
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
 //=====インクルード部=====
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 #include "File.h"
 
 //=====デファイン=====
-#define FILENAME_ENEMY ("Asset/Data/EnemyData.txt")
+#define FILENAME_ENEMY ("Asset/Data/EnemyData.csv")
+
+std::vector<std::string> split(const std::string text, const char delimiter);
+
 //=====グローバル変数=====
 using namespace std;
 streamoff g_NowLine = 0;//現在のファイルの場所
 CBattle *g_pFileBattle;
 //初期化
-bool InitLoadData(bool First, bool WaveSwitch,  int* pWaveNum, int* pEnemyNum, int* pAllWave)
+bool InitLoadData(bool First, bool WaveSwitch, int* pPattern,int* pWaveNum, int* pEnemyNum, int* pAllWave)
 {
-	int num2;//int型へ変更用
-	string num;//ファイルデータを格納用
-	//ファイルオープン
 	ifstream ifs(FILENAME_ENEMY, ios::in);
-	//行数を指定
-	ifs.seekg(g_NowLine, ios::cur);
-	//正常にファイルオープン出来たか
-	if (ifs)
-	{
-		if (First)
-		{
-			getline(ifs, num);//1行読み込み
-			num2 = atoi(num.c_str());//int型へ変換
-			*pAllWave = num2;//ポインタに格納
-
-			getline(ifs, num);
-			num2 = atoi(num.c_str());
-			*pWaveNum = num2;
-
-			getline(ifs, num);
-			num2 = atoi(num.c_str());
-			*pEnemyNum = num2;
-
-			g_NowLine = ifs.tellg();////現在のファイルの場所を格納
-		}
-		else if (WaveSwitch)
-		{
-			getline(ifs, num);
-			num2 = atoi(num.c_str());
-			*pWaveNum = num2;
-
-			getline(ifs, num);
-			num2 = atoi(num.c_str());
-			*pEnemyNum = num2;
-
-			g_NowLine = ifs.tellg();
-		}
-		//ファイルクローズ
-		ifs.close();
-	}
-	else
+	string word;
+	vector<string> vst;
+	if (!ifs)
 	{
 		return false;
 	}
+	//行数を指定
+	ifs.seekg(g_NowLine, ios::cur);
+	if (First)
+	{
+		ifs.seekg(3, ios::cur);
+		getline(ifs, word);
+		vst = split(word, ',');
+		*pAllWave = atoi(vst[0].c_str());
+		g_NowLine = ifs.tellg();////現在のファイルの場所を格納
+	}
+	else if (WaveSwitch)
+	{
+		getline(ifs, word);
+		vst = split(word, ',');
+		*pWaveNum = atoi(vst[0].c_str());
+		word.clear();
+		getline(ifs, word);
+		vst = split(word, ',');
+		*pPattern = atoi(vst[0].c_str());
+	}
+	else
+	{
+		getline(ifs, word);
+		word.clear();
+		getline(ifs, word);
+		vst = split(word, ',');
+		*pEnemyNum = atoi(vst[0].c_str());
+		g_NowLine = ifs.tellg();
+	}
+	ifs.close();
+
+
 	return true;
 }
 //敵データを読み込み
-bool EnemyLoadData(int * InCornerCount)
+bool EnemyLoadData(int * InCornerCount,int* pSize)
 {
-	int i=0;//ループ用
-	char word;
-	int num2;//int型へ変更用
-	string num;//ファイルデータを格納用
-	string str;//ファイルデータを格納用
+	string word;
+	vector<string> vst;
 	//ファイルオープン
 	ifstream ifs(FILENAME_ENEMY, ios::in);
 	//行数を指定
@@ -75,24 +71,14 @@ bool EnemyLoadData(int * InCornerCount)
 	//正常にファイルオープン出来たか
 	if (ifs)
 	{
-		getline(ifs, num);
-		num2 = atoi(num.c_str());
-		*InCornerCount = num2;
-		num.clear();
-		////配列一個一個に数字を代入
-		//while (ifs.get(word))
-		//{
-		//	if (word == ' ')
-		//	{
-		//		i++;
-		//		num.clear();
-		//		continue;
-		//	}
-		//	if (word == '\n')break;
-		//	num += word;
-		//	num2 = atoi(num.c_str());
-		//	pEnemy->nVertexNumber[i] = num2;
-		
+		getline(ifs, word);
+		vst = split(word, ',');
+		*InCornerCount = atoi(vst[0].c_str());
+		word.clear();
+		getline(ifs, word);
+		vst = split(word, ',');
+		*pSize = atoi(vst[0].c_str());
+
 		g_NowLine = ifs.tellg();//現在の場所を記憶
 		//g_NowLine += 4;
 		//ファイルクローズ
@@ -110,18 +96,25 @@ void InitSave()
 	int AllWave = 0;
 	int Wave = 0;
 	int MaxEnemy=0;
-	InitLoadData(true, false, &Wave, &MaxEnemy, &AllWave);
+	int MaxPattern = 0;
+	int size = 0;
+	InitLoadData(true, false,&MaxPattern ,&Wave, &MaxEnemy, &AllWave);
 	/*TPolygon tPolygon[MAX_WAVE] [MAX_ENEMY] ;*/
 	int CornerCount = 0;
 	g_pFileBattle->SetMaxWave(AllWave);
 	for (int i = 0; i < AllWave; i++)
 	{
-		for (int l = 0; l < MaxEnemy; l++)
+		InitLoadData(false,true, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
+		for (int j = 0; j < MaxPattern; j++)
 		{
-			EnemyLoadData(&CornerCount);
-			g_pFileBattle->SaveEnemyData(CornerCount, i, 1);//最後は敵のサイズ(float型)
+			InitLoadData(false, false, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
+			for (int l = 0; l < MaxEnemy; l++)
+			{
+				EnemyLoadData(&CornerCount,&size);
+				g_pFileBattle->SaveEnemyData(CornerCount, i, 1);//最後は敵のサイズ(float型)
+			}
 		}
-		InitLoadData(false, true, &Wave, &MaxEnemy, &AllWave);
+		
 	}
 	
 }
@@ -133,4 +126,22 @@ void UnInitEnemyLoadData()
 void SetFileAddress(CBattle* InAddress)
 {
 	g_pFileBattle = InAddress;
+}
+std::vector<std::string> split(const std::string text, const char delimiter) {
+	vector<string> columns;
+	if (text.empty()) {
+		return columns;
+	}
+	stringstream stream{ text };
+	string buff;
+	int i = 0;
+	while (getline(stream, buff, delimiter)) {
+		if (i == 0)
+		{
+			i++;
+			continue;
+		}
+		columns.push_back(buff);
+	}
+	return columns;
 }
