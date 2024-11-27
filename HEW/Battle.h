@@ -3,7 +3,7 @@
 #include "VectorOperator.h"
 
 #define MAX_WAVE  (5)	//ウェーブの最大数
-
+#define MAX_PATTERN (5)	//パターンの最大数
 
 class CBattle
 {
@@ -61,7 +61,7 @@ private:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CEnemy* m_pEnemy[MAX_ENEMY];					//敵クラスポインタ
-	EntityData m_tEnemyData[MAX_WAVE][MAX_ENEMY];	//生成予定敵情報
+	EntityData m_tEnemyData[MAX_WAVE][MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
 	int m_nEnemyCount;								//生成した敵のカウント
 	int m_nEnemyDateCount[MAX_WAVE];				//保存した敵の情報数
 	int m_nCreateEnemyNum;							//敵を生成する数

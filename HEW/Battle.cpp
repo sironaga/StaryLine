@@ -16,9 +16,9 @@
 
 //味方の生成位置
 #define ALLYCREATE_POSX (-1450)
-#define ALLYCREATE_POSY_UP (-800)
-#define ALLYCREATE_POSY_CENTER (0)
-#define ALLYCREATE_POSY_DOWN (800)
+#define ALLYCREATE_POSY_1 (-800)
+#define ALLYCREATE_POSY_2 (0)
+#define ALLYCREATE_POSY_3 (800)
 //敵の生成位置
 #define ENEMYCREATE_POSX (1450)
 #define ENEMYCREATE_POSY_CENTER (0)
@@ -76,43 +76,46 @@ CBattle::CBattle()
 	{
 		m_tAllyData[i].nCornerCount = -1;
 
-		//switch (m_nFirstPosSetting)
-		//{
-		//case 0:
-		//	m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
-		//	m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_UP;
-		//	m_tAllyData[i].m_tCreatePos.Z = 0.0f;
-		//	m_nFirstPosSetting = 1;
-		//	break;
-		//case 1:
-		//	m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
-		//	m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_CENTER;
-		//	m_tAllyData[i].m_tCreatePos.Z = 0.0f;
-		//	m_nFirstPosSetting = 2;
-		//	break;
-		//case 2:
-		//	m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
-		//	m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_DOWN;
-		//	m_tAllyData[i].m_tCreatePos.Z = 0.0f;
-		//	m_nFirstPosSetting = 0;
-		//	break;
-		//}
-		m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
-		m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_CENTER;
-		m_tAllyData[i].m_tCreatePos.Z = 0.0f;
+		switch (m_nFirstPosSetting)
+		{
+		case 0:
+			m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
+			m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_1;
+			m_tAllyData[i].m_tCreatePos.Z = 0.0f;
+			m_nFirstPosSetting = 1;
+			break;
+		case 1:
+			m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
+			m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_2;
+			m_tAllyData[i].m_tCreatePos.Z = 0.0f;
+			m_nFirstPosSetting = 2;
+			break;
+		case 2:
+			m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
+			m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_3;
+			m_tAllyData[i].m_tCreatePos.Z = 0.0f;
+			m_nFirstPosSetting = 0;
+			break;
+		}
+		//m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
+		//m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_CENTER;
+		//m_tAllyData[i].m_tCreatePos.Z = 0.0f;
 
 		m_tAllyData[i].Size = 1.0f;
 	}
 	for (int j = 0; j < MAX_WAVE; j++)
 	{
-		for (int i = 0; i < MAX_ENEMY; i++)
+		for (int l = 0; l < MAX_PATTERN; l++)
 		{
-			m_tEnemyData[j][i].nCornerCount = -1;
+			for (int i = 0; i < MAX_ENEMY; i++)
+			{
+				m_tEnemyData[j][l][i].nCornerCount = -1;
 
-			m_tEnemyData[j][i].m_tCreatePos.X = ENEMYCREATE_POSX;
-			m_tEnemyData[j][i].m_tCreatePos.Y = ENEMYCREATE_POSY_CENTER;
-			m_tEnemyData[j][i].m_tCreatePos.Z = 0.0f;
-			m_tEnemyData[j][i].Size = 1.0f;
+				m_tEnemyData[j][l][i].m_tCreatePos.X = ENEMYCREATE_POSX;
+				m_tEnemyData[j][l][i].m_tCreatePos.Y = ENEMYCREATE_POSY_CENTER;
+				m_tEnemyData[j][l][i].m_tCreatePos.Z = 0.0f;
+				m_tEnemyData[j][l][i].Size = 1.0f;
+			}
 		}
 	}
 
@@ -365,7 +368,7 @@ void CBattle::NextWaveInit(void)
 		m_tAllyData[i].nCornerCount = -1;
 
 		m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
-		m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_CENTER;
+		m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_2;
 		m_tAllyData[i].m_tCreatePos.Z = 0.0f;
 		m_tAllyData[i].Size = 1.0f;
 	}
@@ -385,21 +388,22 @@ void CBattle::SaveAllyData(int InCornerCount, float InSize)
 	m_tAllyData[m_nAllyDateCount].nCornerCount = InCornerCount;
 	m_tAllyData[m_nAllyDateCount].Size = InSize;
 
-	switch (m_tAllyData[m_nAllyDateCount].nCornerCount)
-	{
-	case 3:	m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -800;
-		break;
-	case 4:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -500;
-		break;
-	case 5:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -200;
-		break;
-	case 6:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  200;
-		break;
-	case 7:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  500;
-		break;
-	case 8:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  800;
-		break;
-	}
+	//switch (m_tAllyData[m_nAllyDateCount].nCornerCount)
+	//{
+	//case 3:	m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -800;
+	//	break;
+	//case 4:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -500;
+	//	break;
+	//case 5:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -200;
+	//	break;
+	//case 6:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  200;
+	//	break;
+	//case 7:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  500;
+	//	break;
+	//case 8:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  800;
+	//	break;
+	//}
+	
 	//保存数を加算
 	m_nAllyDateCount++;
 }
@@ -408,8 +412,8 @@ void CBattle::SaveEnemyData(int InCornerCount, int InWave, float InSize)
 {
 	InSize = 1 + ((InSize - 1) / 10);	//1を基準として2で入ってきた場合1.1倍にするため
 
-	m_tEnemyData[InWave][m_nEnemyDateCount[InWave]].nCornerCount = InCornerCount;
-	m_tEnemyData[InWave][m_nEnemyDateCount[InWave]].Size = InSize;
+	m_tEnemyData[InWave][m_nSelectPattern][m_nEnemyDateCount[InWave]].nCornerCount = InCornerCount;
+	m_tEnemyData[InWave][m_nSelectPattern][m_nEnemyDateCount[InWave]].Size = InSize;
 	//保存数を加算
 	m_nEnemyDateCount[InWave]++;
 }
@@ -440,10 +444,10 @@ void CBattle::TimeAxis(void)
 		)
 	{
 		//味方生成予定数を3に設定
-		m_nCreateAllyNum = 1;
+		m_nCreateAllyNum = m_nAllyDateCount;
 
 		//敵生成予定数を3に設定
-		m_nCreateEnemyNum = 10;
+		m_nCreateEnemyNum = m_nEnemyDateCount[m_nNowWave];
 
 
 		m_bFirstFight = true;
@@ -480,12 +484,12 @@ void CBattle::CreateEntity(void)
 		if (m_nCreateEnemyNum <= m_nEnemyDateCount[m_nNowWave])
 		{
 			//味方を生成する
-			CreateEnemyData(m_tEnemyData[m_nNowWave][0]);
+			CreateEnemyData(m_tEnemyData[m_nNowWave][m_nSelectPattern][0]);
 
 			//生成に使用したため情報を消して後ろの情報を前詰めにする
 			for (int i = 0; i + 1 < MAX_ENEMY; i++)
 			{
-				m_tEnemyData[m_nNowWave][i] = m_tEnemyData[m_nNowWave][i + 1];
+				m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
 			}
 			//保存済みの総数を減らす
 			m_nEnemyDateCount[m_nNowWave]--;
@@ -648,7 +652,7 @@ void CBattle::Battle(int i, int l, Entity Entity)
 		{
 			if (m_pEnemy[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 			{
-				m_pEnemy[l]->Damage(m_pAlly[i]->GetAtk());//相手の体力を減らす
+				m_pEnemy[l]->Damage(m_pAlly[i]);//相手の体力を減らす
 				m_pAlly[i]->ChargeReset();//攻撃したのでチャージをリセットする
 			}
 		}
@@ -665,7 +669,7 @@ void CBattle::Battle(int i, int l, Entity Entity)
 			{
 				if (m_pAlly[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 				{
-					m_pAlly[l]->Damage(m_pEnemy[i]->GetAtk());//相手の体力を減らす
+					m_pAlly[l]->Damage(m_pEnemy[i]);//相手の体力を減らす
 					m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
 				}
 			}
@@ -1116,5 +1120,5 @@ void CBattle::SaveAllyLogDraw(void)
 
 void CBattle::RandomSelectPattern(void)
 {
-
+	m_nSelectPattern = rand() % m_nMaxPattern;
 }

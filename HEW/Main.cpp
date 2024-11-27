@@ -26,17 +26,17 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	InitInput();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
-
+	srand(timeGetTime());
 
 	// ÉVÅ[ÉìçÏê¨
-	InitSceneGame();
+	InitSceneGame(GetNowPhase());
 
 	return hr;
 }
 
 void Uninit()
 {
-	UnInitSceneGame();
+	UninitSceneGame();
 
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
