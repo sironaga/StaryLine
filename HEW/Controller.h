@@ -12,3 +12,4 @@ bool CGetButtons(WORD InButton);
 void CSetLeftVibration(int Frame, int Strength);
 void CSetRigthVibration(int Frame, int Strength);
 void CSetStopVibration();
+bool CGetButtonsTriger(WORD InButton);

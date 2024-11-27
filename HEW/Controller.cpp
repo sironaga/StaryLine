@@ -14,6 +14,7 @@
 /* Global変数 */
 int g_LeftVibrationFream;
 int g_RightVibrationFream;
+XINPUT_STATE OldButtons;
 
 /* 構造体 */
 XINPUT_STATE def;
@@ -109,6 +110,25 @@ bool CGetButtons(WORD InButton)
 {
 	return (state.Gamepad.wButtons & InButton);
 }
+
+bool CGetButtonsTriger(WORD InButton)
+{
+	if (state.Gamepad.wButtons & InButton)
+	{
+		if (OldButtons.Gamepad.wButtons != state.Gamepad.wButtons)
+		{
+			OldButtons.Gamepad.wButtons = state.Gamepad.wButtons;
+			return true;
+		}
+		OldButtons.Gamepad.wButtons = state.Gamepad.wButtons;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
 
 /* バイブレーションの設定を行います */
 /* Freame 実行するFrame数 Strength バイブの強度*/
