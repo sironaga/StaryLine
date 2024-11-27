@@ -47,3 +47,12 @@ DirectX::XMFLOAT4X4 Camera::GetProjectionMatrix(bool transpose)
 	DirectX::XMStoreFloat4x4(&mat, proj);
 	return mat;
 }
+
+DirectX::XMMATRIX Camera::GetView()
+{
+	DirectX::XMVECTOR vEyePosition = DirectX::XMVectorSet(m_pos.x, m_pos.y, m_pos.z, 0.0f);
+	DirectX::XMVECTOR vFocusPosition = DirectX::XMVectorSet(m_look.x, m_look.y, m_look.z, 0.0f);
+	DirectX::XMVECTOR vUpDirection = DirectX::XMVectorSet(m_up.x, m_up.y, m_up.z, 0.0f);
+
+	return DirectX::XMMatrixLookAtLH(vEyePosition, vFocusPosition, vUpDirection);
+}
