@@ -24,10 +24,8 @@ CSound::CSound(const std::wstring& fileName)
 
 CSound::~CSound()
 {
-	for (int i = 0; i < 10; i++)
-	{
-		m_pSourceVoice[i]->DestroyVoice();
-	}
+	
+		m_pSourceVoice->DestroyVoice();
 	m_pMasteringVoice->DestroyVoice();
 	m_pXAudio2->Release();
 	
@@ -174,15 +172,13 @@ bool CSound::CreateSourceVoice()
 	waveFormat.wBitsPerSample = waveData.m_wavFormat.nBlockAlign * 8 / waveData.m_wavFormat.nChannels;
 
 	// ソースボイスの作成 ここではフォーマットのみ渡っている
-	for (int i = 0; i < MAX_SOURCEVOICE; i++)
-	{
-		HRESULT result = m_pXAudio2->CreateSourceVoice(&m_pSourceVoice[i], (WAVEFORMATEX*)&waveFormat);
+		HRESULT result = m_pXAudio2->CreateSourceVoice(&m_pSourceVoice, (WAVEFORMATEX*)&waveFormat);
 		if (FAILED(result))
 		{
 			// SourceVoice作成失敗
 			return false;
 		}
-	}
+	
 
 	
 
@@ -190,20 +186,7 @@ bool CSound::CreateSourceVoice()
 }
 IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 {
-	XAUDIO2_VOICE_STATE state;
-	int i = 0;
-	for (i = 0; i < MAX_SOURCEVOICE; i++)
-	{
-		m_pSourceVoice[i]->GetState(&state);
-		if (state.BuffersQueued > 0)
-		{
-			continue;
-		}
-		else
-		{
-			break;
-		}
-	}
+	
 	//================================
 	// 波形データ(音データ本体)をソースボイスに渡す
 	//================================
@@ -215,13 +198,14 @@ IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 	m_xAudio2Buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
 
 	
-	m_pSourceVoice[i]->SubmitSourceBuffer(&m_xAudio2Buffer);
+	m_pSourceVoice->SubmitSourceBuffer(&m_xAudio2Buffer);
 
 	// 実際に音を鳴らす
-	m_pSourceVoice[i]->Start();
+	//m_pSourceVoice[i]->Start();
 
-	return m_pSourceVoice[i];
+	return m_pSourceVoice;
 }
+
 // ワイド文字列を ANSI 文字列に変換するヘルパー関数
 std::string ConvertWideToAnsi(const std::wstring& wideStr) {
 	int sizeNeeded = WideCharToMultiByte(CP_ACP, 0, wideStr.c_str(), -1, NULL, 0, NULL, NULL);
