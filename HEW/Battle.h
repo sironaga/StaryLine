@@ -96,9 +96,23 @@ public:
 private:
 	int m_nNowWave;	//現在ウェーブ番号
 	int m_nMaxWave;	//最大ウェーブ数
+
 public:
 	int GetNowWave(void) { return m_nNowWave; }					//現在Wave番号のGet
 
 	void SetMaxWave(int InWaveNum) { m_nMaxWave = InWaveNum; }	//最大ウェーブ数のSet
 	int GetMaxWave(void) { return m_nMaxWave; }					//最大ウェーブ数のGet	
+
+	/*＝＝＝＝＝＝＝＝＝＝＝＝＝Pattern関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+private:
+	int m_nSelectPattern;	//選択されたパターン
+	int m_nMaxPattern;		//最大パターン数
+
+public:
+	int GetSelectPattern(void) { return m_nSelectPattern; }					//選択されたパターンのGet
+	void RandomSelectPattern(void);											//用意された範囲でパターンを選ぶ
+
+	void SetMaxPattern(int InMaxPattern) { m_nMaxPattern = InMaxPattern; }	//最大パターン数のSet
+	int GetMaxPattern(void) { return m_nMaxPattern; }						//最大パターン数のGet
+
 };

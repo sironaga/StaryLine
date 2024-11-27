@@ -156,7 +156,7 @@ void CBattle::Update(void)
 
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
-		if (m_pAlly[i]->GetStatus() == CFighter::Battle)//ステータスがバトルだったら
+		if (m_pAlly[i]->GetStatus() == St_Battle)//ステータスがバトルだったら
 		{
 			//索敵処理
 			Search(i, Ally);
@@ -166,7 +166,7 @@ void CBattle::Update(void)
 			{
 				m_pAlly[i]->m_bIsAttack = false;
 				//攻撃当たり判定に入ってるかどうか
-				if (m_pEnemy[l]->GetStatus() == CFighter::Battle)
+				if (m_pEnemy[l]->GetStatus() == St_Battle)
 				{
 					if (m_pAlly[i]->AtkCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
 					{
@@ -186,7 +186,7 @@ void CBattle::Update(void)
 	}
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
-		if (m_pEnemy[i]->GetStatus() == CFighter::Battle)//ステータスがバトルだったら
+		if (m_pEnemy[i]->GetStatus() == St_Battle)//ステータスがバトルだったら
 		{
 			//索敵処理
 			Search(i, Enemy);
@@ -197,7 +197,7 @@ void CBattle::Update(void)
 				m_pEnemy[i]->m_bIsAttack = false;
 
 				//攻撃当たり判定に入ってるかどうか
-				if (m_pAlly[l]->GetStatus() == CFighter::Battle)//ステータスがバトルだったら
+				if (m_pAlly[l]->GetStatus() == St_Battle)//ステータスがバトルだったら
 				{
 					if (m_pEnemy[i]->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))
 					{
@@ -516,7 +516,7 @@ void CBattle::Search(int i, Entity Entity)
 
 		for (int l = 0; l < m_nEnemyCount; l++)
 		{
-			if (m_pEnemy[l]->GetStatus() == CFighter::Battle)//相手のステータスがBattleかどうか
+			if (m_pEnemy[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 			{
 				if (m_pAlly[i]->SearchCollisionCheck(m_pEnemy[l]->GetPos(), m_pEnemy[l]->GetSize()))//索敵当たり判定内に敵がいるかどうか
 				{
@@ -544,7 +544,7 @@ void CBattle::Search(int i, Entity Entity)
 
 		for (int l = 0; l < m_nAllyCount; l++)
 		{
-			if (m_pAlly[l]->GetStatus() == CFighter::Battle)//相手のステータスがBattleかどうか
+			if (m_pAlly[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 			{
 				if (m_pEnemy[i]->SearchCollisionCheck(m_pAlly[l]->GetPos(), m_pAlly[l]->GetSize()))//索敵当たり判定内に味方がいるかどうか
 				{
@@ -646,7 +646,7 @@ void CBattle::Battle(int i, int l, Entity Entity)
 
 		if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())//攻撃チャージがたまっているかどうか
 		{
-			if (m_pEnemy[l]->GetStatus() == CFighter::Battle)//相手のステータスがBattleかどうか
+			if (m_pEnemy[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 			{
 				m_pEnemy[l]->Damage(m_pAlly[i]->GetAtk());//相手の体力を減らす
 				m_pAlly[i]->ChargeReset();//攻撃したのでチャージをリセットする
@@ -663,7 +663,7 @@ void CBattle::Battle(int i, int l, Entity Entity)
 		{
 			if (m_pEnemy[i]->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))//当たり判定の中にいるかどうか
 			{
-				if (m_pAlly[l]->GetStatus() == CFighter::Battle)//相手のステータスがBattleかどうか
+				if (m_pAlly[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 				{
 					m_pAlly[l]->Damage(m_pEnemy[i]->GetAtk());//相手の体力を減らす
 					m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
@@ -682,21 +682,21 @@ void CBattle::Alive(void)
 	//味方判定
 	for (int l = 0; l < m_nAllyCount; l++)
 	{
-		if (m_pAlly[l]->GetStatus() == CFighter::Battle)//味方のステータスがBattleかどうか
+		if (m_pAlly[l]->GetStatus() == St_Battle)//味方のステータスがBattleかどうか
 		{
 			if (m_pAlly[l]->GetHp() <= 0.0f)//味方の体力が残っているかどうか
 			{
-				m_pAlly[l]->SetStatus(CFighter::Death);//ステータスを死亡状態にする
+				m_pAlly[l]->SetStatus(St_Death);//ステータスを死亡状態にする
 			}
 		}
 	}
 	for (int l = 0; l < m_nEnemyCount; l++)
 	{
-		if (m_pEnemy[l]->GetStatus() == CFighter::Battle)//敵のステータスがBattleかどうか
+		if (m_pEnemy[l]->GetStatus() == St_Battle)//敵のステータスがBattleかどうか
 		{
 			if (m_pEnemy[l]->GetHp() <= 0.0f)//敵の体力が残っているかどうか
 			{
-				m_pEnemy[l]->SetStatus(CFighter::Death);//ステータスを死亡状態にする
+				m_pEnemy[l]->SetStatus(St_Death);//ステータスを死亡状態にする
 			}
 		}
 	}
@@ -707,7 +707,7 @@ void CBattle::Delete(void)
 	//味方の生存判定
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
-		if (m_pAlly[i]->GetStatus() == CFighter::Delete)					//ステータスがDeleteかどうか
+		if (m_pAlly[i]->GetStatus() == St_Delete)					//ステータスがDeleteかどうか
 		{
 			m_pAlly[i] = nullptr;
 			//配列前詰め
@@ -726,7 +726,7 @@ void CBattle::Delete(void)
 	//敵の生存判定
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
-		if (m_pEnemy[i]->GetStatus() == CFighter::Delete)		//ステータスがDeleteかどうか
+		if (m_pEnemy[i]->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
 		{
 			m_pEnemy[i] = nullptr;
 			//配列前詰め
@@ -1112,4 +1112,9 @@ void CBattle::SaveAllyLogDraw(void)
 			ReSetSprite();
 		}
 	}
+}
+
+void CBattle::RandomSelectPattern(void)
+{
+
 }
