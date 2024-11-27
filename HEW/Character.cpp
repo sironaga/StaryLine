@@ -13,7 +13,7 @@
 
 CFieldVertex* g_pFieldVtx;
 ID3D11ShaderResourceView* g_pAllyTex[6];	//味方画像のテクスチャ
-ID3D11ShaderResourceView* g_pEnemyTex[6];	//敵画像のテクスチャ
+ID3D11ShaderResourceView* g_pEnemyTex[3];	//敵画像のテクスチャ
 ID3D11ShaderResourceView* g_pCollisionTex;
 
 void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
@@ -31,9 +31,9 @@ void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
 	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/3.png", &g_pEnemyTex[0]);
 	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/4.png", &g_pEnemyTex[1]);
 	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/5.png", &g_pEnemyTex[2]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/6.png", &g_pEnemyTex[3]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/7.png", &g_pEnemyTex[4]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/8.png", &g_pEnemyTex[5]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/6.png", &g_pEnemyTex[3]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/7.png", &g_pEnemyTex[4]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/8.png", &g_pEnemyTex[5]);
 
 	/*当たり判定テスト用*/
 	hr = LoadTextureFromFile(GetDevice(), "Asset/Star/image_(2-1).png", &g_pCollisionTex);
@@ -45,7 +45,7 @@ void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
 }
 
 CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos)
-	:m_tStatus(Create)
+	:m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
 	, m_tPos(FirstPos)
@@ -275,9 +275,9 @@ void CAlly::Update(void)
 	// 状況に応じて処理を分ける
 	switch (m_tStatus)
 	{
-	case CFighter::Create:	CreateUpdate();		break;
-	case CFighter::Battle:	BattleUpdate();		break;
-	case CFighter::Death:	DeathUpdate();		break;
+	case St_Create:	CreateUpdate();		break;
+	case St_Battle:	BattleUpdate();		break;
+	case St_Death:	DeathUpdate();		break;
 	default:
 		break;
 	}
@@ -309,7 +309,7 @@ void CAlly::CreateUpdate(void)
 	//生成アニメーション
 
 	//生成アニメーションが終わったら
-	SetStatus(Battle);
+	SetStatus(St_Battle);
 }
 
 void CAlly::BattleUpdate(void)
@@ -326,7 +326,7 @@ void CAlly::DeathUpdate(void)
 	//死亡アニメーション
 	// 
 	//死亡アニメーションが終わったら
-	SetStatus(Delete);
+	SetStatus(St_Delete);
 }
 
 void CAlly::SettingStatus(void)
@@ -373,36 +373,6 @@ void CAlly::SettingStatus(void)
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
 		break;
-	case Hexagon:
-		m_fHp = 10.0f;
-		m_fPhysicsAtk = 1.0f;
-		m_fMagicAtk = 1.0f;
-		m_fAtkChargeMax = 10.0f;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
-		break;
-	case Heptagon:
-		m_fHp = 10.0f;
-		m_fPhysicsAtk = 1.0f;
-		m_fMagicAtk = 1.0f;
-		m_fAtkChargeMax = 10.0f;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
-		break;
-	case Octagon:
-		m_fHp = 10.0f;
-		m_fPhysicsAtk = 1.0f;
-		m_fMagicAtk = 1.0f;
-		m_fAtkChargeMax = 10.0f;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
-		break;
 	}
 }
 
@@ -430,9 +400,9 @@ void CEnemy::Update(void)
 	// 状況に応じて処理を分ける
 	switch (m_tStatus)
 	{
-	case CFighter::Create:	CreateUpdate();		break;
-	case CFighter::Battle:	BattleUpdate();		break;
-	case CFighter::Death:	DeathUpdate();		break;
+	case St_Create:	CreateUpdate();		break;
+	case St_Battle:	BattleUpdate();		break;
+	case St_Death:	DeathUpdate();		break;
 	default:
 		break;
 	}
@@ -464,7 +434,7 @@ void CEnemy::CreateUpdate(void)
 	//生成アニメーション
 
 	//生成アニメーションが終わったら
-	SetStatus(Battle);
+	SetStatus(St_Battle);
 }
 
 void CEnemy::BattleUpdate(void)
@@ -481,7 +451,7 @@ void CEnemy::DeathUpdate(void)
 	//死亡アニメーション
 	
 	//死亡アニメーションが終わったら
-	SetStatus(Delete);
+	SetStatus(St_Delete);
 	
 }
 
@@ -527,35 +497,60 @@ void CEnemy::SettingStatus(void)
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
 		break;
+	}
+}
+
+CAllyBuffer::CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos)
+{
+
+}
+
+CAllyBuffer::~CAllyBuffer()
+{
+
+}
+
+void CAllyBuffer::Update(void)
+{
+	switch (m_tStatus)
+	{
+	case St_Create:CreateUpdate();break;
+	case St_Battle:BattleUpdate();break;
+	case St_Death:DeathUpdate();break;
+	}
+}
+
+void CAllyBuffer::Draw(void)
+{
+
+}
+
+void CAllyBuffer::CreateUpdate(void)
+{
+
+}
+
+void CAllyBuffer::BattleUpdate(void)
+{
+
+}
+
+void CAllyBuffer::DeathUpdate(void)
+{
+
+}
+
+void CAllyBuffer::SettingStatus(void)
+{
+	switch (nCornerCount)
+	{
+	default:
+		break;
 	case Hexagon:
-		m_fHp = 10.0f;
-		m_fPhysicsAtk = 1.0f;
-		m_fMagicAtk = 1.0f;
-		m_fAtkChargeMax = 10.0f;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Heptagon:
-		m_fHp = 10.0f;
-		m_fPhysicsAtk = 1.0f;
-		m_fMagicAtk = 1.0f;
-		m_fAtkChargeMax = 10.0f;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Octagon:
-		m_fHp = 10.0f;
-		m_fPhysicsAtk = 1.0f;
-		m_fMagicAtk = 1.0f;
-		m_fAtkChargeMax = 10.0f;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	}
 }

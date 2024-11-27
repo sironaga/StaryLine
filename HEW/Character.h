@@ -14,22 +14,20 @@
 class CFieldVertex;
 void IninCharacterTexture(CFieldVertex* InAddress);	//テクスチャ読み込み
 
-//属性用構造体
+//ステータス情報
+enum Status
+{
+	St_Create, //召喚
+	St_Battle,	//戦闘
+	St_Death,	//死亡
+	St_Delete,	//削除
+};
 
 
 //キャラクター基底クラス
 class CFighter
 {
 	/*＝＝＝＝＝＝＝＝＝＝列挙型＝＝＝＝＝＝＝＝＝＝*/
-public:
-	//ステータス情報
-	enum Status
-	{
-		Create, //召喚
-		Battle,	//戦闘
-		Death,	//死亡
-		Delete,	//削除
-	};
 protected:
 	//角数
 	enum Corner
@@ -37,9 +35,6 @@ protected:
 		Triangle = 3,		//三角形
 		Square = 4,			//四角形
 		Pentagon = 5,		//五角形
-		Hexagon = 6,		//六角形
-		Heptagon = 7,		//七角形
-		Octagon = 8,		//八角形
 	};
 
 	/*構造体*/
@@ -166,6 +161,57 @@ private:
 	void DeathUpdate(void)  override;
 	
 	void SettingStatus(void) override;
+
+};
+
+//味方バッファークラス
+class CAllyBuffer
+{
+private:
+	enum Corner
+	{
+		Hexagon = 6,		//六角形
+		Heptagon = 7,		//七角形
+		Octagon = 8,		//八角形
+	};
+public:
+	CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	~CAllyBuffer();						//デストラクタ
+
+	void Update(void);	//更新処理
+	void Draw(void);	//描画処理
+
+private:
+	void CreateUpdate(void);
+	void BattleUpdate(void);
+	void DeathUpdate(void);
+
+	void SettingStatus(void);
+private:
+	Status m_tStatus;				//ステータス状態
+	Corner nCornerCount;			//属性
+	CVector3<float> m_tPos;			//位置座標
+	CVector3<float> m_tSize;		//サイズ
+
+public:
+
+	//X座標の加算
+	void AddPosX(float fAdd) { m_tPos.X += fAdd; }
+	//Y座標の加算
+	void AddPosY(float fAdd) { m_tPos.Y += fAdd; }
+	//Z座標の加算
+	void AddPosZ(float fAdd) { m_tPos.Z += fAdd; }
+	//位置座標のSet
+	void SetPos(CVector3<float> InPos) { m_tPos = InPos; }
+
+	//位置座標のGet
+	CVector3<float> GetPos(void) { return m_tPos; }
+
+	//サイズのGet
+	CVector3<float> GetSize(void) { return m_tSize; }
+
+	//属性のGet
+	int GetCornerCount(void) { return nCornerCount; }
 
 };
 
