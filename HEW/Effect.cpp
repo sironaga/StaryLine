@@ -6,10 +6,12 @@
 //
 #include "Effect.h"
 
+//2D用エフェクトのコンストラクタ
 CEffect::CEffect(float x, float y, int type)
 {
 }
 
+//3D用エフェクトのコンストラクタ
 CEffect::CEffect(float x, float y, float z, int type)
 {
 }
