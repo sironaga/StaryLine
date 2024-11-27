@@ -11,7 +11,7 @@ public:
 	DirectX::XMFLOAT4X4 GetProjectionMatrix(bool transpose = true);
 	DirectX::XMFLOAT3 GetPos() { return m_pos; }
 	DirectX::XMFLOAT3 GetLook() { return m_look; }
-
+	DirectX::XMMATRIX GetView();
 protected:
 	DirectX::XMFLOAT3 m_pos;	/* ç¿ïW */
 	DirectX::XMFLOAT3 m_look;	/* íçéãì_ */
