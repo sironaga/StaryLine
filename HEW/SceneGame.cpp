@@ -5,11 +5,13 @@
 #include "File.h"
 #include "Character.h"
 #include "StageSelect.h"
+#include "Field.h"
 
 E_GAME_PHASE g_ePhaseType;
 CFieldVertex* g_pFieldVertex;
 CPlayer* g_pPlayer;
 CBattle* g_pBattle;
+Field* g_pField;
 
 	
 //‰Šú‰»ˆ—l
@@ -20,6 +22,7 @@ void InitSceneGame(int StageNum)
 	g_pFieldVertex = new CFieldVertex();
 	g_pPlayer = new CPlayer();
 	g_pBattle = new CBattle();
+	g_pField = new Field();
 
 	g_pFieldVertex->SetBattleAddress(g_pBattle);
 	g_pFieldVertex->SetPlayerAddress(g_pPlayer);
@@ -60,6 +63,11 @@ void UninitSceneGame()
 		delete g_pBattle;
 		g_pBattle = nullptr;
 	}
+	if (g_pField)
+	{
+		delete g_pField;
+		g_pField = nullptr;
+	}
 }
 
 //XVˆ—
@@ -77,6 +85,7 @@ void UpdateSceneGame()
 	case BATTLE:
 		g_pFieldVertex->Update();
 		g_pBattle->Update();
+		g_pField->Update();
 		break;
 	default:
 		break;
@@ -99,6 +108,7 @@ void DrawSceneGame()
 	case BATTLE:
 		g_pFieldVertex->Draw();
 		g_pBattle->Draw();
+		g_pField->Draw();
 		break;
 	default:
 		break;

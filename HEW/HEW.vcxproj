@@ -63,7 +63,7 @@
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Emitter.h" />
-    <ClInclude Include="Feild.h" />
+    <ClInclude Include="Field.h" />
     <ClInclude Include="FieldVertex.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Geometory.h" />
