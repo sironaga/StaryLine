@@ -83,9 +83,9 @@ void UpdateSceneGame()
 		g_pFieldVertex->Update();
 		break;
 	case BATTLE:
-		g_pFieldVertex->Update();
-		g_pBattle->Update();
 		g_pField->Update();
+		g_pFieldVertex->Update();
+		g_pBattle->Update();	
 		break;
 	default:
 		break;
@@ -98,17 +98,17 @@ void DrawSceneGame()
 	switch (g_ePhaseType)
 	{
 	case DRAWING:
-		g_pFieldVertex->Draw();
 		g_pPlayer->Draw();
+		g_pFieldVertex->Draw();
 		break;
 	case SHAPESCHECK:
 		g_pFieldVertex->Draw();
 		
 		break;
 	case BATTLE:
+		g_pField->Draw();
 		g_pFieldVertex->Draw();
 		g_pBattle->Draw();
-		g_pField->Draw();
 		break;
 	default:
 		break;

@@ -93,45 +93,45 @@ void CPlayer::Update()
 
 void CPlayer::Draw()
 {
-	////スプライトの座標の設定
-	//SetSpritePos(m_tPos.X, m_tPos.Y);
+	//スプライトの座標の設定
+	SetSpritePos(m_tPos.X, m_tPos.Y);
 
-	////大きさの設定
-	//SetSpriteScale(1.0f, 1.0f);
+	//大きさの設定
+	SetSpriteScale(1.0f, 1.0f);
 
-	////背景色の設定
-	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//
-	//// テクスチャアニメーション
-	//DrawAnimation();
+	//背景色の設定
+	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	// テクスチャアニメーション
+	DrawAnimation();
 
-	//// UVのセット
-	//SetSpriteUVPos(m_tPosTex.X, m_tPosTex.Y);
-	//SetSpriteUVScale(1.0f,1.0f);
+	// UVのセット
+	SetSpriteUVPos(m_tPosTex.X, m_tPosTex.Y);
+	SetSpriteUVScale(1.0f,1.0f);
 
-	//// 描画
-	//DrawSprite(m_pVtxPlayer, sizeof(Vertex));
+	// 描画
+	DrawSprite(m_pVtxPlayer, sizeof(Vertex));
 
-	//// スプライト設定のリセット
-	//ReSetSprite();
+	// スプライト設定のリセット
+	ReSetSprite();
 
-	////スプライトの座標の設定
-	//SetSpritePos(0.0f, 0.0f);
+	//スプライトの座標の設定
+	SetSpritePos(0.0f, 0.0f);
 
-	////大きさの設定
-	//SetSpriteScale(1.0f, 1.0f);
+	//大きさの設定
+	SetSpriteScale(1.0f, 1.0f);
 
-	////背景色の設定
-	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//背景色の設定
+	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-	//SetSpriteTexture(m_pTexTimer);
+	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+	SetSpriteTexture(m_pTexTimer);
 
-	//// 描画
-	//DrawSprite(m_pVtxTimer, sizeof(Vertex));
+	// 描画
+	DrawSprite(m_pVtxTimer, sizeof(Vertex));
 
-	//// スプライト設定のリセット
-	//ReSetSprite();
+	// スプライト設定のリセット
+	ReSetSprite();
 }
 
 void CPlayer::UpdateReady()
