@@ -27,6 +27,7 @@
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
+    <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldVertex.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Geometory.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Emitter.h" />
+    <ClInclude Include="Feild.h" />
     <ClInclude Include="FieldVertex.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Geometory.h" />
