@@ -91,8 +91,6 @@ void Field::ModelDraw(FieldModel* InModel, int MaxModel)
 		DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T; // それぞれの行列を掛け合わせて格納(基本的にこの順番で掛ける)
 
 		world = mat;
-		view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0.0f, METER(1.0f), METER(-1.0f), 0.0f), DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f), DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-		proj = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(60.0f), (float)SCREEN_WIDTH / SCREEN_HEIGHT, CMETER(5.0f), METER(1000.0f));
 
 		// 計算用のデータから読み取り用のデータに変換
 		DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));

@@ -4,7 +4,7 @@
 
 
 CameraDebug::CameraDebug()
-	:m_radXZ(TORAD(0.0f)), m_radY(TORAD(0.0f)), m_radius(100.0f) //0.0f,0.0f,10.0f
+	:m_radXZ(0.0f), m_radY(TORAD(60.0f)), m_radius(100.0f) //0.0f,0.0f,10.0f
 {
 
 }
@@ -31,7 +31,7 @@ void CameraDebug::Update()
 	if (IsKeyPress('U') && IsKeyPress('Q')) { m_radius -= 0.1f; }
 
 	//ÉJÉÅÉâà íuÇÃåvéZ
-	m_pos.x = cos(m_radY) * sin(m_radXZ) * m_radius + m_look.x;
-	m_pos.y = sin(m_radY) * m_radius + m_look.y;
-	m_pos.z = cos(m_radY) * cos(m_radXZ) * m_radius + m_look.z;
+	m_pos.x = cosf(m_radY) * sinf(m_radXZ) * m_radius + m_look.x;
+	m_pos.y = sinf(m_radY) * m_radius + m_look.y;
+	m_pos.z = cosf(m_radY) * cosf(m_radXZ) * m_radius + m_look.z;
 }
