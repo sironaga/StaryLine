@@ -150,6 +150,9 @@
     <ClCompile Include="Effect.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
+    <ClCompile Include="SoundList.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -244,6 +247,9 @@
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundList.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

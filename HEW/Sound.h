@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-#define MAX_SOURCEVOICE (10)
+#define MAX_SOURCEVOICE (100)
 
 struct WaveData
 {
@@ -28,7 +28,7 @@ public:
 private:
 	IXAudio2* m_pXAudio2;
 	IXAudio2MasteringVoice* m_pMasteringVoice;
-	IXAudio2SourceVoice* m_pSourceVoice[MAX_SOURCEVOICE];
+	IXAudio2SourceVoice* m_pSourceVoice;
 	WaveData waveData;
 	XAUDIO2_BUFFER m_xAudio2Buffer{};
 	bool LoadWaveFile(const std::wstring& wFilePath, WaveData* outData);
@@ -36,5 +36,6 @@ private:
 
 public:
 	IXAudio2SourceVoice* PlayWaveSound(bool loop);
+	
 };
 

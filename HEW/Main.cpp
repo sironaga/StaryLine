@@ -11,7 +11,7 @@
 #include "Controller.h"
 #include "StageSelect.h"
 #include "SceneTitle.h"
-
+#include "SoundList.h"
 //--- ÉOÉçÅ[ÉoÉãïœêî
 E_SCENE_TYPE g_SceneType;
 
@@ -27,6 +27,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	Geometory::Init();
 	Sprite::Init();
 	InitInput();
+	InitSound();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -44,6 +45,7 @@ void Uninit()
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
+	UnInitSound();
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();

@@ -5,24 +5,26 @@
 #include "Main.h"
 #include "Controller.h"
 #include "Input.h"
-
+#include "SoundList.h"
 CStartTitle* g_pStartTilte;
-XAUDIO2_BUFFER* Sound;
-XAUDIO2_BUFFER* NullSound;
-IXAudio2SourceVoice* pSound;
+
+IXAudio2SourceVoice* g_pSourseBGM;
 //初期化処理
 void InitSceneTitle()
 {
 	g_pStartTilte = new CStartTitle();
-//	Sound = LoadSound("Asset/Sound/メイプルチョコレートLoop.mp3", 1);
-//	pSound = PlaySound(Sound);
-//	pSound->SetVolume(0.01f);
+	g_pSourseBGM = PlaySound(BGM_TITLE,true);
+	g_pSourseBGM->SetVolume(0.09f);
+	g_pSourseBGM->Start();
+	
 }
 
 //終了処理
 void UninitSceneTitle()
 {
 	delete g_pStartTilte;
+	g_pSourseBGM->Stop();
+	g_pSourseBGM->DestroyVoice();
 }
 
 //更新処理
