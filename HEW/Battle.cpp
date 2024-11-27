@@ -443,7 +443,7 @@ void CBattle::TimeAxis(void)
 		m_nCreateAllyNum = 1;
 
 		//“G¶¬—\’è”‚ğ3‚Éİ’è
-		m_nCreateEnemyNum = 1;
+		m_nCreateEnemyNum = 10;
 
 
 		m_bFirstFight = true;
@@ -453,7 +453,7 @@ void CBattle::TimeAxis(void)
 void CBattle::CreateEntity(void)
 {
 	//w’è‚³‚ê‚½”‚¾‚¯¶¬‚·‚é
-	while (m_nCreateAllyNum)
+ 	while (m_nCreateAllyNum)
 	{
 		if (m_nCreateAllyNum <= m_nAllyDateCount)
 		{
