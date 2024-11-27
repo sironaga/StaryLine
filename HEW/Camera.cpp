@@ -38,7 +38,9 @@ DirectX::XMFLOAT4X4 Camera::GetProjectionMatrix(bool transpose)
 {
 	DirectX::XMFLOAT4X4 mat;
 	DirectX::XMMATRIX proj;
+
 	proj = DirectX::XMMatrixPerspectiveFovLH(m_fovy,m_aspect,m_near,m_far);
+
 	if (transpose) {
 		proj = DirectX::XMMatrixTranspose(proj);
 	}
