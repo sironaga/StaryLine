@@ -319,24 +319,6 @@ void CFieldVertex::Draw()
 	{
 		FieldVertex* Vertexp;
 		Vertexp = m_tVertex;
-		//線の描画
-		for (int i = 0; i <= NowLine; i++)
-		{
-			//スプライトの設定
-			SetSpritePos(0.0f, 0.0f);
-
-			//大きさの設定
-			SetSpriteScale(1.0f, 1.0f);
-
-			//背景色の設定
-			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			SetSpriteTexture(m_pTex_FieldLine);
-
-			DrawSprite(m_pVtx_FieldLine[i], sizeof(Vertex));
-		}
-
 		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 		{
 			//スプライトの設定
@@ -356,6 +338,25 @@ void CFieldVertex::Draw()
 
 			DrawSprite(m_pVtx_FieldVertex, sizeof(Vertex));
 		}
+		//線の描画
+		for (int i = 0; i <= NowLine; i++)
+		{
+			//スプライトの設定
+			SetSpritePos(0.0f, 0.0f);
+
+			//大きさの設定
+			SetSpriteScale(1.0f, 1.0f);
+
+			//背景色の設定
+			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+			SetSpriteTexture(m_pTex_FieldLine);
+
+			DrawSprite(m_pVtx_FieldLine[i], sizeof(Vertex));
+		}
+
+
 	}
 		
 	if (NowPhase == E_GAME_PHASE::DRAWING || NowPhase == E_GAME_PHASE::SHAPESCHECK)
