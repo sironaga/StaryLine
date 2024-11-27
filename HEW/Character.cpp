@@ -216,16 +216,7 @@ bool CFighter::AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos)
 			&&
 			m_tPos.Y + m_tAtkCollision.Height >= InPos.Y + (InSize.Y / 2)	/*自分の攻撃当たり判定の下端 >= 相手の上端*/)
 		{
-			if (m_tPos.Z - m_tAtkCollision.Width <= InPos.Z - InSize.Z - (InSize.Z / 2)/*自分の索敵当たり判定の奥端 <= 相手の奥端*/
-				&&
-				m_tPos.Z + m_tAtkCollision.Width >= InPos.Z - InSize.Z - (InSize.Z / 2)/*自分の索敵当たり判定の手前端 >= 相手の手前端*/
-				||
-				m_tPos.Z - m_tAtkCollision.Width <= InPos.Z + InSize.Z - (InSize.Z / 2)/*自分の索敵当たり判定の奥端 <= 相手の奥端*/
-				&&
-				m_tPos.Z + m_tAtkCollision.Width >= InPos.Z + InSize.Z - (InSize.Z / 2)/*自分の索敵当たり判定の手前端 >= 相手の手前端*/)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	return false;
@@ -249,16 +240,7 @@ bool CFighter::SearchCollisionCheck(CVector3<float> InSize, CVector3<float>InPos
 			&&
 			m_tPos.Y + m_tSearchCollision.Height >= InPos.Y + InSize.Y	/*自分の索敵当たり判定の右端 >= 相手の右端*/)
 		{
-			if (m_tPos.Z - m_tSearchCollision.Width <= InPos.Z - InSize.Z	/*自分の索敵当たり判定の奥端 <= 相手の奥端*/
-				&&
-				m_tPos.Z + m_tSearchCollision.Width >= InPos.Z - InSize.Z	/*自分の索敵当たり判定の手前端 >= 相手の手前端*/
-				||
-				m_tPos.Z - m_tSearchCollision.Width <= InPos.Z + InSize.Z	/*自分の索敵当たり判定の奥端 <= 相手の奥端*/
-				&&
-				m_tPos.Z + m_tSearchCollision.Width >= InPos.Z + InSize.Z	/*自分の索敵当たり判定の手前端 >= 相手の手前端*/)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	return false;
@@ -275,10 +257,10 @@ CAlly::CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos)
 	SettingStatus();
 	Vertex vtx[] = {
 		//背景表示の座標
-		{{-m_tSize.X / 2, -m_tSize.Y / 2, 0.0f}, {0.0f, 0.0f}},
-		{{-m_tSize.X / 2,  m_tSize.Y / 2, 0.0f}, {0.0f, 1.0f}},
-		{{ m_tSize.X / 2, -m_tSize.Y / 2, 0.0f}, {1.0f, 0.0f}},
-		{{ m_tSize.X / 2,  m_tSize.Y / 2, 0.0f}, {1.0f, 1.0f}},
+		{{-m_tSize.X / 2, -m_tSize.Y / 2,0.0f}, {0.0f, 0.0f}},
+		{{-m_tSize.X / 2,  m_tSize.Y / 2,0.0f}, {0.0f, 1.0f}},
+		{{ m_tSize.X / 2, -m_tSize.Y / 2,0.0f}, {1.0f, 0.0f}},
+		{{ m_tSize.X / 2,  m_tSize.Y / 2,0.0f}, {1.0f, 1.0f}},
 	};
 	m_pVtx = CreateVertexBuffer(vtx, 4);
 }

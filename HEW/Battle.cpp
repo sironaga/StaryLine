@@ -384,6 +384,7 @@ void CBattle::SaveAllyData(int InCornerCount, float InSize)
 
 	m_tAllyData[m_nAllyDateCount].nCornerCount = InCornerCount;
 	m_tAllyData[m_nAllyDateCount].Size = InSize;
+
 	switch (m_tAllyData[m_nAllyDateCount].nCornerCount)
 	{
 	case 3:	m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -800;
