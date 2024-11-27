@@ -22,5 +22,5 @@ enum NAME
 };
 void InitSound();
 void UnInitSound();
-//再生
-IXAudio2SourceVoice* PlaySound(NAME inName, bool Loop);
+//再生用のサウンドソースを送る
+IXAudio2SourceVoice* GetSound(NAME inName, bool Loop);

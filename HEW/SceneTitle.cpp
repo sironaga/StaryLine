@@ -13,7 +13,7 @@ IXAudio2SourceVoice* g_pSourseBGM;
 void InitSceneTitle()
 {
 	g_pStartTilte = new CStartTitle();
-	g_pSourseBGM = PlaySound(BGM_TITLE,true);
+	g_pSourseBGM = GetSound(BGM_TITLE,true);
 	g_pSourseBGM->SetVolume(0.09f);
 	g_pSourseBGM->Start();
 	
