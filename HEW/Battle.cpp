@@ -327,72 +327,72 @@ void CBattle::Draw(void)
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
 		m_pAlly[i]->Draw();
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('3'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 3)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('4'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 4)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('5'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 5)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('6'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 6)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('7'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 7)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('8'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 8)
-				m_pAlly[i]->CollisionDraw();
-		}
+		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('3'))
+		//{
+		//	if (m_pAlly[i]->GetCornerCount() == 3)
+		//		m_pAlly[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('4'))
+		//{
+		//	if (m_pAlly[i]->GetCornerCount() == 4)
+		//		m_pAlly[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('5'))
+		//{
+		//	if (m_pAlly[i]->GetCornerCount() == 5)
+		//		m_pAlly[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('6'))
+		//{
+		//	if (m_pAlly[i]->GetCornerCount() == 6)
+		//		m_pAlly[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('7'))
+		//{
+		//	if (m_pAlly[i]->GetCornerCount() == 7)
+		//		m_pAlly[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('8'))
+		//{
+		//	if (m_pAlly[i]->GetCornerCount() == 8)
+		//		m_pAlly[i]->CollisionDraw();
+		//}
 	}
 
 	//“G‚Ì•`‰æ
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
 		m_pEnemy[i]->Draw();
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('3'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 3)
-				m_pEnemy[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('4'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 4)
-				m_pEnemy[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('5'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 5)
-				m_pEnemy[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('6'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 6)
-				m_pEnemy[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('7'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 7)
-				m_pEnemy[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('8'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 8)
-				m_pEnemy[i]->CollisionDraw();
-		}
+		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('3'))
+		//{
+		//	if (m_pEnemy[i]->GetCornerCount() == 3)
+		//		m_pEnemy[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('4'))
+		//{
+		//	if (m_pEnemy[i]->GetCornerCount() == 4)
+		//		m_pEnemy[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('5'))
+		//{
+		//	if (m_pEnemy[i]->GetCornerCount() == 5)
+		//		m_pEnemy[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('6'))
+		//{
+		//	if (m_pEnemy[i]->GetCornerCount() == 6)
+		//		m_pEnemy[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('7'))
+		//{
+		//	if (m_pEnemy[i]->GetCornerCount() == 7)
+		//		m_pEnemy[i]->CollisionDraw();
+		//}
+		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('8'))
+		//{
+		//	if (m_pEnemy[i]->GetCornerCount() == 8)
+		//		m_pEnemy[i]->CollisionDraw();
+		//}
 	}
 }
 
@@ -464,13 +464,13 @@ void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 {
 	if (m_pAlly[m_nAllyCount]->GetCornerCount() < 6)
 	{
-		m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size, InFirstPos);
+		m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size, InFirstPos,m_pCamera);
 		//¶¬”‚ð‰ÁŽZ
 		m_nAllyCount++;
 	}
 	else
 	{
-		m_pAllyBuffer[m_nAllyCount] = new CAllyBuffer(InData.nCornerCount, InData.Size, InFirstPos);
+		m_pAllyBuffer[m_nAllyCount] = new CAllyBuffer(InData.nCornerCount, InData.Size, InFirstPos, m_pCamera);
 		//¶¬”‚ð‰ÁŽZ
 		m_nAllyBufferCount++;
 	}
@@ -478,7 +478,7 @@ void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 
 void CBattle::CreateEnemyData(EntityData InDate)
 {
-	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,(int)InDate.Size,InDate.m_tCreatePos);
+	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,(int)InDate.Size,InDate.m_tCreatePos, m_pCamera);
 }
 
 void CBattle::Search(int i, Entity Entity)
