@@ -44,6 +44,7 @@ private:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
+	CAllyBuffer* m_pAllyBuffer[MAX_ALLY];						//味方クラスポインタ
 	EntityData m_tAllyData[MAX_ALLY];					//生成予定の味方情報
 	int m_nAllyCount;									//生成した味方のカウント
 	int m_nAllyDateCount;								//保存した味方の情報数
@@ -69,7 +70,7 @@ private:
 public:
 	int GetEnemyCount(void) { return m_nEnemyCount; }			//敵カウントのGet
 
-	void SaveEnemyData(int InCornerCount, int Wave, float InSize);		//敵要素保存
+	void SaveEnemyData(int InCornerCount, int Wave, int InPattern, float InSize);		//敵要素保存
 private:
 	void CreateEnemyData(EntityData InDate);	//敵作成
 

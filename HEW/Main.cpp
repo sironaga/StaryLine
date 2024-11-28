@@ -8,8 +8,13 @@
 #include "Defines.h"
 #include "ShaderList.h"
 #include "SpriteDrawer.h"
+#include "Controller.h"
+#include "StageSelect.h"
+#include "SceneTitle.h"
+#include "SoundList.h"
 
 //--- グローバル変数
+E_SCENE_TYPE g_SceneType;
 
 
 
@@ -24,12 +29,15 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	Geometory::Init();
 	Sprite::Init();
 	InitInput();
+	InitSound();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 	srand(timeGetTime());
 
 	// シーン作成
-	InitSceneGame(GetNowPhase());
+	// シーン作成
+	g_SceneType = SCENE_TITLE;
+	InitSceneTitle();
 
 	return hr;
 }
@@ -41,6 +49,7 @@ void Uninit()
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
+	UnInitSound();
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
@@ -49,8 +58,21 @@ void Uninit()
 
 void Update()
 {
+	Controller_Update();
 	UpdateInput();
-	Update();
+	switch (g_SceneType)
+	{
+	case SCENE_TITLE:UpdateSceneTitle();
+		break;
+	case STAGE_SELECT:UpdateStageSelect();
+		break;
+	case SCENE_GAME:UpdateSceneGame();
+		break;
+	case SCENE_MAX:
+		break;
+	default:
+		break;
+	}
 }
 
 void Draw()
@@ -117,9 +139,44 @@ void Draw()
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
-
-	Draw();
+	switch (g_SceneType)
+	{
+	case SCENE_TITLE:DrawSceneTitle();
+		break;
+	case STAGE_SELECT:DrawStageSelect();
+		break;
+	case SCENE_GAME:DrawSceneGame();
+		break;
+	case SCENE_MAX:
+		break;
+	default:
+		break;
+	}	
 	EndDrawDirectX();
+}
+
+void ChangeScene(E_SCENE_TYPE next)
+{
+	//現在のシーンの終了
+	switch (g_SceneType)
+	{
+	case(SCENE_TITLE):UninitSceneTitle();	break;
+	case(STAGE_SELECT):UninitStageSelect(); break;
+	case(SCENE_GAME):UninitSceneGame();		break;
+	default:break;
+	}
+
+	//現在のシーンの更新
+	g_SceneType = next;
+
+	//次のシーンの初期化
+	switch (g_SceneType)
+	{
+	case(SCENE_TITLE):InitSceneTitle();	break;
+	case(STAGE_SELECT):InitStageSelect();	break;
+	case(SCENE_GAME):InitSceneGame(GetStageNum());		break;
+	default:break;
+	}
 }
 
 // EOF
