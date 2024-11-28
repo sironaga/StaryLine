@@ -29,32 +29,39 @@ public:
 	void Draw(void);		//描画処理
 
 	void NextWaveInit(void);			//次のWaveに進むための初期化処理
-	void CreateEntity(void);			//エンティティ生成
+	void CreateEntity(CVector3<float> InFirstPos);			//エンティティ生成
 private:
 	void Search(int i,Entity Entity);	//索敵処理
 	void Move(int i, Entity Entity);	//移動処理
 	void Battle(int i, int l, Entity Entity);	//戦闘処理
 	void Alive(void);					//生存判定
 	void Delete(void);					//削除処理と配列前詰め
+	void FirstPosSetting();				//戦闘初期位置のセッティング
+
 private:
 	int m_nBattleTime;					//戦闘時間
 	bool m_bFirstFight;					//初期戦闘したかどうか
+	int m_nFirstPosPattern;				//初期位置のパターン
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
-	CAllyBuffer* m_pAllyBuffer[MAX_ALLY];				//味方クラスポインタ
-	EntityData m_tAllyData[MAX_ALLY];					//生成予定の味方情報
 	int m_nAllyCount;									//生成した味方のカウント
+
+	CAllyBuffer* m_pAllyBuffer[MAX_ALLY];				//味方バッファークラスポインタ
+	int m_nAllyBufferCount;								//生成した味方バッファーのカウント
+
+	EntityData m_tAllyData[MAX_ALLY];					//生成予定の味方情報
 	int m_nAllyDateCount;								//保存した味方の情報数
+
 	int m_nAllyTypes[6];								//現在生成している味方の種類別カウント変数
-	int m_nFirstPosSetting;								//味方の初期位置を設定するときに使用する
 public:
 	int GetAllyCount(void) { return m_nAllyCount; }		//味方カウントのGet
+	int GetAllyBufferCount(void) { return m_nAllyBufferCount; }		//味方バッファーカウントのGet
 
 	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
 private:
-	void CreateAllyData(EntityData InData);			//味方作成
+	void CreateAllyData(EntityData InData, CVector3<float> InFirstPos);			//味方作成
 
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
