@@ -8,7 +8,7 @@
 
 #define MAX_ALLY  (200)	//味方の最大数
 #define MAX_ENEMY (200)	//敵の最大数
-
+#define NORMAL_SIZE (200)//キャラクターの基本サイズ
 
 class CFieldVertex;
 void IninCharacterTexture(CFieldVertex* InAddress);	//テクスチャ読み込み
@@ -79,6 +79,7 @@ protected:
 public:
 	int m_nTargetNumber;			//標的の選別番号
 	bool m_bIsAttack;				//攻撃しているかどうか
+	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
 protected:
 	Status m_tStatus;				//ステータス状態
 	Collision m_tSearchCollision;	//索敵当たり判定
@@ -117,6 +118,13 @@ public:
 	void AddPosZ(float fAdd) { m_tPos.Z += fAdd; }
 	//位置座標のSet
 	void SetPos(CVector3<float> InPos) { m_tPos = InPos; }
+	//位置X座標のSet
+	void SetPosX(float InPosX) { m_tPos.X = InPosX; }
+	//位置Y座標のSet
+	void SetPosY(float InPosY) { m_tPos.Y = InPosY; }
+	//位置Z座標のSet
+	void SetPosZ(float InPosZ) { m_tPos.Z = InPosZ; }
+
 	//位置座標のGet
 	CVector3<float> GetPos(void) { return m_tPos; }
 
@@ -213,13 +221,14 @@ public:
 	void Update(void);	//更新処理
 	void Draw(void);	//描画処理
 
-	void ApplyBuff(CAlly* pAlly);	//バフをかける処理
 private:
 	void CreateUpdate(void);
 	void BattleUpdate(void);
 	void DeathUpdate(void);
 
 	void SettingStatus(void);
+public:
+	bool IsBuff;					//Buffをかける処理をもう行ったかどうか
 private:
 	Status m_tStatus;				//ステータス状態
 	BuffType m_tBuff;				//バフの種類	
@@ -227,7 +236,6 @@ private:
 	CVector3<float> m_tPos;			//位置座標
 	CVector3<float> m_tSize;		//サイズ
 	ID3D11Buffer* m_pVtx;			//画像の頂点座標を取得
-	bool IsBuff;					//Buffをかける処理をもう行ったかどうか
 
 public:
 	//ステータスのSet
@@ -252,4 +260,6 @@ public:
 
 	//サイズのGet
 	CVector3<float> GetSize(void) { return m_tSize; }
+
+	BuffType GetBuffType(void) { return m_tBuff; }
 };
