@@ -503,7 +503,7 @@ void CBattle::CreateEntity()
 
 void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 {
-	if (m_pAlly[m_nAllyCount]->GetCornerCount() < 6)
+	if (m_tAllyData[m_nAllyCount].nCornerCount < 6)
 	{
 		m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size, InFirstPos,m_pCamera);
 		//¶¬”‚ð‰ÁŽZ
