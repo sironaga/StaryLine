@@ -93,8 +93,8 @@ void UpdateSceneGame()
 
 	g_pField->Update();
 	if(COOLTIME <= GameSTime)g_pBattle->Update();
-	if(SHAPE_DRAW + GameSTimeError <= GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Update();
-	if(SHAPE_DRAW + GameSTimeError <= GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Update();
+	if(SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Update();
+	if(SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Update();
 	
 }
 
@@ -103,12 +103,13 @@ void DrawSceneGame()
 {
 	g_pField->Draw();
 	if (COOLTIME <= GameSTime)g_pBattle->Draw();
-	if (SHAPE_DRAW + GameSTimeError <= GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Draw();
-	if (SHAPE_DRAW + GameSTimeError <= GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Draw();
+	if (SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Draw();
+	if (SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Draw();
 	if (GameTime == COOLTIME * 60)
 	{
 		GameSTimeError = GameSTime;
 		//フィールドの初期化処理
+		g_pFieldVertex->InitFieldVertex();
 	}
 }
 
