@@ -13,6 +13,17 @@ CPlayer* g_pPlayer;
 CBattle* g_pBattle;
 Field* g_pField;
 
+enum SceneGameTime
+{
+	SHAPE_DRAW = 0,
+	SHAPE_END = 10,
+	COOLTIME = 20,
+	GAME_END = 90
+};
+
+int GameTime;//秒×60
+int GameSTime;//秒
+int GameSTimeError;//時間のズレ
 	
 //初期化処理l
 void InitSceneGame(int StageNum)
@@ -30,6 +41,10 @@ void InitSceneGame(int StageNum)
 	SetFileAddress(g_pBattle);
 	
 	IninCharacterTexture(g_pFieldVertex);//キャラクターテクスチャ～の初期化
+
+	GameTime = 0;//タイマー初期化
+	GameSTime = 0;
+	GameSTimeError = 0;
 
 	switch (StageNum)
 	{
@@ -73,46 +88,28 @@ void UninitSceneGame()
 //更新処理
 void UpdateSceneGame()
 {
-	switch (g_ePhaseType)
-	{
-	case DRAWING:
-		g_pFieldVertex->Update();
-		g_pPlayer->Update();
-		break;
-	case SHAPESCHECK:
-		g_pFieldVertex->Update();
-		break;
-	case BATTLE:
-		g_pField->Update();
-		g_pFieldVertex->Update();
-		g_pBattle->Update();	
-		break;
-	default:
-		break;
-	}	
+	GameTime++;
+	GameSTime = GameTime / 60;
+
+	g_pField->Update();
+	g_pBattle->Update();
+	if(SHAPE_DRAW + GameSTimeError <= GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Update();
+	if(SHAPE_DRAW + GameSTimeError <= GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Update();
+		
 }
 
 //描画処理
 void DrawSceneGame()
 {
-	switch (g_ePhaseType)
+	g_pField->Draw();
+	g_pBattle->Draw();
+	if (SHAPE_DRAW + GameSTimeError <= GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Draw();
+	if (SHAPE_DRAW + GameSTimeError <= GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Draw();
+	if (GameTime == COOLTIME * 60)
 	{
-	case DRAWING:
-		g_pPlayer->Draw();
-		g_pFieldVertex->Draw();
-		break;
-	case SHAPESCHECK:
-		g_pFieldVertex->Draw();
-		
-		break;
-	case BATTLE:
-		g_pField->Draw();
-		g_pFieldVertex->Draw();
-		g_pBattle->Draw();
-		break;
-	default:
-		break;
-	}	
+		GameSTimeError = GameSTime;
+		//フィールドの初期化処理
+	}
 }
 
 void ChangePhase(E_GAME_PHASE next)
