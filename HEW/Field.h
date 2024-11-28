@@ -36,6 +36,7 @@ public:
 
 	void FieldModelUpdate(FieldModel*, int);
 
+	Camera* GetCameraAddress(void) { return m_pCamera; }
 private:
 
 	FieldModel m_Field_Model[MAX_FIELD_MODEL];

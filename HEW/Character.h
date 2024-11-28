@@ -1,7 +1,7 @@
 #pragma once
 #define _DIRECTX_
 #include "DirectX.h"
-
+#include "Camera.h"
 //Character.h
 //編集者：AT12C05宇留野陸斗
 //編集者：AT12A07小川蓮
@@ -60,13 +60,13 @@ protected:
 
 	
 public:
-	CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos);	//コンストラクタ
+	CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos,Camera* InAddress);	//コンストラクタ
 	virtual ~CFighter() = 0;						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
 	virtual void Draw(void) = 0;	//描画処理
 
-	void CollisionDraw(void);
+	//void CollisionDraw(void);
 
 	bool AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
 	bool SearchCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
@@ -96,7 +96,8 @@ protected:
 	float m_fAtkAnimationTime;		//攻撃アニメーションの時間
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
 	bool m_bCreateInit;				//生成状態の初期化済みかどうか
-	ID3D11Buffer* m_pVtx;			//画像の頂点座標を取得
+
+	Camera* m_pCamera;
 
 	/*変数のSet&Get*/
 public:
@@ -165,7 +166,7 @@ public:
 class CAlly : public CFighter
 {
 public:
-	CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
 	~CAlly();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -183,7 +184,7 @@ private:
 class CEnemy : public CFighter
 {
 public:
-	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
 	~CEnemy();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -215,7 +216,7 @@ private:
 		Octagon = 8,		//八角形
 	};
 public:
-	CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
 	~CAllyBuffer();						//デストラクタ
 
 	void Update(void);	//更新処理
@@ -237,6 +238,7 @@ private:
 	CVector3<float> m_tSize;		//サイズ
 	ID3D11Buffer* m_pVtx;			//画像の頂点座標を取得
 
+	Camera* m_pCamera;
 public:
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
@@ -262,4 +264,7 @@ public:
 	CVector3<float> GetSize(void) { return m_tSize; }
 
 	BuffType GetBuffType(void) { return m_tBuff; }
+
+	//カメラのアドレス設定
+	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
 };
