@@ -53,32 +53,6 @@ void DrawSprite(ID3D11Buffer* pSprite, UINT vtxSize)
 	g_pSpriteContext->Draw(num, 0);
 }
 
-void DrawBillBoard(ID3D11Buffer* pSprite, UINT vtxSize, Camera* camera)
-{
-	D3D11_BUFFER_DESC desc;
-	pSprite->GetDesc(&desc);
-	UINT num = desc.ByteWidth / vtxSize;
-	UINT offset = 0;
-
-	DirectX::XMMATRIX viewMatrix = camera->GetView();
-	DirectX::XMMATRIX projectionMatrix = camera->GetProjection();
-
-	// 定数バッファの更新
-	g_SpriteParam.modelViewProjection = viewMatrix * projectionMatrix;
-	g_SpriteParam.modelViewProjection = DirectX::XMMatrixTranspose(g_SpriteParam.modelViewProjection);
-
-	g_pSpriteContext->IASetInputLayout(g_pSpriteIL);
-	g_pSpriteContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	g_pSpriteContext->IASetVertexBuffers(0, 1, &pSprite, &vtxSize, &offset);
-	g_pSpriteContext->VSSetShader(g_pSpriteVS, NULL, 0);
-	g_pSpriteContext->PSSetShader(g_pSpritePS, NULL, 0);
-	g_pSpriteContext->UpdateSubresource(g_pSpriteBuffer, 0, nullptr, &g_SpriteParam, 0, 0);
-	g_pSpriteContext->VSSetConstantBuffers(0, 1, &g_pSpriteBuffer);
-	g_pSpriteContext->PSSetShaderResources(0, 1, &g_pSpriteTexture);
-
-	g_pSpriteContext->Draw(num, 0);
-}
-
 void SetSpritePos(float x, float y)
 {
 	g_SpriteParam.pos.x = x;
@@ -111,9 +85,15 @@ void SetSpriteColor(float r, float g, float b, float a)
 	g_SpriteParam.color.w = a;
 }
 
-void SetSpriteMatrix(DirectX::XMMATRIX world)
+void SetBillBoard(Camera* camera)
 {
-	g_SpriteParam.modelViewProjection = world;
+	DirectX::XMMATRIX viewMatrix = camera->GetView();
+	DirectX::XMMATRIX projectionMatrix = camera->GetProjection();
+	DirectX::XMMATRIX modelMatrix = DirectX::XMMatrixIdentity();
+
+	// 定数バッファの更新
+	g_SpriteParam.modelViewProjection = viewMatrix * projectionMatrix * modelMatrix;
+	g_SpriteParam.modelViewProjection = DirectX::XMMatrixTranspose(g_SpriteParam.modelViewProjection);
 }
 
 void SetSpriteTexture(ID3D11ShaderResourceView* pTexture)
