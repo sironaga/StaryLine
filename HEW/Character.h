@@ -2,6 +2,8 @@
 #define _DIRECTX_
 #include "DirectX.h"
 #include "Camera.h"
+#include "Sprite.h"
+
 //Character.h
 //編集者：AT12C05宇留野陸斗
 //編集者：AT12A07小川蓮
@@ -98,7 +100,7 @@ protected:
 	bool m_bCreateInit;				//生成状態の初期化済みかどうか
 
 	Camera* m_pCamera;
-
+	Sprite* m_pSprite;
 	/*変数のSet&Get*/
 public:
 	//ステータスのSet
@@ -239,6 +241,7 @@ private:
 	ID3D11Buffer* m_pVtx;			//画像の頂点座標を取得
 
 	Camera* m_pCamera;
+	Sprite* m_pSprite;
 public:
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
