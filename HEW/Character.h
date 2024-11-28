@@ -13,7 +13,7 @@
 #define NORMAL_SIZE (10)//キャラクターの基本サイズ
 
 class CFieldVertex;
-void IninCharacterTexture(CFieldVertex* InAddress);	//テクスチャ読み込み
+void IninCharacterTexture(CFieldVertex* InAddress, int StageNum);	//テクスチャ読み込み
 
 //ステータス情報
 enum Status
@@ -184,6 +184,47 @@ private:
 	void SettingStatus(void) override;
 };
 
+class CAllyPlayer
+{
+public:
+	CAllyPlayer(float InSize, CVector3<float>FirstPos, Camera* InAddress);
+	~CAllyPlayer();
+
+	void Update(void);	//更新処理
+	void Draw(void);	//描画処理
+
+private:
+	void CreateUpdate(void);
+	void BattleUpdate(void);
+	void DeathUpdate(void);
+
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
+private:
+	Status m_tStatus;				//ステータス状態
+	CVector3<float> m_tPos;			//位置座標
+	CVector3<float> m_tSize;		//サイズ
+	float m_fHp;					//体力
+
+	Camera* m_pCamera;
+	Sprite* m_pSprite;
+public:
+	//ステータスのSet
+	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
+	//ステータスのget
+	Status GetStatus(void) { return m_tStatus; }
+
+	//位置座標のGet
+	CVector3<float> GetPos(void) { return m_tPos; }
+
+	//サイズのGet
+	CVector3<float> GetSize(void) { return m_tSize; }
+
+	float GetHp(void) { return m_fHp; }
+
+	//カメラのアドレス設定
+	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
+};
+
 //敵キャラクタークラス
 class CEnemy : public CFighter
 {
@@ -200,6 +241,30 @@ private:
 	void DeathUpdate(void)  override;
 
 	void SettingStatus(void) override;
+};
+
+class CEnemyBoss : public CFighter
+{
+private:
+	enum BossType
+	{
+		Type1,
+		Type2,
+		Type3,
+	};
+public:
+	CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress);	//コンストラクタ
+	~CEnemyBoss();
+	
+	void Update(void)	override;	//更新処理
+	void Draw(void)		override;	//描画処理
+private:
+	void CreateUpdate(void) override;
+	void BattleUpdate(void) override;
+	void DeathUpdate(void)  override;
+
+	void SettingStatus(void) override;
+
 };
 
 //味方バッファークラス
@@ -241,7 +306,6 @@ private:
 	Corner nCornerCount;			//属性
 	CVector3<float> m_tPos;			//位置座標
 	CVector3<float> m_tSize;		//サイズ
-	ID3D11Buffer* m_pVtx;			//画像の頂点座標を取得
 
 	Camera* m_pCamera;
 	Sprite* m_pSprite;
