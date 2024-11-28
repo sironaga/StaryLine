@@ -33,10 +33,8 @@ int Quick = 1;
 CBattle::CBattle()
 	: m_nAllyCount(0)
 	, m_nAllyDateCount(0)
-	, m_nCreateAllyNum(0)
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{0,0,0,0,0}
-	, m_nCreateEnemyNum(0)
 	, m_nNowWave(0)
 	, m_nMaxWave(0)
 	, m_nSelectPattern(0)
@@ -153,12 +151,6 @@ void CBattle::Update(void)
 
 	//íœˆ—
 	Delete();
-
-	//¶¬–½—ß”»’è
-	TimeAxis();
-
-	//¶¬ˆ—
-	CreateEntity();
 
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
@@ -363,23 +355,8 @@ void CBattle::Draw(void)
 
 void CBattle::NextWaveInit(void)
 {
-	//–¡•ûŠÖŒW‚Ìƒf[ƒ^ƒA‰Šú‰»
-	for (int i = 0; i < MAX_ALLY; i++)
-	{
-		m_pAlly[i] = nullptr;
-
-		m_tAllyData[i].nCornerCount = -1;
-
-		m_tAllyData[i].m_tCreatePos.X = ALLYCREATE_POSX;
-		m_tAllyData[i].m_tCreatePos.Y = ALLYCREATE_POSY_2;
-		m_tAllyData[i].m_tCreatePos.Z = 0.0f;
-		m_tAllyData[i].Size = 1.0f;
-	}
-	m_nAllyCount = 0;
 	m_nEnemyCount = 0;
 	m_nAllyDateCount = 0;
-	m_nCreateAllyNum = 0;
-	m_nCreateEnemyNum = 0;
 	m_nBattleTime = 0;
 	m_bFirstFight = false;
 }
@@ -390,22 +367,6 @@ void CBattle::SaveAllyData(int InCornerCount, float InSize)
 
 	m_tAllyData[m_nAllyDateCount].nCornerCount = InCornerCount;
 	m_tAllyData[m_nAllyDateCount].Size = InSize;
-
-	//switch (m_tAllyData[m_nAllyDateCount].nCornerCount)
-	//{
-	//case 3:	m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -800;
-	//	break;
-	//case 4:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -500;
-	//	break;
-	//case 5:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y = -200;
-	//	break;
-	//case 6:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  200;
-	//	break;
-	//case 7:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  500;
-	//	break;
-	//case 8:m_tAllyData[m_nAllyDateCount].m_tCreatePos.Y =  800;
-	//	break;
-	//}
 	
 	//•Û‘¶”‚ğ‰ÁZ
 	m_nAllyDateCount++;
@@ -421,86 +382,40 @@ void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float I
 	m_nEnemyDateCount[InWave]++;
 }
 
-void CBattle::TimeAxis(void)
-{
-	if (m_nBattleTime == 0 / Quick
-		|| m_nBattleTime == 100 / Quick
-		|| m_nBattleTime == 200 / Quick
-		|| m_nBattleTime == 300 / Quick
-		|| m_nBattleTime == 400 / Quick
-		|| m_nBattleTime == 500 / Quick
-		|| m_nBattleTime == 600 / Quick
-		|| m_nBattleTime == 700 / Quick
-		|| m_nBattleTime == 800 / Quick
-		|| m_nBattleTime == 900 / Quick
-		|| m_nBattleTime == 1000 / Quick
-		|| m_nBattleTime == 1100 / Quick
-		|| m_nBattleTime == 1200 / Quick
-		|| m_nBattleTime == 1300 / Quick
-		|| m_nBattleTime == 1400 / Quick
-		|| m_nBattleTime == 1500 / Quick
-		|| m_nBattleTime == 1600 / Quick
-		|| m_nBattleTime == 1700 / Quick
-		|| m_nBattleTime == 1800 / Quick
-		|| m_nBattleTime == 1900 / Quick
-		|| m_nBattleTime == 2000 / Quick
-		)
-	{
-		//–¡•û¶¬—\’è”‚ğ3‚Éİ’è
-		m_nCreateAllyNum = m_nAllyDateCount;
-
-		//“G¶¬—\’è”‚ğ3‚Éİ’è
-		m_nCreateEnemyNum = m_nEnemyDateCount[m_nNowWave];
-
-
-		m_bFirstFight = true;
-	}
-}
-
 void CBattle::CreateEntity(void)
 {
 	//w’è‚³‚ê‚½”‚¾‚¯¶¬‚·‚é
- 	while (m_nCreateAllyNum)
+	while (m_nAllyDateCount)
 	{
-		if (m_nCreateAllyNum <= m_nAllyDateCount)
-		{
-			//–¡•û‚ğ¶¬‚·‚é
-			CreateAllyData(m_tAllyData[0]);
+		//–¡•û‚ğ¶¬‚·‚é
+		CreateAllyData(m_tAllyData[0]);
 
-			//¶¬‚Ég—p‚µ‚½‚½‚ßî•ñ‚ğÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ğ‘O‹l‚ß‚É‚·‚é
-			for (int i = 0; i + 1 < MAX_ALLY; i++)
-			{
-				m_tAllyData[i] = m_tAllyData[i + 1];
-			}
-			//•Û‘¶Ï‚İ‚Ì‘”‚ğŒ¸‚ç‚·
-			m_nAllyDateCount--;
-			//¶¬”‚ğ‰ÁZ
-			m_nAllyCount++;
+		//¶¬‚Ég—p‚µ‚½‚½‚ßî•ñ‚ğÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ğ‘O‹l‚ß‚É‚·‚é
+		for (int i = 0; i + 1 < MAX_ALLY; i++)
+		{
+			m_tAllyData[i] = m_tAllyData[i + 1];
 		}
-		//¶¬—\’è”‚ğŒ¸‚ç‚·
-		m_nCreateAllyNum--;
+		//•Û‘¶Ï‚İ‚Ì‘”‚ğŒ¸‚ç‚·
+		m_nAllyDateCount--;
+		//¶¬”‚ğ‰ÁZ
+		m_nAllyCount++;
 	}
 
 	//w’è‚³‚ê‚½”‚¾‚¯¶¬‚·‚é
-	while (m_nCreateEnemyNum)
+	while (m_nEnemyDateCount[m_nNowWave])
 	{
-		if (m_nCreateEnemyNum <= m_nEnemyDateCount[m_nNowWave])
-		{
-			//–¡•û‚ğ¶¬‚·‚é
-			CreateEnemyData(m_tEnemyData[m_nNowWave][m_nSelectPattern][0]);
+		//“G‚ğ¶¬‚·‚é
+		CreateEnemyData(m_tEnemyData[m_nNowWave][m_nSelectPattern][0]);
 
-			//¶¬‚Ég—p‚µ‚½‚½‚ßî•ñ‚ğÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ğ‘O‹l‚ß‚É‚·‚é
-			for (int i = 0; i + 1 < MAX_ENEMY; i++)
-			{
-				m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
-			}
-			//•Û‘¶Ï‚İ‚Ì‘”‚ğŒ¸‚ç‚·
-			m_nEnemyDateCount[m_nNowWave]--;
-			//¶¬”‚ğ‰ÁZ
-			m_nEnemyCount++;
+		//¶¬‚Ég—p‚µ‚½‚½‚ßî•ñ‚ğÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ğ‘O‹l‚ß‚É‚·‚é
+		for (int i = 0; i + 1 < MAX_ENEMY; i++)
+		{
+			m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
 		}
-		//¶¬—\’è”‚ğŒ¸‚ç‚·
-		m_nCreateEnemyNum--;
+		//•Û‘¶Ï‚İ‚Ì‘”‚ğŒ¸‚ç‚·
+		m_nEnemyDateCount[m_nNowWave]--;
+		//¶¬”‚ğ‰ÁZ
+		m_nEnemyCount++;
 	}
 }
 
