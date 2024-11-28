@@ -33,6 +33,8 @@ public:
 
 	void SetBattleAddress(CBattle*);
 	void SetPlayerAddress(CPlayer*);
+
+	void InitFieldVertex();
 	
 private:
 
