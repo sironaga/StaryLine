@@ -91,6 +91,7 @@
     <ClInclude Include="StartTitle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VectorOperator.h" />
+    <ClInclude Include="WICTextureLoader.h" />
     <ClInclude Include="_StructList.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
