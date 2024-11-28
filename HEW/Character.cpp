@@ -28,11 +28,9 @@ enum EnemyTexture
 Texture* g_pAllyTex[MAX_AllyTex];
 Texture* g_pEnemyTex[MAX_EnemyTex];
 
-CFieldVertex* g_pFieldVtx;
+Texture* g_pCollisionTex;
 
-//ID3D11ShaderResourceView* g_pAllyTex[6];	//味方画像のテクスチャ
-//ID3D11ShaderResourceView* g_pEnemyTex[3];	//敵画像のテクスチャ
-//ID3D11ShaderResourceView* g_pCollisionTex;
+CFieldVertex* g_pFieldVtx;
 
 void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
 {
@@ -54,6 +52,8 @@ void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
 	hr = g_pEnemyTex[Enemy2]->Create("Asset/敵/4.png");
 	hr = g_pEnemyTex[Enemy3]->Create("Asset/敵/5.png");
 
+	hr = g_pCollisionTex->Create("Asset/Star/CLStar.png");
+	
 	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/3.png", &g_pAllyTex[0]);
 	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/4.png", &g_pAllyTex[1]);
 	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/5.png", &g_pAllyTex[2]);
@@ -101,6 +101,22 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos, Ca
 
 CFighter::~CFighter()
 {
+	if (g_pAllyTex)delete g_pAllyTex;
+	for (int i = 0; i < MAX_AllyTex; i++)g_pAllyTex[i] = nullptr;
+	if (g_pEnemyTex)delete g_pEnemyTex;
+	for (int i = 0; i < MAX_EnemyTex; i++)g_pEnemyTex[i] = nullptr;
+
+	if (g_pCollisionTex)
+	{
+		delete g_pCollisionTex;
+		g_pCollisionTex = nullptr;
+	}
+
+	if (m_pSprite)
+	{
+		delete m_pSprite;
+		m_pSprite = nullptr;
+	}
 	if (g_pFieldVtx)
 	{
 		delete g_pFieldVtx;
@@ -123,82 +139,22 @@ CFighter::~CFighter()
 	}
 }
 
-//void CFighter::CollisionDraw(void)
-//{
-//	/*当たり判定テスト*/
-////テクスチャの指定
-//	SetSpriteTexture(g_pCollisionTex);
-//
-//	//スプライトの設定
-//	SetSpritePos(m_tPos.X - m_tAtkCollision.Width, m_tPos.Y - m_tAtkCollision.Height);
-//
-//	//大きさの設定
-//	SetSpriteScale(1.0f, 1.0f);
-//
-//	//背景色の設定
-//	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	//描画
-//	DrawSprite(m_pVtx, sizeof(Vertex));
-//
-//	//設定のリセット
-//	ReSetSprite();
-//
-//	//テクスチャの指定
-//	SetSpriteTexture(g_pCollisionTex);
-//
-//	//スプライトの設定
-//	SetSpritePos(m_tPos.X + m_tAtkCollision.Width, m_tPos.Y - m_tAtkCollision.Height);
-//
-//	//大きさの設定
-//	SetSpriteScale(1.0f, 1.0f);
-//
-//	//背景色の設定
-//	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	//描画
-//	DrawSprite(m_pVtx, sizeof(Vertex));
-//
-//	//設定のリセット
-//	ReSetSprite();
-//
-//	//テクスチャの指定
-//	SetSpriteTexture(g_pCollisionTex);
-//
-//	//スプライトの設定
-//	SetSpritePos(m_tPos.X - m_tAtkCollision.Width, m_tPos.Y + m_tAtkCollision.Height);
-//
-//	//大きさの設定
-//	SetSpriteScale(1.0f, 1.0f);
-//
-//	//背景色の設定
-//	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	//描画
-//	DrawSprite(m_pVtx, sizeof(Vertex));
-//
-//	//設定のリセット
-//	ReSetSprite();
-//
-//	//テクスチャの指定
-//	SetSpriteTexture(g_pCollisionTex);
-//
-//	//スプライトの設定
-//	SetSpritePos(m_tPos.X + m_tAtkCollision.Width, m_tPos.Y + m_tAtkCollision.Height);
-//
-//	//大きさの設定
-//	SetSpriteScale(1.0f, 1.0f);
-//
-//	//背景色の設定
-//	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	//描画
-//	DrawSprite(m_pVtx, sizeof(Vertex));
-//
-//	//設定のリセット
-//	ReSetSprite();
-//
-//}
+void CFighter::CollisionDraw(void)
+{
+	/*当たり判定テスト*/
+
+	//テクスチャの指定
+	m_pSprite->SetTexture(g_pCollisionTex);
+
+	DrawSetting({
+		m_tPos.X - m_tAtkCollision.Width,
+		m_tPos.Y - m_tAtkCollision.Height,
+		m_tPos.Z - m_tAtkCollision.Width
+		}, { 1.0f,1.0f,1.0f });
+
+	m_pSprite->Draw();
+
+}
 
 bool CFighter::AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos)
 {
@@ -297,6 +253,33 @@ void CFighter::Damage(CFighter* pFighter)
 	}
 }
 
+void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+{
+	//移動行列(Translation)
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		InPos.x,
+		InPos.y,
+		InPos.z,
+		0.0f
+	));
+
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * T;
+
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = m_pCamera->GetViewMatrix();
+	wvp[2] = m_pCamera->GetProjectionMatrix();
+
+	m_pSprite->SetWorld(wvp[0]);
+	m_pSprite->SetView(wvp[1]);
+	m_pSprite->SetProjection(wvp[2]);
+}
+
 CAlly::CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress)
 	:CFighter(InCornerCount,InSize, FirstPos,InAddress)
 {
@@ -346,27 +329,7 @@ void CAlly::Draw(void)
 
 	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
-	//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X, m_tPos.Y, m_tPos.Z, 0.0f));
-	//拡大縮小行列(Scaling)
-	if (m_tSize.X == NULL)m_tSize.X = 1.0f;
-	if (m_tSize.Y == NULL)m_tSize.Y = 1.0f;
-	if (m_tSize.Z == NULL)m_tSize.Z = 1.0f;
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.X, m_tSize.Y, m_tSize.Z);
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * T;
-
-	DirectX::XMFLOAT4X4 wvp[3];
-	DirectX::XMMATRIX world;
-	world = mat;
-
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
-
-	m_pSprite->SetWorld(wvp[0]);
-	m_pSprite->SetView(wvp[1]);
-	m_pSprite->SetProjection(wvp[2]);
+	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
 }
@@ -508,27 +471,7 @@ void CEnemy::Draw(void)
 
 	m_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
 
-		//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X, m_tPos.Y, m_tPos.Z, 0.0f));
-	//拡大縮小行列(Scaling)
-	if (m_tSize.X == NULL)m_tSize.X = 1.0f;
-	if (m_tSize.Y == NULL)m_tSize.Y = 1.0f;
-	if (m_tSize.Z == NULL)m_tSize.Z = 1.0f;
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.X, m_tSize.Y, m_tSize.Z);
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * T;
-
-	DirectX::XMFLOAT4X4 wvp[3];
-	DirectX::XMMATRIX world;
-	world = mat;
-
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
-
-	m_pSprite->SetWorld(wvp[0]);
-	m_pSprite->SetView(wvp[1]);
-	m_pSprite->SetProjection(wvp[2]);
+	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
 }
@@ -672,27 +615,7 @@ void CAllyBuffer::Draw(void)
 
 	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
-	//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X, m_tPos.Y, m_tPos.Z, 0.0f));
-	//拡大縮小行列(Scaling)
-	if (m_tSize.X == NULL)m_tSize.X = 1.0f;
-	if (m_tSize.Y == NULL)m_tSize.Y = 1.0f;
-	if (m_tSize.Z == NULL)m_tSize.Z = 1.0f;
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.X, m_tSize.Y, m_tSize.Z);
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * T;
-
-	DirectX::XMFLOAT4X4 wvp[3];
-	DirectX::XMMATRIX world;
-	world = mat;
-
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
-
-	m_pSprite->SetWorld(wvp[0]);
-	m_pSprite->SetView(wvp[1]);
-	m_pSprite->SetProjection(wvp[2]);
+	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
 }
@@ -734,4 +657,31 @@ void CAllyBuffer::SettingStatus(void)
 		m_tBuff = BT_ReSummon;
 		break;
 	}
+}
+
+void CAllyBuffer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+{
+	//移動行列(Translation)
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		InPos.x,
+		InPos.y,
+		InPos.z,
+		0.0f
+	));
+
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * T;
+
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = m_pCamera->GetViewMatrix();
+	wvp[2] = m_pCamera->GetProjectionMatrix();
+
+	m_pSprite->SetWorld(wvp[0]);
+	m_pSprite->SetView(wvp[1]);
+	m_pSprite->SetProjection(wvp[2]);
 }

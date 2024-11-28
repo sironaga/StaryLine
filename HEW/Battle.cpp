@@ -60,6 +60,7 @@ CBattle::CBattle()
 	, m_nBattleTime(0)
 	, m_bFirstFight(false)
 	, m_nFirstPosPattern(0)
+	, m_nOldEnemyCount(0)
 {
 	HRESULT hr;
 

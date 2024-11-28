@@ -68,7 +68,7 @@ public:
 	virtual void Update(void) = 0;	//更新処理
 	virtual void Draw(void) = 0;	//描画処理
 
-	//void CollisionDraw(void);
+	void CollisionDraw(void);
 
 	bool AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
 	bool SearchCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
@@ -76,6 +76,7 @@ public:
 
 protected:
 	virtual void SettingStatus(void) = 0;		//ステータス決め
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
 	
 	/*変数*/
 public:
@@ -231,6 +232,7 @@ private:
 	void DeathUpdate(void);
 
 	void SettingStatus(void);
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
 public:
 	bool IsBuff;					//Buffをかける処理をもう行ったかどうか
 private:
