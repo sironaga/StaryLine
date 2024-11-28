@@ -43,22 +43,13 @@ void InitSceneGame(int StageNum)
 	
 	g_pBattle->SetCameraAddress(g_pField->GetCameraAddress());
 
-	IninCharacterTexture(g_pFieldVertex);//キャラクターテクスチャ～の初期化
+	IninCharacterTexture(g_pFieldVertex, StageNum);//キャラクターテクスチャ～の初期化
+	g_pBattle->m_nStageNum = StageNum;
 
 	GameTime = 0;//タイマー初期化
 	GameSTime = 0;
 	GameSTimeError = 0;
 
-	switch (StageNum)
-	{
-	default:
-	case(STAGE1):
-		break;
-	case(STAGE2):
-		break;
-	case(STAGE3):
-		break;
-	}
 
 	InitSave();
 }

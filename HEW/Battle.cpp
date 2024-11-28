@@ -48,7 +48,7 @@ CBattle::CBattle()
 	, m_nAllyDateCount(0)
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
-	, m_nNowWave(0)
+	, m_nNowWave(1)
 	, m_nMaxWave(0)
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
@@ -302,7 +302,7 @@ void CBattle::Update(void)
 	m_nBattleTime++;//戦闘時間の更新
 
 	//勝敗判定
-	if (m_nNowWave < m_nMaxWave)
+	if (m_nNowWave == 0)
 	{
 		if (GetNowPhase() == BATTLE)
 		{
@@ -319,21 +319,19 @@ void CBattle::Update(void)
 	{
 		if (GetNowPhase() == BATTLE)
 		{
-			if (m_nEnemyCount <= 0)
+			if (m_pEnemyBoss == nullptr)
 			{
-				MessageBox(NULL, "敵が全滅したため勝利", "勝敗", MB_OK);
-				NextWaveInit();
+				MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
 				ChangeScene(SCENE_TITLE);
 			}
 		}
 	}
 	if (GetNowPhase() == BATTLE)
 	{
-		if (m_nAllyCount <= 0)
+		if (m_pAllyPlayer == nullptr)
 		{
-			m_nNowWave = 1;
-			MessageBox(NULL,"味方が全滅したため敗北", "勝敗", MB_OK);
-			NextWaveInit();
+			m_nNowWave = 0;
+			MessageBox(NULL,"プレイヤーが倒されたため敗北", "勝敗", MB_OK);
 			ChangeScene(SCENE_TITLE);
 		}
 	}
@@ -345,8 +343,15 @@ void CBattle::CharacterUpdate(void)
 	//味方の更新(アニメーション)
 	for (int i = 0; i < m_nAllyCount; i++)m_pAlly[i]->Update();
 
+	for (int i = 0; i < m_nAllyBufferCount; i++)m_pAllyBuffer[i]->Update();
+
 	//敵の更新(アニメーション)
 	for (int i = 0; i < m_nEnemyCount; i++)m_pEnemy[i]->Update();
+
+	if (m_nNowWave == 1)
+	{
+		m_pEnemyBoss->Update();
+	}
 }
 
 void CBattle::Draw(void)
@@ -369,72 +374,52 @@ void CBattle::Draw(void)
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
 		m_pAlly[i]->Draw();
-		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('3'))
-		//{
-		//	if (m_pAlly[i]->GetCornerCount() == 3)
-		//		m_pAlly[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('4'))
-		//{
-		//	if (m_pAlly[i]->GetCornerCount() == 4)
-		//		m_pAlly[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('5'))
-		//{
-		//	if (m_pAlly[i]->GetCornerCount() == 5)
-		//		m_pAlly[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('6'))
-		//{
-		//	if (m_pAlly[i]->GetCornerCount() == 6)
-		//		m_pAlly[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('7'))
-		//{
-		//	if (m_pAlly[i]->GetCornerCount() == 7)
-		//		m_pAlly[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('8'))
-		//{
-		//	if (m_pAlly[i]->GetCornerCount() == 8)
-		//		m_pAlly[i]->CollisionDraw();
-		//}
+		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('3'))
+		{
+			if (m_pAlly[i]->GetCornerCount() == 3)
+				m_pAlly[i]->CollisionDraw();
+		}
+		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('4'))
+		{
+			if (m_pAlly[i]->GetCornerCount() == 4)
+				m_pAlly[i]->CollisionDraw();
+		}
+		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('5'))
+		{
+			if (m_pAlly[i]->GetCornerCount() == 5)
+				m_pAlly[i]->CollisionDraw();
+		}
+	}
+
+	for (int i = 0; i < m_nAllyBufferCount; i++)
+	{
+		m_pAllyBuffer[i]->Draw();
 	}
 
 	//敵の描画
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
 		m_pEnemy[i]->Draw();
-		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('3'))
-		//{
-		//	if (m_pEnemy[i]->GetCornerCount() == 3)
-		//		m_pEnemy[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('4'))
-		//{
-		//	if (m_pEnemy[i]->GetCornerCount() == 4)
-		//		m_pEnemy[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('5'))
-		//{
-		//	if (m_pEnemy[i]->GetCornerCount() == 5)
-		//		m_pEnemy[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('6'))
-		//{
-		//	if (m_pEnemy[i]->GetCornerCount() == 6)
-		//		m_pEnemy[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('7'))
-		//{
-		//	if (m_pEnemy[i]->GetCornerCount() == 7)
-		//		m_pEnemy[i]->CollisionDraw();
-		//}
-		//if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('8'))
-		//{
-		//	if (m_pEnemy[i]->GetCornerCount() == 8)
-		//		m_pEnemy[i]->CollisionDraw();
-		//}
+		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('3'))
+		{
+			if (m_pEnemy[i]->GetCornerCount() == 3)
+				m_pEnemy[i]->CollisionDraw();
+		}
+		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('4'))
+		{
+			if (m_pEnemy[i]->GetCornerCount() == 4)
+				m_pEnemy[i]->CollisionDraw();
+		}
+		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('5'))
+		{
+			if (m_pEnemy[i]->GetCornerCount() == 5)
+				m_pEnemy[i]->CollisionDraw();
+		}
+	}
+
+	if (m_nNowWave == 1)
+	{
+		m_pEnemyBoss->Draw();
 	}
 }
 
@@ -487,6 +472,14 @@ void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float I
 
 void CBattle::CreateEntity()
 {
+	if (m_pAllyPlayer == nullptr)
+	{
+		CVector3<float> InFirstPos;
+		InFirstPos.X = ALLYCORE_POSX;
+		InFirstPos.Y = 0.0f;
+		InFirstPos.Z = ALLYCORE_POSZ;
+		m_pAllyPlayer = new CAllyPlayer(1.0f, InFirstPos, m_pCamera);
+	}
 	//指定された数だけ生成する
 	while (m_nAllyDateCount)
 	{
@@ -507,7 +500,7 @@ void CBattle::CreateEntity()
 
 		SelectFirstPosX++;
 
-		if (SelectFirstPosX > 5)
+		if (SelectFirstPosX >= 5)
 		{
 			SelectFirstPosX = 0;
 			SelectFirstPosY++;
@@ -531,6 +524,17 @@ void CBattle::CreateEntity()
 		//生成数を加算
 		m_nEnemyCount++;
 	}
+
+	if (m_nNowWave == 1)
+	{
+		CVector3<float> BossFirstPos;
+
+		BossFirstPos.X = ENEMYCREATE_POSX;
+		BossFirstPos.Y = -1.0f;
+		BossFirstPos.Z = ENEMYCREATE_POSZ_3;
+
+		m_pEnemyBoss = new CEnemyBoss(m_nStageNum, 2.0f, BossFirstPos, m_pCamera);
+	}
 }
 
 void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
@@ -551,7 +555,7 @@ void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 
 void CBattle::CreateEnemyData(EntityData InDate)
 {
-	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,(int)InDate.Size,InDate.m_tCreatePos, m_pCamera);
+	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,InDate.Size,InDate.m_tCreatePos, m_pCamera);
 }
 
 void CBattle::Search(int i, Entity Entity)
@@ -636,18 +640,12 @@ void CBattle::Move(int i, Entity Entity)
 			{
 				if (SENTER_POSX < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
 				if (SENTER_POSX > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
-
-				//if (SENTER_POSZ < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
-				//if (SENTER_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
 			}
 		}
 		else//標的がいないので敵のコアに向かって進む
 		{
 			if (SENTER_POSX < m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(-MOVESPEED(2.0f));
 			if (SENTER_POSX > m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(MOVESPEED(2.0f));
-
-			//if (SENTER_POSZ < m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(-MOVESPEED(2.0f));
-			//if (SENTER_POSZ > m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(MOVESPEED(2.0f));
 		}
 		break;
 
@@ -672,6 +670,7 @@ void CBattle::Move(int i, Entity Entity)
 				if (ALLYCORE_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
 			}
 		}
+		//ここをプレイヤーの位置に進むに変更する
 		else//標的がいないので敵のコアに向かって進む
 		{
 			if (ALLYCORE_POSX < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
@@ -679,6 +678,36 @@ void CBattle::Move(int i, Entity Entity)
 
 			if (ALLYCORE_POSZ < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
 			if (ALLYCORE_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
+		}
+		break;
+
+	case EnemyBoss:
+		if (m_pEnemyBoss->m_nTargetNumber != -1)//標的を設定済み
+		{
+			if (m_pEnemyBoss->m_nTargetNumber < m_nAllyCount)//現在生存数よりも数字が大きくないかどうか
+			{
+				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().X < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
+				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().X > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
+
+				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().Z < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
+				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().Z > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
+			}
+			else
+			{
+				if (ALLYCORE_POSX < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
+				if (ALLYCORE_POSX > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
+
+				if (ALLYCORE_POSZ < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
+				if (ALLYCORE_POSZ > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
+			}
+		}
+		else//標的がいないので敵のコアに向かって進む
+		{
+			if (ALLYCORE_POSX < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
+			if (ALLYCORE_POSX > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
+
+			if (ALLYCORE_POSZ < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
+			if (ALLYCORE_POSZ > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
 
 		}
 		break;
@@ -721,6 +750,24 @@ void CBattle::Battle(int i, int l, Entity Entity)
 		{
 			m_pEnemy[i]->AddAtkCharge();//チャージする
 		}
+		break;
+	case CBattle::EnemyBoss:
+		if (m_pEnemyBoss->GetAtkCharge() >= m_pEnemyBoss->GetCoolTime())//攻撃チャージがたまっているかどうか
+		{
+			if (m_pEnemyBoss->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))//当たり判定の中にいるかどうか
+			{
+				if (m_pAlly[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
+				{
+					m_pAlly[l]->Damage(m_pEnemyBoss);//相手の体力を減らす
+					m_pEnemyBoss->ChargeReset();//攻撃したのでチャージをリセットする
+				}
+			}
+		}
+		else//攻撃チャージが溜まっていなかったら
+		{
+			m_pEnemyBoss->AddAtkCharge();//チャージする
+		}
+		break;
 	}
 }
 
@@ -788,6 +835,11 @@ void CBattle::Delete(void)
 			m_nEnemyCount--;									//今いる生存数を減らす
 			i--;															//前詰めされたのでもう一度同じ場所を処理する
 		}
+	}
+	//敵ボスの生存判定
+	if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
+	{
+		m_pEnemyBoss = nullptr;
 	}
 }
 

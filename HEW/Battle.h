@@ -2,7 +2,7 @@
 #include "Character.h"
 #include "VectorOperator.h"
 
-#define MAX_WAVE  (5)	//ウェーブの最大数
+#define MAX_WAVE  (2)	//ウェーブの最大数
 #define MAX_PATTERN (5)	//パターンの最大数
 
 class CBattle
@@ -13,6 +13,7 @@ private:
 	{
 		Ally = 1,
 		Enemy = 2,
+		EnemyBoss = 3,
 	};
 private:
 	struct EntityData
@@ -41,6 +42,8 @@ private:
 	void Delete(void);					//削除処理と配列前詰め
 	void FirstPosSetting();				//戦闘初期位置のセッティング
 
+public:
+	int m_nStageNum;					//ステージナンバー
 private:
 	int m_nBattleTime;					//戦闘時間
 	bool m_bFirstFight;					//初期戦闘したかどうか
@@ -53,6 +56,8 @@ public:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
+	CAllyPlayer* m_pAllyPlayer;							//プレイヤー(コア)
+
 	int m_nAllyCount;									//生成した味方のカウント
 
 	CAllyBuffer* m_pAllyBuffer[MAX_ALLY];				//味方バッファークラスポインタ
@@ -74,6 +79,8 @@ private:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CEnemy* m_pEnemy[MAX_ENEMY];					//敵クラスポインタ
+	CEnemyBoss* m_pEnemyBoss;						//敵ボスのクラスポインタ
+
 	EntityData m_tEnemyData[MAX_WAVE][MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
 	int m_nOldEnemyCount;							//再描画前に生存している敵の数
 	int m_nEnemyCount;								//生成した敵のカウント
