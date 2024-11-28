@@ -1,7 +1,6 @@
 #include "Character.h"
 #include "DirectXTex/TextureLoad.h"
 #include "FieldVertex.h"
-#include "Sprite.h"
 
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((Num / 2) + (m_tSize.X))	//キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(Num) ((Num / 2) + (m_tSize.Y))	//キャラクターの縦の索敵当たり判定(索敵範囲)
@@ -9,38 +8,69 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//キャラクターの横の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//キャラクターの縦の攻撃当たり判定(相手の人数)
 
-Sprite* g_pSprite;
+enum AllyTexture
+{
+	Ally3,
+	Ally4,
+	Ally5,
+	Ally6,
+	Ally7,
+	Ally8,
+	MAX_AllyTex,
+};
+enum EnemyTexture
+{
+	Enemy1,
+	Enemy2,
+	Enemy3,
+	MAX_EnemyTex,
+};
+Texture* g_pAllyTex[MAX_AllyTex];
+Texture* g_pEnemyTex[MAX_EnemyTex];
+
 CFieldVertex* g_pFieldVtx;
-ID3D11ShaderResourceView* g_pAllyTex[6];	//味方画像のテクスチャ
-ID3D11ShaderResourceView* g_pEnemyTex[3];	//敵画像のテクスチャ
-ID3D11ShaderResourceView* g_pCollisionTex;
+
+//ID3D11ShaderResourceView* g_pAllyTex[6];	//味方画像のテクスチャ
+//ID3D11ShaderResourceView* g_pEnemyTex[3];	//敵画像のテクスチャ
+//ID3D11ShaderResourceView* g_pCollisionTex;
 
 void IninCharacterTexture(CFieldVertex* InAddress)	//テクスチャ読み込み
 {
 	g_pFieldVtx = InAddress;
-	g_pSprite = new Sprite();
+	for(int i = 0; i < MAX_AllyTex;i++)
+		g_pAllyTex[i] = new Texture();
+	for(int i = 0; i < MAX_EnemyTex;i++)
+		g_pEnemyTex[i] = new Texture();
+
 	HRESULT hr;
 
-	hr = LoadTextureFromFile(GetDevice(), "Asset/味方/3.png", &g_pAllyTex[0]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/味方/4.png", &g_pAllyTex[1]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/味方/5.png", &g_pAllyTex[2]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/味方/6.png", &g_pAllyTex[3]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/味方/7.png", &g_pAllyTex[4]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/味方/8.png", &g_pAllyTex[5]);
+	hr = g_pAllyTex[Ally3]->Create("Asset/味方/3.png");
+	hr = g_pAllyTex[Ally4]->Create("Asset/味方/4.png");
+	hr = g_pAllyTex[Ally5]->Create("Asset/味方/5.png");
+	hr = g_pAllyTex[Ally6]->Create("Asset/味方/6.png");
+	hr = g_pAllyTex[Ally7]->Create("Asset/味方/7.png");
+	hr = g_pAllyTex[Ally8]->Create("Asset/味方/8.png");
+	hr = g_pEnemyTex[Enemy1]->Create("Asset/敵/3.png");
+	hr = g_pEnemyTex[Enemy2]->Create("Asset/敵/4.png");
+	hr = g_pEnemyTex[Enemy3]->Create("Asset/敵/5.png");
 
-	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/3.png", &g_pEnemyTex[0]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/4.png", &g_pEnemyTex[1]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/敵/5.png", &g_pEnemyTex[2]);
-	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/6.png", &g_pEnemyTex[3]);
-	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/7.png", &g_pEnemyTex[4]);
-	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/8.png", &g_pEnemyTex[5]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/3.png", &g_pAllyTex[0]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/4.png", &g_pAllyTex[1]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/5.png", &g_pAllyTex[2]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/6.png", &g_pAllyTex[3]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/7.png", &g_pAllyTex[4]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/味方/8.png", &g_pAllyTex[5]);
+
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/3.png", &g_pEnemyTex[0]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/4.png", &g_pEnemyTex[1]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/敵/5.png", &g_pEnemyTex[2]);
 
 	/*当たり判定テスト用*/
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Star/image_(2-1).png", &g_pCollisionTex);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/Star/image_(2-1).png", &g_pCollisionTex);
 
-	if (FAILED(hr)) {
-		MessageBox(NULL, "Character 画像", "Error", MB_OK);
-	}
+	//if (FAILED(hr)) {
+	//	MessageBox(NULL, "Character 画像", "Error", MB_OK);
+	//}
 
 }
 
@@ -76,10 +106,10 @@ CFighter::~CFighter()
 		delete g_pFieldVtx;
 		g_pFieldVtx = nullptr;
 	}
-	if (!g_pSprite)
+	if (!m_pSprite)
 	{
-		delete g_pSprite;
-		g_pSprite = nullptr;
+		delete m_pSprite;
+		m_pSprite = nullptr;
 	}
 	for (int i = 0; i < 6; i++)
 	{
@@ -296,6 +326,8 @@ void CAlly::Draw(void)
 	////設定のリセット
 	//ReSetSprite();
 
+	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
+
 	//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X, m_tPos.Y, m_tPos.Z, 0.0f));
 	//拡大縮小行列(Scaling)
@@ -314,10 +346,11 @@ void CAlly::Draw(void)
 	wvp[1] = m_pCamera->GetViewMatrix();
 	wvp[2] = m_pCamera->GetProjectionMatrix();
 
-	g_pSprite->SetWorld(wvp[0]);
-	g_pSprite->SetView(wvp[1]);
-	g_pSprite->SetProjection(wvp[2]);
+	m_pSprite->SetWorld(wvp[0]);
+	m_pSprite->SetView(wvp[1]);
+	m_pSprite->SetProjection(wvp[2]);
 
+	m_pSprite->Draw();
 }
 
 void CAlly::CreateUpdate(void)
@@ -455,6 +488,8 @@ void CEnemy::Draw(void)
 	////設定のリセット
 	//ReSetSprite();
 
+	m_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
+
 		//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X, m_tPos.Y, m_tPos.Z, 0.0f));
 	//拡大縮小行列(Scaling)
@@ -473,9 +508,11 @@ void CEnemy::Draw(void)
 	wvp[1] = m_pCamera->GetViewMatrix();
 	wvp[2] = m_pCamera->GetProjectionMatrix();
 
-	g_pSprite->SetWorld(wvp[0]);
-	g_pSprite->SetView(wvp[1]);
-	g_pSprite->SetProjection(wvp[2]);
+	m_pSprite->SetWorld(wvp[0]);
+	m_pSprite->SetView(wvp[1]);
+	m_pSprite->SetProjection(wvp[2]);
+
+	m_pSprite->Draw();
 }
 
 void CEnemy::CreateUpdate(void)
@@ -614,6 +651,8 @@ void CAllyBuffer::Draw(void)
 	////設定のリセット
 	//ReSetSprite();
 
+	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
+
 	//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X, m_tPos.Y, m_tPos.Z, 0.0f));
 	//拡大縮小行列(Scaling)
@@ -632,10 +671,11 @@ void CAllyBuffer::Draw(void)
 	wvp[1] = m_pCamera->GetViewMatrix();
 	wvp[2] = m_pCamera->GetProjectionMatrix();
 
-	g_pSprite->SetWorld(wvp[0]);
-	g_pSprite->SetView(wvp[1]);
-	g_pSprite->SetProjection(wvp[2]);
+	m_pSprite->SetWorld(wvp[0]);
+	m_pSprite->SetView(wvp[1]);
+	m_pSprite->SetProjection(wvp[2]);
 
+	m_pSprite->Draw();
 }
 
 void CAllyBuffer::CreateUpdate(void)
