@@ -31,12 +31,16 @@
 #define BATTLEFIELDHEIGHT (1080)
 
 ID3D11ShaderResourceView* m_pLogTex[10];
+float FirstPosX[5];
+float FirstPosY[15];
+int SelectFirstPosX;
+int SelectFirstPosY;
 
 CBattle::CBattle()
 	: m_nAllyCount(0)
 	, m_nAllyDateCount(0)
 	, m_nEnemyCount(0)
-	, m_nEnemyDateCount{0,0,0,0,0}
+	, m_nEnemyDateCount{ 0,0,0,0,0 }
 	, m_nNowWave(0)
 	, m_nMaxWave(0)
 	, m_nSelectPattern(0)
@@ -45,7 +49,7 @@ CBattle::CBattle()
 	, m_pAllyBuffer{}
 	, m_pEnemy{}
 	, m_nAllyTypes{ 0,0,0,0,0,0 }
-	, m_nEnemyTypes{ 0,0,0}
+	, m_nEnemyTypes{ 0,0,0 }
 	, m_nBattleTime(0)
 	, m_bFirstFight(false)
 	, m_nFirstPosPattern(0)
@@ -101,6 +105,28 @@ CBattle::CBattle()
 		}
 	}
 
+	FirstPosX[0] = 0.0f;
+	FirstPosX[1] = 10.0f;
+	FirstPosX[2] = 20.0f;
+	FirstPosX[3] = 30.0f;
+	FirstPosX[4] = 40.0f;
+
+	FirstPosY[0] = -700.0f;
+	FirstPosY[1] = -600.0f;
+	FirstPosY[2] = -500.0f;
+	FirstPosY[3] = -400.0f;
+	FirstPosY[4] = -30.0f;
+	FirstPosY[5] = -200.0f;
+	FirstPosY[6] = -100.0f;
+	FirstPosY[7] =  0.0f;
+	FirstPosY[8] = 100.0f;
+	FirstPosY[9] = 200.0f;
+	FirstPosY[10] = 300.0f;
+	FirstPosY[11] = 400.0f;
+	FirstPosY[12] = 500.0f;
+	FirstPosY[13] = 600.0f;
+	FirstPosY[14] = 700.0f;
+	FirstPosY[15] = 800.0f;
 }
 
 CBattle::~CBattle()
@@ -312,16 +338,16 @@ void CBattle::Draw(void)
 	//SaveAllyLogDraw();
 	CreateAllyLogDraw();
 	CreateEnemyLogDraw();
-/*当たり判定のデバック*/
-//0：全て
-//Aを押しながら：味方だけ
-//Eを押しながら：敵だけ
-//3：3角形だけ
-//4：4角形だけ
-//5：5角形だけ
-//6：6角形だけ
-//7：7角形だけ
-//8：8角形だけ
+	/*当たり判定のデバック*/
+	//0：全て
+	//Aを押しながら：味方だけ
+	//Eを押しながら：敵だけ
+	//3：3角形だけ
+	//4：4角形だけ
+	//5：5角形だけ
+	//6：6角形だけ
+	//7：7角形だけ
+	//8：8角形だけ
 
 	//味方の描画
 	for (int i = 0; i < m_nAllyCount; i++)
@@ -425,11 +451,15 @@ void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float I
 	m_nEnemyDateCount[InWave]++;
 }
 
-void CBattle::CreateEntity(CVector3<float> InFirstPos)
+void CBattle::CreateEntity()
 {
 	//指定された数だけ生成する
 	while (m_nAllyDateCount)
 	{
+		CVector3<float> InFirstPos;
+		InFirstPos.X = FirstPosX[SelectFirstPosX];
+		InFirstPos.Y = FirstPosY[SelectFirstPosY];
+
 		//味方を生成する
 		CreateAllyData(m_tAllyData[0], InFirstPos);
 
@@ -440,6 +470,14 @@ void CBattle::CreateEntity(CVector3<float> InFirstPos)
 		}
 		//保存済みの総数を減らす
 		m_nAllyDateCount--;
+
+		SelectFirstPosX++;
+
+		if (SelectFirstPosX > 5)
+		{
+			SelectFirstPosX = 0;
+			SelectFirstPosY++;
+		}
 	}
 
 	//指定された数だけ生成する

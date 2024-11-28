@@ -29,7 +29,7 @@ public:
 	void Draw(void);		//描画処理
 
 	void NextWaveInit(void);			//次のWaveに進むための初期化処理
-	void CreateEntity(CVector3<float> InFirstPos);			//エンティティ生成
+	void CreateEntity();			//エンティティ生成
 private:
 	void Search(int i,Entity Entity);	//索敵処理
 	void Move(int i, Entity Entity);	//移動処理
