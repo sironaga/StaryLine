@@ -4,4 +4,4 @@
 #include "DirectX.h"
 
 void InitBillBoard();
-void SetBillBoard(Camera*  camera, DirectX::XMMATRIX world);
+DirectX::XMMATRIX SetBillBoard(Camera* camera, DirectX::XMMATRIX world);
