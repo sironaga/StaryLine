@@ -8,14 +8,14 @@
 
 //防衛最前線ライン
 #define SENTER_POSX (0)
-#define SENTER_POSZ (0)
+//#define SENTER_POSZ (0)
 
 //味方コアの位置
-#define ALLYCORE_POSX (-500)
+#define ALLYCORE_POSX (100)
 #define ALLYCORE_POSZ (0)
 
 //味方の生成位置
-#define ALLYCREATE_POSX (-100)
+#define ALLYCREATE_POSX (80)
 
 #define ALLYCREATE_POSZ_1 (-100)
 #define ALLYCREATE_POSZ_2 (-50)
@@ -23,8 +23,13 @@
 #define ALLYCREATE_POSZ_4 (50)
 #define ALLYCREATE_POSZ_5 (100)
 //敵の生成位置
-#define ENEMYCREATE_POSX (100)
-#define ENEMYCREATE_POSZ_CENTER (0)
+#define ENEMYCREATE_POSX (-80)
+
+#define ENEMYCREATE_POSZ_1 (-100)
+#define ENEMYCREATE_POSZ_2 (-50)
+#define ENEMYCREATE_POSZ_3 (0)
+#define ENEMYCREATE_POSZ_4 (50)
+#define ENEMYCREATE_POSZ_5 (100)
 
 #define MOVESPEED(Speed) Speed / 10
 
@@ -101,7 +106,7 @@ CBattle::CBattle()
 
 				m_tEnemyData[j][l][i].m_tCreatePos.X = ENEMYCREATE_POSX;
 				m_tEnemyData[j][l][i].m_tCreatePos.Y = 0.0f;
-				m_tEnemyData[j][l][i].m_tCreatePos.Z = ENEMYCREATE_POSZ_CENTER;
+				m_tEnemyData[j][l][i].m_tCreatePos.Z = 0.0f;
 				m_tEnemyData[j][l][i].Size = 1.0f;
 			}
 		}
@@ -432,6 +437,24 @@ void CBattle::Draw(void)
 	}
 }
 
+void CBattle::ReDrawingInit(void)
+{
+	m_nOldEnemyCount = m_nEnemyCount;//敵の生存数を保存
+
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		m_pAllyBuffer[i] = nullptr;
+	}
+
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		m_pAlly[i]->SetShield(0.0f);
+		m_pAlly[i]->SetAtk(1.0f);
+	}
+
+	RandomSelectPattern();
+}
+
 void CBattle::NextWaveInit(void)
 {
 	m_nEnemyCount = 0;
@@ -455,10 +478,10 @@ void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float I
 {
 	InSize = 1 + ((InSize - 1) / 10);	//1を基準として2で入ってきた場合1.1倍にするため
 
-	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave]].nCornerCount = InCornerCount;
-	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave]].Size = InSize;
+	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave][InPattern]].nCornerCount = InCornerCount;
+	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave][InPattern]].Size = InSize;
 	//保存数を加算
-	m_nEnemyDateCount[InWave]++;
+	m_nEnemyDateCount[InWave][InPattern]++;
 }
 
 void CBattle::CreateEntity()
@@ -491,18 +514,19 @@ void CBattle::CreateEntity()
 	}
 
 	//指定された数だけ生成する
-	while (m_nEnemyDateCount[m_nNowWave])
+	while (m_nEnemyDateCount[m_nNowWave][m_nSelectPattern] - (m_nEnemyCount - m_nOldEnemyCount))
 	{
 		//敵を生成する
-		CreateEnemyData(m_tEnemyData[m_nNowWave][m_nSelectPattern][0]);
+		CreateEnemyData(m_tEnemyData[m_nNowWave][m_nSelectPattern][m_nEnemyCount - m_nOldEnemyCount]);
 
-		//生成に使用したため情報を消して後ろの情報を前詰めにする
-		for (int i = 0; i + 1 < MAX_ENEMY; i++)
-		{
-			m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
-		}
-		//保存済みの総数を減らす
-		m_nEnemyDateCount[m_nNowWave]--;
+		////生成に使用したため情報を消して後ろの情報を前詰めにする
+		//for (int i = 0; i + 1 < MAX_ENEMY; i++)
+		//{
+		//	m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
+		//}
+		////保存済みの総数を減らす
+		//m_nEnemyDateCount[m_nNowWave]--;
+		
 		//生成数を加算
 		m_nEnemyCount++;
 	}
@@ -612,8 +636,8 @@ void CBattle::Move(int i, Entity Entity)
 				if (SENTER_POSX < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
 				if (SENTER_POSX > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
 
-				if (SENTER_POSZ < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
-				if (SENTER_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
+				//if (SENTER_POSZ < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
+				//if (SENTER_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
 			}
 		}
 		else//標的がいないので敵のコアに向かって進む
@@ -621,8 +645,8 @@ void CBattle::Move(int i, Entity Entity)
 			if (SENTER_POSX < m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(-MOVESPEED(2.0f));
 			if (SENTER_POSX > m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(MOVESPEED(2.0f));
 
-			if (SENTER_POSZ < m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(-MOVESPEED(2.0f));
-			if (SENTER_POSZ > m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(MOVESPEED(2.0f));
+			//if (SENTER_POSZ < m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(-MOVESPEED(2.0f));
+			//if (SENTER_POSZ > m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(MOVESPEED(2.0f));
 		}
 		break;
 
@@ -813,33 +837,33 @@ void CBattle::FirstPosSetting()
 
 		if (!m_pEnemy[i]->m_bFirstBattlePosSetting)
 		{
-			m_pEnemy[i]->SetPosX(ALLYCREATE_POSX);
+			m_pEnemy[i]->SetPosX(ENEMYCREATE_POSX);
 			m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().Y / 2);
 
 			switch (m_nFirstPosPattern)
 			{
 			case 0:
-				m_pEnemy[i]->SetPosZ(ALLYCREATE_POSZ_1);
+				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_1);
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
 				m_nFirstPosPattern = 1;
 				break;
 			case 1:
-				m_pEnemy[i]->SetPosZ(ALLYCREATE_POSZ_2);
+				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_2);
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
 				m_nFirstPosPattern = 2;
 				break;
 			case 2:
-				m_pEnemy[i]->SetPosZ(ALLYCREATE_POSZ_3);
+				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_3);
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
 				m_nFirstPosPattern = 3;
 				break;
 			case 3:
-				m_pEnemy[i]->SetPosZ(ALLYCREATE_POSZ_4);
+				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_4);
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
 				m_nFirstPosPattern = 4;
 				break;
 			case 4:
-				m_pEnemy[i]->SetPosZ(ALLYCREATE_POSZ_5);
+				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_5);
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
 				m_nFirstPosPattern = 0;
 				break;

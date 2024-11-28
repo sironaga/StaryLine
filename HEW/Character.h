@@ -144,9 +144,10 @@ public:
 	float GetShield(void) { return m_fShield; }
 	void SetShield(float InShield) { m_fShield = InShield; }
 
+	//UŒ‚—Í‚ÌSet
+	void SetAtk(float InAtk) { m_fAtk = InAtk; }
 	//UŒ‚—Í‚ÌGet
 	float GetAtk(void) { return m_fAtk; }
-
 	//UŒ‚—Í‚ÌAdd
 	void AddAtk(float InAtk) { m_fAtk += InAtk; }
 

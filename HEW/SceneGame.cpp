@@ -129,6 +129,7 @@ void DrawSceneGame()
 		GameSTimeError = GameSTime;
 		//フィールドの初期化処理
 		g_pFieldVertex->InitFieldVertex();
+		g_pBattle->ReDrawingInit();
 	}
 }
 
