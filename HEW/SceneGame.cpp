@@ -41,6 +41,8 @@ void InitSceneGame(int StageNum)
 	g_pPlayer->SetFieldVertexAddress(g_pFieldVertex);
 	SetFileAddress(g_pBattle);
 	
+	g_pBattle->SetCameraAddress(g_pField->GetCameraAddress());
+
 	IninCharacterTexture(g_pFieldVertex);//キャラクターテクスチャ～の初期化
 
 	GameTime = 0;//タイマー初期化
@@ -102,7 +104,7 @@ void UpdateSceneGame()
 	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
 	{
 		g_pBattle->CreateEntity();
-		g_pBattle->Update();
+		g_pBattle->CharacterUpdate();
 	}
 	
 }

@@ -10,7 +10,7 @@
 
 #define MAX_ALLY  (200)	//味方の最大数
 #define MAX_ENEMY (200)	//敵の最大数
-#define NORMAL_SIZE (200)//キャラクターの基本サイズ
+#define NORMAL_SIZE (10)//キャラクターの基本サイズ
 
 class CFieldVertex;
 void IninCharacterTexture(CFieldVertex* InAddress);	//テクスチャ読み込み
