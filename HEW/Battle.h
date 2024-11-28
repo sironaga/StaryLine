@@ -26,6 +26,7 @@ public:
 	CBattle();				//コンストラクタ
 	~CBattle();				//デストラクタ
 	void Update(void);		//更新処理
+	void CharacterUpdate(void);//キャラクターたちの更新
 	void Draw(void);		//描画処理
 
 	void NextWaveInit(void);			//次のWaveに進むための初期化処理
@@ -45,6 +46,7 @@ private:
 
 	Camera* m_pCamera;
 	//カメラのアドレス設定
+public:
 	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:

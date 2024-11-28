@@ -218,7 +218,16 @@ bool CFighter::AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos)
 			&&
 			m_tPos.Y + m_tAtkCollision.Height >= InPos.Y + (InSize.Y / 2)	/*自分の攻撃当たり判定の下端 >= 相手の上端*/)
 		{
-			return true;
+			if (m_tPos.Z - m_tAtkCollision.Width <= InPos.Z - (InSize.Z / 2)	/*自分の攻撃当たり判定の上端 <= 相手の下端*/
+				&&
+				m_tPos.Z + m_tAtkCollision.Width >= InPos.Z - (InSize.Z / 2)/*自分の攻撃当たり判定の下端 >= 相手の下端*/
+				||
+				m_tPos.Z - m_tAtkCollision.Width <= InPos.Z + (InSize.Z / 2)	/*自分の攻撃当たり判定の上端 <= 相手の上端*/
+				&&
+				m_tPos.Z + m_tAtkCollision.Width >= InPos.Z + (InSize.Z / 2)	/*自分の攻撃当たり判定の下端 >= 相手の上端*/)
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -242,7 +251,16 @@ bool CFighter::SearchCollisionCheck(CVector3<float> InSize, CVector3<float>InPos
 			&&
 			m_tPos.Y + m_tSearchCollision.Height >= InPos.Y + InSize.Y	/*自分の索敵当たり判定の右端 >= 相手の右端*/)
 		{
-			return true;
+			if (m_tPos.Z - m_tSearchCollision.Width <= InPos.Z - InSize.Z	/*自分の索敵当たり判定の左端 <= 相手の左端*/
+				&&
+				m_tPos.Z + m_tSearchCollision.Width >= InPos.Z - InSize.Z	/*自分の索敵当たり判定の右端 >= 相手の左端*/
+				||
+				m_tPos.Z - m_tSearchCollision.Width <= InPos.Z + InSize.Z	/*自分の索敵当たり判定の左端 <= 相手の右端*/
+				&&
+				m_tPos.Z + m_tSearchCollision.Width >= InPos.Z + InSize.Z	/*自分の索敵当たり判定の右端 >= 相手の右端*/)
+			{
+				return true;
+			}
 		}
 	}
 	return false;
@@ -521,6 +539,7 @@ void CEnemy::CreateUpdate(void)
 
 	//生成アニメーションが終わったら
 	SetStatus(St_Battle);
+	m_bFirstBattlePosSetting = false;
 }
 
 void CEnemy::BattleUpdate(void)
