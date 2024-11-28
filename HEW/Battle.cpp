@@ -32,7 +32,7 @@
 
 ID3D11ShaderResourceView* m_pLogTex[10];
 float FirstPosX[5];
-float FirstPosY[15];
+float FirstPosY[16];
 int SelectFirstPosX;
 int SelectFirstPosY;
 
@@ -127,6 +127,9 @@ CBattle::CBattle()
 	FirstPosY[13] = 600.0f;
 	FirstPosY[14] = 700.0f;
 	FirstPosY[15] = 800.0f;
+
+	SelectFirstPosX = 0;
+	SelectFirstPosY = 0;
 }
 
 CBattle::~CBattle()
