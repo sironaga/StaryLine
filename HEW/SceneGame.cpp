@@ -92,17 +92,17 @@ void UpdateSceneGame()
 	GameSTime = GameTime / 60;
 
 	g_pField->Update();
-	g_pBattle->Update();
+	if(COOLTIME <= GameSTime)g_pBattle->Update();
 	if(SHAPE_DRAW + GameSTimeError <= GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Update();
 	if(SHAPE_DRAW + GameSTimeError <= GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Update();
-		
+	
 }
 
 //•`‰æˆ—
 void DrawSceneGame()
 {
 	g_pField->Draw();
-	g_pBattle->Draw();
+	if (COOLTIME <= GameSTime)g_pBattle->Draw();
 	if (SHAPE_DRAW + GameSTimeError <= GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Draw();
 	if (SHAPE_DRAW + GameSTimeError <= GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Draw();
 	if (GameTime == COOLTIME * 60)
