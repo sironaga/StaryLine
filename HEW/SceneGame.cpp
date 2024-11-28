@@ -15,9 +15,10 @@ Field* g_pField;
 
 enum SceneGameTime
 {
-	SHAPE_DRAW = 0,
-	SHAPE_END = 10,
-	COOLTIME = 20,
+	SHAPE_DRAW_START = 0,
+	SHAPE_DRAW_END = 10,
+	COOLTIME_START = 20,
+	COOLTIME_END = 30,
 	GAME_END = 90
 };
 
@@ -92,9 +93,9 @@ void UpdateSceneGame()
 	GameSTime = GameTime / 60;
 
 	g_pField->Update();
-	if(COOLTIME <= GameSTime)g_pBattle->Update();
-	if(SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Update();
-	if(SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Update();
+	if(COOLTIME_START <= GameSTime)g_pBattle->Update();
+	if(SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)g_pFieldVertex->Update();
+	if(SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)g_pPlayer->Update();
 	
 }
 
@@ -102,10 +103,10 @@ void UpdateSceneGame()
 void DrawSceneGame()
 {
 	g_pField->Draw();
-	if (COOLTIME <= GameSTime)g_pBattle->Draw();
-	if (SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < COOLTIME + GameSTimeError)g_pFieldVertex->Draw();
-	if (SHAPE_DRAW + GameSTimeError <= GameSTime && GameSTime < SHAPE_END + GameSTimeError)g_pPlayer->Draw();
-	if (GameTime == COOLTIME * 60)
+	if (COOLTIME_START <= GameSTime)g_pBattle->Draw();
+	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)g_pFieldVertex->Draw();
+	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)g_pPlayer->Draw();
+	if (GameTime == (COOLTIME_END + GameSTimeError) * 60)
 	{
 		GameSTimeError = GameSTime;
 		//フィールドの初期化処理
