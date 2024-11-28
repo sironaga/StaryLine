@@ -80,7 +80,6 @@ bool EnemyLoadData(int * InCornerCount,int* pSize)
 		*pSize = atoi(vst[0].c_str());
 
 		g_NowLine = ifs.tellg();//現在の場所を記憶
-		//g_NowLine += 4;
 		//ファイルクローズ
 		ifs.close();
 	
@@ -99,7 +98,6 @@ void InitSave()
 	int MaxPattern = 0;
 	int size = 0;
 	InitLoadData(true, false,&MaxPattern ,&Wave, &MaxEnemy, &AllWave);
-	/*TPolygon tPolygon[MAX_WAVE] [MAX_ENEMY] ;*/
 	int CornerCount = 0;
 	g_pFileBattle->SetMaxWave(AllWave);
 	for (int i = 0; i < AllWave; i++)
@@ -111,7 +109,7 @@ void InitSave()
 			for (int l = 0; l < MaxEnemy; l++)
 			{
 				EnemyLoadData(&CornerCount,&size);
-				g_pFileBattle->SaveEnemyData(CornerCount, i, 1);//最後は敵のサイズ(float型)
+				g_pFileBattle->SaveEnemyData(CornerCount, i, j,size);//最後は敵のサイズ(float型)
 			}
 		}
 		
