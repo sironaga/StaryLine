@@ -9,8 +9,6 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//キャラクターの横の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//キャラクターの縦の攻撃当たり判定(相手の人数)
 
-#define NORMAL_SIZE (200)
-
 CFieldVertex* g_pFieldVtx;
 ID3D11ShaderResourceView* g_pAllyTex[6];	//味方画像のテクスチャ
 ID3D11ShaderResourceView* g_pEnemyTex[3];	//敵画像のテクスチャ
@@ -60,6 +58,7 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos)
 	, m_fAtkAnimationMaxTime(0.0f)
 	, m_bCreateInit(false)
 	, m_bIsAttack(false)
+	, m_bFirstBattlePosSetting(false)
 	, m_pVtx(nullptr)
 	, m_nTargetNumber(-1)
 {
@@ -300,8 +299,14 @@ void CAlly::CreateUpdate(void)
 {
 	//生成アニメーション
 
-	//生成アニメーションが終わったら
-	SetStatus(St_Battle);
+	//生成移動
+	m_tPos.Y -= 10.0f;
+	if (m_tPos.Y < -600.0f)
+	{
+		//生成アニメーションが終わったら
+		SetStatus(St_Battle);
+		m_bFirstBattlePosSetting = false;
+	}
 }
 
 void CAlly::BattleUpdate(void)
@@ -570,22 +575,6 @@ void CAllyBuffer::Draw(void)
 
 	//設定のリセット
 	ReSetSprite();
-}
-
-void CAllyBuffer::ApplyBuff(CAlly* pAlly)
-{
-	switch (m_tBuff)
-	{
-	case CAllyBuffer::BT_Shield:
-		pAlly->SetShield(5.0f);
-		break;
-	case CAllyBuffer::BT_Attack:
-		pAlly->AddAtk(1.0f);
-		break;
-	case CAllyBuffer::BT_ReSummon:
-
-		break;
-	}
 }
 
 void CAllyBuffer::CreateUpdate(void)
