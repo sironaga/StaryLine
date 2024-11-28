@@ -243,6 +243,8 @@ void CFieldVertex::Update()
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.X + PosA[3].X;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.Y + PosA[3].Y;//右下のｙ座標
 	m_pVtx_FieldLine[NowLine] = CreateVertexBuffer(vtx_FieldLine[NowLine], 4);
+
+	m_pBattle->CreateEntity();
 }
 
 void CFieldVertex::Draw()

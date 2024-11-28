@@ -94,8 +94,16 @@ void UpdateSceneGame()
 
 	g_pField->Update();
 	if(COOLTIME_START <= GameSTime)g_pBattle->Update();
-	if(SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)g_pFieldVertex->Update();
-	if(SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)g_pPlayer->Update();
+	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)
+	{
+		g_pFieldVertex->Update();
+		g_pPlayer->Update();
+	}
+	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
+	{
+		g_pBattle->CreateEntity();
+		g_pBattle->Update();
+	}
 	
 }
 
@@ -104,8 +112,16 @@ void DrawSceneGame()
 {
 	g_pField->Draw();
 	if (COOLTIME_START <= GameSTime)g_pBattle->Draw();
-	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)g_pFieldVertex->Draw();
-	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)g_pPlayer->Draw();
+	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)
+	{
+		g_pFieldVertex->Draw();
+		g_pPlayer->Draw();
+	}
+	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
+	{
+		g_pBattle->Draw();
+	
+	}
 	if (GameTime == (COOLTIME_END + GameSTimeError) * 60)
 	{
 		GameSTimeError = GameSTime;
