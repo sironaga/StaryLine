@@ -39,7 +39,10 @@ CBattle::CBattle()
 	, m_nCreateEnemyNum(0)
 	, m_nNowWave(0)
 	, m_nMaxWave(0)
+	, m_nSelectPattern(0)
+	, m_nMaxPattern(0)
 	, m_pAlly{}
+	, m_pAllyBuffer{}
 	, m_pEnemy{}
 	, m_nAllyTypes{ 0,0,0,0,0,0 }
 	, m_nEnemyTypes{ 0,0,0}
@@ -408,12 +411,12 @@ void CBattle::SaveAllyData(int InCornerCount, float InSize)
 	m_nAllyDateCount++;
 }
 
-void CBattle::SaveEnemyData(int InCornerCount, int InWave, float InSize)
+void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float InSize)
 {
 	InSize = 1 + ((InSize - 1) / 10);	//1‚ðŠî€‚Æ‚µ‚Ä2‚Å“ü‚Á‚Ä‚«‚½ê‡1.1”{‚É‚·‚é‚½‚ß
 
-	m_tEnemyData[InWave][m_nSelectPattern][m_nEnemyDateCount[InWave]].nCornerCount = InCornerCount;
-	m_tEnemyData[InWave][m_nSelectPattern][m_nEnemyDateCount[InWave]].Size = InSize;
+	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave]].nCornerCount = InCornerCount;
+	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave]].Size = InSize;
 	//•Û‘¶”‚ð‰ÁŽZ
 	m_nEnemyDateCount[InWave]++;
 }
@@ -503,7 +506,10 @@ void CBattle::CreateEntity(void)
 
 void CBattle::CreateAllyData(EntityData InData)
 {
-	m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size,InData.m_tCreatePos);
+	if (m_pAlly[m_nAllyCount]->GetCornerCount() < 6)
+		m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size, InData.m_tCreatePos);
+	else
+		m_pAllyBuffer[m_nAllyCount] = new CAllyBuffer(InData.nCornerCount, InData.Size, InData.m_tCreatePos);
 }
 
 void CBattle::CreateEnemyData(EntityData InDate)
