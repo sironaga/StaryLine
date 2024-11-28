@@ -39,7 +39,7 @@ DirectX::XMFLOAT4X4 Camera::GetProjectionMatrix(bool transpose)
 	DirectX::XMFLOAT4X4 mat;
 	DirectX::XMMATRIX proj;
 
-	proj = DirectX::XMMatrixPerspectiveFovLH(m_fovy,m_aspect,m_near,m_far);
+	proj = DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_near, m_far);
 
 	if (transpose) {
 		proj = DirectX::XMMatrixTranspose(proj);
@@ -55,4 +55,9 @@ DirectX::XMMATRIX Camera::GetView()
 	DirectX::XMVECTOR vUpDirection = DirectX::XMVectorSet(m_up.x, m_up.y, m_up.z, 0.0f);
 
 	return DirectX::XMMatrixLookAtLH(vEyePosition, vFocusPosition, vUpDirection);
+}
+
+DirectX::XMMATRIX Camera::GetProjection()
+{
+	return DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_near, m_far);
 }

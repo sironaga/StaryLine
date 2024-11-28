@@ -17,6 +17,7 @@ struct SpriteParameter
 	DirectX::XMFLOAT2 uvScale;
 	DirectX::XMFLOAT4 color;
 	DirectX::XMFLOAT2 screen;
+	DirectX::XMMATRIX modelViewProjection;
 	float rad;
 	float dummy;
 };
@@ -39,6 +40,32 @@ void DrawSprite(ID3D11Buffer* pSprite, UINT vtxSize)
 	pSprite->GetDesc(&desc);
 	UINT num = desc.ByteWidth / vtxSize;
 	UINT offset = 0;
+
+	g_pSpriteContext->IASetInputLayout(g_pSpriteIL);
+	g_pSpriteContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	g_pSpriteContext->IASetVertexBuffers(0, 1, &pSprite, &vtxSize, &offset);
+	g_pSpriteContext->VSSetShader(g_pSpriteVS, NULL, 0);
+	g_pSpriteContext->PSSetShader(g_pSpritePS, NULL, 0);
+	g_pSpriteContext->UpdateSubresource(g_pSpriteBuffer, 0, nullptr, &g_SpriteParam, 0, 0);
+	g_pSpriteContext->VSSetConstantBuffers(0, 1, &g_pSpriteBuffer);
+	g_pSpriteContext->PSSetShaderResources(0, 1, &g_pSpriteTexture);
+
+	g_pSpriteContext->Draw(num, 0);
+}
+
+void DrawBillBoard(ID3D11Buffer* pSprite, UINT vtxSize, Camera* camera)
+{
+	D3D11_BUFFER_DESC desc;
+	pSprite->GetDesc(&desc);
+	UINT num = desc.ByteWidth / vtxSize;
+	UINT offset = 0;
+
+	DirectX::XMMATRIX viewMatrix = camera->GetView();
+	DirectX::XMMATRIX projectionMatrix = camera->GetProjection();
+
+	// 定数バッファの更新
+	g_SpriteParam.modelViewProjection = viewMatrix * projectionMatrix;
+	g_SpriteParam.modelViewProjection = DirectX::XMMatrixTranspose(g_SpriteParam.modelViewProjection);
 
 	g_pSpriteContext->IASetInputLayout(g_pSpriteIL);
 	g_pSpriteContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -83,6 +110,12 @@ void SetSpriteColor(float r, float g, float b, float a)
 	g_SpriteParam.color.z = b;
 	g_SpriteParam.color.w = a;
 }
+
+void SetSpriteMatrix(DirectX::XMMATRIX world)
+{
+	g_SpriteParam.modelViewProjection = world;
+}
+
 void SetSpriteTexture(ID3D11ShaderResourceView* pTexture)
 {
 	g_pSpriteTexture = pTexture;
@@ -176,13 +209,13 @@ float4 main(PS_IN pin) : SV_TARGET {
 
 void UninitSpriteDrawer()
 {
-	if(g_pSpriteWhiteTex) g_pSpriteWhiteTex->Release();
-	if(g_pSpriteVS) g_pSpriteVS->Release();
-	if(g_pSpritePS) g_pSpritePS->Release();
+	if (g_pSpriteWhiteTex) g_pSpriteWhiteTex->Release();
+	if (g_pSpriteVS) g_pSpriteVS->Release();
+	if (g_pSpritePS) g_pSpritePS->Release();
 	if (g_pSpriteIL) g_pSpriteIL->Release();
 	if (g_pSpriteBuffer) g_pSpriteBuffer->Release();
-	if(g_pSpriteRasterizer) g_pSpriteRasterizer->Release();
-	if(g_pSpriteSampler) g_pSpriteSampler->Release();
+	if (g_pSpriteRasterizer) g_pSpriteRasterizer->Release();
+	if (g_pSpriteSampler) g_pSpriteSampler->Release();
 }
 
 
@@ -191,8 +224,8 @@ HRESULT ShaderCompile(ID3D11Device* pDevice, const char* vs, const char* ps)
 	const char* ppCode[] = { vs, ps };
 	const char* pTargetList[] = { "vs_5_0", "ps_5_0" };
 	HRESULT hr;
-	ID3DBlob *pBlob;
-	ID3DBlob *error;
+	ID3DBlob* pBlob;
+	ID3DBlob* error;
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -208,8 +241,8 @@ HRESULT ShaderCompile(ID3D11Device* pDevice, const char* vs, const char* ps)
 			hr = CreatePixelShader(pDevice, pBlob->GetBufferPointer(), (UINT)pBlob->GetBufferSize());
 		if (FAILED(hr)) { return hr; }
 
-		if(pBlob) pBlob->Release();
-		if(error) error->Release();
+		if (pBlob) pBlob->Release();
+		if (error) error->Release();
 	}
 
 	// 定数バッファ作成
@@ -232,7 +265,7 @@ HRESULT CreateVertexShader(ID3D11Device* pDevice, void* pData, UINT size)
 	hr = pDevice->CreateVertexShader(pData, size, NULL, &g_pSpriteVS);
 	if (FAILED(hr)) { return hr; }
 
-	ID3D11ShaderReflection *pReflection;
+	ID3D11ShaderReflection* pReflection;
 	D3D11_SHADER_DESC shaderDesc;
 	D3D11_INPUT_ELEMENT_DESC* pInputDesc;
 	D3D11_SIGNATURE_PARAMETER_DESC sigDesc;
