@@ -100,6 +100,7 @@ void InitSave()
 	InitLoadData(true, false,&MaxPattern ,&Wave, &MaxEnemy, &AllWave);
 	int CornerCount = 0;
 	g_pFileBattle->SetMaxWave(AllWave);
+	g_pFileBattle->SetMaxPattern(MaxPattern);
 	for (int i = 0; i < AllWave; i++)
 	{
 		InitLoadData(false,true, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
