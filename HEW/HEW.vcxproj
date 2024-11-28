@@ -39,6 +39,7 @@
     <ClCompile Include="ModelEx.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -77,6 +78,7 @@
     <ClInclude Include="ModelEx.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shader.h" />

@@ -147,9 +147,6 @@
     <ClCompile Include="Conection_Sys.cpp">
       <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
     </ClCompile>
-    <ClCompile Include="BillBoard.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -167,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="SoundList.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,9 +257,6 @@
     <ClInclude Include="Conection_Sys.h">
       <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
-    <ClInclude Include="BillBoard.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -280,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="WICTextureLoader.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

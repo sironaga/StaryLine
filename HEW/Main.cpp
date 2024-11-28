@@ -12,6 +12,7 @@
 #include "StageSelect.h"
 #include "SceneTitle.h"
 #include "SoundList.h"
+#include "Result.h"
 
 //--- グローバル変数
 E_SCENE_TYPE g_SceneType;
@@ -67,6 +68,8 @@ void Update()
 	case STAGE_SELECT:UpdateStageSelect();
 		break;
 	case SCENE_GAME:UpdateSceneGame();
+		break;
+	case SCENE_RESULT:UpdateResult();
 		break;
 	case SCENE_MAX:
 		break;
@@ -147,6 +150,8 @@ void Draw()
 		break;
 	case SCENE_GAME:DrawSceneGame();
 		break;
+	case SCENE_RESULT:DrawResult();
+		break;
 	case SCENE_MAX:
 		break;
 	default:
@@ -163,6 +168,7 @@ void ChangeScene(E_SCENE_TYPE next)
 	case(SCENE_TITLE):UninitSceneTitle();	break;
 	case(STAGE_SELECT):UninitStageSelect(); break;
 	case(SCENE_GAME):UninitSceneGame();		break;
+	case(SCENE_RESULT):UninitResult();		break;
 	default:break;
 	}
 
@@ -172,9 +178,10 @@ void ChangeScene(E_SCENE_TYPE next)
 	//次のシーンの初期化
 	switch (g_SceneType)
 	{
-	case(SCENE_TITLE):InitSceneTitle();	break;
-	case(STAGE_SELECT):InitStageSelect();	break;
-	case(SCENE_GAME):InitSceneGame(GetStageNum());		break;
+	case(SCENE_TITLE):InitSceneTitle();				break;
+	case(STAGE_SELECT):InitStageSelect();			break;
+	case(SCENE_GAME):InitSceneGame(GetStageNum());	break;
+	case(SCENE_RESULT):InitResult();				break;
 	default:break;
 	}
 }
