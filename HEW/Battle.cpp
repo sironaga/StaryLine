@@ -11,7 +11,7 @@
 //#define SENTER_POSZ (0)
 
 //味方コアの位置
-#define ALLYCORE_POSX (100)
+#define ALLYCORE_POSX (90)
 #define ALLYCORE_POSZ (0)
 
 //味方の生成位置
@@ -54,6 +54,7 @@ CBattle::CBattle()
 	, m_nMaxPattern(0)
 	, m_pAlly{}
 	, m_pAllyBuffer{}
+	, m_pAllyPlayer(nullptr)
 	, m_pEnemy{}
 	, m_nAllyTypes{ 0,0,0,0,0,0 }
 	, m_nEnemyTypes{ 0,0,0 }
@@ -352,6 +353,25 @@ void CBattle::CharacterUpdate(void)
 	{
 		m_pEnemyBoss->Update();
 	}
+
+	if (m_pAllyPlayer)
+	{
+		m_pAllyPlayer->Update();
+	}
+}
+
+void CBattle::CharacterDraw(void)
+{
+	//味方の描画
+	for (int i = 0; i < m_nAllyCount; i++)
+	{
+		m_pAlly[i]->Draw();
+	}
+
+	for (int i = 0; i < m_nAllyBufferCount; i++)
+	{
+		m_pAllyBuffer[i]->Draw();
+	}
 }
 
 void CBattle::Draw(void)
@@ -421,6 +441,11 @@ void CBattle::Draw(void)
 	{
 		m_pEnemyBoss->Draw();
 	}
+
+	if (m_pAllyPlayer)
+	{
+		m_pAllyPlayer->Draw();
+	}
 }
 
 void CBattle::ReDrawingInit(void)
@@ -432,7 +457,7 @@ void CBattle::ReDrawingInit(void)
 		m_pAllyBuffer[i] = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ALLY; i++)
+	for (int i = 0; i < m_nAllyCount; i++)
 	{
 		m_pAlly[i]->SetShield(0.0f);
 		m_pAlly[i]->SetAtk(1.0f);
@@ -476,7 +501,7 @@ void CBattle::CreateEntity()
 	{
 		CVector3<float> InFirstPos;
 		InFirstPos.X = ALLYCORE_POSX;
-		InFirstPos.Y = 0.0f;
+		InFirstPos.Y = 3.0f;
 		InFirstPos.Z = ALLYCORE_POSZ;
 		m_pAllyPlayer = new CAllyPlayer(1.0f, InFirstPos, m_pCamera);
 	}
@@ -1304,5 +1329,5 @@ void CBattle::SaveAllyLogDraw(void)
 
 void CBattle::RandomSelectPattern(void)
 {
-	m_nSelectPattern = rand() % m_nMaxPattern;
+ 	m_nSelectPattern = rand() % m_nMaxPattern;
 }

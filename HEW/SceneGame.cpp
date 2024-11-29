@@ -22,9 +22,9 @@ enum SceneGameTime
 	GAME_END = 90
 };
 
-int GameTime;//秒×60
+int GameTime;//秒×60回
 int GameSTime;//秒
-int GameSTimeError;//時間のズレ
+int GameSTimeError;//時間の補正
 	
 //初期化処理l
 void InitSceneGame(int StageNum)
@@ -87,12 +87,18 @@ void UpdateSceneGame()
 	GameSTime = GameTime / 60;
 
 	g_pField->Update();
+
+	//１回目のCOOLTIMEが始まったらそれ以降処理
 	if(COOLTIME_START <= GameSTime)g_pBattle->Update();
+
+	//図形を作る時間
 	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)
 	{
-		g_pFieldVertex->Update();
 		g_pPlayer->Update();
+		g_pFieldVertex->Update();
 	}
+
+	//キャラクターを召喚する時間
 	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
 	{
 		g_pBattle->CreateEntity();
@@ -104,23 +110,29 @@ void UpdateSceneGame()
 //描画処理
 void DrawSceneGame()
 {
-	g_pField->Draw();
-	if (COOLTIME_START <= GameSTime)g_pBattle->Draw();
+	g_pField->Draw();//フィールドの描画
+
+	//１回目のCOOLTIMEが始まったらそれ以降処理
+	if (COOLTIME_START <= GameSTime)g_pBattle->Draw();//フィールドの描画
+
+	//図形を作る時間
 	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)
 	{
-		g_pFieldVertex->Draw();
 		g_pPlayer->Draw();
+		g_pFieldVertex->Draw();
 	}
+
+	//キャラクターを召喚する時間
 	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
 	{
 		g_pBattle->Draw();
-	
 	}
 	if (GameTime == (COOLTIME_END + GameSTimeError) * 60)
 	{
 		GameSTimeError = GameSTime;
-		//フィールドの初期化処理
+		//フィールドとプレイヤーの初期化処理
 		g_pFieldVertex->InitFieldVertex();
+		g_pPlayer->SetPlayerStop();
 		g_pBattle->ReDrawingInit();
 	}
 }
