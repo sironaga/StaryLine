@@ -1,4 +1,5 @@
 #include "Effect.h"
+#include "Defines.h"
 
 CEffect::CEffect(const char* EffectFile, float size)
 	: effectResourceHandle(-1)
@@ -52,7 +53,13 @@ void CEffect::Draw(bool is3D)
 
 			DrawEffekseer3D();
 		}
-		else if (!is3D) DrawEffekseer2D();
+		else if (!is3D)
+		{
+			// EffekseerÇ…2Dï`âÊÇÃê›íËÇÇ∑ÇÈÅB
+			Effekseer_Set2DSetting(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+			DrawEffekseer2D();
+		}
 	}
 }
 

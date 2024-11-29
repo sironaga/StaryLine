@@ -168,6 +168,9 @@
     <ClCompile Include="Result.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
+    <ClCompile Include="Effekseer\DxLib.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

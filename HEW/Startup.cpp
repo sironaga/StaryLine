@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ChangeWindowMode(true);
 
 	//描画先を裏画面に変更する。
-	SetDrawScreen(DX_SCREEN_BACK);
+//	SetDrawScreen(DX_SCREEN_BACK);
 
 	// DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
 	// Effekseerを使用するには必ず設定する。
@@ -78,16 +78,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
-// Effekseerを使用する場合は必ず設定する。
+	// Effekseerを使用する場合は必ず設定する。
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-
-	// DXライブラリのデバイスロストした時のコールバックを設定する。
-	// ウインドウとフルスクリーンの切り替えが発生する場合は必ず実行する。
-	// ただし、DirectX11を使用する場合は実行する必要はない。
-	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
-
-	// Effekseerに2D描画の設定をする。
-	Effekseer_Set2DSetting(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// ウィンドウの表示
 	ShowWindow(hWnd, nCmdShow);

@@ -4,6 +4,7 @@
 #include "DirectX.h"
 #include "FieldVertex.h"
 #include "Sprite.h"
+#include "Effect.h"
 
 // defines
 #define MOVESPEED (10.0f)	// 移動速度
@@ -96,4 +97,5 @@ public:
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
+	CEffect* m_pEffect;
 };

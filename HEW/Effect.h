@@ -18,7 +18,6 @@ public:
 	// 第一引数にファイルへのパス、第二引数に初期のサイズを設定してください
 	// 第二引数はデフォルトで1.0fが入っています
 	CEffect(const char* EffectFile, float size = 1.0f);
-
 	// デストラクタ
 	// 各終了処理にてdeleteして呼び出してくださ
 	~CEffect();
