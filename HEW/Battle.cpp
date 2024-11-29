@@ -48,7 +48,7 @@ CBattle::CBattle()
 	, m_nAllyDateCount(0)
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
-	, m_nNowWave(1)
+	, m_nNowWave(0)
 	, m_nMaxWave(0)
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
