@@ -26,7 +26,7 @@ CPlayer::CPlayer()
 	, m_pVtxPlayer(nullptr), m_pTexPlayerWait(nullptr)
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
 	, m_tPos{}, m_tPosTex{}, m_tSizeTex{}
-	, bCanMoveCheck(false)
+	, bCanMoveCheck(false), m_bChangePhase(false)
 
 	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
 	, vtxTimer{}, fTimerSize(TIMER_RIGHT(DRAWTIME(0.0f)))
@@ -269,11 +269,6 @@ void CPlayer::PlayerInput()
 	}
 }
 
-void CPlayer::SetPlayerStop()
-{
-	m_ePlayerState = STOP;
-}
-
 void CPlayer::TimeProcess()
 {
 	//タイマースタート
@@ -329,4 +324,11 @@ void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)
 {
 	// CFieldVertexアドレスの取得
 	m_pFieldVtx = InAddress;
+}
+
+void CPlayer::SetPlayerStop()
+{
+	m_ePlayerState = STOP;//プレイヤーの動きを止める
+	bCanMoveCheck = false;//
+	m_bChangePhase = false;//フェーズの変更を初期化
 }
