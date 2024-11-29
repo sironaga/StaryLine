@@ -8,7 +8,7 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//キャラクターの横の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//キャラクターの縦の攻撃当たり判定(相手の人数)
 
-#define AngleX (-0.8f)
+#define AngleX (-0.6f)
 #define AngleY (0.0f)
 #define AngleZ (0.0f)
 
@@ -570,8 +570,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(0);		//キャラクターの中心からの横の当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(0);		//キャラクターの中心からの縦の当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Triangle:
 		m_fHp = 10.0f;
@@ -581,8 +581,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Square:
 		m_fHp = 10.0f;
@@ -593,8 +593,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Pentagon:
 		m_fHp = 10.0f;
@@ -604,8 +604,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;	//攻撃クールタイム
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	}
 }
@@ -862,6 +862,11 @@ void CAllyPlayer::Draw(void)
 	m_pSprite->Draw();
 	
 	m_pSprite->Init();
+}
+
+void CAllyPlayer::Damage(CFighter* pFighter)
+{
+	m_fHp -= pFighter->GetAtk();
 }
 
 void CAllyPlayer::CreateUpdate(void)
