@@ -6,6 +6,7 @@
 #include "Character.h"
 #include "StageSelect.h"
 #include "Field.h"
+#include "SoundList.h"
 
 E_GAME_PHASE g_ePhaseType;
 CFieldVertex* g_pFieldVertex;
@@ -25,7 +26,7 @@ enum SceneGameTime
 int GameTime;//•b~60‰ñ
 int GameSTime;//•b
 int GameSTimeError;//ŽžŠÔ‚Ì•â³
-	
+IXAudio2SourceVoice* g_pSourseGameBGM;
 //‰Šú‰»ˆ—l
 void InitSceneGame(int StageNum)
 {
@@ -51,7 +52,9 @@ void InitSceneGame(int StageNum)
 	GameSTimeError = 0;
 
 	InitSave();
-
+	g_pSourseGameBGM = GetSound(BGM_BATTLE,true);
+	g_pSourseGameBGM->SetVolume(0.4f);
+	g_pSourseGameBGM->Start();
 	g_pBattle->RandomSelectPattern();
 }
 
@@ -77,6 +80,10 @@ void UninitSceneGame()
 	{
 		delete g_pField;
 		g_pField = nullptr;
+	}
+	if (g_pSourseGameBGM)
+	{
+		g_pSourseGameBGM->DestroyVoice();
 	}
 }
 
