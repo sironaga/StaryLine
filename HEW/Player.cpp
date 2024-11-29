@@ -24,16 +24,16 @@ constexpr float ce_fPlayerSize = 100.0f;				// プレイヤー(筆)のサイズ
 CPlayer::CPlayer()
 	: m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_pVtxPlayer(nullptr), m_pTexPlayerWait(nullptr)
-	, m_nNowVertex(START_PLAYER),m_nDestination(START_PLAYER)
+	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
 	, m_tPos{}, m_tPosTex{}, m_tSizeTex{}
 	, bCanMoveCheck(false)
-	
+
 	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
-	, vtxTimer{},  fTimerSize(TIMER_RIGHT(DRAWTIME(0.0f)))	
-	, tPlayerTimer{},fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
+	, vtxTimer{}, fTimerSize(TIMER_RIGHT(DRAWTIME(0.0f)))
+	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr)
+	, m_pFieldVtx(nullptr), m_pSprite(nullptr)
 {
 	// プレイヤーテクスチャ初期化
 	m_tPosTex.X = 0.0f;
@@ -80,7 +80,7 @@ CPlayer::~CPlayer()
 void CPlayer::Update()
 {
 	TimeProcess();
-  
+
 	// 状態別更新処理
 	switch (m_ePlayerState)
 	{
@@ -101,13 +101,13 @@ void CPlayer::Draw()
 
 	//背景色の設定
 	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-	
+
 	// テクスチャアニメーション
 	DrawAnimation();
 
 	// UVのセット
 	SetSpriteUVPos(m_tPosTex.X, m_tPosTex.Y);
-	SetSpriteUVScale(1.0f,1.0f);
+	SetSpriteUVScale(1.0f, 1.0f);
 
 	// 描画
 	DrawSprite(m_pVtxPlayer, sizeof(Vertex));
@@ -177,7 +177,7 @@ void CPlayer::UpdateStop()
 	{
 		// ×ボタンorスペースキーで移動開始
 		if (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE))
-		{	
+		{
 			bTimerStart = true;
 			m_ePlayerState = MOVE;
 		}
@@ -189,7 +189,7 @@ void CPlayer::UpdateMove()
 	// 各種方向別移動処理
 	switch (m_eDestination)
 	{
-	case CPlayer::UP: 
+	case CPlayer::UP:
 		m_tPos.Y -= MOVESPEED;
 		break;
 	case CPlayer::UPRIGHT:
@@ -241,7 +241,7 @@ void CPlayer::PlayerInput()
 	//デッドゾーン設定
 	if (tControllerMove.X <= DEADZONE && tControllerMove.X >= -DEADZONE) tControllerMove.X = 0.0f;
 	if (tControllerMove.Y <= DEADZONE && tControllerMove.Y >= -DEADZONE) tControllerMove.Y = 0.0f;
-	
+
 	// 目的地の更新
 	if ((tControllerMove.X == 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('W'))m_eDestination = UP;
 	else if ((tControllerMove.X > 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('E')) m_eDestination = UPRIGHT;
@@ -269,45 +269,9 @@ void CPlayer::PlayerInput()
 	}
 }
 
-CVector2<float> CPlayer::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
+void CPlayer::SetPlayerStop()
 {
-	CVector2<float> tex;
-	static int nSplit = nSplitX * nSplitY;
-	static int nAnimePage = 0;
-	static int nAnimeCount = 0;
-
-	// テクスチャアニメーション用
-	if (nAnimeCount >= nAnimationSwap)
-	{
-		nAnimePage++;	// 次のシーケンステクスチャに移る
-		nAnimeCount = 0;
-	}
-	else nAnimeCount++;
-
-	if (nAnimePage >= nSplit)
-	{
-		nAnimePage = 0;	// 最初のシーケンステクスチャに戻る
-	}
-	// 横のシーケンステクスチャの動き
-	switch (nAnimePage % nSplitX)
-	{
-	default:break;
-	case 0: tex.X = 0.0 / (float)nSplitX; break;
-	case 1: tex.X = 1.0 / (float)nSplitX; break;
-	case 2: tex.X = 2.0 / (float)nSplitX; break;
-	case 3: tex.X = 3.0 / (float)nSplitX; break;
-	}
-	// 縦のシーケンステクスチャの動き
-	switch (nAnimePage / nSplitY)
-	{
-	default:break;
-	case 0: tex.Y = 0.0 / (float)nSplitY; break;
-	case 1: tex.Y = 1.0 / (float)nSplitY; break;
-	case 2: tex.Y = 2.0 / (float)nSplitY; break;
-	case 3: tex.Y = 3.0 / (float)nSplitY; break;
-	}
-
-	return tex;
+	m_ePlayerState = STOP;
 }
 
 void CPlayer::TimeProcess()
@@ -358,7 +322,7 @@ void CPlayer::DrawAnimation()
 	default:break;
 	}
 
-	m_tPosTex = GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
+	m_tPosTex = m_pSprite->GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
 }
 
 void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)

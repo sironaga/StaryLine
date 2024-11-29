@@ -3,6 +3,7 @@
 #define _DIRECTX_
 #include "DirectX.h"
 #include "FieldVertex.h"
+#include "Sprite.h"
 
 // defines
 #define MOVESPEED (10.0f)	// 移動速度
@@ -67,15 +68,12 @@ private:
 	CVector2<float> m_tPosTex;					// プレイヤーのテクスチャ座標
 	CVector2<float> m_tSizeTex;					// プレイヤーのテクスチャサイズ
 
-	// ＜テクスチャアニメーション関数＞
-	// 第1引数に横の分割数、第2引数に縦の分割数、第3引数にアニメーションが次に移るまでのフレーム数を入れてください
-	// この関数を使う際は、メンバ変数などでCVector2型の変数(m_fPosTex)を作り、そこに一旦値を入れるようにしてください
-	// この関数から直接取り出すようにSetSpriteUVPos関数に入れると倍速になってしまいます
-	CVector2<float> GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap);
-
 	int m_nNowVertex;							// 今の頂点
 	int m_nDestination;							// 目的地の頂点
 	bool bCanMoveCheck;							// 目的地へ行けるかどうか
+
+public:
+	void SetPlayerStop();
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:
@@ -97,4 +95,5 @@ public:
 	void SetFieldVertexAddress(CFieldVertex*);
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
+	Sprite* m_pSprite;
 };

@@ -158,3 +158,44 @@ void Sprite::SetPixelShader(Shader* ps)
 	else
 		m_data.ps = m_defPS.get();
 }
+
+CVector2<float> Sprite::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
+{
+	CVector2<float> tex;
+	static int nSplit = nSplitX * nSplitY;
+	static int nAnimePage = 0;
+	static int nAnimeCount = 0;
+
+	// テクスチャアニメーション用
+	if (nAnimeCount >= nAnimationSwap)
+	{
+		nAnimePage++;	// 次のシーケンステクスチャに移る
+		nAnimeCount = 0;
+	}
+	else nAnimeCount++;
+
+	if (nAnimePage >= nSplit)
+	{
+		nAnimePage = 0;	// 最初のシーケンステクスチャに戻る
+	}
+	// 横のシーケンステクスチャの動き
+	switch (nAnimePage % nSplitX)
+	{
+	default:break;
+	case 0: tex.X = 0.0 / (float)nSplitX; break;
+	case 1: tex.X = 1.0 / (float)nSplitX; break;
+	case 2: tex.X = 2.0 / (float)nSplitX; break;
+	case 3: tex.X = 3.0 / (float)nSplitX; break;
+	}
+	// 縦のシーケンステクスチャの動き
+	switch (nAnimePage / nSplitY)
+	{
+	default:break;
+	case 0: tex.Y = 0.0 / (float)nSplitY; break;
+	case 1: tex.Y = 1.0 / (float)nSplitY; break;
+	case 2: tex.Y = 2.0 / (float)nSplitY; break;
+	case 3: tex.Y = 3.0 / (float)nSplitY; break;
+	}
+
+	return tex;
+}

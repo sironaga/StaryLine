@@ -6,6 +6,7 @@
 #include "MeshBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "VectorOperator.h"
 
 class Sprite
 {
@@ -27,6 +28,13 @@ public:
 
 	static void SetVertexShader(Shader* vs);
 	static void SetPixelShader(Shader* ps);
+
+
+	// ＜テクスチャアニメーション関数＞
+	// 第1引数に横の分割数、第2引数に縦の分割数、第3引数にアニメーションが次に移るまでのフレーム数を入れてください
+	// この関数を使う際は、メンバ変数などでCVector2型の変数(m_fPosTex)を作り、そこに一旦値を入れるようにしてください
+	// この関数から直接取り出すようにSetSpriteUVPos関数に入れると倍速になってしまいます
+	CVector2<float> GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap);
 
 private:
 	struct Data

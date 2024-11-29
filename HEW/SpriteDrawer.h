@@ -14,7 +14,6 @@ void SetSpriteScale(float x, float y);
 void SetSpriteUVPos(float u, float v);
 void SetSpriteUVScale(float u, float v);
 void SetSpriteColor(float r, float g, float b, float a);
-void SetBillBoard(Camera* camera);
 void SetSpriteTexture(ID3D11ShaderResourceView* pTexture);
 void ReSetSprite();
 
