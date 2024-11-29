@@ -206,6 +206,14 @@ private:
 
 	Camera* m_pCamera;
 	Sprite* m_pSprite;
+
+	/*＝＝＝＝＝プレイヤーアニメーション系＝＝＝＝＝*/
+private:
+	CVector2<float> m_tTexPos;
+public:
+	CVector2<float> GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap);
+	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+
 public:
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }

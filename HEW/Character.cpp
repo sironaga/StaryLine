@@ -12,6 +12,10 @@
 #define AngleY (0.0f)
 #define AngleZ (0.0f)
 
+#define PLAYER_SPLIT_X (4)	// プレイヤーテクスチャ分割数X
+#define PLAYER_SPLIT_Y (4)	// プレイヤーテクスチャ分割数Y
+#define ANIME_TIME (10)		// プレイヤーアニメーションカウント
+
 enum AllyTexture
 {
 	Ally3,
@@ -107,10 +111,22 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos, Ca
 
 CFighter::~CFighter()
 {
-	if (g_pAllyTex)delete g_pAllyTex;
-	for (int i = 0; i < MAX_AllyTex; i++)g_pAllyTex[i] = nullptr;
-	if (g_pEnemyTex)delete g_pEnemyTex;
-	for (int i = 0; i < MAX_EnemyTex; i++)g_pEnemyTex[i] = nullptr;
+	for (int i = 0; i < MAX_AllyTex; i++)
+	{
+		if (g_pAllyTex)
+		{
+			delete g_pAllyTex[i];
+			g_pAllyTex[i] = nullptr;
+		}
+	}
+	for (int i = 0; i < MAX_EnemyTex; i++)
+	{
+		if (g_pEnemyTex[i])
+		{
+			delete g_pEnemyTex[i];
+			g_pEnemyTex[i] = nullptr;
+		}
+	}
 
 	//if (g_pCollisionTex)
 	//{
@@ -373,19 +389,6 @@ void CAlly::Update(void)
 
 void CAlly::Draw(void)
 {
-	////テクスチャの指定
-	//SetSpriteTexture(g_pAllyTex[nCornerCount - 3]);
-	////スプライトの設定
-	//SetSpritePos(m_tPos.X, m_tPos.Y);
-	////大きさの設定
-	//SetSpriteScale(1.0f, 1.0f);
-	////背景色の設定
-	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-	////描画
-	//DrawSprite(m_pVtx, sizeof(Vertex));
-	////設定のリセット
-	//ReSetSprite();
-
 	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
@@ -442,8 +445,8 @@ void CAlly::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Triangle:
 		m_fHp = 10.0f;
@@ -453,8 +456,8 @@ void CAlly::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Square:
 		m_fHp = 10.0f;
@@ -464,8 +467,8 @@ void CAlly::SettingStatus(void)
 		m_fAtkChargeMax = 20.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(2);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(2);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Pentagon:
 		m_fHp = 10.0f;
@@ -475,8 +478,8 @@ void CAlly::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(2);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(2);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	}
 }
@@ -515,19 +518,6 @@ void CEnemy::Update(void)
 
 void CEnemy::Draw(void)
 {
-	////テクスチャの指定
-	//SetSpriteTexture(g_pEnemyTex[nCornerCount - 3]);
-	////スプライトの設定
-	//SetSpritePos(m_tPos.X, m_tPos.Y);
-	////大きさの設定
-	//SetSpriteScale(1.0f, 1.0f);
-	////背景色の設定
-	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-	////描画
-	//DrawSprite(m_pVtx, sizeof(Vertex));
-	////設定のリセット
-	//ReSetSprite();
-
 	m_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
@@ -580,8 +570,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(0);		//キャラクターの中心からの横の当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(0);		//キャラクターの中心からの縦の当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Triangle:
 		m_fHp = 10.0f;
@@ -591,8 +581,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Square:
 		m_fHp = 10.0f;
@@ -603,8 +593,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Pentagon:
 		m_fHp = 10.0f;
@@ -614,8 +604,8 @@ void CEnemy::SettingStatus(void)
 		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;	//攻撃クールタイム
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
+		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	}
 }
@@ -655,19 +645,6 @@ void CAllyBuffer::Update(void)
 
 void CAllyBuffer::Draw(void)
 {
-	////テクスチャの指定
-	//SetSpriteTexture(g_pEnemyTex[nCornerCount - 3]);
-	////スプライトの設定
-	//SetSpritePos(m_tPos.X, m_tPos.Y);
-	////大きさの設定
-	//SetSpriteScale(1.0f, 1.0f);
-	////背景色の設定
-	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-	////描画
-	//DrawSprite(m_pVtx, sizeof(Vertex));
-	////設定のリセット
-	//ReSetSprite();
-
 	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
@@ -873,11 +850,18 @@ void CAllyPlayer::Update(void)
 
 void CAllyPlayer::Draw(void)
 {
+	m_tTexPos = GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
+
+	m_pSprite->SetUVPos({ m_tTexPos.X,m_tTexPos.Y });
+	m_pSprite->SetUVScale({ 0.25f,0.25f });
+
 	m_pSprite->SetTexture(g_pAllyPlayerTex);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
+	
+	m_pSprite->Init();
 }
 
 void CAllyPlayer::CreateUpdate(void)
@@ -933,4 +917,45 @@ void CAllyPlayer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	m_pSprite->SetWorld(wvp[0]);
 	m_pSprite->SetView(wvp[1]);
 	m_pSprite->SetProjection(wvp[2]);
+}
+
+CVector2<float> CAllyPlayer::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
+{
+	CVector2<float> tex;
+	static int nSplit = nSplitX * nSplitY;
+	static int nAnimePage = 0;
+	static int nAnimeCount = 0;
+
+	// テクスチャアニメーション用
+	if (nAnimeCount >= nAnimationSwap)
+	{
+		nAnimePage++;	// 次のシーケンステクスチャに移る
+		nAnimeCount = 0;
+	}
+	else nAnimeCount++;
+
+	if (nAnimePage >= nSplit)
+	{
+		nAnimePage = 0;	// 最初のシーケンステクスチャに戻る
+	}
+	// 横のシーケンステクスチャの動き
+	switch (nAnimePage % nSplitX)
+	{
+	default:break;
+	case 0: tex.X = 0.0 / (float)nSplitX; break;
+	case 1: tex.X = 1.0 / (float)nSplitX; break;
+	case 2: tex.X = 2.0 / (float)nSplitX; break;
+	case 3: tex.X = 3.0 / (float)nSplitX; break;
+	}
+	// 縦のシーケンステクスチャの動き
+	switch (nAnimePage / nSplitY)
+	{
+	default:break;
+	case 0: tex.Y = 0.0 / (float)nSplitY; break;
+	case 1: tex.Y = 1.0 / (float)nSplitY; break;
+	case 2: tex.Y = 2.0 / (float)nSplitY; break;
+	case 3: tex.Y = 3.0 / (float)nSplitY; break;
+	}
+
+	return tex;
 }
