@@ -160,6 +160,7 @@ void CPlayer::UpdateStop()
 			if (Count == 8)
 			{
 				ChangePhase(SHAPESCHECK);
+				m_bChangePhase = true;
 				fTimerSize = -TIMER_LEFT;
 				bCanMoveCheck = true;
 				return;

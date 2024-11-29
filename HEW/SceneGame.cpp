@@ -23,9 +23,10 @@ enum SceneGameTime
 	GAME_END = 90
 };
 
-int GameTime;//秒×60回
-int GameSTime;//秒
-int GameSTimeError;//時間の補正
+float GameTime;//秒×60回
+float GameSTime;//秒
+float GameSTimeError;//時間の補正
+float GameSTimeChangeError;//フェーズが切り替わるときの時間の補正
 IXAudio2SourceVoice* g_pSourseGameBGM;
 //初期化処理l
 void InitSceneGame(int StageNum)
@@ -50,6 +51,7 @@ void InitSceneGame(int StageNum)
 	GameTime = 0;//タイマー初期化
 	GameSTime = 0;
 	GameSTimeError = 0;
+	GameSTimeChangeError = 0;
 
 	InitSave();
 	g_pSourseGameBGM = GetSound(BGM_BATTLE,true);
@@ -95,18 +97,24 @@ void UpdateSceneGame()
 
 	g_pField->Update();
 
+	//強制切り替え時のTIMEとSHAPE_DRAW_ENDの差を求める
+	if (g_pPlayer->GetPlayerPhase())
+	{
+		GameSTimeChangeError = (SHAPE_DRAW_END + GameSTimeError) - GameSTime;
+	}
+
 	//１回目のCOOLTIMEが始まったらそれ以降処理
 	if(COOLTIME_START <= GameSTime)g_pBattle->Update();
 
 	//図形を作る時間
-	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)
+	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END - GameSTimeChangeError + GameSTimeError)
 	{
 		g_pPlayer->Update();
 		g_pFieldVertex->Update();
 	}
 
 	//キャラクターを召喚する時間
-	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
+	if (SHAPE_DRAW_END - GameSTimeChangeError + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START - GameSTimeChangeError + GameSTimeError)
 	{
 		g_pBattle->CreateEntity();
 		g_pBattle->CharacterUpdate();
@@ -123,18 +131,18 @@ void DrawSceneGame()
 	if (COOLTIME_START <= GameSTime)g_pBattle->Draw();//フィールドの描画
 
 	//図形を作る時間
-	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END + GameSTimeError)
+	if (SHAPE_DRAW_START + GameSTimeError <= GameSTime && GameSTime < SHAPE_DRAW_END - GameSTimeChangeError + GameSTimeError)
 	{
 		g_pPlayer->Draw();
 		g_pFieldVertex->Draw();
 	}
 
 	//キャラクターを召喚する時間
-	if (SHAPE_DRAW_END + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START + GameSTimeError)
+	if (SHAPE_DRAW_END - GameSTimeChangeError + GameSTimeError <= GameSTime && GameSTime < COOLTIME_START - GameSTimeChangeError + GameSTimeError)
 	{
 		g_pBattle->Draw();
 	}
-	if (GameTime == (COOLTIME_END + GameSTimeError) * 60)
+	if (GameTime == (COOLTIME_END - GameSTimeChangeError + GameSTimeError) * 60)
 	{
 		GameSTimeError = GameSTime;
 		//フィールドとプレイヤーの初期化処理
