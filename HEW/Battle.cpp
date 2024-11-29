@@ -457,7 +457,7 @@ void CBattle::ReDrawingInit(void)
 		m_pAllyBuffer[i] = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ALLY; i++)
+	for (int i = 0; i < m_nAllyCount; i++)
 	{
 		m_pAlly[i]->SetShield(0.0f);
 		m_pAlly[i]->SetAtk(1.0f);
