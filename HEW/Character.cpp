@@ -8,6 +8,10 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//ÉLÉÉÉâÉNÉ^Å[ÇÃâ°ÇÃçUåÇìñÇΩÇËîªíË(ëäéËÇÃêlêî)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//ÉLÉÉÉâÉNÉ^Å[ÇÃècÇÃçUåÇìñÇΩÇËîªíË(ëäéËÇÃêlêî)
 
+#define AngleX (-0.8f)
+#define AngleY (0.0f)
+#define AngleZ (0.0f)
+
 enum AllyTexture
 {
 	Ally3,
@@ -311,9 +315,16 @@ void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 		0.0f
 	));
 
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		AngleX,
+		AngleY,
+		AngleZ,
+		0.0f
+	));
+
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
 	//ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
-	DirectX::XMMATRIX mat = S * T;
+	DirectX::XMMATRIX mat = S * R * T;
 
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
@@ -712,10 +723,16 @@ void CAllyBuffer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 		InPos.z,
 		0.0f
 	));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		AngleX,
+		AngleY,
+		AngleZ,
+		0.0f
+	));
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
 	//ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
-	DirectX::XMMATRIX mat = S * T;
+	DirectX::XMMATRIX mat = S * R * T;
 
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
@@ -821,7 +838,8 @@ void CEnemyBoss::SettingStatus(void)
 }
 
 CAllyPlayer::CAllyPlayer(float InSize, CVector3<float>FirstPos, Camera* InAddress)
-	:m_tPos(FirstPos)
+	:m_tStatus(St_Create)
+	,m_tPos(FirstPos)
 	,m_fHp(10.0f)
 	,m_pCamera(InAddress)
 	,m_pSprite(nullptr)
@@ -893,10 +911,16 @@ void CAllyPlayer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 		InPos.z,
 		0.0f
 	));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		AngleX,
+		AngleY,
+		AngleZ,
+		0.0f
+	));
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
 	//ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
-	DirectX::XMMATRIX mat = S * T;
+	DirectX::XMMATRIX mat = S * R * T;
 
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
