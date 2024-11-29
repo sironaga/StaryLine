@@ -101,7 +101,6 @@ void SetSpriteTexture(ID3D11ShaderResourceView* pTexture)
 	g_pSpriteTexture = pTexture;
 }
 
-
 void InitSpriteDrawer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, UINT width, UINT height)
 {
 	const char* VS = R"EOT(
