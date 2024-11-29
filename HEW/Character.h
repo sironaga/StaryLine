@@ -192,6 +192,7 @@ public:
 	void Update(void);	//XVˆ—
 	void Draw(void);	//•`‰æˆ—
 
+	void Damage(CFighter* pFighter);
 private:
 	void CreateUpdate(void);
 	void BattleUpdate(void);

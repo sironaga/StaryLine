@@ -33,15 +33,23 @@
 
 #define MOVESPEED(Speed) Speed / 10
 
-//戦闘フィールドのサイズ
-#define BATTLEFIELDWIDTH (1920)
-#define BATTLEFIELDHEIGHT (1080)
+////戦闘フィールドのサイズ
+//#define BATTLEFIELDWIDTH (1920)
+//#define BATTLEFIELDHEIGHT (1080)
 
 ID3D11ShaderResourceView* m_pLogTex[10];
 float FirstPosX[5];
 float FirstPosY[16];
 int SelectFirstPosX;
 int SelectFirstPosY;
+
+struct MovePower
+{
+	float X;
+	float Z;
+};
+
+MovePower MoveCalculation(CVector3<float> nPos, CVector3<float> nEnemyPos);
 
 CBattle::CBattle()
 	: m_nAllyCount(0)
@@ -572,7 +580,7 @@ void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 	}
 	else
 	{
-		m_pAllyBuffer[m_nAllyCount] = new CAllyBuffer(InData.nCornerCount, InData.Size, InFirstPos, m_pCamera);
+		m_pAllyBuffer[m_nAllyBufferCount] = new CAllyBuffer(InData.nCornerCount, InData.Size, InFirstPos, m_pCamera);
 		//生成数を加算
 		m_nAllyBufferCount++;
 	}
@@ -599,9 +607,9 @@ void CBattle::Search(int i, Entity Entity)
 					if (m_pAlly[i]->m_nTargetNumber != -1)
 					{
 						/*((敵のX位置 - 味方のX位置)+(敵のY位置 - 味方のY位置)) < ((標的のX位置 - 味方のX位置)+(標的のY位置 - 味方のY位置))*/
-						if (((m_pEnemy[l]->GetPos().X - m_pAlly[i]->GetPos().X) + (m_pEnemy[l]->GetPos().Y - m_pAlly[i]->GetPos().Y))
+						if (((m_pEnemy[l]->GetPos().X - m_pAlly[i]->GetPos().X) + (m_pEnemy[l]->GetPos().Z - m_pAlly[i]->GetPos().Z))
 							<
-							((m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().X - m_pAlly[i]->GetPos().X) + (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().Y - m_pAlly[i]->GetPos().Y)))
+							((m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().X - m_pAlly[i]->GetPos().X) + (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().Z - m_pAlly[i]->GetPos().Z)))
 						{
 							m_pAlly[i]->m_nTargetNumber = l;
 						}
@@ -627,9 +635,9 @@ void CBattle::Search(int i, Entity Entity)
 					if (m_pEnemy[i]->m_nTargetNumber != -1)
 					{
 						/*((味方のX位置 - 敵のX位置)+(味方のY位置 - 敵のY位置)) < ((標的のX位置 - 敵のX位置)+(標的のY位置 - 敵のY位置))*/
-						if (((m_pAlly[l]->GetPos().X - m_pEnemy[i]->GetPos().X) + (m_pAlly[l]->GetPos().Y - m_pEnemy[i]->GetPos().Y))
+						if (((m_pAlly[l]->GetPos().X - m_pEnemy[i]->GetPos().X) + (m_pAlly[l]->GetPos().Z - m_pEnemy[i]->GetPos().Z))
 							<
-							((m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().X - m_pEnemy[i]->GetPos().X) + (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().Y - m_pEnemy[i]->GetPos().Y)))
+							((m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().X - m_pEnemy[i]->GetPos().X) + (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().Z - m_pEnemy[i]->GetPos().Z)))
 						{
 							m_pEnemy[i]->m_nTargetNumber = l;
 						}
@@ -655,11 +663,12 @@ void CBattle::Move(int i, Entity Entity)
 		{
 			if (m_pAlly[i]->m_nTargetNumber < m_nEnemyCount)//現在生存数よりも数字が大きくないかどうか
 			{
-				if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().X < m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(-MOVESPEED(2.0f));
-				if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().X > m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(MOVESPEED(2.0f));
-
-				if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().Z < m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(-MOVESPEED(2.0f));
-				if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().Z > m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(MOVESPEED(2.0f));
+				m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos()).X);
+				m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos()).Z);
+				//if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().X < m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(-MOVESPEED(2.0f));
+				//if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().X > m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(MOVESPEED(2.0f));
+				//if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().Z < m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(-MOVESPEED(2.0f));
+				//if (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().Z > m_pAlly[i]->GetPos().Z)m_pAlly[i]->AddPosZ(MOVESPEED(2.0f));
 			}
 			else
 			{
@@ -680,61 +689,42 @@ void CBattle::Move(int i, Entity Entity)
 		{
 			if (m_pEnemy[i]->m_nTargetNumber < m_nAllyCount)//現在生存数よりも数字が大きくないかどうか
 			{
-				if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().X < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
-				if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().X > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
-
-				if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().Z < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
-				if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().Z > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
+				m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos()).X);
+				m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos()).Z);
+				//if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().X < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
+				//if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().X > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
+				//if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().Z < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
+				//if (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().Z > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
 			}
 			else
 			{
-				if (ALLYCORE_POSX < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
-				if (ALLYCORE_POSX > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
-
-				if (ALLYCORE_POSZ < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
-				if (ALLYCORE_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
+				m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyPlayer->GetPos()).X);
+				m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyPlayer->GetPos()).Z);
+				//if (m_pAllyPlayer->GetPos().X < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
+				//if (m_pAllyPlayer->GetPos().X > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
+				//if (m_pAllyPlayer->GetPos().Z < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
+				//if (m_pAllyPlayer->GetPos().Z > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
 			}
 		}
-		//ここをプレイヤーの位置に進むに変更する
 		else//標的がいないので敵のコアに向かって進む
 		{
-			if (ALLYCORE_POSX < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
-			if (ALLYCORE_POSX > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
-
-			if (ALLYCORE_POSZ < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
-			if (ALLYCORE_POSZ > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
+			m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyPlayer->GetPos()).X);
+			m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyPlayer->GetPos()).Z);
+			//if (m_pAllyPlayer->GetPos().X < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
+			//if (m_pAllyPlayer->GetPos().X > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
+			//if (m_pAllyPlayer->GetPos().Z < m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(-MOVESPEED(2.0f));
+			//if (m_pAllyPlayer->GetPos().Z > m_pEnemy[i]->GetPos().Z)m_pEnemy[i]->AddPosZ(MOVESPEED(2.0f));
 		}
 		break;
 
 	case EnemyBoss:
-		if (m_pEnemyBoss->m_nTargetNumber != -1)//標的を設定済み
-		{
-			if (m_pEnemyBoss->m_nTargetNumber < m_nAllyCount)//現在生存数よりも数字が大きくないかどうか
-			{
-				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().X < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
-				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().X > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
+		m_pEnemyBoss->AddPosX(MoveCalculation(m_pEnemyBoss->GetPos(), m_pAllyPlayer->GetPos()).X);
+		m_pEnemyBoss->AddPosZ(MoveCalculation(m_pEnemyBoss->GetPos(), m_pAllyPlayer->GetPos()).Z);
+		//if (m_pAllyPlayer->GetPos().X < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
+		//if (m_pAllyPlayer->GetPos().X > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
+		//if (m_pAllyPlayer->GetPos().Z < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
+		//if (m_pAllyPlayer->GetPos().Z > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
 
-				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().Z < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
-				if (m_pAlly[m_pEnemyBoss->m_nTargetNumber]->GetPos().Z > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
-			}
-			else
-			{
-				if (ALLYCORE_POSX < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
-				if (ALLYCORE_POSX > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
-
-				if (ALLYCORE_POSZ < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
-				if (ALLYCORE_POSZ > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
-			}
-		}
-		else//標的がいないので敵のコアに向かって進む
-		{
-			if (ALLYCORE_POSX < m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(-MOVESPEED(2.0f));
-			if (ALLYCORE_POSX > m_pEnemyBoss->GetPos().X)m_pEnemyBoss->AddPosX(MOVESPEED(2.0f));
-
-			if (ALLYCORE_POSZ < m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(-MOVESPEED(2.0f));
-			if (ALLYCORE_POSZ > m_pEnemyBoss->GetPos().Z)m_pEnemyBoss->AddPosZ(MOVESPEED(2.0f));
-
-		}
 		break;
 	}
 }
@@ -767,6 +757,14 @@ void CBattle::Battle(int i, int l, Entity Entity)
 				if (m_pAlly[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
 				{
 					m_pAlly[l]->Damage(m_pEnemy[i]);//相手の体力を減らす
+					m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
+				}
+			}
+			else if (m_pAllyPlayer->GetStatus() == St_Battle)
+			{
+				if (m_pEnemy[i]->AtkCollisionCheck(m_pAllyPlayer->GetSize(), m_pAllyPlayer->GetPos()))
+				{
+					m_pAllyPlayer->Damage(m_pEnemy[i]);//相手の体力を減らす
 					m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
 				}
 			}
@@ -862,9 +860,12 @@ void CBattle::Delete(void)
 		}
 	}
 	//敵ボスの生存判定
-	if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
+	if (m_nNowWave == 1)
 	{
-		m_pEnemyBoss = nullptr;
+		if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
+		{
+			m_pEnemyBoss = nullptr;
+		}
 	}
 }
 
@@ -1330,4 +1331,22 @@ void CBattle::SaveAllyLogDraw(void)
 void CBattle::RandomSelectPattern(void)
 {
  	m_nSelectPattern = rand() % m_nMaxPattern;
+}
+
+MovePower MoveCalculation(CVector3<float> nPos, CVector3<float> nEnemyPos)
+{
+	MovePower Movepower;
+	float X = 0.0f;
+	float Z = 0.0f;
+	float ShortDis = 0.0f;
+
+	X = (nEnemyPos.X - nPos.X);
+	Z = (nEnemyPos.Z - nPos.Z);
+
+	ShortDis = sqrtf(powf(X, 2) + powf(Z, 2));
+
+	Movepower.X = (X / (ShortDis / MOVESPEED(2.0f))) / 60.0f;
+	Movepower.Z = (Z / (ShortDis / MOVESPEED(2.0f))) / 60.0f;
+
+	return Movepower;
 }
