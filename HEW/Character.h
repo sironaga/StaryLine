@@ -24,7 +24,6 @@ enum Status
 	St_Delete,	//削除
 };
 
-
 //キャラクター基底クラス
 class CFighter
 {
