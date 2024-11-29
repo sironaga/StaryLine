@@ -16,16 +16,16 @@ Vertex vtx_FieldLine[MAX_LINE][4];
 
 CFieldVertex::CFieldVertex()
 	:RoadStop(false)
-	,m_tVertex{}
-	,m_tCenter_Vertex{}
-	,m_pTex_FieldVertex(nullptr)
-	,m_pVtx_FieldVertex(nullptr)
-	,m_offsetU_Field(0.0f)
-	,m_pTex_FieldLine{ nullptr }
-	,m_pVtx_FieldLine{ nullptr }
-	,NowLine(0)
-	,DrawLinePos{}
-	,BreakVertex(-1)
+	, m_tVertex{}
+	, m_tCenter_Vertex{}
+	, m_pTex_FieldVertex(nullptr)
+	, m_pVtx_FieldVertex(nullptr)
+	, m_offsetU_Field(0.0f)
+	, m_pTex_FieldLine{ nullptr }
+	, m_pVtx_FieldLine{ nullptr }
+	, NowLine(0)
+	, DrawLinePos{}
+	, BreakVertex(-1)
 {
 	StartVertex = START_PLAYER;//始点初期化
 	GoalVertex = START_PLAYER;//終点初期化
@@ -33,7 +33,7 @@ CFieldVertex::CFieldVertex()
 
 	NowPhase = E_GAME_PHASE::DRAWING;//今のフェーズ初期化
 	PrevPhase = E_GAME_PHASE::DRAWING;//過去のフェーズ初期化
-	
+
 	//配列-1で初期化
 	Fill(OrderVertex, -1);
 	Fill(Comparison_Shapes_Vertex_Save, -1);
@@ -95,19 +95,19 @@ CFieldVertex::CFieldVertex()
 		{{-STAR_SIZE, -STAR_SIZE, 0.0f}, {0.0f, 0.0f}},
 		{{-STAR_SIZE,  STAR_SIZE, 0.0f}, {0.0f, 1.0f}},
 		{{ STAR_SIZE, -STAR_SIZE, 0.0f}, {1.0f, 0.0f}},
-		{{ STAR_SIZE,  STAR_SIZE, 0.0f}, {1.0f, 1.0f}}, 
+		{{ STAR_SIZE,  STAR_SIZE, 0.0f}, {1.0f, 1.0f}},
 	};
-    m_pVtx_FieldVertex = CreateVertexBuffer(vtx_FieldVertex, 4);
+	m_pVtx_FieldVertex = CreateVertexBuffer(vtx_FieldVertex, 4);
 
 	//線描画初期化
 	HRESULT hrLine;
-	
+
 	hrLine = LoadTextureFromFile(GetDevice(), "Asset/Line/Line.png", &m_pTex_FieldLine);
 	if (FAILED(hrLine)) {
 		MessageBox(NULL, "Field 画像", "Error", MB_OK);
 	}
-	
-	for(int i = 0; i < MAX_LINE; i++)
+
+	for (int i = 0; i < MAX_LINE; i++)
 	{
 		//背景表示の座標
 		vtx_FieldLine[i][0] = { {-LINE_SIZE, -LINE_SIZE, 0.0f}, {0.0f, 0.0f} };
@@ -132,7 +132,7 @@ CFieldVertex::~CFieldVertex()
 }
 
 void CFieldVertex::Update()
-{	
+{
 	FieldVertex* Vertexp;
 	CenterVertex* CenterVertexp;
 	//プレイヤーの位置の情報を取得
@@ -214,12 +214,12 @@ void CFieldVertex::Update()
 			NowLine++;//線の数増やす
 		}
 	}
-	
+
 	//描画のための更新処理
 	int PlayerDestination;//プレイヤーの方向保存
 	PlayerDestination = m_pPlayer->GetPlayerDestination();//プレイヤーの方向取得
-	FLOAT3 PosA[4];//回転後座標格納用
-	FLOAT3 Size;//線のサイズ
+	CVector3<float> PosA[4];//回転後座標格納用
+	CVector3<float> Size;//線のサイズ
 
 	Size.X = LINE_SIZE;
 	Size.Y = LINE_SIZE;
@@ -227,12 +227,12 @@ void CFieldVertex::Update()
 	//線の回転
 	PosA[0].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
 	PosA[0].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[1].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - ( Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[1].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + ( Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[2].X =  Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[2].Y =  Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[3].X =  Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - ( Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[3].Y =  Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + ( Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[1].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[1].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[2].X = Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[2].Y = Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[3].X = Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[3].Y = Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
 
 	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.X + PosA[0].X;//左上のｘ座標
 	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.Y + PosA[0].Y;//左上のｙ座標
@@ -290,7 +290,7 @@ void CFieldVertex::Draw()
 			DrawSprite(m_pVtx_FieldLine[i], sizeof(Vertex));
 		}
 	}
-		
+
 	if (NowPhase == E_GAME_PHASE::DRAWING || NowPhase == E_GAME_PHASE::SHAPESCHECK)
 	{
 		m_pBattle->SaveAllyLogDraw();
@@ -312,19 +312,19 @@ bool CFieldVertex::GetRoadStop(int Direction)
 	{
 	case 0:
 		if (GoalVertex - 5 < 0)RoadStop = true;//頂点の番号が０より小さい時
-	    else
-	    {
+		else
+		{
 			for (int i = 0; i < 8; i++)
 			{
-			    if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5].Number)RoadStop = true;
+				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5].Number)RoadStop = true;
 			}
 			if (GoalVertex - 5 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
-	    }
+		}
 		break;
 	case 1:
 		if (GoalVertex - 5 + 1 < 0 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が０より小さい時または今いるとこが右端の時
 		else
-	    {
+		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
@@ -336,29 +336,29 @@ bool CFieldVertex::GetRoadStop(int Direction)
 				}
 			}
 			//行きたい方向の頂点と繋がっていたら
-		    for (int i = 0; i < 8; i++)
-		    {
-		        if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 + 1].Number)RoadStop = true;
-		    }
+			for (int i = 0; i < 8; i++)
+			{
+				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 + 1].Number)RoadStop = true;
+			}
 			if (GoalVertex - 5 + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
-	    }
+		}
 		break;
 	case 2:
 		if (GoalVertex + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
 		else
-	    {
+		{
 			//行きたい方向の頂点と繋がっていたら
-	        for (int i = 0; i < 8; i++)
-	        {
-	        	 if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 1].Number)RoadStop = true;
-	        }
+			for (int i = 0; i < 8; i++)
+			{
+				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 1].Number)RoadStop = true;
+			}
 			if (GoalVertex + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
-	    }
-		break; 
+		}
+		break;
 	case 3:
 		if (GoalVertex + 5 + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
 		else
-	    {
+		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
@@ -370,12 +370,12 @@ bool CFieldVertex::GetRoadStop(int Direction)
 				}
 			}
 			//行きたい方向の頂点と繋がっていたら
-		    for (int i = 0; i < 8; i++)
-		    {
-		       if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 + 1].Number)RoadStop = true;
-		    }
-			if (GoalVertex + 5 + 1== BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
-	    }
+			for (int i = 0; i < 8; i++)
+			{
+				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 + 1].Number)RoadStop = true;
+			}
+			if (GoalVertex + 5 + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+		}
 		break;
 	case 4:
 		if (GoalVertex + 5 > 24)RoadStop = true;//頂点の番号が24より大きい時
@@ -392,7 +392,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 	case 5:
 		if (GoalVertex + 5 - 1 > 24 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが左端の時
 		else
-	    {
+		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
@@ -404,13 +404,13 @@ bool CFieldVertex::GetRoadStop(int Direction)
 				}
 			}
 			//行きたい方向の頂点と繋がっていたら
-	    	for (int i = 0; i < 8; i++)
-	    	{
-	    		if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 - 1].Number)RoadStop = true;
-	    	}
+			for (int i = 0; i < 8; i++)
+			{
+				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 - 1].Number)RoadStop = true;
+			}
 			if (GoalVertex + 5 - 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
-	    }
-		break; 
+		}
+		break;
 	case 6:
 		if (GoalVertex - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
 		else
@@ -583,8 +583,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							}
 						}
 					}
-					else 
-					{   
+					else
+					{
 						//最後の辺とその一個前の辺の比較
 						//三点が縦か横の一直線上でないとき
 						if (!((m_tVertex[Comparison3[l - 2]].Pos.X == m_tVertex[Comparison3[l - 1]].Pos.X && m_tVertex[Comparison3[l - 1]].Pos.X == m_tVertex[Comparison3[0]].Pos.X)
@@ -607,7 +607,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X))
 							{
 								Count++;//辺が繋がってないとき角ができてる
-							}		
+							}
 						}
 						////凹角形判定
 						//if (Count != 3 && !(Count > 8))
@@ -770,7 +770,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
-					m_pBattle->SaveAllyData(Shapes_Count[NowShapes],Shapes_Size);//図形の頂点と角数を渡す
+					m_pBattle->SaveAllyData(Shapes_Count[NowShapes], Shapes_Size);//図形の頂点と角数を渡す
 					NowShapes++;//保存場所を次の場所にする
 				}
 			}
