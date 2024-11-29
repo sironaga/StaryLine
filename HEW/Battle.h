@@ -28,6 +28,7 @@ public:
 	~CBattle();				//デストラクタ
 	void Update(void);		//更新処理
 	void CharacterUpdate(void);//キャラクターたちの更新
+	void CharacterDraw(void);//キャラクターたちの描画
 	void Draw(void);		//描画処理
 
 	void ReDrawingInit(void);	//再描画する際の初期化処理
