@@ -11,6 +11,8 @@ static const float fFPS = static_cast<float>(FPS);
 // リソースパス
 #define ASSET(path)	"Assets/"path
 
+#define EFFECT_PASS(efkser) "Asset/Effect/"efkser
+
 #define PI (3.1415f)
 #define TORAD(deg) ((deg / 180.0f) * PI)
 
@@ -25,12 +27,12 @@ static const float GRAVITY = 0.98f;
 static const char* APP_TITLE = "DX22_Golf";
 
 // 画面サイズ
-static const int SCREEN_WIDTH	= 1920;
-static const int SCREEN_HEIGHT	= 1080;
+static const int SCREEN_WIDTH = 1920;
+static const int SCREEN_HEIGHT = 1080;
 
 // グリッドサイズ(デバッグ用
-static const int	DEBUG_GRID_NUM		= 10;			// グリッド中心から端までの線の本数
-static const float	DEBUG_GRID_MARGIN	= METER(1.0f);	// グリッド配置幅
+static const int	DEBUG_GRID_NUM = 10;			// グリッド中心から端までの線の本数
+static const float	DEBUG_GRID_MARGIN = METER(1.0f);	// グリッド配置幅
 
 
 

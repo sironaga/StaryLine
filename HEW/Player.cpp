@@ -33,7 +33,7 @@ CPlayer::CPlayer()
 	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr), m_pSprite(nullptr)
+	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pEffect(nullptr)
 {
 	// プレイヤーテクスチャ初期化
 	m_tPosTex.X = 0.0f;
@@ -65,6 +65,9 @@ CPlayer::CPlayer()
 	// 制限時間テクスチャ読み込み
 	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Timer.jpg", &m_pTexTimer);
 	if (FAILED(hr))MessageBox(NULL, "エラー:Timer.jpg", "Player.cpp", MB_OK);
+
+	m_pEffect = new CEffect("Asset / Effect/warp.efkefc");
+
 }
 
 CPlayer::~CPlayer()
@@ -89,6 +92,9 @@ void CPlayer::Update()
 	case CPlayer::MOVE: UpdateMove(); break;
 	default:break;
 	}
+
+	m_pEffect->SetEffectState();
+	m_pEffect->Update(false);
 }
 
 void CPlayer::Draw()
@@ -132,6 +138,8 @@ void CPlayer::Draw()
 
 	// スプライト設定のリセット
 	ReSetSprite();
+
+	m_pEffect->Draw(false);
 }
 
 void CPlayer::UpdateReady()
@@ -237,7 +245,7 @@ void CPlayer::UpdateMove()
 void CPlayer::PlayerInput()
 {
 	// 左スティックの状態を取得
-	FLOAT2 tControllerMove = CGetLStick();
+	CVector2<float> tControllerMove = CGetLStick();
 
 	//デッドゾーン設定
 	if (tControllerMove.X <= DEADZONE && tControllerMove.X >= -DEADZONE) tControllerMove.X = 0.0f;
@@ -254,7 +262,9 @@ void CPlayer::PlayerInput()
 	else if ((tControllerMove.X < 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('Q')) m_eDestination = UPLEFT;
 	//else m_eDestination = DEFAULT;
 
-// 目的地ごとに目的地の頂点を設定
+	if ((IsKeyTrigger(VK_TAB)))m_pEffect->Play(false);
+
+	// 目的地ごとに目的地の頂点を設定
 	switch (m_eDestination)
 	{
 	case CPlayer::UP:m_nDestination = m_nNowVertex - 5;			break;
