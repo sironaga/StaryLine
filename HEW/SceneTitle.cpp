@@ -8,14 +8,16 @@
 #include "SoundList.h"
 CStartTitle* g_pStartTilte;
 
-IXAudio2SourceVoice* g_pSourseBGM;
+IXAudio2SourceVoice* g_pSourseTitleBGM;
+IXAudio2SourceVoice* g_pSourseTitleSE;
 //‰Šú‰»ˆ—
 void InitSceneTitle()
 {
 	g_pStartTilte = new CStartTitle();
-	g_pSourseBGM = GetSound(BGM_TITLE,true);
-	g_pSourseBGM->SetVolume(0.4f);
-	g_pSourseBGM->Start();
+	g_pSourseTitleBGM = GetSound(BGM_TITLE,true);
+	g_pSourseTitleSE = GetSound(SE_DECISION, false);
+	g_pSourseTitleBGM->SetVolume(0.4f);
+	g_pSourseTitleBGM->Start();
 	
 }
 
@@ -23,8 +25,8 @@ void InitSceneTitle()
 void UninitSceneTitle()
 {
 	delete g_pStartTilte;
-	g_pSourseBGM->Stop();
-	g_pSourseBGM->DestroyVoice();
+	g_pSourseTitleBGM->Stop();
+	g_pSourseTitleBGM->DestroyVoice();
 }
 
 //XVˆ—
