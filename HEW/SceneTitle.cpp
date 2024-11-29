@@ -14,7 +14,7 @@ void InitSceneTitle()
 {
 	g_pStartTilte = new CStartTitle();
 	g_pSourseBGM = GetSound(BGM_TITLE,true);
-	g_pSourseBGM->SetVolume(0.09f);
+	g_pSourseBGM->SetVolume(0.4f);
 	g_pSourseBGM->Start();
 	
 }

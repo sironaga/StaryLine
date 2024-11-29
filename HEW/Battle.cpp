@@ -48,7 +48,7 @@ CBattle::CBattle()
 	, m_nAllyDateCount(0)
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
-	, m_nNowWave(0)
+	, m_nNowWave(1)
 	, m_nMaxWave(0)
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
@@ -432,7 +432,7 @@ void CBattle::ReDrawingInit(void)
 		m_pAllyBuffer[i] = nullptr;
 	}
 
-	for (int i = 0; i < m_nAllyCount; i++)
+	for (int i = 0; i < MAX_ALLY; i++)
 	{
 		m_pAlly[i]->SetShield(0.0f);
 		m_pAlly[i]->SetAtk(1.0f);
@@ -837,12 +837,9 @@ void CBattle::Delete(void)
 		}
 	}
 	//敵ボスの生存判定
-	if (m_nNowWave == 1)
+	if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
 	{
-		if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
-		{
-			m_pEnemyBoss = nullptr;
-		}
+		m_pEnemyBoss = nullptr;
 	}
 }
 
