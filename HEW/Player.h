@@ -37,6 +37,8 @@ public:
 	// 目的地の取得
 	int GetPlayerDestination() { return m_eDestination; }
 
+	int GetPlayerPhase() { return m_bChangePhase; }
+
 private:
 	// 移動方向用列挙型
 	enum E_DESTINATION
@@ -71,6 +73,8 @@ private:
 	int m_nNowVertex;							// 今の頂点
 	int m_nDestination;							// 目的地の頂点
 	bool bCanMoveCheck;							// 目的地へ行けるかどうか
+
+	bool m_bChangePhase;                        //描画タイムから召喚タイムに移動させるかどうか
 
 public:
 	void SetPlayerStop();
