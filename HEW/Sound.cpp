@@ -10,24 +10,23 @@ CSound::CSound(const std::wstring& fileName)
 {
 	HRESULT result;
 	result = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	if (FAILED(result)) printf("COM‚Ì‰Šú‰»¸”s");
+	if (FAILED(result)) MessageBox(NULL, "COM‚Ì‰Šú‰»¸”s"," ", MB_OK); 
 	result = XAudio2Create(&m_pXAudio2);
-	if (FAILED(result)) printf("m_pXAudio2‚Ì‰Šú‰»¸”s");
+	if (FAILED(result)) MessageBox(NULL, "m_pXAudio2‚Ì‰Šú‰»¸”s", " ", MB_OK);
 
 	if (m_pXAudio2)
 	{
 		result = m_pXAudio2->CreateMasteringVoice(&m_pMasteringVoice);
 	}
-	if (FAILED(result)) printf("m_pMasteringVoice‚Ì‰Šú‰»¸”s");
-	if (!LoadWaveFile(fileName, &waveData))cout<<"ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ¸”s";
+	if (FAILED(result)) MessageBox(NULL, "m_pMasteringVoice‚Ì‰Šú‰»¸”s", " ", MB_OK); 
+	if (!LoadWaveFile(fileName, &waveData)) MessageBox(NULL, "ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ¸”s", " ", MB_OK); 
 }
 
 CSound::~CSound()
 {
-	
-		m_pSourceVoice->DestroyVoice();
-	m_pMasteringVoice->DestroyVoice();
-	m_pXAudio2->Release();
+	//if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
+	if(m_pMasteringVoice)m_pMasteringVoice->DestroyVoice();
+	if (m_pXAudio2)m_pXAudio2->Release();
 	
 	
 	CoUninitialize();
@@ -199,7 +198,10 @@ IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 
 	
 	m_pSourceVoice->SubmitSourceBuffer(&m_xAudio2Buffer);
-
+	if (!m_pSourceVoice)
+	{
+		MessageBox(NULL, "m_pSourceVoice¸”s", " ", MB_OK);
+	}
 	// ÀÛ‚É‰¹‚ğ–Â‚ç‚·
 	//m_pSourceVoice[i]->Start();
 
