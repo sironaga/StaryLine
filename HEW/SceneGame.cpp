@@ -50,8 +50,9 @@ void InitSceneGame(int StageNum)
 	GameSTime = 0;
 	GameSTimeError = 0;
 
-
 	InitSave();
+
+	g_pBattle->RandomSelectPattern();
 }
 
 //I—¹ˆ—
