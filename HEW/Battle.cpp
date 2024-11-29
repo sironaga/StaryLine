@@ -472,7 +472,7 @@ void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float I
 
 void CBattle::CreateEntity()
 {
-	if (m_pAllyPlayer == nullptr)
+  	if (m_pAllyPlayer == nullptr)
 	{
 		CVector3<float> InFirstPos;
 		InFirstPos.X = ALLYCORE_POSX;

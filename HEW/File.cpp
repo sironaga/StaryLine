@@ -44,6 +44,7 @@ bool InitLoadData(bool First, bool WaveSwitch, int* pPattern,int* pWaveNum, int*
 		getline(ifs, word);
 		vst = split(word, ',');
 		*pPattern = atoi(vst[0].c_str());
+		g_NowLine = ifs.tellg();
 	}
 	else
 	{
@@ -100,10 +101,10 @@ void InitSave()
 	InitLoadData(true, false,&MaxPattern ,&Wave, &MaxEnemy, &AllWave);
 	int CornerCount = 0;
 	g_pFileBattle->SetMaxWave(AllWave);
-	g_pFileBattle->SetMaxPattern(MaxPattern);
 	for (int i = 0; i < AllWave; i++)
 	{
 		InitLoadData(false,true, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
+		g_pFileBattle->SetMaxPattern(MaxPattern);
 		for (int j = 0; j < MaxPattern; j++)
 		{
 			InitLoadData(false, false, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
