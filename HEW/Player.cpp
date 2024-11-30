@@ -65,9 +65,6 @@ CPlayer::CPlayer()
 	// 制限時間テクスチャ読み込み
 	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Timer.jpg", &m_pTexTimer);
 	if (FAILED(hr))MessageBox(NULL, "エラー:Timer.jpg", "Player.cpp", MB_OK);
-
-	m_pEffect = new CEffect("Asset / Effect/warp.efkefc");
-
 }
 
 CPlayer::~CPlayer()
