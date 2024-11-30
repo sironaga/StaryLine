@@ -26,7 +26,8 @@ void UninitSceneTitle()
 {
 	delete g_pStartTilte;
 	g_pSourseTitleBGM->Stop();
-	g_pSourseTitleBGM->DestroyVoice();
+	g_pSourseTitleBGM = nullptr;
+	g_pSourseTitleSE = nullptr;
 }
 
 //XVˆ—

@@ -85,7 +85,7 @@ void UninitSceneGame()
 	}
 	if (g_pSourseGameBGM)
 	{
-		g_pSourseGameBGM->DestroyVoice();
+		g_pSourseGameBGM = nullptr;
 	}
 }
 
