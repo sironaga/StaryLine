@@ -10,7 +10,11 @@ CSound::CSound(const std::wstring& fileName)
 {
 	HRESULT result;
 	result = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	
+	if (FAILED(result))
+	{
+		if (FAILED(result)) MessageBox(NULL, "COM‚Ì‰Šú‰»Ž¸”s", " ", MB_OK);
+	}
+
 	result = XAudio2Create(&m_pXAudio2);
 	if (FAILED(result)) MessageBox(NULL, "m_pXAudio2‚Ì‰Šú‰»Ž¸”s", " ", MB_OK);
 
@@ -24,7 +28,7 @@ CSound::CSound(const std::wstring& fileName)
 
 CSound::~CSound()
 {
-	//if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
+	if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
 	if(m_pMasteringVoice)m_pMasteringVoice->DestroyVoice();
 	if (m_pXAudio2)m_pXAudio2->Release();
 	
