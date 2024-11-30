@@ -92,9 +92,6 @@ void CPlayer::Update()
 	case CPlayer::MOVE: UpdateMove(); break;
 	default:break;
 	}
-
-	m_pEffect->SetEffectState();
-	m_pEffect->Update(false);
 }
 
 void CPlayer::Draw()
@@ -138,8 +135,6 @@ void CPlayer::Draw()
 
 	// スプライト設定のリセット
 	ReSetSprite();
-
-	m_pEffect->Draw(false);
 }
 
 void CPlayer::UpdateReady()
@@ -260,9 +255,7 @@ void CPlayer::PlayerInput()
 	else if ((tControllerMove.X < 0.0f && tControllerMove.Y < 0.0f) || IsKeyPress('Z')) m_eDestination = DOWNLEFT;
 	else if ((tControllerMove.X < 0.0f && tControllerMove.Y == 0.0f) || IsKeyPress('A')) m_eDestination = LEFT;
 	else if ((tControllerMove.X < 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('Q')) m_eDestination = UPLEFT;
-	//else m_eDestination = DEFAULT;
-
-	if ((IsKeyTrigger(VK_TAB)))m_pEffect->Play(false);
+	//else m_eDestination = DEFAULT
 
 	// 目的地ごとに目的地の頂点を設定
 	switch (m_eDestination)

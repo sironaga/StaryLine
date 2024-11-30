@@ -27,7 +27,6 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
-    <ClCompile Include="Effekseer\DxLib.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldVertex.cpp" />

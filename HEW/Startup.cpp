@@ -3,7 +3,7 @@
 #include "Main.h"
 #include <stdio.h>
 #include <crtdbg.h>
-#include "Effekseer/EffekseerForDXLib.h"
+
 
 // timeGetTime周りの使用
 #pragma comment(lib, "winmm.lib")
@@ -55,32 +55,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		NULL, hInstance, NULL
 	);
 
-	// Effekseer初期化用
-	// DXライブラリの表示方法をウィンドウモードに変更する。
-	ChangeWindowMode(true);
-
-	//描画先を裏画面に変更する。
-//	SetDrawScreen(DX_SCREEN_BACK);
-
-	// DirectX11を使用するようにする。(DirectX9も可、一部機能不可)
-	// Effekseerを使用するには必ず設定する。
-	SetUseDirect3DVersion(DX_DIRECT3D_11);
-
-	// DXライブラリを初期化する。
-	if (DxLib_Init() == -1) return -1;
-
-	// Effekseerを初期化する。
-	// 引数には画面に表示する最大パーティクル数を設定する。
-	if (Effekseer_Init(8000) == -1)
-	{
-		DxLib_End();
-		return -1;
-	}
-
-	// フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ。
-	// Effekseerを使用する場合は必ず設定する。
-	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-
 	// ウィンドウの表示
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
@@ -126,11 +100,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
-	// Effekseerを終了する。
-	Effkseer_End();
-
-	// DXライブラリを終了する。
-	DxLib_End();
 
 	// 終了時
 	timeEndPeriod(1);
