@@ -9,8 +9,8 @@ using namespace std;
 CSound::CSound(const std::wstring& fileName)
 {
 	HRESULT result;
-	/*result = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	if (FAILED(result)) MessageBox(NULL, "COM‚Ì‰Šú‰»¸”s"," ", MB_OK); */
+	result = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	
 	result = XAudio2Create(&m_pXAudio2);
 	if (FAILED(result)) MessageBox(NULL, "m_pXAudio2‚Ì‰Šú‰»¸”s", " ", MB_OK);
 
