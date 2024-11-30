@@ -18,7 +18,7 @@ public:
 	// コンストラクタ
 	// エフェクトのファイルをロードするためのコンストラクタです
 	// 第一引数にファイルへのパス、第二引数に3Dかどうか(true = 3D,false = 2D)を設定してください
-	CEffect(const char* EffectFile, bool is3D, int nSplitX, int nSplitY);
+	CEffect(const char* EffectFile,int nSplitX, int nSplitY);
 	// デストラクタ
 	// 各終了処理にてdeleteして呼び出してくださ
 	~CEffect();
@@ -39,13 +39,13 @@ public:
 	// エフェクトを出す場所を決めるSetterです
 	// Update関数の前に呼び出してください
 	// 第一引数に座標、第二引数に3Dかどうか(true = 3D,false = 2D)を設定してください
-	void SetEffectPos(DirectX::XMFLOAT3 pos);
+	void SetEffectPos(DirectX::XMFLOAT2 pos);
 
 	// SetEffectScale
 	// エフェクトの大きさの倍率を決めるSetterです
 	// Update関数の前に呼び出してください
 	// 第一引数にサイズ(倍率)、第二引数に3Dかどうか(true = 3D,false = 2D)を設定してください
-	void SetEffectScale(DirectX::XMFLOAT3 scale);
+	void SetEffectScale(DirectX::XMFLOAT2 scale);
 
 	// SetEffectRotate
 	// エフェクトの回転を決めるSetterです
@@ -66,15 +66,9 @@ public:
 	// void SetEffectSpeed(float speed);
 
 	// SetEffectSprit
-	// エフェクトの分割数を決めるSetterです
-	// Update関数の前に呼び出してください
-	// 第一引数に横の分割数、第二引数に縦の分割数、第二引数に3Dかどうか(true = 3D,false = 2D)を設定してください
-	void SetEffectSprit(int splitX, int splitY);
-
-	// SetEffectSprit
-	// 3DのView設定とProjection設定を呼び出す関数です
-	// それまでに一度もViewProjection設定をしていないときに呼び出してください
-	void SetEffect3D();
+	// 3Dの変換行列を設定するSetterです
+	// 描画の前に呼び出してください
+	void SetEffect3D(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size = { 1.0f,1.0f,1.0f }, DirectX::XMFLOAT3 rotate = { 0.0f,0.0f,0.0f });
 
 	// SetEffectState
 	// エフェクトのSetterをまとめたSetterです
@@ -84,7 +78,8 @@ public:
 		DirectX::XMFLOAT3 pos = { 0.0f,0.0f,0.0f },
 		DirectX::XMFLOAT3 size = { 1.0f,1.0f,1.0f },
 		DirectX::XMFLOAT3 rotate = { 0.0f,0.0f,0.0f },
-		DirectX::XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }
+		DirectX::XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f }, 
+		bool b3D = false
 	);
 
 	// Play
@@ -105,7 +100,6 @@ private:
 	int m_nSplitY;
 	float m_fSpeed;
 	bool m_bPlay;
-	bool m_b3D;
 	Sprite* m_pEffect;
 	Texture* m_pTexture;
 	Camera* m_pCamera;
