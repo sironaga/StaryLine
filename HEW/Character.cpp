@@ -8,7 +8,7 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//キャラクターの横の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//キャラクターの縦の攻撃当たり判定(相手の人数)
 
-#define AngleX (-0.6f)
+#define AngleX (0.0f)
 #define AngleY (0.0f)
 #define AngleZ (0.0f)
 
@@ -21,10 +21,14 @@ enum AllyTexture
 	Ally3,
 	Ally4,
 	Ally5,
+	MAX_AllyTex,
+};
+enum AllyBufferTexture
+{
 	Ally6,
 	Ally7,
 	Ally8,
-	MAX_AllyTex,
+	MAX_AllyBufferTex,
 };
 enum EnemyTexture
 {
@@ -35,6 +39,7 @@ enum EnemyTexture
 };
 
 Texture* g_pAllyTex[MAX_AllyTex];
+Texture* g_pAllyBufferTex[MAX_AllyBufferTex];
 Texture* g_pEnemyTex[MAX_EnemyTex];
 
 Texture* g_pAllyPlayerTex;
@@ -47,10 +52,14 @@ CFieldVertex* g_pFieldVtx;
 void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み込み
 {
 	g_pFieldVtx = InAddress;
+
 	for(int i = 0; i < MAX_AllyTex;i++)
 		g_pAllyTex[i] = new Texture();
+	for (int i = 0; i < MAX_AllyBufferTex; i++)
+		g_pAllyBufferTex[i] = new Texture();
 	for(int i = 0; i < MAX_EnemyTex;i++)
 		g_pEnemyTex[i] = new Texture();
+
 	g_pCollisionTex = new Texture();
 
 	g_pAllyPlayerTex = new Texture();
@@ -60,9 +69,9 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	hr = g_pAllyTex[Ally3]->Create("Asset/味方/3.png");
 	hr = g_pAllyTex[Ally4]->Create("Asset/味方/4.png");
 	hr = g_pAllyTex[Ally5]->Create("Asset/味方/5.png");
-	hr = g_pAllyTex[Ally6]->Create("Asset/味方/6.png");
-	hr = g_pAllyTex[Ally7]->Create("Asset/味方/7.png");
-	hr = g_pAllyTex[Ally8]->Create("Asset/味方/8.png");
+	hr = g_pAllyBufferTex[Ally6]->Create("Asset/味方/6.png");
+	hr = g_pAllyBufferTex[Ally7]->Create("Asset/味方/7.png");
+	hr = g_pAllyBufferTex[Ally8]->Create("Asset/味方/8.png");
 	hr = g_pEnemyTex[Enemy1]->Create("Asset/敵/3.png");
 	hr = g_pEnemyTex[Enemy2]->Create("Asset/敵/4.png");
 	hr = g_pEnemyTex[Enemy3]->Create("Asset/敵/5.png");
@@ -103,10 +112,13 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos, Ca
 	, m_nTargetNumber(-1)
 	, m_pCamera(InAddress)
 	, m_pSprite(nullptr)
+	, m_bIsHit(false)
 {
 	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+
+	m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
 
 CFighter::~CFighter()
@@ -128,12 +140,17 @@ CFighter::~CFighter()
 		}
 	}
 
-	//if (g_pCollisionTex)
-	//{
-	//	delete g_pCollisionTex;
-	//	g_pCollisionTex = nullptr;
-	//}
+	if (g_pCollisionTex)
+	{
+		delete g_pCollisionTex;
+		g_pCollisionTex = nullptr;
+	}
 
+	if (m_pEffect)
+	{
+		delete m_pEffect;
+		m_pEffect = nullptr;
+	}
 	if (m_pSprite)
 	{
 		delete m_pSprite;
@@ -149,7 +166,7 @@ CFighter::~CFighter()
 		delete m_pSprite;
 		m_pSprite = nullptr;
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		delete g_pAllyTex[i];
 		g_pAllyTex[i] = nullptr;
@@ -319,6 +336,8 @@ void CFighter::Damage(CFighter* pFighter)
 		}
 		break;
 	}
+	m_bIsHit = true;
+	m_pEffect->Play();
 }
 
 void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
@@ -385,15 +404,28 @@ void CAlly::Update(void)
 	default:
 		break;
 	}
+
+	m_pEffect->Update();
 }
 
 void CAlly::Draw(void)
 {
 	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
+	if(m_bIsHit) m_pSprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+	else m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
+
+	m_bIsHit = false;
+
+	
+	m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
+	m_pEffect->Draw();
+
+	m_pSprite->ReSetSprite();
 }
 
 void CAlly::CreateUpdate(void)
@@ -514,6 +546,8 @@ void CEnemy::Update(void)
 	default:
 		break;
 	}
+
+	m_pEffect->Update();
 }
 
 void CEnemy::Draw(void)
@@ -523,6 +557,11 @@ void CEnemy::Draw(void)
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
+
+	m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
+	m_pEffect->Draw();
+
+	m_pSprite->ReSetSprite();
 }
 
 void CEnemy::CreateUpdate(void)
@@ -645,11 +684,13 @@ void CAllyBuffer::Update(void)
 
 void CAllyBuffer::Draw(void)
 {
-	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
+	m_pSprite->SetTexture(g_pAllyBufferTex[nCornerCount - 6]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
+
+	m_pSprite->ReSetSprite();
 }
 
 void CAllyBuffer::CreateUpdate(void)
@@ -755,6 +796,8 @@ void CEnemyBoss::Draw(void)
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
 	m_pSprite->Draw();
+
+	m_pSprite->ReSetSprite();
 }
 
 void CEnemyBoss::CreateUpdate(void)
@@ -861,7 +904,7 @@ void CAllyPlayer::Draw(void)
 
 	m_pSprite->Draw();
 	
-	m_pSprite->Init();
+	m_pSprite->ReSetSprite();
 }
 
 void CAllyPlayer::Damage(CFighter* pFighter)

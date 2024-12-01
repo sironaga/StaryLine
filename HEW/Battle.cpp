@@ -62,6 +62,7 @@ CBattle::CBattle()
 	, m_nMaxPattern(0)
 	, m_pAlly{}
 	, m_pAllyBuffer{}
+	, m_nAllyBufferCount(0)
 	, m_pAllyPlayer(nullptr)
 	, m_pEnemy{}
 	, m_nAllyTypes{ 0,0,0,0,0,0 }
@@ -176,9 +177,9 @@ void CBattle::Update(void)
 	//バフの処理
 	for (int i = 0; i < m_nAllyBufferCount; i++)
 	{
-		if (m_pAllyBuffer[i]->GetStatus() == St_Battle)//ステータスがバトルだったら
+		if (!m_pAllyBuffer[i]->IsBuff)
 		{
-			if (!m_pAllyBuffer[i]->IsBuff)
+			if (m_pAllyBuffer[i]->GetStatus() == St_Battle)//ステータスがバトルだったら
 			{
 				switch (m_pAllyBuffer[i]->GetBuffType())
 				{
@@ -262,6 +263,16 @@ void CBattle::Update(void)
 						Battle(i, l, Ally);
 						break;
 					}
+					if (m_nNowWave == 1)
+					{
+						if (m_pAlly[i]->AtkCollisionCheck(m_pEnemyBoss->GetSize(), m_pEnemyBoss->GetPos()))
+						{
+							m_pAlly[i]->m_bIsAttack = true;
+							//攻撃処理
+							Battle(i, l, Ally);
+							break;
+						}
+					}
 				}
 			}
 			if (!m_pAlly[i]->m_bIsAttack)
@@ -292,6 +303,17 @@ void CBattle::Update(void)
 						//攻撃処理
 						Battle(i, l, Enemy);
 						
+						break;
+					}
+				}
+				else if (m_pAllyPlayer->GetStatus() == St_Battle)
+				{
+					if (m_pEnemy[i]->AtkCollisionCheck(m_pAllyPlayer->GetSize(), m_pAllyPlayer->GetPos()))
+					{
+						m_pEnemy[i]->m_bIsAttack = true;
+						//攻撃処理
+						Battle(i, l, Enemy);
+
 						break;
 					}
 				}
@@ -672,12 +694,14 @@ void CBattle::Move(int i, Entity Entity)
 			}
 			else
 			{
+				//標的がいないので中心防衛ラインに向かって進む
 				if (SENTER_POSX < m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(-MOVESPEED(2.0f));
 				if (SENTER_POSX > m_pEnemy[i]->GetPos().X)m_pEnemy[i]->AddPosX(MOVESPEED(2.0f));
 			}
 		}
-		else//標的がいないので敵のコアに向かって進む
+		else
 		{
+			//標的がいないので中心防衛ラインに向かって進む
 			if (SENTER_POSX < m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(-MOVESPEED(2.0f));
 			if (SENTER_POSX > m_pAlly[i]->GetPos().X)m_pAlly[i]->AddPosX(MOVESPEED(2.0f));
 		}
@@ -737,11 +761,8 @@ void CBattle::Battle(int i, int l, Entity Entity)
 
 		if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())//攻撃チャージがたまっているかどうか
 		{
-			if (m_pEnemy[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
-			{
 				m_pEnemy[l]->Damage(m_pAlly[i]);//相手の体力を減らす
 				m_pAlly[i]->ChargeReset();//攻撃したのでチャージをリセットする
-			}
 		}
 		else//攻撃チャージが溜まっていなかったら
 		{
@@ -752,22 +773,10 @@ void CBattle::Battle(int i, int l, Entity Entity)
 	case CBattle::Enemy://敵の攻撃
 		if (m_pEnemy[i]->GetAtkCharge() >= m_pEnemy[i]->GetCoolTime())//攻撃チャージがたまっているかどうか
 		{
-			if (m_pEnemy[i]->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))//当たり判定の中にいるかどうか
-			{
-				if (m_pAlly[l]->GetStatus() == St_Battle)//相手のステータスがBattleかどうか
-				{
 					m_pAlly[l]->Damage(m_pEnemy[i]);//相手の体力を減らす
 					m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
-				}
-			}
-			else if (m_pAllyPlayer->GetStatus() == St_Battle)
-			{
-				if (m_pEnemy[i]->AtkCollisionCheck(m_pAllyPlayer->GetSize(), m_pAllyPlayer->GetPos()))
-				{
-					m_pAllyPlayer->Damage(m_pEnemy[i]);//相手の体力を減らす
-					m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
-				}
-			}
+		//			m_pAllyPlayer->Damage(m_pEnemy[i]);//相手の体力を減らす
+		//			m_pEnemy[i]->ChargeReset();//攻撃したのでチャージをリセットする
 		}
 		else//攻撃チャージが溜まっていなかったら
 		{
