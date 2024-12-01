@@ -199,3 +199,22 @@ CVector2<float> Sprite::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
 
 	return tex;
 }
+
+void Sprite::ReSetSprite()
+{
+	//à⁄ìÆçsóÒ(Translation)
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
+	DirectX::XMMATRIX mat = S * R * T;
+
+	DirectX::XMFLOAT4X4 wvp;
+	DirectX::XMStoreFloat4x4(&wvp, DirectX::XMMatrixTranspose(mat));
+
+	Sprite::SetWorld(wvp);
+	Sprite::SetUVPos({ 0.0f, 0.0f });
+	Sprite::SetUVScale({ 1.0f, 1.0f });
+	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+}

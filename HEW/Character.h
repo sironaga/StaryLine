@@ -3,6 +3,7 @@
 #include "DirectX.h"
 #include "Camera.h"
 #include "Sprite.h"
+#include "Effect.h"
 
 //Character.h
 //編集者：AT12C05宇留野陸斗
@@ -98,9 +99,12 @@ protected:
 	float m_fAtkAnimationTime;		//攻撃アニメーションの時間
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
 	bool m_bCreateInit;				//生成状態の初期化済みかどうか
+	bool m_bIsHit;					//攻撃を受けたかの判定
 
 	Camera* m_pCamera;
 	Sprite* m_pSprite;
+	CEffect* m_pEffect;
+
 	/*変数のSet&Get*/
 public:
 	//ステータスのSet

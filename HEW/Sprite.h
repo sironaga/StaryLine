@@ -29,6 +29,7 @@ public:
 	static void SetVertexShader(Shader* vs);
 	static void SetPixelShader(Shader* ps);
 
+	static void ReSetSprite();
 
 	// ＜テクスチャアニメーション関数＞
 	// 第1引数に横の分割数、第2引数に縦の分割数、第3引数にアニメーションが次に移るまでのフレーム数を入れてください
