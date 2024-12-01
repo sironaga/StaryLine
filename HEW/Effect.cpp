@@ -70,6 +70,11 @@ void CEffect::SetEffectColor(DirectX::XMFLOAT4 color)
 	m_pEffect->SetColor(color);
 }
 
+void CEffect::SetEffectTexture()
+{
+	m_pEffect->SetTexture(m_pTexture);
+}
+
 void CEffect::SetEffect3D(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate)
 {
 	DirectX::XMMATRIX pos3D = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);

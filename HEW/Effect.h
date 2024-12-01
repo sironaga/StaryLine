@@ -65,6 +65,8 @@ public:
 	// 第一引数に速度、第二引数に3Dかどうか(true = 3D,false = 2D)を設定してください
 	// void SetEffectSpeed(float speed);
 
+	void SetEffectTexture();
+
 	// SetEffectSprit
 	// 3Dの変換行列を設定するSetterです
 	// 描画の前に呼び出してください
