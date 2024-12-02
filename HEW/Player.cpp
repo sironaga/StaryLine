@@ -3,8 +3,9 @@
 #include "Controller.h"
 #include "SceneGame.h"
 #include "DirectXTex/TextureLoad.h"
-#include"SpriteDrawer.h"
-#include"Input.h"
+#include "SpriteDrawer.h"
+#include "Input.h"
+#include "CameraDebug.h"
 // defines
 #define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
 #define DRAWTIME(bonus) (BASE_DRAWTIME  + bonus)	// 制限時間
@@ -23,36 +24,30 @@ constexpr float ce_fPlayerSize = 100.0f;				// プレイヤー(筆)のサイズ
 
 CPlayer::CPlayer()
 	: m_ePlayerState(STOP), m_eDestination(DEFAULT)
-	, m_pVtxPlayer(nullptr), m_pTexPlayerWait(nullptr)
+	//, m_pVtxPlayer(nullptr), m_pTexPlayerWait(nullptr)
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
-	, m_tPos{}, m_tPosTex{}, m_tSizeTex{}
+	, m_tPos{}, m_tPosTex{ 0.0f, 0.0f }, m_tSizeTex{ 0.25f ,0.25f }
 	, bCanMoveCheck(false), m_bChangePhase(false)
+	, m_pPlayer(nullptr), m_pPlayerTex(nullptr)
 
 	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
 	, vtxTimer{}, fTimerSize(TIMER_RIGHT(DRAWTIME(0.0f)))
 	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pEffect(nullptr)
+	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pEffect(nullptr), m_pCamera(nullptr)
 {
-	// プレイヤーテクスチャ初期化
-	m_tPosTex.X = 0.0f;
-	m_tPosTex.Y = 0.0f;
-	m_tSizeTex.X = 0.25f;
-	m_tSizeTex.Y = 0.25f;
+	m_pCamera = new CameraDebug();
 
 	// プレイヤー頂点情報
-	Vertex vtxPlayer[] = {
-	{{-ce_fPlayerSize,-ce_fPlayerSize,0.0f},{ m_tPosTex.X				, m_tPosTex.Y				 }},
-	{{-ce_fPlayerSize, ce_fPlayerSize,0.0f},{ m_tPosTex.X				, m_tPosTex.Y + m_tSizeTex.Y }},
-	{{ ce_fPlayerSize,-ce_fPlayerSize,0.0f},{ m_tPosTex.X + m_tSizeTex.X, m_tPosTex.Y				 }},
-	{{ ce_fPlayerSize, ce_fPlayerSize,0.0f},{ m_tPosTex.X + m_tSizeTex.X, m_tPosTex.Y + m_tSizeTex.Y }},
-	};
-	m_pVtxPlayer = CreateVertexBuffer(vtxPlayer, 4);
+	m_pPlayer->Init();
 
 	// プレイヤーテクスチャ読み込み
-	HRESULT hr;
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Player.png", &m_pTexPlayerWait);
+	//HRESULT hr;
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Player.png", &m_pTexPlayerWait);
+	//if (FAILED(hr))MessageBox(NULL, "エラー:Player.png", "Player.cpp", MB_OK);
+	m_pPlayerTex = new Texture();
+	HRESULT hr = m_pPlayerTex->Create("Asset/Player/Player.png");
 	if (FAILED(hr))MessageBox(NULL, "エラー:Player.png", "Player.cpp", MB_OK);
 
 	// 制限時間頂点情報
@@ -70,11 +65,11 @@ CPlayer::CPlayer()
 CPlayer::~CPlayer()
 {
 	//プレイヤー頂点情報、テクスチャ情報の解放
-	if (m_pVtxPlayer)m_pVtxPlayer->Release();
-	if (m_pTexPlayerWait)m_pTexPlayerWait->Release();
+	if (m_pPlayer)m_pPlayer->Uninit();
+	SAFE_DELETE(m_pPlayerTex);
 
 	if (m_pVtxTimer)m_pVtxTimer->Release();
-	if (m_pTexTimer)m_pTexTimer->Release();
+	if (m_pTexTimer)m_pTexTimer->Release();	
 }
 
 void CPlayer::Update()
@@ -93,27 +88,30 @@ void CPlayer::Update()
 
 void CPlayer::Draw()
 {
-	//スプライトの座標の設定
-	SetSpritePos(m_tPos.X, m_tPos.Y);
+	////スプライトの座標の設定
+	//SetSpritePos(m_tPos.x, m_tPos.Y);
 
-	//大きさの設定
-	SetSpriteScale(1.0f, 1.0f);
+	////大きさの設定
+	//SetSpriteScale(1.0f, 1.0f);
 
-	//背景色の設定
-	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+	////背景色の設定
+	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// テクスチャアニメーション
-	DrawAnimation();
+	//// テクスチャアニメーション
 
-	// UVのセット
-	SetSpriteUVPos(m_tPosTex.X, m_tPosTex.Y);
-	SetSpriteUVScale(1.0f, 1.0f);
+	//// UVのセット
 
-	// 描画
-	DrawSprite(m_pVtxPlayer, sizeof(Vertex));
+
+	//// 描画
+	//DrawSprite(m_pVtxPlayer, sizeof(Vertex));
 
 	// スプライト設定のリセット
-	ReSetSprite();
+	//ReSetSprite();
+
+	DrawAnimation();
+	DrawSprite3D(PLAYER);
+	m_pPlayer->Draw();
+	m_pPlayer->ReSetSprite();
 
 	//スプライトの座標の設定
 	SetSpritePos(0.0f, 0.0f);
@@ -191,39 +189,39 @@ void CPlayer::UpdateMove()
 	switch (m_eDestination)
 	{
 	case CPlayer::UP:
-		m_tPos.Y -= MOVESPEED;
+		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::UPRIGHT:
-		m_tPos.X += MOVESPEED;
-		m_tPos.Y -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
+		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::RIGHT:
-		m_tPos.X += MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		break;
 	case CPlayer::DOWNRIGHT:
-		m_tPos.X += MOVESPEED;
-		m_tPos.Y += MOVESPEED;
+		m_tPos.x += MOVESPEED;
+		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::DOWN:
-		m_tPos.Y += MOVESPEED;
+		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::DOWNLEFT:
-		m_tPos.X -= MOVESPEED;
-		m_tPos.Y += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
+		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::LEFT:
-		m_tPos.X -= MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		break;
 	case CPlayer::UPLEFT:
-		m_tPos.X -= MOVESPEED;
-		m_tPos.Y -= MOVESPEED;
+		m_tPos.x -= MOVESPEED;
+		m_tPos.y -= MOVESPEED;
 		break;
 	default:
 		break;
 	}
 
 	// プレイヤーが目的地の頂点に到着したら
-	if (m_tPos.X == m_pFieldVtx->GetVertexPos(m_nDestination).X && m_tPos.Y == m_pFieldVtx->GetVertexPos(m_nDestination).Y)
+	if (m_tPos.x == m_pFieldVtx->GetVertexPos(m_nDestination).x && m_tPos.y == m_pFieldVtx->GetVertexPos(m_nDestination).y)
 	{
 		// 今の頂点を目的地の頂点に更新する
 		m_nNowVertex = m_nDestination;
@@ -313,12 +311,38 @@ void CPlayer::DrawAnimation()
 	// プレイヤー状態別アニメーション
 	switch (m_ePlayerState)
 	{
-	case CPlayer::STOP: SetSpriteTexture(m_pTexPlayerWait);	break; // 待機モーション
-	case CPlayer::MOVE: SetSpriteTexture(m_pTexPlayerWait); break;	// 動いてるモーションに変える(後から)
+	case CPlayer::STOP: m_pPlayer->SetTexture(m_pPlayerTex);	break; // 待機モーション
+	case CPlayer::MOVE: m_pPlayer->SetTexture(m_pPlayerTex);	break;	// 動いてるモーションに変える(後から)
 	default:break;
 	}
 
 	m_tPosTex = m_pSprite->GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
+
+	m_pPlayer->SetUVPos(m_tPosTex);
+	m_pPlayer->SetUVScale(m_tSizeTex);
+}
+
+void CPlayer::DrawSprite3D(E_SPRITE type)
+{
+	switch (type)
+	{
+	case CPlayer::PLAYER:
+		pos = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
+		size = DirectX::XMMatrixScaling(ce_fPlayerSize, ce_fPlayerSize, 0.0f);
+		rotate = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		mat = size * rotate * pos;
+		mat = DirectX::XMMatrixTranspose(mat);
+		DirectX::XMFLOAT4X4 world;
+		DirectX::XMStoreFloat4x4(&world, mat);
+		m_pPlayer->SetWorld(world);
+		m_pPlayer->SetView(m_pCamera->GetViewMatrix());
+		m_pPlayer->SetProjection(m_pCamera->GetProjectionMatrix());
+		break;
+	case CPlayer::TIMER:
+		break;
+	default:
+		break;
+	}
 }
 
 void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)

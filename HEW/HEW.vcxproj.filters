@@ -168,6 +168,9 @@
     <ClCompile Include="Result.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
+    <ClCompile Include="DebugRoom.cpp">
+      <Filter>ソース ファイル\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -280,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="Result.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugRoom.h">
+      <Filter>ヘッダー ファイル\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
