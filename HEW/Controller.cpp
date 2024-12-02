@@ -53,24 +53,24 @@ void Controller_Update()
 
 /* 左アナログスティックの座標獲得 */
 /* -32768 ～ 32767 */
-CVector2<float> CGetLStick()
+DirectX::XMFLOAT2 CGetLStick()
 {
-	CVector2<float> Pos;
+	DirectX::XMFLOAT2 Pos;
 
-	Pos.X = state.Gamepad.sThumbLX;
-	Pos.Y = state.Gamepad.sThumbLY;
+	Pos.x = state.Gamepad.sThumbLX;
+	Pos.y = state.Gamepad.sThumbLY;
 
 	return Pos;
 }
 
 /* 右アナログスティックの座標獲得 */
 /* -32768 ～ 32767 */
-CVector2<float> CGetRStick()
+DirectX::XMFLOAT2 CGetRStick()
 {
-	CVector2<float> Pos;
+	DirectX::XMFLOAT2 Pos;
 
-	Pos.X = state.Gamepad.sThumbRX;
-	Pos.Y = state.Gamepad.sThumbRY;
+	Pos.x = state.Gamepad.sThumbRX;
+	Pos.y = state.Gamepad.sThumbRY;
 
 	return Pos;
 }
@@ -79,12 +79,12 @@ CVector2<float> CGetRStick()
 /* x 左トリガー */
 /* y 右トリガー */
 /* 0 ～　255 */
-CVector2<float> CGetTrigger()
+DirectX::XMFLOAT2 CGetTrigger()
 {
-	CVector2<float> Pos;
+	DirectX::XMFLOAT2 Pos;
 
-	Pos.X = state.Gamepad.bLeftTrigger;
-	Pos.Y = state.Gamepad.bRightTrigger;
+	Pos.x = state.Gamepad.bLeftTrigger;
+	Pos.y = state.Gamepad.bRightTrigger;
 
 	return Pos;
 }
