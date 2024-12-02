@@ -25,6 +25,7 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Conection_Sys.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="DebugRoom.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Emitter.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Conection_Sys.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="DebugRoom.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="DirectX.h" />

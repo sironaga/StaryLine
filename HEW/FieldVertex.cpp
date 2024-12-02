@@ -48,9 +48,9 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 5; i++, Vertexp++)
 		{
-			Vertexp->Pos.X = i * VERTEX_SIZE + VERTEX_POS_X;
-			Vertexp->Pos.Y = j * VERTEX_SIZE + VERTEX_POS_Y;
-			Vertexp->Pos.Z = 0;
+			Vertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X;
+			Vertexp->Pos.y = j * VERTEX_SIZE + VERTEX_POS_Y;
+			Vertexp->Pos.z = 0;
 			Vertexp->Number = j * 5 + i;
 			Vertexp->Use = false;
 			for (int k = 0; k < 8; k++)
@@ -67,9 +67,9 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 4; i++, CenterVertexp++)
 		{
-			CenterVertexp->Pos.X = i * VERTEX_SIZE + VERTEX_POS_X + VERTEX_SIZE / 2;
-			CenterVertexp->Pos.Y = j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2;
-			CenterVertexp->Pos.Z = 0;
+			CenterVertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X + VERTEX_SIZE / 2;
+			CenterVertexp->Pos.y = j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2;
+			CenterVertexp->Pos.z = 0;
 			CenterVertexp->Use = false;
 		}
 	}
@@ -173,7 +173,7 @@ void CFieldVertex::Update()
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
 		//プレイヤーと頂点の場所が同じで、かつ、最終地点が今の地点でないかつ壊れている頂点でないとき
-		if (PlayerPos.X == Vertexp->Pos.X && PlayerPos.Y == Vertexp->Pos.Y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
+		if (PlayerPos.x == Vertexp->Pos.x && PlayerPos.y == Vertexp->Pos.y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
 		{
 			OrderVertex[OrderVertexCount] = Vertexp->Number;//着いた頂点の番号を保存
 			OrderVertexCount++;//次の場所にカウントアップする
@@ -196,7 +196,7 @@ void CFieldVertex::Update()
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.X + Vertexp->Pos.X) / 2 == CenterVertexp->Pos.X) && ((m_tVertex[GoalVertex].Pos.Y + Vertexp->Pos.Y) / 2 == CenterVertexp->Pos.Y))
+				if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
 					if (!CenterVertexp->Use)CenterVertexp->Use = true;
 				}
@@ -218,30 +218,30 @@ void CFieldVertex::Update()
 	//描画のための更新処理
 	int PlayerDestination;//プレイヤーの方向保存
 	PlayerDestination = m_pPlayer->GetPlayerDestination();//プレイヤーの方向取得
-	CVector3<float> PosA[4];//回転後座標格納用
-	CVector3<float> Size;//線のサイズ
+	DirectX::XMFLOAT3 PosA[4];//回転後座標格納用
+	DirectX::XMFLOAT3 Size;//線のサイズ
 
-	Size.X = LINE_SIZE;
-	Size.Y = LINE_SIZE;
+	Size.x = LINE_SIZE;
+	Size.y = LINE_SIZE;
 
 	//線の回転
-	PosA[0].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[0].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[1].X = -Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[1].Y = -Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[2].X = Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[2].Y = Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[3].X = Size.X * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.Y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[3].Y = Size.X * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.Y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[0].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[0].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[1].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[1].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[2].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[2].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+	PosA[3].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+	PosA[3].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
 
-	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.X + PosA[0].X;//左上のｘ座標
-	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.Y + PosA[0].Y;//左上のｙ座標
-	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.X + PosA[1].X;//左下のｘ座標
-	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.Y + PosA[1].Y;//左下のｙ座標
-	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.X + PosA[2].X;//右上のｘ座標
-	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.Y + PosA[2].Y;//右上のｙ座標
-	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.X + PosA[3].X;//右下のｘ座標
-	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.Y + PosA[3].Y;//右下のｙ座標
+	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//左上のｘ座標
+	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//左上のｙ座標
+	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
+	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
+	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//右上のｘ座標
+	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
+	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
+	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
 	m_pVtx_FieldLine[NowLine] = CreateVertexBuffer(vtx_FieldLine[NowLine], 4);
 
 }
@@ -256,7 +256,7 @@ void CFieldVertex::Draw()
 		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 		{
 			//スプライトの設定
-			SetSpritePos(Vertexp->Pos.X, Vertexp->Pos.Y);//各頂点に位置を設定
+			SetSpritePos(Vertexp->Pos.x, Vertexp->Pos.y);//各頂点に位置を設定
 
 			//大きさの設定
 			SetSpriteScale(1.0f, 1.0f);
@@ -297,7 +297,7 @@ void CFieldVertex::Draw()
 	}
 }
 
-CVector3<float> CFieldVertex::GetVertexPos(int VertexNumber)
+DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
 {
 	return m_tVertex[VertexNumber].Pos;//頂点座標ゲット
 }
@@ -329,7 +329,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.X + m_tVertex[GoalVertex - 5 + 1].Pos.X) / 2 == CenterVertexp->Pos.X) && ((m_tVertex[GoalVertex].Pos.Y + m_tVertex[GoalVertex - 5 + 1].Pos.Y) / 2 == CenterVertexp->Pos.Y))
+				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex - 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex - 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
 					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
 					break;
@@ -363,7 +363,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.X + m_tVertex[GoalVertex + 5 + 1].Pos.X) / 2 == CenterVertexp->Pos.X) && ((m_tVertex[GoalVertex].Pos.Y + m_tVertex[GoalVertex + 5 + 1].Pos.Y) / 2 == CenterVertexp->Pos.Y))
+				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex + 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex + 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
 					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
 					break;
@@ -397,7 +397,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.X + m_tVertex[GoalVertex + 5 - 1].Pos.X) / 2 == CenterVertexp->Pos.X) && ((m_tVertex[GoalVertex].Pos.Y + m_tVertex[GoalVertex + 5 - 1].Pos.Y) / 2 == CenterVertexp->Pos.Y))
+				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex + 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex + 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
 					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
 					break;
@@ -431,7 +431,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.X + m_tVertex[GoalVertex - 5 - 1].Pos.X) / 2 == CenterVertexp->Pos.X) && ((m_tVertex[GoalVertex].Pos.Y + m_tVertex[GoalVertex - 5 - 1].Pos.Y) / 2 == CenterVertexp->Pos.Y))
+				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex - 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex - 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
 					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
 					break;
@@ -572,12 +572,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					if (Comparison3[l] != -1)//最後の点まで
 					{
 						//三点が縦か横の一直線上でないとき
-						if (!((m_tVertex[Comparison3[l - 2]].Pos.X == m_tVertex[Comparison3[l - 1]].Pos.X && m_tVertex[Comparison3[l - 1]].Pos.X == m_tVertex[Comparison3[l]].Pos.X)
-							|| (m_tVertex[Comparison3[l - 2]].Pos.Y == m_tVertex[Comparison3[l - 1]].Pos.Y && m_tVertex[Comparison3[l - 1]].Pos.Y == m_tVertex[Comparison3[l]].Pos.Y)))
+						if (!((m_tVertex[Comparison3[l - 2]].Pos.x == m_tVertex[Comparison3[l - 1]].Pos.x && m_tVertex[Comparison3[l - 1]].Pos.x == m_tVertex[Comparison3[l]].Pos.x)
+							|| (m_tVertex[Comparison3[l - 2]].Pos.y == m_tVertex[Comparison3[l - 1]].Pos.y && m_tVertex[Comparison3[l - 1]].Pos.y == m_tVertex[Comparison3[l]].Pos.y)))
 						{
 							//三点が斜めの一直線上でないとき
-							if ((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[l - 2]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y)
-								!= (m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[l - 2]].Pos.Y) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X))
+							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
+								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
 								Count++;//辺が繋がってないとき角ができてる
 							}
@@ -587,24 +587,24 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					{
 						//最後の辺とその一個前の辺の比較
 						//三点が縦か横の一直線上でないとき
-						if (!((m_tVertex[Comparison3[l - 2]].Pos.X == m_tVertex[Comparison3[l - 1]].Pos.X && m_tVertex[Comparison3[l - 1]].Pos.X == m_tVertex[Comparison3[0]].Pos.X)
-							|| (m_tVertex[Comparison3[l - 2]].Pos.Y == m_tVertex[Comparison3[l - 1]].Pos.Y && m_tVertex[Comparison3[l - 1]].Pos.Y == m_tVertex[Comparison3[0]].Pos.Y)))
+						if (!((m_tVertex[Comparison3[l - 2]].Pos.x == m_tVertex[Comparison3[l - 1]].Pos.x && m_tVertex[Comparison3[l - 1]].Pos.x == m_tVertex[Comparison3[0]].Pos.x)
+							|| (m_tVertex[Comparison3[l - 2]].Pos.y == m_tVertex[Comparison3[l - 1]].Pos.y && m_tVertex[Comparison3[l - 1]].Pos.y == m_tVertex[Comparison3[0]].Pos.y)))
 						{
 							//三点が斜めの一直線上でないとき
-							if ((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[l - 2]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y)
-								!= (m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[l - 2]].Pos.Y) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X))
+							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
+								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
 								Count++;//辺が繋がってないとき角ができてる	
 							}
 						}
 						//最初の辺と最後の辺を比較
 						//三点が縦か横の一直線上でないとき
-						if (!((m_tVertex[Comparison3[l - 1]].Pos.X == m_tVertex[Comparison3[0]].Pos.X && m_tVertex[Comparison3[0]].Pos.X == m_tVertex[Comparison3[1]].Pos.X)
-							|| (m_tVertex[Comparison3[l - 1]].Pos.Y == m_tVertex[Comparison3[0]].Pos.Y && m_tVertex[Comparison3[0]].Pos.Y == m_tVertex[Comparison3[1]].Pos.Y)))
+						if (!((m_tVertex[Comparison3[l - 1]].Pos.x == m_tVertex[Comparison3[0]].Pos.x && m_tVertex[Comparison3[0]].Pos.x == m_tVertex[Comparison3[1]].Pos.x)
+							|| (m_tVertex[Comparison3[l - 1]].Pos.y == m_tVertex[Comparison3[0]].Pos.y && m_tVertex[Comparison3[0]].Pos.y == m_tVertex[Comparison3[1]].Pos.y)))
 						{
 							//三点が斜めの一直線上でないとき
-							if ((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y)
-								!= (m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X))
+							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)
+								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x))
 							{
 								Count++;//辺が繋がってないとき角ができてる
 							}
@@ -624,8 +624,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						//		if (Comparison3[l] != -1)//最後の点まで
 						//		{
 						//			//内積の公式から
-						//			AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) + (m_tVertex[Comparison3[l - 2]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y) * (m_tVertex[Comparison3[l]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y))/(sqrtf(powf((m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y), 2)));
-						//			AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y) + (m_tVertex[Comparison3[l - 2]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X);
+						//			AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y))/(sqrtf(powf((m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
+						//			AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X);
 						//			if (AngleDirection == 0)continue;//外積がゼロなら平行なので角度が存在しない
 						//			if (1/*AngleDirection > 0*/)
 						//			{
@@ -647,8 +647,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						//		}
 						//		else
 						//		{
-						//			AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) + (m_tVertex[Comparison3[l - 2]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y) * (m_tVertex[Comparison3[0]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y)) / (sqrtf(powf((m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[0]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y), 2)));
-						//			AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y) + (m_tVertex[Comparison3[l - 2]].Pos.Y - m_tVertex[Comparison3[l - 1]].Pos.Y) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X);
+						//			AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
+						//			AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X);
 						//			if (AngleDirection != 0)
 						//			{//外積がゼロなら平行なので角度が存在しない
 						//				if (1/*AngleDirection > 0*/)
@@ -668,8 +668,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						//				AngleSaveCount++;
 						//			}
 
-						//			AngleSave = ((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) + (m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y) * (m_tVertex[Comparison3[1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y)) / (sqrtf(powf((m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X), 2) + powf((m_tVertex[Comparison3[1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y), 2)));
-						//			AngleDirection = (m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y) + (m_tVertex[Comparison3[l - 1]].Pos.Y - m_tVertex[Comparison3[0]].Pos.Y) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X);
+						//			AngleSave = ((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X), 2) + powf((m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)));
+						//			AngleDirection = (m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X);
 						//			if (AngleDirection != 0)
 						//			{//外積がゼロなら平行なので角度が存在しない
 						//				if (1/*AngleDirection > 0*/)

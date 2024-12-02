@@ -32,7 +32,9 @@ public:
 
 	/* Getter */
 	// プレイヤーの座標取得
-	CVector3<float> GetPlayerPos() { return m_tPos; }
+	Sprite* m_pPlayer;
+
+	DirectX::XMFLOAT3 GetPlayerPos() { return m_tPos; }
 	// プレイヤーの状態取得
 	E_PLAYER_STATE GetPlayerState() { return m_ePlayerState; }
 	// 目的地の取得
@@ -56,20 +58,30 @@ private:
 		DEFAULT,	// 真ん中(基本状態)
 	}m_eDestination;
 
+	enum E_SPRITE
+	{
+		PLAYER = 0,
+		TIMER,
+
+		MAX_SPRITE
+	};
+
 	void UpdateReady();							// 準備段階での更新処理
 	void UpdateStop();							// 止まっている状態での更新処理
 	void UpdateMove();							// 動いている状態での更新処理
 
 	void DrawAnimation();						// アニメーション用関数	
+	void DrawSprite3D(E_SPRITE type);
 
 	void PlayerInput();							// コントローラー入力
 private:
-	ID3D11Buffer* m_pVtxPlayer;					// プレイヤー描画用頂点情報
-	ID3D11ShaderResourceView* m_pTexPlayerWait;	// プレイヤー描画用テクスチャ
+	//ID3D11Buffer* m_pVtxPlayer;					// プレイヤー描画用頂点情報
+	//ID3D11ShaderResourceView* m_pTexPlayerWait;	// プレイヤー描画用テクスチャ
 
-	CVector3<float> m_tPos;						// プレイヤーの座標
-	CVector2<float> m_tPosTex;					// プレイヤーのテクスチャ座標
-	CVector2<float> m_tSizeTex;					// プレイヤーのテクスチャサイズ
+	DirectX::XMFLOAT3 m_tPos;						// プレイヤーの座標
+	DirectX::XMFLOAT2 m_tPosTex;					// プレイヤーのテクスチャ座標
+	DirectX::XMFLOAT2 m_tSizeTex;					// プレイヤーのテクスチャサイズ
+	Texture* m_pPlayerTex;
 
 	int m_nNowVertex;							// 今の頂点
 	int m_nDestination;							// 目的地の頂点
@@ -102,4 +114,10 @@ private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
 	CEffect* m_pEffect;
+	Camera* m_pCamera;
+	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/
+	DirectX::XMMATRIX pos;
+	DirectX::XMMATRIX size;
+	DirectX::XMMATRIX rotate;
+	DirectX::XMMATRIX mat;
 };

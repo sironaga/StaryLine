@@ -28,7 +28,7 @@ public:
 	void Update();
 	void Draw();
 
-	CVector3<float> GetVertexPos(int);
+	DirectX::XMFLOAT3 GetVertexPos(int);
 	bool GetRoadStop(int);
 
 	void SetBattleAddress(CBattle*);
@@ -40,7 +40,7 @@ private:
 
 	typedef struct FieldVertex
 	{
-		CVector3<float> Pos;
+		DirectX::XMFLOAT3 Pos;
 		bool Use;
 		int Connect[8];
 		int Number;
@@ -48,7 +48,7 @@ private:
 
 	typedef struct CenterVertex
 	{
-		CVector3<float> Pos;
+		DirectX::XMFLOAT3 Pos;
 		bool Use;
 	};
 
@@ -78,10 +78,10 @@ private:
 	ID3D11Buffer* m_pVtx_FieldLine[MAX_LINE];
 	ID3D11ShaderResourceView* m_pTex_FieldLine;
 	int NowLine;//何個目の線か
-	CVector3<float> DrawLinePos[MAX_LINE];
+	DirectX::XMFLOAT3 DrawLinePos[MAX_LINE];
 
 	bool RoadStop;//プレイヤーの行ける方向
-	CVector3<float> PlayerPos;//プレイヤーの位置保存
+	DirectX::XMFLOAT3 PlayerPos;//プレイヤーの位置保存
 
 	CBattle* m_pBattle;//バトルクラスのポインター
 
