@@ -22,6 +22,7 @@ private:
 	CModelEx* m_pDebugModel[MAX_DEBUGMODEL];
 	Camera* m_pCamera;
 	int m_nSelect;
+	bool m_bSelect;
 	DirectX::XMFLOAT3 m_tPos;
 	DirectX::XMFLOAT3 m_tSize;
 	DirectX::XMFLOAT3 m_tRotate;

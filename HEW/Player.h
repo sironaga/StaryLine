@@ -40,7 +40,7 @@ public:
 	// –Ú“I’n‚ÌŽæ“¾
 	int GetPlayerDestination() { return m_eDestination; }
 
-	int GetPlayerPhase() { return m_bChangePhase; }
+	bool GetPlayerPhase() { return m_bChangePhase; }
 
 private:
 	// ˆÚ“®•ûŒü—p—ñ‹“Œ^

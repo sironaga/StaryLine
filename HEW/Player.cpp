@@ -157,7 +157,6 @@ void CPlayer::UpdateStop()
 			// 8方向全てに移動が出来ないなら即座にクールタイムに移る
 			if (Count == 8)
 			{
-				ChangePhase(SHAPESCHECK);
 				m_bChangePhase = true;
 				fTimerSize = -TIMER_LEFT;
 				bCanMoveCheck = true;
@@ -177,7 +176,6 @@ void CPlayer::UpdateStop()
 		// ×ボタンorスペースキーで移動開始
 		if (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE))
 		{
-			bTimerStart = true;
 			m_ePlayerState = MOVE;
 		}
 	}
@@ -235,21 +233,21 @@ void CPlayer::UpdateMove()
 void CPlayer::PlayerInput()
 {
 	// 左スティックの状態を取得
-	CVector2<float> tControllerMove = CGetLStick();
+	DirectX::XMFLOAT2 tControllerMove = CGetLStick();
 
 	//デッドゾーン設定
-	if (tControllerMove.X <= DEADZONE && tControllerMove.X >= -DEADZONE) tControllerMove.X = 0.0f;
-	if (tControllerMove.Y <= DEADZONE && tControllerMove.Y >= -DEADZONE) tControllerMove.Y = 0.0f;
+	if (tControllerMove.x <= DEADZONE && tControllerMove.x >= -DEADZONE) tControllerMove.x = 0.0f;
+	if (tControllerMove.y <= DEADZONE && tControllerMove.y >= -DEADZONE) tControllerMove.y = 0.0f;
 
 	// 目的地の更新
-	if ((tControllerMove.X == 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('W'))m_eDestination = UP;
-	else if ((tControllerMove.X > 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('E')) m_eDestination = UPRIGHT;
-	else if ((tControllerMove.X > 0.0f && tControllerMove.Y == 0.0f) || IsKeyPress('D')) m_eDestination = RIGHT;
-	else if ((tControllerMove.X > 0.0f && tControllerMove.Y < 0.0f) || IsKeyPress('C')) m_eDestination = DOWNRIGHT;
-	else if ((tControllerMove.X == 0.0f && tControllerMove.Y < 0.0f) || IsKeyPress('X')) m_eDestination = DOWN;
-	else if ((tControllerMove.X < 0.0f && tControllerMove.Y < 0.0f) || IsKeyPress('Z')) m_eDestination = DOWNLEFT;
-	else if ((tControllerMove.X < 0.0f && tControllerMove.Y == 0.0f) || IsKeyPress('A')) m_eDestination = LEFT;
-	else if ((tControllerMove.X < 0.0f && tControllerMove.Y > 0.0f) || IsKeyPress('Q')) m_eDestination = UPLEFT;
+	if ((tControllerMove.x > 0.0f		&& tControllerMove.y > 0.0f)  || IsKeyPress('E')) m_eDestination = UPRIGHT;
+	else if ((tControllerMove.x >  0.0f && tControllerMove.y < 0.0f)  || IsKeyPress('C')) m_eDestination = DOWNRIGHT;
+	else if ((tControllerMove.x <  0.0f && tControllerMove.y < 0.0f)  || IsKeyPress('Z')) m_eDestination = DOWNLEFT;
+	else if ((tControllerMove.x <  0.0f && tControllerMove.y > 0.0f)  || IsKeyPress('Q')) m_eDestination = UPLEFT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f)  || IsKeyPress('W'))m_eDestination = UP;
+	else if ((tControllerMove.x >  0.0f && tControllerMove.y == 0.0f) || IsKeyPress('D')) m_eDestination = RIGHT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f)  || IsKeyPress('X')) m_eDestination = DOWN;
+	else if ((tControllerMove.x <  0.0f && tControllerMove.y == 0.0f) || IsKeyPress('A')) m_eDestination = LEFT;
 	//else m_eDestination = DEFAULT
 
 	// 目的地ごとに目的地の頂点を設定
@@ -275,7 +273,7 @@ void CPlayer::TimeProcess()
 	{
 		fTimerSize = TIMER_RIGHT(DRAWTIME(fBonusTime));
 		tPlayerTimer.time = tPlayerTimer.oldTime = timeGetTime();
-
+		bTimerStart = true;
 	}
 	else
 	{
@@ -283,11 +281,9 @@ void CPlayer::TimeProcess()
 		tPlayerTimer.time = timeGetTime();
 
 		// 制限時間がきたら図形判定に移る
-		if (tPlayerTimer.time - tPlayerTimer.oldTime >= SECONDS(DRAWTIME(fBonusTime)) && m_ePlayerState != MOVE)
+		if (tPlayerTimer.time - tPlayerTimer.oldTime >= SECONDS(DRAWTIME(fBonusTime)))
 		{
-			ChangePhase(SHAPESCHECK);
 			fTimerSize = TIMER_RIGHT(DRAWTIME(fBonusTime));
-			bTimerStart = false;
 			return;
 		}
 		else
@@ -356,4 +352,5 @@ void CPlayer::SetPlayerStop()
 	m_ePlayerState = STOP;//プレイヤーの動きを止める
 	bCanMoveCheck = false;//
 	m_bChangePhase = false;//フェーズの変更を初期化
+	bTimerStart = false;
 }
