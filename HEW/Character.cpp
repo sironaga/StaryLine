@@ -118,7 +118,7 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos, Ca
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 
-	m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
+	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
 
 CFighter::~CFighter()
@@ -146,11 +146,11 @@ CFighter::~CFighter()
 		g_pCollisionTex = nullptr;
 	}
 
-	if (m_pEffect)
-	{
-		delete m_pEffect;
-		m_pEffect = nullptr;
-	}
+	//if (m_pEffect)
+	//{
+	//	delete m_pEffect;
+	//	m_pEffect = nullptr;
+	//}
 	if (m_pSprite)
 	{
 		delete m_pSprite;
@@ -337,7 +337,7 @@ void CFighter::Damage(CFighter* pFighter)
 		break;
 	}
 	m_bIsHit = true;
-	m_pEffect->Play();
+	//m_pEffect->Play();
 }
 
 void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
@@ -405,7 +405,7 @@ void CAlly::Update(void)
 		break;
 	}
 
-	m_pEffect->Update();
+	//m_pEffect->Update();
 }
 
 void CAlly::Draw(void)
@@ -422,8 +422,9 @@ void CAlly::Draw(void)
 	m_bIsHit = false;
 
 	
-	m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
-	m_pEffect->Draw();
+	//m_pEffect->SetEffectTexture();
+	//m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
+	//m_pEffect->Draw();
 
 	m_pSprite->ReSetSprite();
 }
@@ -547,7 +548,7 @@ void CEnemy::Update(void)
 		break;
 	}
 
-	m_pEffect->Update();
+	//m_pEffect->Update();
 }
 
 void CEnemy::Draw(void)
@@ -558,8 +559,9 @@ void CEnemy::Draw(void)
 
 	m_pSprite->Draw();
 
-	m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
-	m_pEffect->Draw();
+	//m_pEffect->SetEffectTexture();
+	//m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
+	//m_pEffect->Draw();
 
 	m_pSprite->ReSetSprite();
 }
