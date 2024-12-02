@@ -57,7 +57,7 @@ void CDebugRoom::Draw()
 	m_pDebugModel[m_nSelect]->SetPostion(m_tPos.x, m_tPos.y, m_tPos.z);
 	m_pDebugModel[m_nSelect]->SetScale(m_tSize.x, m_tSize.y, m_tSize.z);
 	m_pDebugModel[m_nSelect]->SetRotation(m_tRotate.x, m_tRotate.y, m_tRotate.z);
-	m_pDebugModel[m_nSelect]->SetViewMatrix(m_pCamera);
-	m_pDebugModel[m_nSelect]->SetProjectionMatrix(m_pCamera);
+	m_pDebugModel[m_nSelect]->SetViewMatrix(m_pCamera->GetViewMatrix());
+	m_pDebugModel[m_nSelect]->SetProjection(m_pCamera->GetProjectionMatrix());
 	m_pDebugModel[m_nSelect]->Draw();
 }
