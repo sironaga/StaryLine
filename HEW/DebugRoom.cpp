@@ -3,14 +3,7 @@
 #include "Input.h"
 #include "Controller.h"
 
-enum DEBUG_MODEL
-{
-	TEST1 = 0,
-
-	MAX_DEBUGMODEL
-};
-
-const char* ch_pModelList[MAX_DEBUGMODEL] =
+const char* ch_pModelList[CDebugRoom::MAX_DEBUGMODEL] =
 {
 
 };
@@ -45,11 +38,9 @@ void CDebugRoom::Update()
 {
 	if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER)) m_nSelect++;
 	if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_LEFT_SHOULDER)) m_nSelect--;
-
 	if (m_nSelect < 0) m_nSelect = MAX_DEBUGMODEL - 1;
 	else if (m_nSelect >= MAX_DEBUGMODEL) m_nSelect = 0;
 
-	//if (IsKeyPress(VK_RIGHT) || )
 }
 
 void CDebugRoom::Draw()

@@ -12,7 +12,12 @@ public:
 	void Update();
 	void Draw();
 
+	enum DEBUG_MODEL
+	{
+		TEST1 = 0,
 
+		MAX_DEBUGMODEL
+	};
 private:
 	CModelEx* m_pDebugModel[MAX_DEBUGMODEL];
 	Camera* m_pCamera;
