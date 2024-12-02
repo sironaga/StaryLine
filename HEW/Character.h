@@ -103,7 +103,7 @@ protected:
 
 	Camera* m_pCamera;
 	Sprite* m_pSprite;
-	CEffect* m_pEffect;
+	//CEffect* m_pEffect;
 
 	/*•Ï”‚ÌSet&Get*/
 public:

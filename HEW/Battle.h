@@ -11,6 +11,7 @@ class CBattle
 private:
 	enum Entity
 	{
+		AllyPlayer = 0,
 		Ally = 1,
 		Enemy = 2,
 		EnemyBoss = 3,
@@ -38,7 +39,7 @@ public:
 private:
 	void Search(int i,Entity Entity);	//索敵処理
 	void Move(int i, Entity Entity);	//移動処理
-	void Battle(int i, int l, Entity Entity);	//戦闘処理
+	void Battle(int i, int l , Entity Entity);	//戦闘処理
 	void Alive(void);					//生存判定
 	void Delete(void);					//削除処理と配列前詰め
 	void FirstPosSetting();				//戦闘初期位置のセッティング

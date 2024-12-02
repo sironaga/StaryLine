@@ -78,11 +78,12 @@ void CEffect::SetEffectTexture()
 void CEffect::SetEffect3D(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate)
 {
 	DirectX::XMMATRIX pos3D = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-	DirectX::XMMATRIX rotateX3D = DirectX::XMMatrixRotationX(rotate.x);
-	DirectX::XMMATRIX rotateY3D = DirectX::XMMatrixRotationY(rotate.y);
-	DirectX::XMMATRIX rotateZ3D = DirectX::XMMatrixRotationZ(rotate.z);
+	//DirectX::XMMATRIX rotateX3D = DirectX::XMMatrixRotationX(rotate.x);
+	//DirectX::XMMATRIX rotateY3D = DirectX::XMMatrixRotationY(rotate.y);
+	//DirectX::XMMATRIX rotateZ3D = DirectX::XMMatrixRotationZ(rotate.z);
+	DirectX::XMMATRIX rotate3D = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(rotate.x, rotate.y, rotate.z, 0.0f));
 	DirectX::XMMATRIX size3D = DirectX::XMMatrixScaling(size.x, size.y, size.z);
-	DirectX::XMMATRIX mat = size3D * rotateX3D * rotateY3D * rotateZ3D * pos3D;
+	DirectX::XMMATRIX mat = size3D * rotate3D * pos3D;
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(mat));
 	m_pEffect->SetWorld(world);
@@ -147,24 +148,27 @@ DirectX::XMFLOAT2 CEffect::UpdatePosTex(int nSplitX, int nSplitY, int nAnimation
 		nAnimePage = 0;		// エフェクトを描画し切ったら最初のシーケンステクスチャに戻る
 		m_bPlay = false;	// プレイを止める
 	}
-	// 横のシーケンステクスチャの動き
-	switch (nAnimePage % nSplitX)
-	{
-	default:break;
-	case 0: tex.x = 0.0 / (float)nSplitX; break;
-	case 1: tex.x = 1.0 / (float)nSplitX; break;
-	case 2: tex.x = 2.0 / (float)nSplitX; break;
-	case 3: tex.x = 3.0 / (float)nSplitX; break;
-	}
-	// 縦のシーケンステクスチャの動き
-	switch (nAnimePage / nSplitY)
-	{
-	default:break;
-	case 0: tex.y = 0.0 / (float)nSplitY; break;
-	case 1: tex.y = 1.0 / (float)nSplitY; break;
-	case 2: tex.y = 2.0 / (float)nSplitY; break;
-	case 3: tex.y = 3.0 / (float)nSplitY; break;
-	}
 
+	if (m_bPlay)
+	{
+		// 横のシーケンステクスチャの動き
+		switch (nAnimePage % nSplitX)
+		{
+		default:break;
+		case 0: tex.x = 0.0 / (float)nSplitX; break;
+		case 1: tex.x = 1.0 / (float)nSplitX; break;
+		case 2: tex.x = 2.0 / (float)nSplitX; break;
+		case 3: tex.x = 3.0 / (float)nSplitX; break;
+		}
+		// 縦のシーケンステクスチャの動き
+		switch (nAnimePage / nSplitY)
+		{
+		default:break;
+		case 0: tex.y = 0.0 / (float)nSplitY; break;
+		case 1: tex.y = 1.0 / (float)nSplitY; break;
+		case 2: tex.y = 2.0 / (float)nSplitY; break;
+		case 3: tex.y = 3.0 / (float)nSplitY; break;
+		}
+	}
 	return tex;
 }
