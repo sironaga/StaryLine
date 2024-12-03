@@ -19,14 +19,20 @@ CFieldVertex::CFieldVertex()
 	, m_tVertex{}
 	, m_tCenter_Vertex{}
 	, m_pTex_FieldVertex(nullptr)
-	, m_pVtx_FieldVertex(nullptr)
+	, m_pTex_FieldUseVertex(nullptr)
 	, m_offsetU_Field(0.0f)
 	, m_pTex_FieldLine{ nullptr }
-	, m_pVtx_FieldLine{ nullptr }
 	, NowLine(0)
 	, DrawLinePos{}
 	, BreakVertex(-1)
+	,m_pCamera(nullptr)
 {
+	m_pField = new Field();
+	m_pTex_FieldVertex = new Texture();
+	m_pTex_FieldLine = new Texture();
+	m_pTex_FieldUseVertex = new Texture();
+	m_pCamera = m_pField->GetCameraAddress();
+
 	StartVertex = START_PLAYER;//始点初期化
 	GoalVertex = START_PLAYER;//終点初期化
 	NowShapes = 0;//格納した図形の数初期化
@@ -49,7 +55,7 @@ CFieldVertex::CFieldVertex()
 		for (int i = 0; i < 5; i++, Vertexp++)
 		{
 			Vertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X;
-			Vertexp->Pos.y = j * VERTEX_SIZE + VERTEX_POS_Y;
+			Vertexp->Pos.y = -j * VERTEX_SIZE + VERTEX_POS_Y;
 			Vertexp->Pos.z = 0;
 			Vertexp->Number = j * 5 + i;
 			Vertexp->Use = false;
@@ -68,7 +74,7 @@ CFieldVertex::CFieldVertex()
 		for (int i = 0; i < 4; i++, CenterVertexp++)
 		{
 			CenterVertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X + VERTEX_SIZE / 2;
-			CenterVertexp->Pos.y = j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2;
+			CenterVertexp->Pos.y = -j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2;
 			CenterVertexp->Pos.z = 0;
 			CenterVertexp->Use = false;
 		}
@@ -82,53 +88,28 @@ CFieldVertex::CFieldVertex()
 
 	//頂点描画初期化
 	HRESULT hrVertex;
-	hrVertex = LoadTextureFromFile(GetDevice(), "Asset/Star/星.png", &m_pTex_FieldVertex);
+	hrVertex = m_pTex_FieldVertex->Create("Asset/Star/星.png");
 	if (FAILED(hrVertex)) {
-		MessageBox(NULL, "Field 画像", "Error", MB_OK);
+		MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
 	}
-	hrVertex = LoadTextureFromFile(GetDevice(), "Asset/Star/星2.png", &m_pTex_FieldUseVertex);
+	hrVertex = m_pTex_FieldUseVertex->Create("Asset/Star/星2.png");
 	if (FAILED(hrVertex)) {
 		MessageBox(NULL, "UseVertex 画像", "Error", MB_OK);
 	}
-	Vertex vtx_FieldVertex[] = {
-		//背景表示の座標
-		{{-STAR_SIZE, -STAR_SIZE, 0.0f}, {0.0f, 0.0f}},
-		{{-STAR_SIZE,  STAR_SIZE, 0.0f}, {0.0f, 1.0f}},
-		{{ STAR_SIZE, -STAR_SIZE, 0.0f}, {1.0f, 0.0f}},
-		{{ STAR_SIZE,  STAR_SIZE, 0.0f}, {1.0f, 1.0f}},
-	};
-	m_pVtx_FieldVertex = CreateVertexBuffer(vtx_FieldVertex, 4);
 
 	//線描画初期化
 	HRESULT hrLine;
-
-	hrLine = LoadTextureFromFile(GetDevice(), "Asset/Line/Line.png", &m_pTex_FieldLine);
+	hrLine = m_pTex_FieldLine->Create("Asset/Line/Line.png");
 	if (FAILED(hrLine)) {
 		MessageBox(NULL, "Field 画像", "Error", MB_OK);
-	}
-
-	for (int i = 0; i < MAX_LINE; i++)
-	{
-		//背景表示の座標
-		vtx_FieldLine[i][0] = { {-LINE_SIZE, -LINE_SIZE, 0.0f}, {0.0f, 0.0f} };
-		vtx_FieldLine[i][1] = { {-LINE_SIZE,  LINE_SIZE, 0.0f}, {0.0f, 1.0f} };
-		vtx_FieldLine[i][2] = { { LINE_SIZE, -LINE_SIZE, 0.0f}, {1.0f, 0.0f} };
-		vtx_FieldLine[i][3] = { { LINE_SIZE,  LINE_SIZE, 0.0f}, {1.0f, 1.0f} };
-		m_pVtx_FieldLine[i] = CreateVertexBuffer(vtx_FieldLine[i], 4);
 	}
 }
 
 CFieldVertex::~CFieldVertex()
 {
-	for (int i = 0; i < MAX_LINE; i++)
-	{
-		if (m_pVtx_FieldLine[i]) m_pVtx_FieldLine[i]->Release();
-	}
-	if (m_pTex_FieldLine)m_pTex_FieldLine->Release();
-
-	if (m_pTex_FieldUseVertex)m_pTex_FieldUseVertex->Release();
-	if (m_pVtx_FieldVertex)m_pVtx_FieldVertex->Release();
-	if (m_pTex_FieldVertex)m_pTex_FieldVertex->Release();
+	if (m_pTex_FieldLine)delete m_pTex_FieldLine;
+	if (m_pTex_FieldUseVertex)delete m_pTex_FieldUseVertex;
+	if (m_pTex_FieldVertex)delete m_pTex_FieldVertex;
 }
 
 void CFieldVertex::Update()
@@ -242,8 +223,6 @@ void CFieldVertex::Update()
 	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
-	m_pVtx_FieldLine[NowLine] = CreateVertexBuffer(vtx_FieldLine[NowLine], 4);
-
 }
 
 void CFieldVertex::Draw()
@@ -255,42 +234,35 @@ void CFieldVertex::Draw()
 		Vertexp = m_tVertex;
 		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 		{
-			//スプライトの設定
-			SetSpritePos(Vertexp->Pos.x, Vertexp->Pos.y);//各頂点に位置を設定
-
-			//大きさの設定
-			SetSpriteScale(1.0f, 1.0f);
+			//スプライトの設定//大きさの設定
+			DrawSetting({ Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f});
 
 			//背景色の設定
-			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+			m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			if (!Vertexp->Use)SetSpriteTexture(m_pTex_FieldVertex);
-			else SetSpriteTexture(m_pTex_FieldUseVertex);
+			if (!Vertexp->Use)m_pSprite->SetTexture(m_pTex_FieldVertex);
+			else m_pSprite->SetTexture(m_pTex_FieldUseVertex);
 			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 
-
-			DrawSprite(m_pVtx_FieldVertex, sizeof(Vertex));
+			m_pSprite->Draw();
 		}
 		//線の描画
 		for (int i = 0; i <= NowLine; i++)
 		{
-			//スプライトの設定
-			SetSpritePos(0.0f, 0.0f);
-
-			//大きさの設定
-			SetSpriteScale(1.0f, 1.0f);
+			//スプライトの設定//大きさの設定
+			DrawSetting({ 0.0f,0.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
 
 			//背景色の設定
-			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+			m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			SetSpriteTexture(m_pTex_FieldLine);
+			m_pSprite->SetTexture(m_pTex_FieldLine);
 
-			DrawSprite(m_pVtx_FieldLine[i], sizeof(Vertex));
+			m_pSprite->Draw();
 		}
 	}
-
+	
 	if (NowPhase == E_GAME_PHASE::DRAWING || NowPhase == E_GAME_PHASE::SHAPESCHECK)
 	{
 		m_pBattle->SaveAllyLogDraw();
@@ -487,11 +459,7 @@ void CFieldVertex::InitFieldVertex()
 	for (int i = 0; i < NowLine; i++)
 	{
 		//背景表示の座標
-		vtx_FieldLine[i][0] = { {-LINE_SIZE, -LINE_SIZE, 0.0f}, {0.0f, 0.0f} };
-		vtx_FieldLine[i][1] = { {-LINE_SIZE,  LINE_SIZE, 0.0f}, {0.0f, 1.0f} };
-		vtx_FieldLine[i][2] = { { LINE_SIZE, -LINE_SIZE, 0.0f}, {1.0f, 0.0f} };
-		vtx_FieldLine[i][3] = { { LINE_SIZE,  LINE_SIZE, 0.0f}, {1.0f, 1.0f} };
-		m_pVtx_FieldLine[i] = CreateVertexBuffer(vtx_FieldLine[i], 4);
+		
 	}
 
 	StartVertex = GoalVertex;//始点を今の地点に初期化
@@ -805,6 +773,40 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 		}
 		Comparison[NowVertex] = -1;//繋がっている頂点が無ければ行き止まりなので一つ前の頂点に戻る
 	}
+}
+
+void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+{
+	//移動行列(Translation)
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		InPos.x,
+		InPos.y,
+		InPos.z,
+		0.0f
+	));
+
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f
+	));
+
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * R * T;
+
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = m_pCamera->GetViewMatrix();
+	wvp[2] = m_pCamera->GetProjectionMatrix();
+
+	m_pSprite->SetWorld(wvp[0]);
+	m_pSprite->SetView(wvp[1]);
+	m_pSprite->SetProjection(wvp[2]);
 }
 
 

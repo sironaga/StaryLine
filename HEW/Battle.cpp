@@ -65,6 +65,7 @@ CBattle::CBattle()
 	, m_nAllyBufferCount(0)
 	, m_pAllyPlayer(nullptr)
 	, m_pEnemy{}
+	, m_pEnemyBoss(nullptr)
 	, m_nAllyTypes{ 0,0,0,0,0,0 }
 	, m_nEnemyTypes{ 0,0,0 }
 	, m_nBattleTime(0)
@@ -934,9 +935,12 @@ void CBattle::Delete(void)
 	//敵ボスの生存判定
 	if (m_nNowWave == 1)
 	{
-		if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
+		if (m_pEnemyBoss)
 		{
-			m_pEnemyBoss = nullptr;
+			if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
+			{
+				m_pEnemyBoss = nullptr;
+			}
 		}
 	}
 

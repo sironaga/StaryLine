@@ -6,16 +6,17 @@
 #include "Character.h"
 #include "Battle.h"
 #include <d3d11.h>
+#include "Field.h"
 
 #define MAX_VERTEX (25)//頂点数
-#define MAX_CENTER_VERTEX (16)
+#define MAX_CENTER_VERTEX (16)//
 #define MAX_SHAPE_VERTEX (10)//最大N角形
 #define MAX_LINE (300)//最大の線の本数
-#define LINE_SIZE (50)//線のサイズ
-#define STAR_SIZE (100)//頂点の星のサイズ
-#define VERTEX_POS_X (-1500)//頂点の描画位置X
-#define VERTEX_POS_Y (-750)//頂点の描画位置Y
-#define VERTEX_SIZE (400)//頂点間の間隔
+#define LINE_SIZE (10)//線のサイズ
+#define STAR_SIZE (10)//頂点の星のサイズ
+#define VERTEX_POS_X (-75)//頂点の描画位置X
+#define VERTEX_POS_Y (35)//頂点の描画位置Y
+#define VERTEX_SIZE (20)//頂点間の間隔
 
 class CPlayer;
 
@@ -70,13 +71,11 @@ private:
 
 	int BreakVertex;//壊れる頂点情報
 
-	ID3D11Buffer* m_pVtx_FieldVertex;
-	ID3D11ShaderResourceView* m_pTex_FieldVertex;
-	ID3D11ShaderResourceView* m_pTex_FieldUseVertex;
+	Texture* m_pTex_FieldVertex;
+	Texture* m_pTex_FieldUseVertex;
 	float m_offsetU_Field;
 
-	ID3D11Buffer* m_pVtx_FieldLine[MAX_LINE];
-	ID3D11ShaderResourceView* m_pTex_FieldLine;
+	Texture* m_pTex_FieldLine;
 	int NowLine;//何個目の線か
 	DirectX::XMFLOAT3 DrawLinePos[MAX_LINE];
 
@@ -87,5 +86,13 @@ private:
 
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
 
+	Camera* m_pCamera;//カメラのクラスポインター
+
+	Sprite* m_pSprite;//3D描画用スプライトクラスポインター
+
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
+
+private:
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
+	Field* m_pField;
 };

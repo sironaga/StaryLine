@@ -7,7 +7,7 @@
 #include "Effect.h"
 
 // defines
-#define MOVESPEED (10.0f)	// 移動速度
+#define MOVESPEED (0.5f)	// 移動速度
 #define START_PLAYER (12)	//プレイヤーの開始位置
 
 class CPlayer

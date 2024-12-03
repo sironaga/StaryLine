@@ -20,7 +20,7 @@
 #define TIMER_DOWN (900.0f)								// タイマーのサイズ下
 
 // constants
-constexpr float ce_fPlayerSize = 100.0f;				// プレイヤー(筆)のサイズ
+constexpr float ce_fPlayerSize = 20.0f;				// プレイヤー(筆)のサイズ
 
 CPlayer::CPlayer()
 	: m_ePlayerState(STOP), m_eDestination(DEFAULT)
@@ -187,32 +187,32 @@ void CPlayer::UpdateMove()
 	switch (m_eDestination)
 	{
 	case CPlayer::UP:
-		m_tPos.y -= MOVESPEED;
+		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::UPRIGHT:
 		m_tPos.x += MOVESPEED;
-		m_tPos.y -= MOVESPEED;
+		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::RIGHT:
 		m_tPos.x += MOVESPEED;
 		break;
 	case CPlayer::DOWNRIGHT:
 		m_tPos.x += MOVESPEED;
-		m_tPos.y += MOVESPEED;
+		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWN:
-		m_tPos.y += MOVESPEED;
+		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWNLEFT:
 		m_tPos.x -= MOVESPEED;
-		m_tPos.y += MOVESPEED;
+		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::LEFT:
 		m_tPos.x -= MOVESPEED;
 		break;
 	case CPlayer::UPLEFT:
 		m_tPos.x -= MOVESPEED;
-		m_tPos.y -= MOVESPEED;
+		m_tPos.y += MOVESPEED;
 		break;
 	default:
 		break;

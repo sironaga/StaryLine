@@ -34,6 +34,8 @@ struct GAME_TIME
 
 IXAudio2SourceVoice* g_pSourseGameBGM;
 
+bool Phase;
+
 // 初期化処理
 void InitSceneGame(int StageNum)
 {
@@ -56,6 +58,8 @@ void InitSceneGame(int StageNum)
 
 	// タイマー初期化
 	g_tTime = {};
+
+	Phase = true;
 
 	InitSave();
 	g_pSourseGameBGM = GetSound(BGM_BATTLE,true);
@@ -102,11 +106,12 @@ void UpdateSceneGame()
 	g_pField->Update();		// フィールドは常に更新する
 
 	// 移動が詰んだ時
-	if (g_pPlayer->GetPlayerPhase())
+	if (g_pPlayer->GetPlayerPhase() && Phase)
 	{
 		// 召喚開始の時間(本来の値 + 前回のサイクルが終了した時間)と現在時間(経過時間)の差を求めて
 		// フェーズごとの補正値(STimePheseAjust)に代入する
 		g_tTime.GameSTimePheseAjust = (SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd) - g_tTime.GameSTime;
+		Phase = false;
 	}
 
 	// 図形を作る時間
@@ -177,6 +182,8 @@ void DrawSceneGame()
 		g_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
 		g_pPlayer->SetPlayerStop();			// プレイヤーの状態をSTOPに変える
 		g_pBattle->ReDrawingInit();			// 次の描画に必用な初期化処理
+
+		Phase = true;
 	}
 }
 
