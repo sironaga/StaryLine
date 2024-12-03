@@ -114,9 +114,7 @@ void InitSave()
 				g_pFileBattle->SaveEnemyData(CornerCount, i, j,size);//最後は敵のサイズ(float型)
 			}
 		}
-		
 	}
-	
 }
 //終了処理
 void UnInitEnemyLoadData()
