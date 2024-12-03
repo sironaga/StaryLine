@@ -56,8 +56,6 @@ CBattle::CBattle()
 	, m_nAllyDateCount(0)
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
-	, m_nNowWave(0)
-	, m_nMaxWave(0)
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
 	, m_pAlly{}
@@ -108,19 +106,16 @@ CBattle::CBattle()
 
 		m_tAllyData[i].Size = 1.0f;
 	}
-	for (int j = 0; j < MAX_WAVE; j++)
+	for (int l = 0; l < MAX_PATTERN; l++)
 	{
-		for (int l = 0; l < MAX_PATTERN; l++)
+		for (int i = 0; i < MAX_ENEMY; i++)
 		{
-			for (int i = 0; i < MAX_ENEMY; i++)
-			{
-				m_tEnemyData[j][l][i].nCornerCount = -1;
+			m_tEnemyData[l][i].nCornerCount = -1;
 
-				m_tEnemyData[j][l][i].m_tCreatePos.X = ENEMYCREATE_POSX;
-				m_tEnemyData[j][l][i].m_tCreatePos.Y = 0.0f;
-				m_tEnemyData[j][l][i].m_tCreatePos.Z = 0.0f;
-				m_tEnemyData[j][l][i].Size = 1.0f;
-			}
+			m_tEnemyData[l][i].m_tCreatePos.X = ENEMYCREATE_POSX;
+			m_tEnemyData[l][i].m_tCreatePos.Y = 0.0f;
+			m_tEnemyData[l][i].m_tCreatePos.Z = 0.0f;
+			m_tEnemyData[l][i].Size = 1.0f;
 		}
 	}
 
@@ -267,16 +262,14 @@ void CBattle::Update(void)
 							Battle(i, l, Ally);
 							break;
 						}
-						if (m_nNowWave == 1)
+						if (m_pAlly[i]->AtkCollisionCheck(m_pEnemyBoss->GetSize(), m_pEnemyBoss->GetPos()))
 						{
-							if (m_pAlly[i]->AtkCollisionCheck(m_pEnemyBoss->GetSize(), m_pEnemyBoss->GetPos()))
-							{
-								m_pAlly[i]->m_bIsAttack = true;
-								//攻撃処理
-								Battle(i, l, Ally);
-								break;
-							}
+							m_pAlly[i]->m_bIsAttack = true;
+							//攻撃処理
+							Battle(i, l, Ally);
+							break;
 						}
+
 					}
 				}
 			}
@@ -340,7 +333,6 @@ void CBattle::Update(void)
 		}
 	}
 
-
 	Alive();
 
 	CharacterUpdate();
@@ -348,27 +340,14 @@ void CBattle::Update(void)
 	m_nBattleTime++;//戦闘時間の更新
 
 	//勝敗判定
-	if (m_nNowWave == 0)
+	if (m_pEnemyBoss == nullptr)
 	{
-		if (m_nEnemyCount <= 0)
-		{
-			m_nNowWave++;
-			MessageBox(NULL, "現在Waveの敵が全滅したため次のWaveへ", "勝敗", MB_OK);
-			NextWaveInit();
-			ChangePhase(DRAWING);
-		}
+		MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
+		ChangeScene(SCENE_TITLE);
 	}
-	else
-	{
-		if (m_pEnemyBoss == nullptr)
-		{
-			MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
-			ChangeScene(SCENE_TITLE);
-		}
-	}
+
 	if (m_pAllyPlayer == nullptr)
 	{
-		m_nNowWave = 0;
 		MessageBox(NULL, "プレイヤーが倒されたため敗北", "勝敗", MB_OK);
 		ChangeScene(SCENE_TITLE);
 	}
@@ -388,8 +367,6 @@ void CBattle::CharacterUpdate(void)
 		if (!m_pAllyBuffer[i])continue;
 		m_pAllyBuffer[i]->Update();
 	}
-	if(m_pAllyPlayer)
-	m_pAllyPlayer->Update();
 
 	//敵の更新(アニメーション)
 	for (int i = 0; i < m_nEnemyCount; i++)
@@ -398,15 +375,13 @@ void CBattle::CharacterUpdate(void)
 		m_pEnemy[i]->Update();
 	}
 
-	if (m_nNowWave == 1)
+	if (m_pEnemyBoss)
 	{
-		if(m_pEnemyBoss)
 		m_pEnemyBoss->Update();
 	}
 
 	if (m_pAllyPlayer)
 	{
-		if(m_pAllyPlayer)
 		m_pAllyPlayer->Update();
 	}
 }
@@ -491,15 +466,13 @@ void CBattle::Draw(void)
 		}
 	}
 
-	if (m_nNowWave == 1)
+	if (m_pEnemyBoss)
 	{
-		if(m_pEnemyBoss)
 		m_pEnemyBoss->Draw();
 	}
 
 	if (m_pAllyPlayer)
 	{
-		if (m_pAllyPlayer)
 		m_pAllyPlayer->Draw();
 	}
 }
@@ -523,14 +496,6 @@ void CBattle::ReDrawingInit(void)
 	RandomSelectPattern();
 }
 
-void CBattle::NextWaveInit(void)
-{
-	m_nEnemyCount = 0;
-	m_nAllyDateCount = 0;
-	m_nBattleTime = 0;
-	m_bFirstFight = false;
-}
-
 void CBattle::SaveAllyData(int InCornerCount, float InSize)
 {
 	InSize = 1 + ((InSize - 1) / 10);	//1を基準として2で入ってきた場合1.1倍にするため
@@ -542,14 +507,14 @@ void CBattle::SaveAllyData(int InCornerCount, float InSize)
 	m_nAllyDateCount++;
 }
 
-void CBattle::SaveEnemyData(int InCornerCount, int InWave,int InPattern, float InSize)
+void CBattle::SaveEnemyData(int InCornerCount,int InPattern, float InSize)
 {
 	InSize = 1 + ((InSize - 1) / 10);	//1を基準として2で入ってきた場合1.1倍にするため
 
-	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave][InPattern]].nCornerCount = InCornerCount;
-	m_tEnemyData[InWave][InPattern][m_nEnemyDateCount[InWave][InPattern]].Size = InSize;
+	m_tEnemyData[InPattern][m_nEnemyDateCount[InPattern]].nCornerCount = InCornerCount;
+	m_tEnemyData[InPattern][m_nEnemyDateCount[InPattern]].Size = InSize;
 	//保存数を加算
-	m_nEnemyDateCount[InWave][InPattern]++;
+	m_nEnemyDateCount[InPattern]++;
 }
 
 void CBattle::CreateEntity()
@@ -562,6 +527,17 @@ void CBattle::CreateEntity()
 		InFirstPos.Z = ALLYCORE_POSZ;
 		m_pAllyPlayer = new CAllyPlayer(1.0f, InFirstPos, m_pCamera);
 	}
+	if (m_pEnemyBoss == nullptr)
+	{
+		CVector3<float> BossFirstPos;
+
+		BossFirstPos.X = ENEMYCREATE_POSX;
+		BossFirstPos.Y = -1.0f;
+		BossFirstPos.Z = ENEMYCREATE_POSZ_3;
+
+		m_pEnemyBoss = new CEnemyBoss(m_nStageNum, 2.0f, BossFirstPos, m_pCamera);
+	}
+
 	//指定された数だけ生成する
 	while (m_nAllyDateCount)
 	{
@@ -590,10 +566,10 @@ void CBattle::CreateEntity()
 	}
 
 	//指定された数だけ生成する
-	while (m_nEnemyDateCount[m_nNowWave][m_nSelectPattern] - (m_nEnemyCount - m_nOldEnemyCount))
+	while (m_nEnemyDateCount[m_nSelectPattern] - (m_nEnemyCount - m_nOldEnemyCount))
 	{
 		//敵を生成する
-		CreateEnemyData(m_tEnemyData[m_nNowWave][m_nSelectPattern][m_nEnemyCount - m_nOldEnemyCount]);
+		CreateEnemyData(m_tEnemyData[m_nSelectPattern][m_nEnemyCount - m_nOldEnemyCount]);
 
 		////生成に使用したため情報を消して後ろの情報を前詰めにする
 		//for (int i = 0; i + 1 < MAX_ENEMY; i++)
@@ -607,16 +583,6 @@ void CBattle::CreateEntity()
 		m_nEnemyCount++;
 	}
 
-	if (m_nNowWave == 1)
-	{
-		CVector3<float> BossFirstPos;
-
-		BossFirstPos.X = ENEMYCREATE_POSX;
-		BossFirstPos.Y = -1.0f;
-		BossFirstPos.Z = ENEMYCREATE_POSZ_3;
-
-		m_pEnemyBoss = new CEnemyBoss(m_nStageNum, 2.0f, BossFirstPos, m_pCamera);
-	}
 }
 
 void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
@@ -933,16 +899,14 @@ void CBattle::Delete(void)
 		}
 	}
 	//敵ボスの生存判定
-	if (m_nNowWave == 1)
+	if (m_pEnemyBoss)
 	{
-		if (m_pEnemyBoss)
+		if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
 		{
-			if (m_pEnemyBoss->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
-			{
-				m_pEnemyBoss = nullptr;
-			}
+			m_pEnemyBoss = nullptr;
 		}
 	}
+	
 
 	//プレイヤーの生存判定
 	if (m_pAllyPlayer)
@@ -1034,7 +998,6 @@ void CBattle::FirstPosSetting()
 			}
 		}
 	}
-
 }
 
 void CBattle::DebugMove(void)

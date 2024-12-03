@@ -2,7 +2,6 @@
 #include "Character.h"
 #include "VectorOperator.h"
 
-#define MAX_WAVE  (2)	//ウェーブの最大数
 #define MAX_PATTERN (5)	//パターンの最大数
 
 class CBattle
@@ -34,7 +33,6 @@ public:
 
 	void ReDrawingInit(void);	//再描画する際の初期化処理
 
-	void NextWaveInit(void);		//次のWaveに進むための初期化処理
 	void CreateEntity();			//エンティティ生成
 private:
 	void Search(int i,Entity Entity);	//索敵処理
@@ -83,15 +81,15 @@ private:
 	CEnemy* m_pEnemy[MAX_ENEMY];					//敵クラスポインタ
 	CEnemyBoss* m_pEnemyBoss;						//敵ボスのクラスポインタ
 
-	EntityData m_tEnemyData[MAX_WAVE][MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
+	EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
 	int m_nOldEnemyCount;							//再描画前に生存している敵の数
 	int m_nEnemyCount;								//生成した敵のカウント
-	int m_nEnemyDateCount[MAX_WAVE][MAX_PATTERN];	//保存した敵の情報数
+	int m_nEnemyDateCount[MAX_PATTERN];	//保存した敵の情報数
 	int m_nEnemyTypes[3];							//現在生成している敵の種類別カウント変数
 public:
 	int GetEnemyCount(void) { return m_nEnemyCount; }			//敵カウントのGet
 
-	void SaveEnemyData(int InCornerCount, int Wave, int InPattern, float InSize);		//敵要素保存
+	void SaveEnemyData(int InCornerCount, int InPattern, float InSize);		//敵要素保存
 private:
 	void CreateEnemyData(EntityData InDate);	//敵作成
 
@@ -113,17 +111,6 @@ private:
 	void SaveAllyLog(void);							//味方保存種類別カウント
 public:
 	void SaveAllyLogDraw(void);						//味方保存ログの描画
-
-	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝Wave関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
-private:
-	int m_nNowWave;	//現在ウェーブ番号
-	int m_nMaxWave;	//最大ウェーブ数
-
-public:
-	int GetNowWave(void) { return m_nNowWave; }					//現在Wave番号のGet
-
-	void SetMaxWave(int InWaveNum) { m_nMaxWave = InWaveNum; }	//最大ウェーブ数のSet
-	int GetMaxWave(void) { return m_nMaxWave; }					//最大ウェーブ数のGet	
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝Pattern関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
