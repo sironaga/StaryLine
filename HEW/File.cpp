@@ -16,7 +16,7 @@ using namespace std;
 streamoff g_NowLine = 0;//現在のファイルの場所
 CBattle *g_pFileBattle;
 //初期化
-bool InitLoadData(bool First, bool WaveSwitch, int* pPattern,int* pWaveNum, int* pEnemyNum, int* pAllWave)
+bool InitLoadData(bool WaveSwitch, int* pPattern, int* pEnemyNum)
 {
 	ifstream ifs(FILENAME_ENEMY, ios::in);
 	string word;
@@ -27,20 +27,9 @@ bool InitLoadData(bool First, bool WaveSwitch, int* pPattern,int* pWaveNum, int*
 	}
 	//行数を指定
 	ifs.seekg(g_NowLine, ios::cur);
-	if (First)
+	
+	 if (WaveSwitch)
 	{
-		ifs.seekg(3, ios::cur);
-		getline(ifs, word);
-		vst = split(word, ',');
-		*pAllWave = atoi(vst[0].c_str());
-		g_NowLine = ifs.tellg();////現在のファイルの場所を格納
-	}
-	else if (WaveSwitch)
-	{
-		getline(ifs, word);
-		vst = split(word, ',');
-		*pWaveNum = atoi(vst[0].c_str());
-		word.clear();
 		getline(ifs, word);
 		vst = split(word, ',');
 		*pPattern = atoi(vst[0].c_str());
@@ -95,26 +84,22 @@ void InitSave()
 {
 	int AllWave = 0;
 	int Wave = 0;
-	int MaxEnemy=0;
+	int MaxEnemy = 0;
 	int MaxPattern = 0;
 	int size = 0;
-	InitLoadData(true, false,&MaxPattern ,&Wave, &MaxEnemy, &AllWave);
 	int CornerCount = 0;
-	g_pFileBattle->SetMaxWave(AllWave);
-	for (int i = 0; i < AllWave; i++)
+	InitLoadData(true, &MaxPattern,  &MaxEnemy );
+	g_pFileBattle->SetMaxPattern(MaxPattern);
+	for (int j = 0; j < MaxPattern; j++)
 	{
-		InitLoadData(false,true, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
-		g_pFileBattle->SetMaxPattern(MaxPattern);
-		for (int j = 0; j < MaxPattern; j++)
+		InitLoadData(false, &MaxPattern,  &MaxEnemy);
+		for (int l = 0; l < MaxEnemy; l++)
 		{
-			InitLoadData(false, false, &MaxPattern, &Wave, &MaxEnemy, &AllWave);
-			for (int l = 0; l < MaxEnemy; l++)
-			{
-				EnemyLoadData(&CornerCount,&size);
-				g_pFileBattle->SaveEnemyData(CornerCount, i, j,size);//最後は敵のサイズ(float型)
-			}
+			EnemyLoadData(&CornerCount, &size);
+			g_pFileBattle->SaveEnemyData(CornerCount, j, size);//最後は敵のサイズ(float型)
 		}
 	}
+
 }
 //終了処理
 void UnInitEnemyLoadData()
