@@ -251,7 +251,7 @@ void CFieldVertex::Draw()
 		for (int i = 0; i <= NowLine; i++)
 		{
 			//スプライトの設定//大きさの設定
-			DrawSetting({ 0.0f,0.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
+			DrawSetting({ (vtx_FieldLine[i][0].pos[0] + vtx_FieldLine[i][3].pos[0]) / 2.0f,(vtx_FieldLine[i][0].pos[1] + vtx_FieldLine[i][3].pos[1]) / 2.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
 
 			//
 
