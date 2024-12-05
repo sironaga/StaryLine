@@ -181,7 +181,6 @@ void DrawSceneGame()
 		// 各要素の初期化処理
 		g_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
 		g_pPlayer->SetPlayerStop();			// プレイヤーの状態をSTOPに変える
-		g_pBattle->ReDrawingInit();			// 次の描画に必用な初期化処理
 
 		Phase = true;
 	}
