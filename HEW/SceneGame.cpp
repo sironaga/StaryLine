@@ -19,8 +19,8 @@ enum SceneGameTime
 {
 	SHAPE_DRAW_START = 0,		// 最初の作図開始(0～10)
 	SHAPE_SUMMON_START = 10,	// 召喚開始(10～20)
-	COOLTIME_START = 20,		// 再作図可能になるまでのクールタイムのスタート(20～30)、バトルもこの位置からずっと動かす
-	SHAPE_DRAW_RESTART = 30,	// 再作図開始(30～40)
+	COOLTIME_START = 15,		// 再作図可能になるまでのクールタイムのスタート(20～30)、バトルもこの位置からずっと動かす
+	SHAPE_DRAW_RESTART = 20,	// 再作図開始(30～40)
 	GAME_END = 90				// 時間切れ
 };
 
@@ -117,7 +117,7 @@ void UpdateSceneGame()
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
 	if ((SHAPE_DRAW_START + g_tTime.GameSTimeSycleEnd <= g_tTime.GameSTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
-		g_tTime.GameSTime < SHAPE_SUMMON_START - g_tTime.GameSTimeSycleEnd + g_tTime.GameSTimePheseAjust)	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+		(g_tTime.GameSTime < SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間更新する
 		g_pPlayer->Update();
@@ -125,21 +125,21 @@ void UpdateSceneGame()
 	}
 
 	// 召喚開始の時間になったら
-	if (SHAPE_SUMMON_START - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeSycleEnd == g_tTime.GameSTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if ((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust) == g_tTime.GameSTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		g_pBattle->CreateEntity();	// キャラクターのデータを生成する
 	}
 
 	// 経過時間が召喚開始の時間からクールタイム開始の時間になるまで
 	// キャラクターを召喚する時間
-	if (SHAPE_SUMMON_START - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeSycleEnd <= g_tTime.GameSTime &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
-		g_tTime.GameSTime < COOLTIME_START - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeSycleEnd)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	if (((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust) <= g_tTime.GameSTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
+		(g_tTime.GameSTime < (COOLTIME_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust)))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		g_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
 	}
 
 	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
-	if(COOLTIME_START - g_tTime.GameSTimePheseAjust <= g_tTime.GameSTime)g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+	if((COOLTIME_START - g_tTime.GameSTimePheseAjust) <= g_tTime.GameSTime)g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
 }
 
 //描画処理
@@ -150,7 +150,7 @@ void DrawSceneGame()
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
 	if ((SHAPE_DRAW_START + g_tTime.GameSTimeSycleEnd <= g_tTime.GameSTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
-		g_tTime.GameSTime < SHAPE_SUMMON_START - g_tTime.GameSTimeSycleEnd + g_tTime.GameSTimePheseAjust)	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+		(g_tTime.GameSTime < (SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust)))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間描画する
 		g_pPlayer->Draw();
@@ -159,8 +159,8 @@ void DrawSceneGame()
 
 	// 経過時間が召喚開始の時間からクールタイム開始の時間になるまで
 	// キャラクターを召喚する時間
-	if (SHAPE_SUMMON_START - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeSycleEnd <= g_tTime.GameSTime &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
-		g_tTime.GameSTime < COOLTIME_START - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeSycleEnd)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	if (((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust ) <= g_tTime.GameSTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
+		(g_tTime.GameSTime < (COOLTIME_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust )))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		g_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 	}
@@ -169,8 +169,8 @@ void DrawSceneGame()
 	if (COOLTIME_START <= g_tTime.GameSTime)g_pBattle->Draw();	// バトル全体の描画
 
 	// 一つのサイクルが終わった時
-	if (g_tTime.GameTime == (SHAPE_DRAW_RESTART - g_tTime.GameSTimePheseAjust
-		+ g_tTime.GameSTimeSycleEnd) * 60)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if (g_tTime.GameTime == (SHAPE_DRAW_RESTART + g_tTime.GameSTimeSycleEnd 
+		- g_tTime.GameSTimePheseAjust) * 60)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		// 次のサイクルに向けて各処理を行う
 
