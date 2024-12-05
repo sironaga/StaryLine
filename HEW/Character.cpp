@@ -21,15 +21,15 @@ enum AllyTexture
 	Ally3,
 	Ally4,
 	Ally5,
-	MAX_AllyTex,
-};
-enum AllyBufferTexture
-{
 	Ally6,
 	Ally7,
 	Ally8,
-	MAX_AllyBufferTex,
+	MAX_AllyTex,
 };
+//enum AllyBufferTexture
+//{
+//	MAX_AllyBufferTex,
+//};
 enum EnemyTexture
 {
 	Enemy1,
@@ -39,11 +39,10 @@ enum EnemyTexture
 };
 
 Texture* g_pAllyTex[MAX_AllyTex];
-Texture* g_pAllyBufferTex[MAX_AllyBufferTex];
+//Texture* g_pAllyBufferTex[MAX_AllyBufferTex];
 Texture* g_pEnemyTex[MAX_EnemyTex];
 
-Texture* g_pAllyPlayerTex;
-Texture* g_pEnemyBossTex;
+Texture* g_pLeaderTex[MAX_LEADERS];
 
 Texture* g_pCollisionTex;
 
@@ -55,35 +54,34 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	for(int i = 0; i < MAX_AllyTex;i++)
 		g_pAllyTex[i] = new Texture();
-	for (int i = 0; i < MAX_AllyBufferTex; i++)
-		g_pAllyBufferTex[i] = new Texture();
+	//for (int i = 0; i < MAX_AllyBufferTex; i++)
+	//	g_pAllyBufferTex[i] = new Texture();
 	for(int i = 0; i < MAX_EnemyTex;i++)
 		g_pEnemyTex[i] = new Texture();
 
 	g_pCollisionTex = new Texture();
 
-	g_pAllyPlayerTex = new Texture();
-	g_pEnemyBossTex = new Texture();
+	g_pLeaderTex[0] = new Texture();
+	g_pLeaderTex[1] = new Texture();
 
 	HRESULT hr;
 	hr = g_pAllyTex[Ally3]->Create("Asset/味方/3.png");
 	hr = g_pAllyTex[Ally4]->Create("Asset/味方/4.png");
 	hr = g_pAllyTex[Ally5]->Create("Asset/味方/5.png");
-	hr = g_pAllyBufferTex[Ally6]->Create("Asset/味方/6.png");
-	hr = g_pAllyBufferTex[Ally7]->Create("Asset/味方/7.png");
-	hr = g_pAllyBufferTex[Ally8]->Create("Asset/味方/8.png");
+	hr = g_pAllyTex[Ally6]->Create("Asset/味方/6.png");
+	hr = g_pAllyTex[Ally7]->Create("Asset/味方/7.png");
+	hr = g_pAllyTex[Ally8]->Create("Asset/味方/8.png");
 	hr = g_pEnemyTex[Enemy1]->Create("Asset/敵/3.png");
 	hr = g_pEnemyTex[Enemy2]->Create("Asset/敵/4.png");
 	hr = g_pEnemyTex[Enemy3]->Create("Asset/敵/5.png");
 
 	hr = g_pCollisionTex->Create("Asset/Star/CLStar.png");
 
-	hr = g_pAllyPlayerTex->Create("Asset/Player/Player.png");
-	
+	hr = g_pLeaderTex[0]->Create("Asset/Player/Player.png");
 	switch (StageNum)
 	{
 	case 0:
-		hr = g_pEnemyBossTex->Create("Asset/敵/BossNo1.png");
+		g_pLeaderTex[1]->Create("Asset/敵/BossNo1.png");
 		break;
 	case 1:
 		break;
@@ -651,219 +649,220 @@ void CEnemy::SettingStatus(void)
 	}
 }
 
-CAllyBuffer::CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress)
-	: m_tStatus(St_Create)
-	, nCornerCount((Corner)InCornerCount)
-	, m_tPos(FirstPos)
-	, IsBuff(false)
-	, m_pCamera(InAddress)
-{
-	SettingStatus();
+//CAllyBuffer::CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress)
+//	: m_tStatus(St_Create)
+//	, nCornerCount((Corner)InCornerCount)
+//	, m_tPos(FirstPos)
+//	, IsBuff(false)
+//	, m_pCamera(InAddress)
+//{
+//	SettingStatus();
+//
+//	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+//	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+//	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+//}
+//
+//CAllyBuffer::~CAllyBuffer()
+//{
+//	if (m_pSprite)
+//	{
+//		delete m_pSprite;
+//		m_pSprite = nullptr;
+//	}
+//}
+//
+//void CAllyBuffer::Update(void)
+//{
+//	switch (m_tStatus)
+//	{
+//	case St_Create:CreateUpdate();break;
+//	case St_Battle:BattleUpdate();break;
+//	case St_Death:DeathUpdate();break;
+//	}
+//}
+//
+//void CAllyBuffer::Draw(void)
+//{
+//	m_pSprite->SetTexture(g_pAllyBufferTex[nCornerCount - 6]);
+//
+//	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
+//
+//	m_pSprite->Draw();
+//
+//	m_pSprite->ReSetSprite();
+//}
+//
+//void CAllyBuffer::CreateUpdate(void)
+//{
+//	//生成アニメーション
+//
+//	//生成アニメーションが終わったら
+//	SetStatus(St_Battle);
+//}
+//
+//void CAllyBuffer::BattleUpdate(void)
+//{
+//	//アニメーション(移動していなかったら)
+//}
+//
+//void CAllyBuffer::DeathUpdate(void)
+//{
+//	//死亡アニメーション
+//
+//	//死亡アニメーションが終わったら
+//	SetStatus(St_Delete);
+//}
+//
+//void CAllyBuffer::SettingStatus(void)
+//{
+//	switch (nCornerCount)
+//	{
+//	default:
+//		break;
+//	case Hexagon:
+//		m_tBuff = BT_Shield;
+//		break;
+//	case Heptagon:
+//		m_tBuff = BT_Attack;
+//		break;
+//	case Octagon:
+//		m_tBuff = BT_ReSummon;
+//		break;
+//	}
+//}
+//
+//void CAllyBuffer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+//{
+//	//移動行列(Translation)
+//	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+//		InPos.x,
+//		InPos.y,
+//		InPos.z,
+//		0.0f
+//	));
+//	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+//		AngleX,
+//		AngleY,
+//		AngleZ,
+//		0.0f
+//	));
+//
+//	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
+//	//それぞれの行列を掛け合わせて格納
+//	DirectX::XMMATRIX mat = S * R * T;
+//
+//	DirectX::XMFLOAT4X4 wvp[3];
+//	DirectX::XMMATRIX world;
+//	world = mat;
+//
+//	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+//	wvp[1] = m_pCamera->GetViewMatrix();
+//	wvp[2] = m_pCamera->GetProjectionMatrix();
+//
+//	m_pSprite->SetWorld(wvp[0]);
+//	m_pSprite->SetView(wvp[1]);
+//	m_pSprite->SetProjection(wvp[2]);
+//}
 
-	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-}
-
-CAllyBuffer::~CAllyBuffer()
-{
-	if (m_pSprite)
-	{
-		delete m_pSprite;
-		m_pSprite = nullptr;
-	}
-}
-
-void CAllyBuffer::Update(void)
-{
-	switch (m_tStatus)
-	{
-	case St_Create:CreateUpdate();break;
-	case St_Battle:BattleUpdate();break;
-	case St_Death:DeathUpdate();break;
-	}
-}
-
-void CAllyBuffer::Draw(void)
-{
-	m_pSprite->SetTexture(g_pAllyBufferTex[nCornerCount - 6]);
-
-	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
-
-	m_pSprite->Draw();
-
-	m_pSprite->ReSetSprite();
-}
-
-void CAllyBuffer::CreateUpdate(void)
-{
-	//生成アニメーション
-
-	//生成アニメーションが終わったら
-	SetStatus(St_Battle);
-}
-
-void CAllyBuffer::BattleUpdate(void)
-{
-	//アニメーション(移動していなかったら)
-}
-
-void CAllyBuffer::DeathUpdate(void)
-{
-	//死亡アニメーション
-
-	//死亡アニメーションが終わったら
-	SetStatus(St_Delete);
-}
-
-void CAllyBuffer::SettingStatus(void)
-{
-	switch (nCornerCount)
-	{
-	default:
-		break;
-	case Hexagon:
-		m_tBuff = BT_Shield;
-		break;
-	case Heptagon:
-		m_tBuff = BT_Attack;
-		break;
-	case Octagon:
-		m_tBuff = BT_ReSummon;
-		break;
-	}
-}
-
-void CAllyBuffer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
-{
-	//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
-		InPos.x,
-		InPos.y,
-		InPos.z,
-		0.0f
-	));
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
-		AngleX,
-		AngleY,
-		AngleZ,
-		0.0f
-	));
-
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * R * T;
-
-	DirectX::XMFLOAT4X4 wvp[3];
-	DirectX::XMMATRIX world;
-	world = mat;
-
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
-
-	m_pSprite->SetWorld(wvp[0]);
-	m_pSprite->SetView(wvp[1]);
-	m_pSprite->SetProjection(wvp[2]);
-}
-
-CEnemyBoss::CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress)
-	:CFighter(BossTypeNum,InSize,FirstPos,InAddress)
-{
-	SettingStatus();
-}
-
-CEnemyBoss::~CEnemyBoss()
-{
-
-}
-
-void CEnemyBoss::Update(void)
-{
-	switch (m_tStatus)
-	{
-	case St_Create:CreateUpdate();
-		break;
-	case St_Battle:BattleUpdate();
-		break;
-	case St_Death:DeathUpdate();
-		break;
-	}
-}
-
-void CEnemyBoss::Draw(void)
-{
-	m_pSprite->SetTexture(g_pEnemyBossTex);
-
-	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
-
-	m_pSprite->Draw();
-
-	m_pSprite->ReSetSprite();
-}
-
-void CEnemyBoss::CreateUpdate(void)
-{
-	//生成アニメーション
-
-	//生成アニメーションが終わったら
-	SetStatus(St_Battle);
-
-}
-
-void CEnemyBoss::BattleUpdate(void)
-{
-	//戦闘アニメーション(攻撃範囲内に敵がいたら)
-	if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
-	{
-		//アニメーション処理
-
-		m_fAtkAnimationTime++;
-		if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
-	}
-	//移動アニメーション(移動していたら)
-
-	//待機アニメーション(移動していなかったら)
-}
-
-void CEnemyBoss::DeathUpdate(void)
-{
-	//死亡アニメーション
-
-	//死亡アニメーションが終わったら
-	SetStatus(St_Delete);
-}
-
-void CEnemyBoss::SettingStatus(void)
-{
-	switch (nCornerCount)
-	{
-	default:
-		break;
-	case Type1:
-		m_fHp = 100.0f;
-		m_fAtk = 5.0f;
-		m_tAtkType = AT_Physics;
-		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(3);			//キャラクターの中心からの横の当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(3);			//キャラクターの中心からの縦の当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);	//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
-		break;
-	case Type2:
-		break;
-	case Type3:
-		break;
-	}
-
-}
-
-CAllyPlayer::CAllyPlayer(float InSize, CVector3<float>FirstPos, Camera* InAddress)
+//CEnemyBoss::CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress)
+//	:CFighter(BossTypeNum,InSize,FirstPos,InAddress)
+//{
+//	SettingStatus();
+//}
+//
+//CEnemyBoss::~CEnemyBoss()
+//{
+//
+//}
+//
+//void CEnemyBoss::Update(void)
+//{
+//	switch (m_tStatus)
+//	{
+//	case St_Create:CreateUpdate();
+//		break;
+//	case St_Battle:BattleUpdate();
+//		break;
+//	case St_Death:DeathUpdate();
+//		break;
+//	}
+//}
+//
+//void CEnemyBoss::Draw(void)
+//{
+//	m_pSprite->SetTexture(g_pEnemyBossTex);
+//
+//	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
+//
+//	m_pSprite->Draw();
+//
+//	m_pSprite->ReSetSprite();
+//}
+//
+//void CEnemyBoss::CreateUpdate(void)
+//{
+//	//生成アニメーション
+//
+//	//生成アニメーションが終わったら
+//	SetStatus(St_Battle);
+//
+//}
+//
+//void CEnemyBoss::BattleUpdate(void)
+//{
+//	//戦闘アニメーション(攻撃範囲内に敵がいたら)
+//	if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+//	{
+//		//アニメーション処理
+//
+//		m_fAtkAnimationTime++;
+//		if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
+//	}
+//	//移動アニメーション(移動していたら)
+//
+//	//待機アニメーション(移動していなかったら)
+//}
+//
+//void CEnemyBoss::DeathUpdate(void)
+//{
+//	//死亡アニメーション
+//
+//	//死亡アニメーションが終わったら
+//	SetStatus(St_Delete);
+//}
+//
+//void CEnemyBoss::SettingStatus(void)
+//{
+//	switch (nCornerCount)
+//	{
+//	default:
+//		break;
+//	case Type1:
+//		m_fHp = 100.0f;
+//		m_fAtk = 5.0f;
+//		m_tAtkType = AT_Physics;
+//		m_fAtkAnimationMaxTime = 0.0f;
+//		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+//		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(3);			//キャラクターの中心からの横の当たり判定
+//		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(3);			//キャラクターの中心からの縦の当たり判定
+//		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(100);	//キャラクターの中心からの横の索敵当たり判定
+//		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(100);	//キャラクターの中心からの横の索敵当たり判定
+//		break;
+//	case Type2:
+//		break;
+//	case Type3:
+//		break;
+//	}
+//
+//}
+//
+CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber, Camera* InAddress)
 	:m_tStatus(St_Create)
 	,m_tPos(FirstPos)
 	,m_fHp(10.0f)
 	,m_pCamera(InAddress)
+	,m_nTextureNumber(InTextureNumber)
 	,m_pSprite(nullptr)
 {
 	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
@@ -871,7 +870,7 @@ CAllyPlayer::CAllyPlayer(float InSize, CVector3<float>FirstPos, Camera* InAddres
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 }
 
-CAllyPlayer::~CAllyPlayer()
+CLeader::~CLeader()
 {
 	if (m_pSprite)
 	{
@@ -880,7 +879,7 @@ CAllyPlayer::~CAllyPlayer()
 	}
 }
 
-void CAllyPlayer::Update(void)
+void CLeader::Update(void)
 {
 	switch (m_tStatus)
 	{
@@ -893,14 +892,14 @@ void CAllyPlayer::Update(void)
 	}
 }
 
-void CAllyPlayer::Draw(void)
+void CLeader::Draw(void)
 {
 	m_tTexPos = GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
 
 	m_pSprite->SetUVPos({ m_tTexPos.X,m_tTexPos.Y });
 	m_pSprite->SetUVScale({ 0.25f,0.25f });
 
-	m_pSprite->SetTexture(g_pAllyPlayerTex);
+	m_pSprite->SetTexture(g_pLeaderTex[m_nTextureNumber]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
@@ -909,12 +908,12 @@ void CAllyPlayer::Draw(void)
 	m_pSprite->ReSetSprite();
 }
 
-void CAllyPlayer::Damage(CFighter* pFighter)
+void CLeader::Damage(CFighter* pFighter)
 {
 	m_fHp -= pFighter->GetAtk();
 }
 
-void CAllyPlayer::CreateUpdate(void)
+void CLeader::CreateUpdate(void)
 {
 	//生成アニメーション
 
@@ -923,12 +922,12 @@ void CAllyPlayer::CreateUpdate(void)
 
 }
 
-void CAllyPlayer::BattleUpdate(void)
+void CLeader::BattleUpdate(void)
 {
 	//待機アニメーション(移動していなかったら)
 }
 
-void CAllyPlayer::DeathUpdate(void)
+void CLeader::DeathUpdate(void)
 {
 	//死亡アニメーション
 
@@ -936,7 +935,7 @@ void CAllyPlayer::DeathUpdate(void)
 	SetStatus(St_Delete);
 }
 
-void CAllyPlayer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 {
 	//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
@@ -969,7 +968,7 @@ void CAllyPlayer::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	m_pSprite->SetProjection(wvp[2]);
 }
 
-CVector2<float> CAllyPlayer::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
+CVector2<float> CLeader::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
 {
 	CVector2<float> tex;
 	static int nSplit = nSplitX * nSplitY;

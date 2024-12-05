@@ -9,6 +9,13 @@
 //編集者：AT12C05宇留野陸斗
 //編集者：AT12A07小川蓮
 
+enum LeaderNumber
+{
+	Leader_Player,
+	Leader_Boss,
+	MAX_LEADERS,
+};
+
 #define MAX_ALLY  (200)	//味方の最大数
 #define MAX_ENEMY (200)	//敵の最大数
 #define NORMAL_SIZE (10)//キャラクターの基本サイズ
@@ -187,11 +194,29 @@ private:
 	void SettingStatus(void) override;
 };
 
-class CAllyPlayer
+class CEnemy : public CFighter
 {
 public:
-	CAllyPlayer(float InSize, CVector3<float>FirstPos, Camera* InAddress);
-	~CAllyPlayer();
+	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
+	~CEnemy();						//デストラクタ
+
+	void Update(void)	override;	//更新処理
+	void Draw(void)		override;	//描画処理
+
+private:
+	void CreateUpdate(void) override;
+	void BattleUpdate(void) override;
+	void DeathUpdate(void)  override;
+
+	void SettingStatus(void) override;
+};
+
+//リーダークラス
+class CLeader
+{
+public:
+	CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber, Camera* InAddress);
+	~CLeader();
 
 	void Update(void);	//更新処理
 	void Draw(void);	//描画処理
@@ -211,7 +236,7 @@ private:
 
 	Camera* m_pCamera;
 	Sprite* m_pSprite;
-
+	int m_nTextureNumber;
 	/*＝＝＝＝＝プレイヤーアニメーション系＝＝＝＝＝*/
 private:
 	CVector2<float> m_tTexPos;
@@ -237,116 +262,98 @@ public:
 	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
 };
 
-//敵キャラクタークラス
-class CEnemy : public CFighter
-{
-public:
-	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
-	~CEnemy();						//デストラクタ
-
-	void Update(void)	override;	//更新処理
-	void Draw(void)		override;	//描画処理
-
-private:
-	void CreateUpdate(void) override;
-	void BattleUpdate(void) override;
-	void DeathUpdate(void)  override;
-
-	void SettingStatus(void) override;
-};
-
-class CEnemyBoss : public CFighter
-{
-private:
-	enum BossType
-	{
-		Type1,
-		Type2,
-		Type3,
-	};
-public:
-	CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress);	//コンストラクタ
-	~CEnemyBoss();
-	
-	void Update(void)	override;	//更新処理
-	void Draw(void)		override;	//描画処理
-private:
-	void CreateUpdate(void) override;
-	void BattleUpdate(void) override;
-	void DeathUpdate(void)  override;
-
-	void SettingStatus(void) override;
-
-};
-
-//味方バッファークラス
-class CAllyBuffer
-{
-public:
-	enum BuffType
-	{
-		BT_Shield,
-		BT_Attack,
-		BT_ReSummon,
-	};
-private:
-	enum Corner
-	{
-		Hexagon = 6,		//六角形
-		Heptagon = 7,		//七角形
-		Octagon = 8,		//八角形
-	};
-public:
-	CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
-	~CAllyBuffer();						//デストラクタ
-
-	void Update(void);	//更新処理
-	void Draw(void);	//描画処理
-
-private:
-	void CreateUpdate(void);
-	void BattleUpdate(void);
-	void DeathUpdate(void);
-
-	void SettingStatus(void);
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
-public:
-	bool IsBuff;					//Buffをかける処理をもう行ったかどうか
-private:
-	Status m_tStatus;				//ステータス状態
-	BuffType m_tBuff;				//バフの種類	
-	Corner nCornerCount;			//属性
-	CVector3<float> m_tPos;			//位置座標
-	CVector3<float> m_tSize;		//サイズ
-
-	Camera* m_pCamera;
-	Sprite* m_pSprite;
-public:
-	//ステータスのSet
-	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
-	//ステータスのget
-	Status GetStatus(void) { return m_tStatus; }
-
-	//属性のGet
-	int GetCornerCount(void) { return nCornerCount; }
-
-	//X座標の加算
-	void AddPosX(float fAdd) { m_tPos.X += fAdd; }
-	//Y座標の加算
-	void AddPosY(float fAdd) { m_tPos.Y += fAdd; }
-	//Z座標の加算
-	void AddPosZ(float fAdd) { m_tPos.Z += fAdd; }
-	//位置座標のSet
-	void SetPos(CVector3<float> InPos) { m_tPos = InPos; }
-
-	//位置座標のGet
-	CVector3<float> GetPos(void) { return m_tPos; }
-
-	//サイズのGet
-	CVector3<float> GetSize(void) { return m_tSize; }
-
-	BuffType GetBuffType(void) { return m_tBuff; }
-
-	//カメラのアドレス設定
-	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
-};
+////敵ボスクラス
+//class CEnemyBoss
+//{
+//private:
+//	enum BossType
+//	{
+//		Type1,
+//		Type2,
+//		Type3,
+//	};
+//public:
+//	CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress);	//コンストラクタ
+//	~CEnemyBoss();
+//	
+//	void Update(void);//更新処理
+//	void Draw(void);	//描画処理
+//private:
+//	void CreateUpdate(void);
+//	void BattleUpdate(void);
+//	void DeathUpdate(void);
+//
+//	void SettingStatus(void);
+//
+//};
+////味方バッファークラス
+//class CAllyBuffer
+//{
+//public:
+//	enum BuffType
+//	{
+//		BT_Shield,
+//		BT_Attack,
+//		BT_ReSummon,
+//	};
+//private:
+//	enum Corner
+//	{
+//		Hexagon = 6,		//六角形
+//		Heptagon = 7,		//七角形
+//		Octagon = 8,		//八角形
+//	};
+//public:
+//	CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
+//	~CAllyBuffer();						//デストラクタ
+//
+//	void Update(void);	//更新処理
+//	void Draw(void);	//描画処理
+//
+//private:
+//	void CreateUpdate(void);
+//	void BattleUpdate(void);
+//	void DeathUpdate(void);
+//
+//	void SettingStatus(void);
+//	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
+//public:
+//	bool IsBuff;					//Buffをかける処理をもう行ったかどうか
+//private:
+//	Status m_tStatus;				//ステータス状態
+//	BuffType m_tBuff;				//バフの種類	
+//	Corner nCornerCount;			//属性
+//	CVector3<float> m_tPos;			//位置座標
+//	CVector3<float> m_tSize;		//サイズ
+//
+//	Camera* m_pCamera;
+//	Sprite* m_pSprite;
+//public:
+//	//ステータスのSet
+//	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
+//	//ステータスのget
+//	Status GetStatus(void) { return m_tStatus; }
+//
+//	//属性のGet
+//	int GetCornerCount(void) { return nCornerCount; }
+//
+//	//X座標の加算
+//	void AddPosX(float fAdd) { m_tPos.X += fAdd; }
+//	//Y座標の加算
+//	void AddPosY(float fAdd) { m_tPos.Y += fAdd; }
+//	//Z座標の加算
+//	void AddPosZ(float fAdd) { m_tPos.Z += fAdd; }
+//	//位置座標のSet
+//	void SetPos(CVector3<float> InPos) { m_tPos = InPos; }
+//
+//	//位置座標のGet
+//	CVector3<float> GetPos(void) { return m_tPos; }
+//
+//	//サイズのGet
+//	CVector3<float> GetSize(void) { return m_tSize; }
+//
+//	BuffType GetBuffType(void) { return m_tBuff; }
+//
+//	//カメラのアドレス設定
+//	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
+//};
