@@ -13,9 +13,12 @@ constexpr float LIMIT_SIZE_Y = 100.0f;
 
 constexpr float SIZE_SPEED = 10.0f;
 
+#define MODEL_PASS(fbx) ("Assets/Model/" fbx)
+
 const char* ch_pModelList[CDebugRoom::MAX_DEBUGMODEL] =
 {
-
+	MODEL_PASS("Running.fbx"),
+	MODEL_PASS("test.fbx"),
 };
 
 CDebugRoom::CDebugRoom()
@@ -41,6 +44,10 @@ CDebugRoom::~CDebugRoom()
 
 void CDebugRoom::Update()
 {
+	m_pCamera->Update();
+
+	if (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_THUMB))m_bSelect = true;
+
 	if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
 		m_nSelect++;

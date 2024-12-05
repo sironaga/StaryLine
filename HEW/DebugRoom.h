@@ -15,6 +15,7 @@ public:
 	enum DEBUG_MODEL
 	{
 		TEST1 = 0,
+		TEST2,
 
 		MAX_DEBUGMODEL
 	};

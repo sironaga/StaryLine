@@ -14,11 +14,11 @@ IXAudio2SourceVoice* g_pSourseTitleSE;
 void InitSceneTitle()
 {
 	g_pStartTilte = new CStartTitle();
-	g_pSourseTitleBGM = GetSound(BGM_TITLE,true);
+	g_pSourseTitleBGM = GetSound(BGM_TITLE, true);
 	g_pSourseTitleSE = GetSound(SE_DECISION, false);
 	g_pSourseTitleBGM->SetVolume(0.4f);
 	g_pSourseTitleBGM->Start();
-	
+
 }
 
 //I—¹ˆ—
@@ -36,11 +36,18 @@ void UpdateSceneTitle()
 	g_pStartTilte->UpdateStartTitle();
 	if (IsKeyTrigger(VK_RETURN) || CGetButtons(XINPUT_GAMEPAD_B))
 	{
-	//	UninitSound();
-	//	InitSound();
+		//	UninitSound();
+		//	InitSound();
 		g_pSourseTitleSE->SetVolume(0.3f);
 		g_pSourseTitleSE->Start();
 		ChangeScene(SCENE_GAME);
+	}
+
+	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
+	{
+		g_pSourseTitleSE->SetVolume(0.3f);
+		g_pSourseTitleSE->Start();
+		ChangeScene(SCENE_DEBUGROOM);
 	}
 }
 
