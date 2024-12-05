@@ -35,7 +35,7 @@ CPlayer::CPlayer()
 	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pEffect(nullptr), m_pCamera(nullptr)
+	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pCamera(nullptr)
 {
 	m_pCamera = new CameraDebug();
 

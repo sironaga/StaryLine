@@ -3,7 +3,6 @@
 #include "DirectX.h"
 #include "Camera.h"
 #include "Sprite.h"
-#include "Effect.h"
 
 //Character.h
 //•ÒWÒFAT12C05‰F—¯–ì—¤“l

@@ -147,22 +147,7 @@
     <ClCompile Include="Conection_Sys.cpp">
       <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Effect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Emitter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SceneTitle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundList.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Result.cpp">
@@ -170,6 +155,18 @@
     </ClCompile>
     <ClCompile Include="DebugRoom.cpp">
       <Filter>ソース ファイル\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Program\Hew\StarryLine_Version1.2\StarryLine_Version1.2\SpriteEx.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundList.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="InputEx.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,25 +257,7 @@
     <ClInclude Include="Conection_Sys.h">
       <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Effect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Emitter.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Field.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SceneTitle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundList.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Result.h">
@@ -286,6 +265,18 @@
     </ClInclude>
     <ClInclude Include="DebugRoom.h">
       <Filter>ヘッダー ファイル\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundList.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Program\Hew\StarryLine_Version1.2\StarryLine_Version1.2\SpriteEx.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="InputEx.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
