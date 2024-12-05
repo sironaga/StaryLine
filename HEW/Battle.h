@@ -10,10 +10,10 @@ class CBattle
 private:
 	enum Entity
 	{
-		AllyPlayer = 0,
-		Ally = 1,
-		Enemy = 2,
-		EnemyBoss = 3,
+		AllyLeader,
+		EnemyLeader,
+		Ally,
+		Enemy,
 	};
 private:
 	struct EntityData
@@ -31,10 +31,12 @@ public:
 	void CharacterDraw(void);//キャラクターたちの描画
 	void Draw(void);		//描画処理
 
-	void ReDrawingInit(void);	//再描画する際の初期化処理
+	//void ReDrawingInit(void);	//再描画する際の初期化処理
 
 	void CreateEntity();			//エンティティ生成
 private:
+	void TimeLapse(void);
+
 	void Search(int i,Entity Entity);	//索敵処理
 	void Move(int i, Entity Entity);	//移動処理
 	void Battle(int i, int l , Entity Entity);	//戦闘処理
@@ -45,7 +47,7 @@ private:
 public:
 	int m_nStageNum;					//ステージナンバー
 private:
-	int m_nBattleTime;					//戦闘時間
+	float m_nBattleTime;					//戦闘時間
 	bool m_bFirstFight;					//初期戦闘したかどうか
 	int m_nFirstPosPattern;				//初期位置のパターン
 
@@ -56,20 +58,19 @@ public:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
-	CAllyPlayer* m_pAllyPlayer;							//プレイヤー(コア)
-
-	int m_nAllyCount;									//生成した味方のカウント
-
-	CAllyBuffer* m_pAllyBuffer[MAX_ALLY];				//味方バッファークラスポインタ
-	int m_nAllyBufferCount;								//生成した味方バッファーのカウント
+	CLeader* m_pAllyLeader;									//プレイヤー(コア)
 
 	EntityData m_tAllyData[MAX_ALLY];					//生成予定の味方情報
+	int m_nAllyCount;									//生成した味方のカウント
 	int m_nAllyDateCount;								//保存した味方の情報数
-
 	int m_nAllyTypes[6];								//現在生成している味方の種類別カウント変数
+
+	//CAllyBuffer* m_pAllyBuffer[MAX_ALLY];				//味方バッファークラスポインタ
+	//int m_nAllyBufferCount;								//生成した味方バッファーのカウント
+
 public:
 	int GetAllyCount(void) { return m_nAllyCount; }		//味方カウントのGet
-	int GetAllyBufferCount(void) { return m_nAllyBufferCount; }		//味方バッファーカウントのGet
+	//int GetAllyBufferCount(void) { return m_nAllyBufferCount; }		//味方バッファーカウントのGet
 
 	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
 private:
@@ -79,13 +80,14 @@ private:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CEnemy* m_pEnemy[MAX_ENEMY];					//敵クラスポインタ
-	CEnemyBoss* m_pEnemyBoss;						//敵ボスのクラスポインタ
+	CLeader* m_pEnemyLeader;						//敵ボスのクラスポインタ
 
 	EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
-	int m_nOldEnemyCount;							//再描画前に生存している敵の数
 	int m_nEnemyCount;								//生成した敵のカウント
-	int m_nEnemyDateCount[MAX_PATTERN];	//保存した敵の情報数
+	int m_nEnemyDateCount[MAX_PATTERN];				//保存した敵の情報数
 	int m_nEnemyTypes[3];							//現在生成している敵の種類別カウント変数
+	int m_nCreateEnemyNum;								//生成してほしい数
+
 public:
 	int GetEnemyCount(void) { return m_nEnemyCount; }			//敵カウントのGet
 
