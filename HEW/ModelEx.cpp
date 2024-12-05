@@ -1,11 +1,16 @@
 #include "ModelEx.h"
 
-CModelEx::CModelEx(const char *ModelFile)
+CModelEx::CModelEx(const char *ModelFile, bool isAnime)
+	:m_bAnime(isAnime)
 {
 
 	CModel = new Model();
 	CModel->Load(ModelFile);
-
+	if (isAnime)
+	{
+		Model::AnimeNo anime = CModel->AddAnimation(ModelFile);
+		CModel->Play(anime, true);
+	}
 	sX = sY = sZ = 0.0f;
 
 	T = DirectX::XMMatrixTranslation(sX,sY,sZ);
@@ -41,18 +46,19 @@ CModelEx::~CModelEx()
 		delete CModel;
 		CModel = nullptr;
 	}
-
-
 }
 
 void CModelEx::Draw()
 {
+
 	//シェーダーへ変換行列を設定
 	ShaderList::SetWVP(wvp);	//引数にはXMFLOAT4x4型の、要素数３の配列のアドレスを渡すこと
 
 	//モデルに使用する頂点シェーダー、ピクセルシェーダーを設定
-	CModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	if (m_bAnime)CModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	else CModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
 	CModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+
 
 	//複数のメッシュで構成されている場合ある部分は金属的な表現、ある部分は非金属的な表現と
 	//分ける場合がある前回の表示は同じマテリアルで一括表示していたため、メッシュごとにマテリアルを
@@ -65,6 +71,20 @@ void CModelEx::Draw()
 		Model::Material material = *CModel->GetMaterial(mesh.materialID);
 		//シェーダーへマテリアルを設定
 		ShaderList::SetMaterial(material);
+
+		// ボーンの情報をシェーダーに送る
+		if (m_bAnime)
+		{
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int i = 0; i < mesh.bones.size(); ++i)
+			{
+				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+					mesh.bones[i].invOffset * CModel->GetBone(mesh.bones[i].index)
+				));
+				ShaderList::SetBones(bones);
+			}
+		}
+		
 		//モデルの描画
 		CModel->Draw(i);
 	}

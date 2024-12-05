@@ -1,5 +1,4 @@
 #include "DebugRoom.h"
-#include "CameraDebug.h"
 #include "Input.h"
 #include "Controller.h"
 
@@ -25,8 +24,10 @@ CDebugRoom::CDebugRoom()
 	: m_pDebugModel{}, m_pCamera(nullptr)
 	, m_nSelect(0), m_bSelect(false)
 	, m_tPos{ 0.0f,0.0f,0.0f }, m_tSize{ 1.0f,1.0f,1.0f }, m_tRotate{ 0.0f,0.0f,0.0f }
+	, m_pField(nullptr)
 {
-	m_pCamera = new CameraDebug();
+	m_pField = new Field();
+	m_pCamera = m_pField->GetCameraAddress();
 
 	for (int i = 0; i < MAX_DEBUGMODEL; i++)
 	{
@@ -72,5 +73,7 @@ void CDebugRoom::Update()
 
 void CDebugRoom::Draw()
 {
+	m_pDebugModel[m_nSelect]->SetViewMatrix(m_pCamera->GetViewMatrix());
+	m_pDebugModel[m_nSelect]->SetProjection(m_pCamera->GetProjectionMatrix());
 	m_pDebugModel[m_nSelect]->Draw();
 }

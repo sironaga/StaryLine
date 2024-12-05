@@ -6,7 +6,7 @@
 class CModelEx
 {
 public:
-	CModelEx(const char *ModelFile);
+	CModelEx(const char *ModelFile, bool isAnime = false);
 	~CModelEx();
 	void Draw();
 	void SetViewMatrix(DirectX::XMFLOAT4X4 Camera);
@@ -29,7 +29,7 @@ private:
 	DirectX::XMFLOAT4X4 ViewMatrix;
 	DirectX::XMFLOAT4X4 ProjectionMatric;
 	Model *CModel;
-	
+	bool m_bAnime;
 
 
 };
