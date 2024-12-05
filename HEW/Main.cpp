@@ -13,11 +13,10 @@
 #include "SceneTitle.h"
 #include "SoundList.h"
 #include "Result.h"
+#include "SceneDebug.h"
 
 //--- ÉOÉçÅ[ÉoÉãïœêî
 E_SCENE_TYPE g_SceneType;
-
-
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -71,6 +70,8 @@ void Update()
 		break;
 	case SCENE_RESULT:UpdateResult();
 		break;
+	case SCENE_DEBUGROOM:UpdateSceneDebug();
+		break;
 	case SCENE_MAX:
 		break;
 	default:
@@ -105,11 +106,11 @@ void Draw()
 		Geometory::AddLine(pos[0], pos[1], lineColor);
 	}
 	// é≤
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(size,0,0), DirectX::XMFLOAT4(1,0,0,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,size,0), DirectX::XMFLOAT4(0,1,0,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,0,size), DirectX::XMFLOAT4(0,0,1,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(-size,0,0),  DirectX::XMFLOAT4(0,0,0,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,0,-size),  DirectX::XMFLOAT4(0,0,0,1));
+	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
+	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
+	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
+	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
+	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
 
 	Geometory::DrawLines();
 
@@ -152,11 +153,13 @@ void Draw()
 		break;
 	case SCENE_RESULT:DrawResult();
 		break;
+	case SCENE_DEBUGROOM:DrawSceneDebug();
+		break;
 	case SCENE_MAX:
 		break;
 	default:
 		break;
-	}	
+	}
 	EndDrawDirectX();
 }
 
@@ -169,6 +172,7 @@ void ChangeScene(E_SCENE_TYPE next)
 	case(STAGE_SELECT):UninitStageSelect(); break;
 	case(SCENE_GAME):UninitSceneGame();		break;
 	case(SCENE_RESULT):UninitResult();		break;
+	case SCENE_DEBUGROOM:UninitSceneDebug(); break;
 	default:break;
 	}
 
@@ -182,6 +186,7 @@ void ChangeScene(E_SCENE_TYPE next)
 	case(STAGE_SELECT):InitStageSelect();			break;
 	case(SCENE_GAME):InitSceneGame(GetStageNum());	break;
 	case(SCENE_RESULT):InitResult();				break;
+	case SCENE_DEBUGROOM:InitSceneDebug(); break;
 	default:break;
 	}
 }
