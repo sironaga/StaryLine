@@ -3,6 +3,7 @@
 #include "ModelEx.h"
 #include "Defines.h"
 #include "Camera.h"
+#include "Field.h"
 
 class CDebugRoom
 {
@@ -22,6 +23,7 @@ public:
 private:
 	CModelEx* m_pDebugModel[MAX_DEBUGMODEL];
 	Camera* m_pCamera;
+	Field* m_pField;
 	int m_nSelect;
 	bool m_bSelect;
 	DirectX::XMFLOAT3 m_tPos;

@@ -5,7 +5,7 @@
 #include "DirectXTex/TextureLoad.h"
 #include "SpriteDrawer.h"
 #include "Input.h"
-#include "CameraDebug.h"
+
 // defines
 #define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
 #define DRAWTIME(bonus) (BASE_DRAWTIME  + bonus)	// 制限時間
@@ -29,15 +29,17 @@ CPlayer::CPlayer()
 	, m_tPos{}, m_tPosTex{ 0.0f, 0.0f }, m_tSizeTex{ 0.25f ,0.25f }
 	, bCanMoveCheck(false), m_bChangePhase(false)
 	, m_pPlayer(nullptr), m_pPlayerTex(nullptr)
+	, pos{}, size{}, rotate{}, mat{}
 
 	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
 	, vtxTimer{}, fTimerSize(TIMER_RIGHT(DRAWTIME(0.0f)))
 	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pCamera(nullptr)
+	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pCamera(nullptr),m_pModel(nullptr),m_pField(nullptr)
 {
-	m_pCamera = new CameraDebug();
+	m_pField = new Field();
+	m_pCamera = m_pField->GetCameraAddress();
 
 	// プレイヤー頂点情報
 	m_pPlayer->Init();

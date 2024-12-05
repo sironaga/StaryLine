@@ -4,6 +4,8 @@
 #include "DirectX.h"
 #include "FieldVertex.h"
 #include "Sprite.h"
+#include "ModelEx.h"
+#include "Field.h"
 
 // defines
 #define MOVESPEED (0.5f)	// 移動速度
@@ -33,13 +35,13 @@ public:
 	// プレイヤーの座標取得
 	Sprite* m_pPlayer;
 
-	DirectX::XMFLOAT3 GetPlayerPos() { return m_tPos; }
+	const DirectX::XMFLOAT3 GetPlayerPos() { return m_tPos; }
 	// プレイヤーの状態取得
-	E_PLAYER_STATE GetPlayerState() { return m_ePlayerState; }
+	const E_PLAYER_STATE GetPlayerState() { return m_ePlayerState; }
 	// 目的地の取得
-	int GetPlayerDestination() { return m_eDestination; }
+	const int GetPlayerDestination() { return m_eDestination; }
 
-	bool GetPlayerPhase() { return m_bChangePhase; }
+	const bool GetPlayerPhase() { return m_bChangePhase; }
 
 private:
 	// 移動方向用列挙型
@@ -113,6 +115,8 @@ private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
 	Camera* m_pCamera;
+	Field* m_pField;
+	CModelEx* m_pModel;
 	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/
 	DirectX::XMMATRIX pos;
 	DirectX::XMMATRIX size;
