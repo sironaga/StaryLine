@@ -25,7 +25,6 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Conection_Sys.cpp" />
     <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="D:\Program\Hew\StarryLine_Version1.2\StarryLine_Version1.2\SpriteEx.cpp" />
     <ClCompile Include="DebugRoom.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Field.cpp" />
@@ -48,6 +47,7 @@
     <ClCompile Include="SoundList.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteDrawer.cpp" />
+    <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="StartTitle.cpp" />
     <ClCompile Include="Startup.cpp" />
@@ -62,7 +62,6 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Conection_Sys.h" />
     <ClInclude Include="Controller.h" />
-    <ClInclude Include="D:\Program\Hew\StarryLine_Version1.2\StarryLine_Version1.2\SpriteEx.h" />
     <ClInclude Include="DebugRoom.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definition.h" />
@@ -87,6 +86,7 @@
     <ClInclude Include="SoundList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteDrawer.h" />
+    <ClInclude Include="SpriteEx.h" />
     <ClInclude Include="StageSelect.h" />
     <ClInclude Include="StartTitle.h" />
     <ClInclude Include="Texture.h" />
