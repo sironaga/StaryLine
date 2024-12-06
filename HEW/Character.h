@@ -71,7 +71,7 @@ protected:
 
 	
 public:
-	CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos);	//コンストラクタ
+	CFighter(int InCornerCount, float InSize);	//コンストラクタ
 	virtual ~CFighter() = 0;						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
@@ -107,7 +107,7 @@ protected:
 	float m_fAtkChargeMax;			//攻撃チャージの到達値
 	float m_fAtkAnimationTime;		//攻撃アニメーションの時間
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
-	bool m_bCreateInit;				//生成状態の初期化済みかどうか
+	//bool m_bCreateInit;				//生成状態の初期化済みかどうか
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
 	Sprite* m_pSprite;
@@ -181,7 +181,7 @@ public:
 class CAlly : public CFighter
 {
 public:
-	CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CAlly(int InCornerCount, float InSize);		//コンストラクタ
 	~CAlly();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -198,7 +198,7 @@ private:
 class CEnemy : public CFighter
 {
 public:
-	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
+	CEnemy(int InCornerCount, float InSize);		//コンストラクタ
 	~CEnemy();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -237,12 +237,6 @@ private:
 
 	Sprite* m_pSprite;
 	int m_nTextureNumber;
-	/*＝＝＝＝＝プレイヤーアニメーション系＝＝＝＝＝*/
-private:
-	CVector2<float> m_tTexPos;
-public:
-	CVector2<float> GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap);
-	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 
 public:
 	//ステータスのSet

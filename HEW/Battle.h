@@ -19,7 +19,6 @@ private:
 	struct EntityData
 	{
 		int nCornerCount;				//バリエーション番号
-		CVector3<float> m_tCreatePos;	//生成位置
 		float Size;						//サイズ
 	};
 
@@ -47,7 +46,7 @@ private:
 public:
 	int m_nStageNum;					//ステージナンバー
 private:
-	float m_nBattleTime;					//戦闘時間
+	int m_nBattleTime;					//戦闘時間
 	bool m_bFirstFight;					//初期戦闘したかどうか
 	int m_nFirstPosPattern;				//初期位置のパターン
 
@@ -70,7 +69,7 @@ public:
 
 	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
 private:
-	void CreateAllyData(EntityData InData, CVector3<float> InFirstPos);			//味方作成
+	void CreateAllyData(EntityData InData);			//味方作成
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:

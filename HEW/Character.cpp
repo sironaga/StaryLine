@@ -9,10 +9,6 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//キャラクターの横の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//キャラクターの縦の攻撃当たり判定(相手の人数)
 
-#define AngleX (0.0f)
-#define AngleY (0.0f)
-#define AngleZ (0.0f)
-
 #define PLAYER_SPLIT_X (4)	// プレイヤーテクスチャ分割数X
 #define PLAYER_SPLIT_Y (4)	// プレイヤーテクスチャ分割数Y
 #define ANIME_TIME (10)		// プレイヤーアニメーションカウント
@@ -91,11 +87,10 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	}
 }
 
-CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos)
+CFighter::CFighter(int InCornerCount, float InSize)
 	:m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
-	, m_tPos(FirstPos)
 	, nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
 	//, m_fShield(0.0f)
@@ -105,13 +100,16 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos)
 	, m_fAtkChargeMax(0.0f)
 	, m_fAtkAnimationTime(0.0f)
 	, m_fAtkAnimationMaxTime(0.0f)
-	, m_bCreateInit(false)
+	//, m_bCreateInit(false)
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
 	, m_nTargetNumber(-1)
 	, m_pSprite(nullptr)
 	, m_bIsHit(false)
 {
+	m_tPos.X = 0.0f;
+	m_tPos.Y = 0.0f;
+	m_tPos.Z = 0.0f;
 	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
@@ -349,9 +347,9 @@ void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	));
 
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
-		AngleX,
-		AngleY,
-		AngleZ,
+		0.0f,
+		0.0f,
+		0.0f,
 		0.0f
 	));
 
@@ -372,8 +370,8 @@ void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	m_pSprite->SetProjection(wvp[2]);
 }
 
-CAlly::CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos)
-	:CFighter(InCornerCount,InSize, FirstPos)
+CAlly::CAlly(int InCornerCount, float InSize)
+	:CFighter(InCornerCount,InSize)
 {
 	SettingStatus();
 	//Vertex vtx[] = {
@@ -548,8 +546,8 @@ void CAlly::SettingStatus(void)
 	}
 }
 
-CEnemy::CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos)
-	:CFighter(InCornerCount, InSize, FirstPos)
+CEnemy::CEnemy(int InCornerCount, float InSize)
+	:CFighter(InCornerCount, InSize)
 {
 	SettingStatus();
 	//Vertex vtx[] = {
@@ -924,9 +922,6 @@ void CLeader::Update(void)
 
 void CLeader::Draw()
 {
-	//m_tTexPos = GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
-
-	//m_pSprite->SetUVPos({ m_tTexPos.X,m_tTexPos.Y });
 	m_pSprite->SetUVPos({ 0.0f,0.0f });
 	m_pSprite->SetUVScale({ 1.0f,1.0f });
 
@@ -976,9 +971,9 @@ void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 		0.0f
 	));
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
-		AngleX,
-		AngleY,
-		AngleZ,
+		0.0f,
+		0.0f,
+		0.0f,
 		0.0f
 	));
 
@@ -997,45 +992,4 @@ void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	m_pSprite->SetWorld(wvp[0]);
 	m_pSprite->SetView(wvp[1]);
 	m_pSprite->SetProjection(wvp[2]);
-}
-
-CVector2<float> CLeader::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
-{
-	CVector2<float> tex;
-	static int nSplit = nSplitX * nSplitY;
-	static int nAnimePage = 0;
-	static int nAnimeCount = 0;
-
-	// テクスチャアニメーション用
-	if (nAnimeCount >= nAnimationSwap)
-	{
-		nAnimePage++;	// 次のシーケンステクスチャに移る
-		nAnimeCount = 0;
-	}
-	else nAnimeCount++;
-
-	if (nAnimePage >= nSplit)
-	{
-		nAnimePage = 0;	// 最初のシーケンステクスチャに戻る
-	}
-	// 横のシーケンステクスチャの動き
-	switch (nAnimePage % nSplitX)
-	{
-	default:break;
-	case 0: tex.X = 0.0 / (float)nSplitX; break;
-	case 1: tex.X = 1.0 / (float)nSplitX; break;
-	case 2: tex.X = 2.0 / (float)nSplitX; break;
-	case 3: tex.X = 3.0 / (float)nSplitX; break;
-	}
-	// 縦のシーケンステクスチャの動き
-	switch (nAnimePage / nSplitY)
-	{
-	default:break;
-	case 0: tex.Y = 0.0 / (float)nSplitY; break;
-	case 1: tex.Y = 1.0 / (float)nSplitY; break;
-	case 2: tex.Y = 2.0 / (float)nSplitY; break;
-	case 3: tex.Y = 3.0 / (float)nSplitY; break;
-	}
-
-	return tex;
 }
