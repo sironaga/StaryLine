@@ -7,28 +7,28 @@
 #include "Input.h"
 
 //味方プレイヤーの位置
-#define ALLYCORE_POSX (70)
-#define ALLYCORE_POSZ (80)
+#define ALLYCORE_POSX (90)
+#define ALLYCORE_POSZ (0)
 //敵ボスの位置
-#define ENEMYBOSSCORE_POSX (70)
-#define ENEMYBOSSCORE_POSZ (80)
+#define ENEMYBOSSCORE_POSX (90)
+#define ENEMYBOSSCORE_POSZ (0)
 
 //味方の生成位置
 #define ALLYCREATE_POSX (80)
 
-#define ALLYCREATE_POSZ_1 (60)
-#define ALLYCREATE_POSZ_2 (70)
-#define ALLYCREATE_POSZ_3 (80)
-#define ALLYCREATE_POSZ_4 (90)
-#define ALLYCREATE_POSZ_5 (100)
+#define ALLYCREATE_POSZ_1 (20)
+#define ALLYCREATE_POSZ_2 (10)
+#define ALLYCREATE_POSZ_3 (0)
+#define ALLYCREATE_POSZ_4 (-10)
+#define ALLYCREATE_POSZ_5 (-20)
 //敵の生成位置
 #define ENEMYCREATE_POSX (-80)
 
-#define ENEMYCREATE_POSZ_1 (60)
-#define ENEMYCREATE_POSZ_2 (70)
-#define ENEMYCREATE_POSZ_3 (80)
-#define ENEMYCREATE_POSZ_4 (90)
-#define ENEMYCREATE_POSZ_5 (100)
+#define ENEMYCREATE_POSZ_1 (20)
+#define ENEMYCREATE_POSZ_2 (10)
+#define ENEMYCREATE_POSZ_3 (0)
+#define ENEMYCREATE_POSZ_4 (-10)
+#define ENEMYCREATE_POSZ_5 (-20)
 
 #define MOVESPEED(Speed) Speed / 10
 
@@ -60,6 +60,7 @@ CBattle::CBattle()
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
+	, m_nCreateEnemyNum(0)
 	//, m_pAllyBuffer{}
 	//, m_nAllyBufferCount(0)
 	, m_pAllyLeader(nullptr)
@@ -529,9 +530,11 @@ void CBattle::CreateEntity()
   	if (m_pAllyLeader == nullptr)
 	{
 		CVector3<float> InFirstPos;
+
 		InFirstPos.X = ALLYCORE_POSX;
-		InFirstPos.Y = 3.0f;
+		InFirstPos.Y = 5.0f;
 		InFirstPos.Z = ALLYCORE_POSZ;
+
 		m_pAllyLeader = new CLeader(1.0f, InFirstPos, Leader_Player, m_pCamera);
 	}
 	if (m_pEnemyLeader == nullptr)
@@ -539,7 +542,7 @@ void CBattle::CreateEntity()
 		CVector3<float> BossFirstPos;
 
 		BossFirstPos.X = ENEMYCREATE_POSX;
-		BossFirstPos.Y = -1.0f;
+		BossFirstPos.Y = 8.0f;
 		BossFirstPos.Z = ENEMYCREATE_POSZ_3;
 
 		m_pEnemyLeader = new CLeader(2.0f, BossFirstPos, Leader_Boss, m_pCamera);
@@ -595,7 +598,8 @@ void CBattle::CreateEntity()
 
 void CBattle::TimeLapse(void)
 {
-	if (m_nBattleTime == 60
+	if (m_nBattleTime == 0
+		|| m_nBattleTime == 60
 		|| m_nBattleTime == 120
 		|| m_nBattleTime == 180
 		|| m_nBattleTime == 240

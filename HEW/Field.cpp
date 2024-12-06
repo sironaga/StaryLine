@@ -52,9 +52,9 @@ void Field::FieldModelInit(FieldModel* InModel, int MaxModel)
 	//ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
 	for (int i = 0, j = 0; i < MaxModel; i++, pModel++)
 	{
-		pModel->m_Pos = DirectX::XMFLOAT3(0.0f, -15.0f, 70.0f);
+		pModel->m_Pos = DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f);
 		pModel->m_Angle = DirectX::XMFLOAT3(TORAD(0), TORAD(0), TORAD(0));
-		pModel->m_Scale = DirectX::XMFLOAT3(250.0f, 2.0f, 100.0f);
+		pModel->m_Scale = DirectX::XMFLOAT3(330.0f, 2.0f, 100.0f);
 		pModel->m_Use = true;
 		pModel->m_Model = TILELOW_FOREST;
 	}

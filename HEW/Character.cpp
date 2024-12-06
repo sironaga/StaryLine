@@ -77,7 +77,7 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	hr = g_pCollisionTex->Create("Asset/Star/CLStar.png");
 
-	hr = g_pLeaderTex[0]->Create("Asset/Player/Player.png");
+	hr = g_pLeaderTex[0]->Create("Asset/Player/Lini.png");
 	switch (StageNum)
 	{
 	case 0:
@@ -432,13 +432,13 @@ void CAlly::CreateUpdate(void)
 	//生成アニメーション
 
 	//生成移動
-	m_tPos.Y -= 10.0f;
-	if (m_tPos.Y < -600.0f)
-	{
-		//生成アニメーションが終わったら
-		SetStatus(St_Battle);
-		m_bFirstBattlePosSetting = false;
-	}
+	//m_tPos.Y -= 10.0f;
+	//if (m_tPos.Y < -600.0f)
+	//{
+	//生成アニメーションが終わったら
+	SetStatus(St_Battle);
+	m_bFirstBattlePosSetting = false;
+	//}
 }
 
 void CAlly::BattleUpdate(void)
@@ -764,7 +764,6 @@ void CEnemy::SettingStatus(void)
 //	m_pSprite->SetView(wvp[1]);
 //	m_pSprite->SetProjection(wvp[2]);
 //}
-
 //CEnemyBoss::CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress)
 //	:CFighter(BossTypeNum,InSize,FirstPos,InAddress)
 //{
@@ -892,12 +891,13 @@ void CLeader::Update(void)
 	}
 }
 
-void CLeader::Draw(void)
+void CLeader::Draw()
 {
-	m_tTexPos = GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
+	//m_tTexPos = GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
 
-	m_pSprite->SetUVPos({ m_tTexPos.X,m_tTexPos.Y });
-	m_pSprite->SetUVScale({ 0.25f,0.25f });
+	//m_pSprite->SetUVPos({ m_tTexPos.X,m_tTexPos.Y });
+	m_pSprite->SetUVPos({ 0.0f,0.0f });
+	m_pSprite->SetUVScale({ 1.0f,1.0f });
 
 	m_pSprite->SetTexture(g_pLeaderTex[m_nTextureNumber]);
 
