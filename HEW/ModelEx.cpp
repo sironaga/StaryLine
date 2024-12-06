@@ -76,10 +76,10 @@ void CModelEx::Draw()
 		if (m_bAnime)
 		{
 			DirectX::XMFLOAT4X4 bones[200];
-			for (int i = 0; i < mesh.bones.size(); ++i)
+			for (int j = 0; j < mesh.bones.size(); ++j)
 			{
-				DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
-					mesh.bones[i].invOffset * CModel->GetBone(mesh.bones[i].index)
+				DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+					mesh.bones[j].invOffset * CModel->GetBone(mesh.bones[j].index)
 				));
 				ShaderList::SetBones(bones);
 			}
