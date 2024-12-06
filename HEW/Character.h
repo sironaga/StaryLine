@@ -34,12 +34,12 @@ enum Status
 class CFighter
 {
 	/*＝＝＝＝＝＝＝＝＝＝列挙型＝＝＝＝＝＝＝＝＝＝*/
-public:
-	enum AtkType
-	{
-		AT_Physics,
-		AT_Magic,
-	};
+//public:
+//	enum AtkType
+//	{
+//		AT_Physics,
+//		AT_Magic,
+//	};
 protected:
 	//角数
 	enum Corner
@@ -47,6 +47,10 @@ protected:
 		Triangle = 3,		//三角形
 		Square = 4,			//四角形
 		Pentagon = 5,		//五角形
+		Hexagon = 6,		//六角形
+		Heptagon = 7,		//七角形
+		Octagon = 8,		//八角形
+
 	};
 
 	/*構造体*/
@@ -96,9 +100,9 @@ protected:
 	CVector3<float> m_tSize;		//サイズ
 	int nCornerCount;				//属性
 	float m_fHp;					//体力
-	float m_fShield;				//シールド値
+	//float m_fShield;				//シールド値
 	float m_fAtk;					//攻撃力
-	AtkType m_tAtkType;				//攻撃タイプ
+	//AtkType m_tAtkType;			//攻撃タイプ
 	float m_fAtkCharge;				//攻撃チャージ(チャージがたまっていたら攻撃可能)
 	float m_fAtkChargeMax;			//攻撃チャージの到達値
 	float m_fAtkAnimationTime;		//攻撃アニメーションの時間
@@ -149,8 +153,8 @@ public:
 	float GetHp(void) { return m_fHp; }
 
 	//シールドのGet
-	float GetShield(void) { return m_fShield; }
-	void SetShield(float InShield) { m_fShield = InShield; }
+	//float GetShield(void) { return m_fShield; }
+	//void SetShield(float InShield) { m_fShield = InShield; }
 
 	//攻撃力のSet
 	void SetAtk(float InAtk) { m_fAtk = InAtk; }
@@ -159,8 +163,8 @@ public:
 	//攻撃力のAdd
 	void AddAtk(float InAtk) { m_fAtk += InAtk; }
 
-	//攻撃タイプのGet
-	AtkType GetAtkType(void) { return m_tAtkType; }
+	////攻撃タイプのGet
+	//AtkType GetAtkType(void) { return m_tAtkType; }
 
 	//攻撃チャージ到達値のGet
 	float GetCoolTime(void) { return m_fAtkChargeMax; }
