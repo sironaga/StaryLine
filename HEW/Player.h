@@ -113,7 +113,6 @@ public:
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
-	Field* m_pField;
 	CModelEx* m_pModel;
 	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/
 	DirectX::XMMATRIX pos;
