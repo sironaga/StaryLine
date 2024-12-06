@@ -37,7 +37,7 @@ CPlayer::CPlayer()
 	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pCamera(nullptr),m_pModel(nullptr),m_pField(nullptr)
+	, m_pFieldVtx(nullptr), m_pSprite(nullptr),m_pModel(nullptr),m_pField(nullptr)
 {
 	m_pField = new Field();
 
@@ -192,28 +192,28 @@ void CPlayer::UpdateMove()
 		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::UPRIGHT:
-		m_tPos.x += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::RIGHT:
-		m_tPos.x += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		break;
 	case CPlayer::DOWNRIGHT:
-		m_tPos.x += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWN:
 		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWNLEFT:
-		m_tPos.x -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::LEFT:
-		m_tPos.x -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		break;
 	case CPlayer::UPLEFT:
-		m_tPos.x -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		m_tPos.y += MOVESPEED;
 		break;
 	default:

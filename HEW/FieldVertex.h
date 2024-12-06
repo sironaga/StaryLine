@@ -12,11 +12,11 @@
 #define MAX_CENTER_VERTEX (16)//
 #define MAX_SHAPE_VERTEX (10)//最大N角形
 #define MAX_LINE (300)//最大の線の本数
-#define LINE_SIZE (5)//線のサイズ
-#define STAR_SIZE (10)//頂点の星のサイズ
-#define VERTEX_POS_X (-75)//頂点の描画位置X
-#define VERTEX_POS_Y (35)//頂点の描画位置Y
-#define VERTEX_SIZE (20)//頂点間の間隔
+#define LINE_SIZE (3)//線のサイズ
+#define STAR_SIZE (7)//頂点の星のサイズ
+#define VERTEX_POS_X (-20)//頂点の描画位置X
+#define VERTEX_POS_Y (70)//頂点の描画位置Y
+#define VERTEX_SIZE (12)//頂点間の間隔
 
 class CPlayer;
 

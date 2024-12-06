@@ -22,7 +22,6 @@ public:
 	};
 private:
 	CModelEx* m_pDebugModel[MAX_DEBUGMODEL];
-	Camera* m_pCamera;
 	Field* m_pField;
 	int m_nSelect;
 	bool m_bSelect;

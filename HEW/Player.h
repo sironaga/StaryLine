@@ -113,7 +113,6 @@ public:
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
-	Camera* m_pCamera;
 	Field* m_pField;
 	CModelEx* m_pModel;
 	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/

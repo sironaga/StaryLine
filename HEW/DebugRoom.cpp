@@ -1,6 +1,7 @@
 #include "DebugRoom.h"
 #include "Input.h"
 #include "Controller.h"
+#include "Main.h"
 
 #define SIZECONTROLL_DEADZONE 10000.0f
 #define SIZESPEED_AJUST 1,600.0f
@@ -21,13 +22,11 @@ const char* ch_pModelList[CDebugRoom::MAX_DEBUGMODEL] =
 };
 
 CDebugRoom::CDebugRoom()
-	: m_pDebugModel{}, m_pCamera(nullptr)
+	: m_pDebugModel{}
 	, m_nSelect(0), m_bSelect(false)
 	, m_tPos{ 0.0f,0.0f,0.0f }, m_tSize{ 1.0f,1.0f,1.0f }, m_tRotate{ 0.0f,0.0f,0.0f }
 	, m_pField(nullptr)
 {
-	m_pField = new Field();
-	m_pCamera = m_pField->GetCameraAddress();
 
 	for (int i = 0; i < MAX_DEBUGMODEL; i++)
 	{
@@ -45,7 +44,7 @@ CDebugRoom::~CDebugRoom()
 
 void CDebugRoom::Update()
 {
-	m_pCamera->Update();
+	//m_pCamera->Update();
 
 	if (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_THUMB))m_bSelect = true;
 
@@ -73,7 +72,7 @@ void CDebugRoom::Update()
 
 void CDebugRoom::Draw()
 {
-	m_pDebugModel[m_nSelect]->SetViewMatrix(m_pCamera->GetViewMatrix());
-	m_pDebugModel[m_nSelect]->SetProjection(m_pCamera->GetProjectionMatrix());
+	m_pDebugModel[m_nSelect]->SetViewMatrix(GetView());
+	m_pDebugModel[m_nSelect]->SetProjection(GetProj());
 	m_pDebugModel[m_nSelect]->Draw();
 }
