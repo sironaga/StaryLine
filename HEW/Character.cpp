@@ -154,7 +154,6 @@ CFighter::~CFighter()
 	}
 	if (g_pFieldVtx)
 	{
-		delete g_pFieldVtx;
 		g_pFieldVtx = nullptr;
 	}
 	if (!m_pSprite)
