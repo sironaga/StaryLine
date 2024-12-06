@@ -51,10 +51,6 @@ private:
 	bool m_bFirstFight;					//初期戦闘したかどうか
 	int m_nFirstPosPattern;				//初期位置のパターン
 
-	Camera* m_pCamera;
-	//カメラのアドレス設定
-public:
-	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
@@ -75,7 +71,6 @@ public:
 	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
 private:
 	void CreateAllyData(EntityData InData, CVector3<float> InFirstPos);			//味方作成
-
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
