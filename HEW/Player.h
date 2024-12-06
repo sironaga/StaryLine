@@ -5,7 +5,6 @@
 #include "FieldVertex.h"
 #include "Sprite.h"
 #include "ModelEx.h"
-#include "Field.h"
 
 // defines
 #define MOVESPEED (0.5f)	// ˆÚ“®‘¬“x

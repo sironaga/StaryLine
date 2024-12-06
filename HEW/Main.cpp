@@ -169,14 +169,14 @@ void Draw()
 	EndDrawDirectX();
 }
 
-DirectX::XMMATRIX GetView()
+DirectX::XMFLOAT4X4 GetView()
 {
-	return g_Camera->GetView();
+	return g_Camera->GetViewMatrix();
 }
 
-DirectX::XMMATRIX GetProj()
+DirectX::XMFLOAT4X4 GetProj()
 {
-	return g_Camera->GetProjection();
+	return g_Camera->GetProjectionMatrix();
 }
 
 void ChangeScene(E_SCENE_TYPE next)

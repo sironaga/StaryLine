@@ -4,7 +4,8 @@
 #include "SceneGame.h"
 #include "DirectXTex/TextureLoad.h"
 #include "SpriteDrawer.h"
-#include "Input.h"
+#include "InputEx.h"
+#include "Main.h"
 
 // defines
 #define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
@@ -39,7 +40,6 @@ CPlayer::CPlayer()
 	, m_pFieldVtx(nullptr), m_pSprite(nullptr), m_pCamera(nullptr),m_pModel(nullptr),m_pField(nullptr)
 {
 	m_pField = new Field();
-	m_pCamera = m_pField->GetCameraAddress();
 
 	// プレイヤー頂点情報
 	m_pPlayer->Init();
@@ -70,8 +70,8 @@ CPlayer::~CPlayer()
 	if (m_pPlayer)m_pPlayer->Uninit();
 	SAFE_DELETE(m_pPlayerTex);
 
-	if (m_pVtxTimer)m_pVtxTimer->Release();
-	if (m_pTexTimer)m_pTexTimer->Release();	
+	SAFE_RELEASE(m_pVtxTimer);
+	SAFE_RELEASE(m_pTexTimer);
 }
 
 void CPlayer::Update()
@@ -137,7 +137,7 @@ void CPlayer::Draw()
 void CPlayer::UpdateReady()
 {
 	// ×ボタンorスペースキーでスタート
-	if (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE)) m_ePlayerState = STOP;
+	if (WithGetKeyTriger(VK_SPACE,XINPUT_GAMEPAD_B)) m_ePlayerState = STOP;
 }
 
 void CPlayer::UpdateStop()
@@ -333,8 +333,8 @@ void CPlayer::DrawSprite3D(E_SPRITE type)
 		DirectX::XMFLOAT4X4 world;
 		DirectX::XMStoreFloat4x4(&world, mat);
 		m_pPlayer->SetWorld(world);
-		m_pPlayer->SetView(m_pCamera->GetViewMatrix());
-		m_pPlayer->SetProjection(m_pCamera->GetProjectionMatrix());
+		m_pPlayer->SetView(GetView());
+		m_pPlayer->SetProjection(GetProj());
 		break;
 	case CPlayer::TIMER:
 		break;
