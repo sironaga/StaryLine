@@ -2,11 +2,16 @@
 #define __MAIN_H__
 
 #include <Windows.h>
+#include"DirectX.h"
+
 
 HRESULT Init(HWND hWnd, UINT width, UINT height);
 void Uninit();
 void Update();
 void Draw();
+DirectX::XMMATRIX GetView();
+DirectX::XMMATRIX GetProj();
+
 
 //—ñ‹“Œ^éŒ¾
 enum E_SCENE_TYPE

@@ -11,7 +11,6 @@ Field::Field()
 	{
 		m_pModel[i] = new Model();
 	}
-	m_pCamera = new CameraDebug();
 	for (int i = 0; i < MAX_MODEL; i++)
 	{
 		switch (i)
@@ -39,10 +38,6 @@ Field::~Field()
 			m_pModel[i] = nullptr;
 		}
 	}
-	if (m_pCamera) {
-		delete m_pCamera;
-		m_pCamera = nullptr;
-	}
 }
 
 void Field::FieldModelInit(FieldModel* InModel, int MaxModel)
@@ -63,7 +58,6 @@ void Field::FieldModelInit(FieldModel* InModel, int MaxModel)
 void Field::Update()
 {
 	FieldModelUpdate(m_Field_Model, MAX_FIELD_MODEL);
-	m_pCamera->Update();
 }
 
 void Field::Draw()
@@ -96,8 +90,10 @@ void Field::ModelDraw(FieldModel* InModel, int MaxModel)
 		DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 		//DirectX::XMStoreFloat4x4(&wvp[1], DirectX::XMMatrixTranspose(view));
 		//DirectX::XMStoreFloat4x4(&wvp[2], DirectX::XMMatrixTranspose(proj));
-		wvp[1] = m_pCamera->GetViewMatrix();
-		wvp[2] = m_pCamera->GetProjectionMatrix();
+
+		wvp[1] = // C³‚µ‚Ä‚­‚¾‚³‚¢
+		wvp[2] = // C³‚µ‚Ä‚­‚¾‚³‚¢
+
 		Geometory::SetView(wvp[1]);
 		Geometory::SetProjection(wvp[2]);
 

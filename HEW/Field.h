@@ -1,6 +1,5 @@
 #pragma once
 #include "Model.h"
-#include "Camera.h"
 
 #define MAX_MODEL (1)
 #define MAX_FIELD_MODEL (1)
@@ -36,12 +35,9 @@ public:
 
 	void FieldModelUpdate(FieldModel*, int);
 
-	Camera* GetCameraAddress(void) { return m_pCamera; }
 private:
 
 	FieldModel m_Field_Model[MAX_FIELD_MODEL];
-
-	Camera* m_pCamera;
 
 	Model* m_pModel[MAX_MODEL];
 };
