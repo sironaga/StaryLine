@@ -14,9 +14,9 @@
 #define MAX_LINE (300)//最大の線の本数
 #define LINE_SIZE (3)//線のサイズ
 #define STAR_SIZE (7)//頂点の星のサイズ
-#define VERTEX_POS_X (-50)//頂点の描画位置X
-#define VERTEX_POS_Y (60)//頂点の描画位置Y
-#define VERTEX_SIZE (12)//頂点間の間隔
+#define VERTEX_POS_X (-25)//頂点の描画位置X
+#define VERTEX_POS_Y (67)//頂点の描画位置Y
+#define VERTEX_SIZE (13)//頂点間の間隔
 
 class CPlayer;
 
