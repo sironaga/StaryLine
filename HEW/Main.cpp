@@ -14,9 +14,12 @@
 #include "SoundList.h"
 #include "Result.h"
 #include "SceneDebug.h"
+#include"Camera.h"
+#include"CameraDebug.h"
 
 //--- ƒOƒ[ƒoƒ‹•Ï”
 E_SCENE_TYPE g_SceneType;
+Camera* g_Camera;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -39,6 +42,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_SceneType = SCENE_TITLE;
 	InitSceneTitle();
 
+	g_Camera = new CameraDebug();
+
 	return hr;
 }
 
@@ -60,6 +65,7 @@ void Update()
 {
 	Controller_Update();
 	UpdateInput();
+	g_Camera->Update();
 	switch (g_SceneType)
 	{
 	case SCENE_TITLE:UpdateSceneTitle();
@@ -161,6 +167,16 @@ void Draw()
 		break;
 	}
 	EndDrawDirectX();
+}
+
+DirectX::XMMATRIX GetView()
+{
+	return g_Camera->GetView();
+}
+
+DirectX::XMMATRIX GetProj()
+{
+	return g_Camera->GetProjection();
 }
 
 void ChangeScene(E_SCENE_TYPE next)
