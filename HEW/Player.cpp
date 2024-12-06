@@ -191,28 +191,28 @@ void CPlayer::UpdateMove()
 		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::UPRIGHT:
-		m_tPos.x -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		m_tPos.y += MOVESPEED;
 		break;
 	case CPlayer::RIGHT:
-		m_tPos.x -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		break;
 	case CPlayer::DOWNRIGHT:
-		m_tPos.x -= MOVESPEED;
+		m_tPos.x += MOVESPEED;
 		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWN:
 		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWNLEFT:
-		m_tPos.x += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		m_tPos.y -= MOVESPEED;
 		break;
 	case CPlayer::LEFT:
-		m_tPos.x += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		break;
 	case CPlayer::UPLEFT:
-		m_tPos.x += MOVESPEED;
+		m_tPos.x -= MOVESPEED;
 		m_tPos.y += MOVESPEED;
 		break;
 	default:

@@ -8,7 +8,7 @@
 
 // defines
 #define MOVESPEED (0.5f)	// 移動速度
-#define START_PLAYER (12)	//プレイヤーの開始位置
+#define START_PLAYER (0)	//プレイヤーの開始位置
 
 class CPlayer
 {
