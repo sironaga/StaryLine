@@ -4,7 +4,7 @@
 
 
 CameraDebug::CameraDebug()
-	:m_radXZ(0.0f), m_radY(TORAD(-10.0f)), m_radius(-90.0f) //0.0f,0.0f,10.0f
+	:m_radXZ(0.0f), m_radY(TORAD(-2.0f)), m_radius(-90.0f) //0.0f,0.0f,10.0f
 {
 
 }
@@ -12,12 +12,13 @@ CameraDebug::CameraDebug()
 void CameraDebug::Update()
 {
 	// ’‹“_‚ÌˆÚ“®		    
-	if (IsKeyPress(VK_UP)) { m_look.z += 0.1f; }
-	if (IsKeyPress(VK_DOWN)) { m_look.z -= 0.1f; }
-	if (IsKeyPress(VK_RIGHT)) { m_look.x += 0.1f; }
-	if (IsKeyPress(VK_LEFT)) { m_look.x -= 0.1f; }
-	if (IsKeyPress(VK_SHIFT)) { m_look.y += 0.1f; }
-	if (IsKeyPress(VK_CONTROL)) { m_look.y -= 0.1f; }
+	if (IsKeyPress(VK_UP)) { m_look.z += 1.0f; }
+	if (IsKeyPress(VK_DOWN)) { m_look.z -= 1.0f; }
+	if (IsKeyPress(VK_RIGHT)) { m_look.x += 1.0f; }
+	if (IsKeyPress(VK_LEFT)) { m_look.x -= 1.0f; }
+
+	if (IsKeyPress(VK_SHIFT)) { m_look.y += 1.0f; }
+	if (IsKeyPress(VK_CONTROL)) { m_look.y -= 1.0f; }
 
 	//ƒJƒƒ‰‚ÌˆÊ’u‚ÌˆÚ“®//
 	// ‰ñ‚è‚İ‚Ìˆ—
