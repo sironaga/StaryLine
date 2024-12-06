@@ -25,6 +25,7 @@ XINPUT_VIBRATION vibration;
 void Controller_Update()
 {
 	state = def;
+	OldButtons.Gamepad.wButtons = state.Gamepad.wButtons;
 	XInputGetState(PAD_USER_NUMBER, &state);
 	XInputSetState(PAD_USER_NUMBER, &vibration);
 
@@ -117,10 +118,8 @@ bool CGetButtonsTriger(WORD InButton)
 	{
 		if (OldButtons.Gamepad.wButtons != state.Gamepad.wButtons)
 		{
-			OldButtons.Gamepad.wButtons = state.Gamepad.wButtons;
 			return true;
 		}
-		OldButtons.Gamepad.wButtons = state.Gamepad.wButtons;
 	}
 	else
 	{
