@@ -535,7 +535,7 @@ void CBattle::CreateEntity()
 		InFirstPos.Y = 5.0f;
 		InFirstPos.Z = ALLYCORE_POSZ;
 
-		m_pAllyLeader = new CLeader(1.0f, InFirstPos, Leader_Player, m_pCamera);
+		m_pAllyLeader = new CLeader(1.0f, InFirstPos, Leader_Player);
 	}
 	if (m_pEnemyLeader == nullptr)
 	{
@@ -545,7 +545,7 @@ void CBattle::CreateEntity()
 		BossFirstPos.Y = 8.0f;
 		BossFirstPos.Z = ENEMYCREATE_POSZ_3;
 
-		m_pEnemyLeader = new CLeader(2.0f, BossFirstPos, Leader_Boss, m_pCamera);
+		m_pEnemyLeader = new CLeader(2.0f, BossFirstPos, Leader_Boss);
 	}
 
 	//éwíËÇ≥ÇÍÇΩêîÇæÇØê∂ê¨Ç∑ÇÈ
@@ -616,7 +616,7 @@ void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 {
 	//if (m_tAllyData[m_nAllyCount].nCornerCount < 6)
 	//{
-	m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size, InFirstPos, m_pCamera);
+	m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size, InFirstPos);
 	//ê∂ê¨êîÇâ¡éZ
 	m_nAllyCount++;
 	//}
@@ -630,7 +630,7 @@ void CBattle::CreateAllyData(EntityData InData, CVector3<float> InFirstPos)
 
 void CBattle::CreateEnemyData(EntityData InDate)
 {
-	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,InDate.Size,InDate.m_tCreatePos, m_pCamera);
+	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,InDate.Size,InDate.m_tCreatePos);
 }
 
 void CBattle::Search(int i, Entity Entity)

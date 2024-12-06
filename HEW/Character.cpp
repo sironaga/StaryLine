@@ -1,6 +1,7 @@
 #include "Character.h"
 #include "DirectXTex/TextureLoad.h"
 #include "FieldVertex.h"
+#include "Main.h"
 
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((Num / 2) + (m_tSize.X))	//キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(Num) ((Num / 2) + (m_tSize.Y))	//キャラクターの縦の索敵当たり判定(索敵範囲)
@@ -90,7 +91,7 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	}
 }
 
-CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress)
+CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos)
 	:m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
@@ -108,7 +109,6 @@ CFighter::CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos, Ca
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
 	, m_nTargetNumber(-1)
-	, m_pCamera(InAddress)
 	, m_pSprite(nullptr)
 	, m_bIsHit(false)
 {
@@ -364,16 +364,16 @@ void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	world = mat;
 
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
 
 	m_pSprite->SetWorld(wvp[0]);
 	m_pSprite->SetView(wvp[1]);
 	m_pSprite->SetProjection(wvp[2]);
 }
 
-CAlly::CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress)
-	:CFighter(InCornerCount,InSize, FirstPos,InAddress)
+CAlly::CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos)
+	:CFighter(InCornerCount,InSize, FirstPos)
 {
 	SettingStatus();
 	//Vertex vtx[] = {
@@ -515,8 +515,8 @@ void CAlly::SettingStatus(void)
 	}
 }
 
-CEnemy::CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress)
-	:CFighter(InCornerCount, InSize, FirstPos,InAddress)
+CEnemy::CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos)
+	:CFighter(InCornerCount, InSize, FirstPos)
 {
 	SettingStatus();
 	//Vertex vtx[] = {
@@ -856,11 +856,10 @@ void CEnemy::SettingStatus(void)
 //
 //}
 //
-CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber, Camera* InAddress)
+CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber)
 	:m_tStatus(St_Create)
 	,m_tPos(FirstPos)
 	,m_fHp(10.0f)
-	,m_pCamera(InAddress)
 	,m_nTextureNumber(InTextureNumber)
 	,m_pSprite(nullptr)
 {
@@ -960,8 +959,8 @@ void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	world = mat;
 
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
 
 	m_pSprite->SetWorld(wvp[0]);
 	m_pSprite->SetView(wvp[1]);

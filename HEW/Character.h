@@ -1,7 +1,6 @@
 #pragma once
 #define _DIRECTX_
 #include "DirectX.h"
-#include "Camera.h"
 #include "Sprite.h"
 
 //Character.h
@@ -68,7 +67,7 @@ protected:
 
 	
 public:
-	CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos,Camera* InAddress);	//コンストラクタ
+	CFighter(int InCornerCount, float InSize, CVector3<float> FirstPos);	//コンストラクタ
 	virtual ~CFighter() = 0;						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
@@ -107,7 +106,6 @@ protected:
 	bool m_bCreateInit;				//生成状態の初期化済みかどうか
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
-	Camera* m_pCamera;
 	Sprite* m_pSprite;
 	//CEffect* m_pEffect;
 
@@ -179,7 +177,7 @@ public:
 class CAlly : public CFighter
 {
 public:
-	CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
+	CAlly(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
 	~CAlly();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -196,7 +194,7 @@ private:
 class CEnemy : public CFighter
 {
 public:
-	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
+	CEnemy(int InCornerCount, float InSize, CVector3<float> FirstPos);		//コンストラクタ
 	~CEnemy();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -214,7 +212,7 @@ private:
 class CLeader
 {
 public:
-	CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber, Camera* InAddress);
+	CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber);
 	~CLeader();
 
 	void Update(void);	//更新処理
@@ -233,7 +231,6 @@ private:
 	CVector3<float> m_tSize;		//サイズ
 	float m_fHp;					//体力
 
-	Camera* m_pCamera;
 	Sprite* m_pSprite;
 	int m_nTextureNumber;
 	/*＝＝＝＝＝プレイヤーアニメーション系＝＝＝＝＝*/
@@ -256,9 +253,6 @@ public:
 	CVector3<float> GetSize(void) { return m_tSize; }
 
 	float GetHp(void) { return m_fHp; }
-
-	//カメラのアドレス設定
-	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
 };
 
 ////敵ボスクラス
