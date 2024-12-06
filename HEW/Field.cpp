@@ -3,6 +3,7 @@
 #include "Geometory.h"
 #include "ShaderList.h"
 #include "CameraDebug.h"
+#include "Main.h"
 
 Field::Field()
 	:m_Field_Model{}
@@ -91,8 +92,8 @@ void Field::ModelDraw(FieldModel* InModel, int MaxModel)
 		//DirectX::XMStoreFloat4x4(&wvp[1], DirectX::XMMatrixTranspose(view));
 		//DirectX::XMStoreFloat4x4(&wvp[2], DirectX::XMMatrixTranspose(proj));
 
-		wvp[1] = // C³‚µ‚Ä‚­‚¾‚³‚¢
-		wvp[2] = // C³‚µ‚Ä‚­‚¾‚³‚¢
+		wvp[1] = GetView();// C³‚µ‚Ä‚­‚¾‚³‚¢
+		wvp[2] = GetProj();// C³‚µ‚Ä‚­‚¾‚³‚¢
 
 		Geometory::SetView(wvp[1]);
 		Geometory::SetProjection(wvp[2]);

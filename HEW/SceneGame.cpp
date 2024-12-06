@@ -50,8 +50,6 @@ void InitSceneGame(int StageNum)
 	g_pFieldVertex->SetPlayerAddress(g_pPlayer);
 	g_pPlayer->SetFieldVertexAddress(g_pFieldVertex);
 	SetFileAddress(g_pBattle);
-	
-	g_pBattle->SetCameraAddress(g_pField->GetCameraAddress());
 
 	IninCharacterTexture(g_pFieldVertex, StageNum);//キャラクターテクスチャ～の初期化
 	g_pBattle->m_nStageNum = StageNum;
