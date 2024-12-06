@@ -14,7 +14,7 @@ CModelEx::CModelEx(const char *ModelFile, bool isAnime)
 	sX = sY = sZ = 0.0f;
 
 	T = DirectX::XMMatrixTranslation(sX,sY,sZ);
-	S = DirectX::XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
 
 	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(0.0f);//Xé≤âÒì]çsóÒ
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(0.0f);//Yé≤âÒì]çsóÒ

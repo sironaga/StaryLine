@@ -40,7 +40,7 @@ void UpdateSceneTitle()
 		//	InitSound();
 		g_pSourseTitleSE->SetVolume(0.3f);
 		g_pSourseTitleSE->Start();
-		ChangeScene(STAGE_SELECT);
+		ChangeScene(SCENE_GAME);
 	}
 
 	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))

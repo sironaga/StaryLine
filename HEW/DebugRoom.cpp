@@ -13,8 +13,6 @@ constexpr float LIMIT_SIZE_Y = 100.0f;
 
 constexpr float SIZE_SPEED = 10.0f;
 
-#define MODEL_PASS(fbx) ("Assets/Model/" fbx)
-
 const char* ch_pModelList[CDebugRoom::MAX_DEBUGMODEL] =
 {
 	MODEL_PASS("Running.fbx"),

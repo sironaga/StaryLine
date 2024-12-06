@@ -144,6 +144,7 @@ void UpdateSceneGame()
 void DrawSceneGame()
 {
 	g_pField->Draw();	// フィールドは常に描画する
+		g_pPlayer->Draw();
 
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
@@ -151,7 +152,6 @@ void DrawSceneGame()
 		(g_tTime.GameSTime < (SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust)))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間描画する
-		g_pPlayer->Draw();
 		g_pFieldVertex->Draw();
 	}
 

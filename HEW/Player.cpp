@@ -6,6 +6,9 @@
 #include "SpriteDrawer.h"
 #include "InputEx.h"
 #include "Main.h"
+#include "Defines.h"
+#include "ShaderList.h"
+#include "Geometory.h"
 
 // defines
 #define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
@@ -42,6 +45,9 @@ CPlayer::CPlayer()
 
 	// プレイヤー頂点情報
 	m_pPlayer->Init();
+
+	m_pModel = new Model();
+	m_pModel->Load(MODEL_PASS("Scale_Standard.fbx", 1.0f, Model::XFlip));
 
 	// プレイヤーテクスチャ読み込み
 	//HRESULT hr;
@@ -130,7 +136,63 @@ void CPlayer::Draw()
 	DrawSprite(m_pVtxTimer, sizeof(Vertex));
 
 	// スプライト設定のリセット
-	ReSetSprite();
+	ReSetSprite();;
+
+	//頂点シェーダーに渡す変換行列を作成
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world, view, proj;
+	//移動行列(Translation)
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		-70.0f,
+		0.0f,
+		0.0f,
+		0.0f
+	));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		0.0f,
+		0.0f,
+		0.0f,
+		0.0f
+	));
+
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * R * T;
+
+	// 計算用のデータから読み取り用のデータに変換
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(mat));
+	//DirectX::XMStoreFloat4x4(&wvp[1], DirectX::XMMatrixTranspose(view));
+	//DirectX::XMStoreFloat4x4(&wvp[2], DirectX::XMMatrixTranspose(proj));
+
+	wvp[1] = GetView();// 修正してください
+	wvp[2] = GetProj();// 修正してください
+
+	Geometory::SetView(wvp[1]);
+	Geometory::SetProjection(wvp[2]);
+
+	//シェーダーへ変換行列を設定
+	ShaderList::SetWVP(wvp); // 引数にはXMFLOAT4X4型の、要素数３の配列のアドレスを渡すこと
+
+	// モデルに使用する頂点シェーダー、ピクセルシェーダーを設定
+	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+
+	// 複数のメッシュで構成されている場合、ある部分は金属的な表現、ある部分は非金属的な表現と
+	//  分ける場合がある。前回の表示は同じマテリアルで一括表示していたため、メッシュごとにマテリアルを
+	//  切り替える。
+	for (int j = 0; j < m_pModel->GetMeshNum(); j++)
+	{
+		//	  モデルのメッシュを取得
+		Model::Mesh mesh = *m_pModel->GetMesh(j);
+		//	  メッシュに割り当てられているマテリアルを取得
+		Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+		//		  シェーダーへマテリアルを設定
+		ShaderList::SetMaterial(material);
+		//		  モデルの描画
+		m_pModel->Draw(j);
+	}
+
+
 }
 
 void CPlayer::UpdateReady()

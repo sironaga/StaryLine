@@ -4,7 +4,7 @@
 #include "DirectX.h"
 #include "FieldVertex.h"
 #include "Sprite.h"
-#include "ModelEx.h"
+#include "Model.h"
 
 // defines
 #define MOVESPEED (0.5f)	// 移動速度
@@ -113,7 +113,7 @@ public:
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
-	CModelEx* m_pModel;
+	Model* m_pModel;
 	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/
 	DirectX::XMMATRIX pos;
 	DirectX::XMMATRIX size;
