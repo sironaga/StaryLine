@@ -9,8 +9,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height);
 void Uninit();
 void Update();
 void Draw();
-DirectX::XMMATRIX GetView();
-DirectX::XMMATRIX GetProj();
+DirectX::XMFLOAT4X4 GetView();
+DirectX::XMFLOAT4X4 GetProj();
 
 
 //—ñ‹“Œ^éŒ¾
