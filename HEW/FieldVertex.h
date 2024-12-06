@@ -86,8 +86,6 @@ private:
 
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
 
-	Camera* m_pCamera;//カメラのクラスポインター
-
 	Sprite* m_pSprite;//3D描画用スプライトクラスポインター
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理

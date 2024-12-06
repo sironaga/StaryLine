@@ -8,6 +8,7 @@
 #include"SpriteDrawer.h"
 #include"_StructList.h"
 #include"Defines.h"
+#include "Main.h"
 
 E_GAME_PHASE NowPhase;//今のフェーズ
 E_GAME_PHASE PrevPhase;//過去のフェーズ
@@ -25,13 +26,11 @@ CFieldVertex::CFieldVertex()
 	, NowLine(0)
 	, DrawLinePos{}
 	, BreakVertex(-1)
-	,m_pCamera(nullptr)
 {
-	m_pField = new Field();
+	//m_pField = new Field();
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldLine = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
-	m_pCamera = m_pField->GetCameraAddress();
 
 	StartVertex = START_PLAYER;//始点初期化
 	GoalVertex = START_PLAYER;//終点初期化
@@ -803,8 +802,8 @@ void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize
 	world = mat;
 
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = m_pCamera->GetViewMatrix();
-	wvp[2] = m_pCamera->GetProjectionMatrix();
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
 
 	m_pSprite->SetWorld(wvp[0]);
 	m_pSprite->SetView(wvp[1]);
