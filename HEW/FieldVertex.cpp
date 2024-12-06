@@ -578,107 +578,107 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								Count++;//辺が繋がってないとき角ができてる
 							}
 						}
-						////凹角形判定
-						//if (Count != 3 && !(Count > 8))
-						//{
-						//	float Angle[2][8];//マックス角形の角度 右回りと左回りの角度を保存
-						//	float AngleSum[2] = { 0.0f,0.0f };//角度の合計
-						//	float ShapesAngle;//図形の内角の和
-						//	int AngleDirectionNumber;//右回りの角度か左回りの角度か
-						//	float AngleSave;
-						//	float AngleDirection;
-						//	int AngleSaveCount = 0;
-						//	for (int l = 2; l < MAX_VERTEX; l++)
-						//	{
-						//		if (Comparison3[l] != -1)//最後の点まで
-						//		{
-						//			//内積の公式から
-						//			AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y))/(sqrtf(powf((m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
-						//			AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X);
-						//			if (AngleDirection == 0)continue;//外積がゼロなら平行なので角度が存在しない
-						//			if (1/*AngleDirection > 0*/)
-						//			{
-						//				//左回り
-						//				Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-						//				Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
-						//				AngleSum[0] += Angle[0][AngleSaveCount];
-						//				AngleSum[1] += Angle[1][AngleSaveCount];
-						//			}
-						//			//else
-						//			//{
-						//			//	//右回り
-						//			//	Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-						//			//	Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
-						//			//	AngleSum[0] += Angle[0][AngleSaveCount];
-						//			//	AngleSum[1] += Angle[1][AngleSaveCount];
-						//			//}
-						//			AngleSaveCount++;
-						//		}
-						//		else
-						//		{
-						//			AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
-						//			AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.X - m_tVertex[Comparison3[l - 1]].Pos.X);
-						//			if (AngleDirection != 0)
-						//			{//外積がゼロなら平行なので角度が存在しない
-						//				if (1/*AngleDirection > 0*/)
-						//				{
-						//					Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-						//					Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
-						//					AngleSum[0] += Angle[0][AngleSaveCount];
-						//					AngleSum[1] += Angle[1][AngleSaveCount];
-						//				}
-						//				/*else
-						//				{
-						//					Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-						//					Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
-						//					AngleSum[0] += Angle[0][AngleSaveCount];
-						//					AngleSum[1] += Angle[1][AngleSaveCount];
-						//				}*/
-						//				AngleSaveCount++;
-						//			}
+						//凹角形判定
+						if (Count != 3 && !(Count > 8))
+						{
+							float Angle[2][8];//マックス角形の角度 右回りと左回りの角度を保存
+							float AngleSum[2] = { 0.0f,0.0f };//角度の合計
+							float ShapesAngle;//図形の内角の和
+							int AngleDirectionNumber;//右回りの角度か左回りの角度か
+							float AngleSave;
+							float AngleDirection;
+							int AngleSaveCount = 0;
+							for (int l = 2; l < MAX_VERTEX; l++)
+							{
+								if (Comparison3[l] != -1)//最後の点まで
+								{
+									//内積の公式から
+									AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y))/(sqrtf(powf((m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
+									AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x);
+									if (AngleDirection == 0)continue;//外積がゼロなら平行なので角度が存在しない
+									if (AngleDirection > 0)
+									{
+										//左回り
+										Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
+										Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
+										AngleSum[0] += Angle[0][AngleSaveCount];
+										AngleSum[1] += Angle[1][AngleSaveCount];
+									}
+									else
+									{
+										//右回り
+										Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
+										Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
+										AngleSum[0] += Angle[0][AngleSaveCount];
+										AngleSum[1] += Angle[1][AngleSaveCount];
+									}
+									AngleSaveCount++;
+								}
+								else
+								{
+									AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
+									AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x);
+									if (AngleDirection != 0)
+									{//外積がゼロなら平行なので角度が存在しない
+										if (AngleDirection > 0)
+										{
+											Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
+											Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
+											AngleSum[0] += Angle[0][AngleSaveCount];
+											AngleSum[1] += Angle[1][AngleSaveCount];
+										}
+										else
+										{
+											Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
+											Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
+											AngleSum[0] += Angle[0][AngleSaveCount];
+											AngleSum[1] += Angle[1][AngleSaveCount];
+										}
+										AngleSaveCount++;
+									}
 
-						//			AngleSave = ((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X), 2) + powf((m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X), 2) + powf((m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)));
-						//			AngleDirection = (m_tVertex[Comparison3[l - 1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.X - m_tVertex[Comparison3[0]].Pos.X);
-						//			if (AngleDirection != 0)
-						//			{//外積がゼロなら平行なので角度が存在しない
-						//				if (1/*AngleDirection > 0*/)
-						//				{
-						//					Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-						//					Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
-						//					AngleSum[0] += Angle[0][AngleSaveCount];
-						//					AngleSum[1] += Angle[1][AngleSaveCount];
-						//				}
-						//				/*else
-						//				{
-						//					Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-						//					Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
-						//					AngleSum[0] += Angle[0][AngleSaveCount];
-						//					AngleSum[1] += Angle[1][AngleSaveCount];
-						//				}*/
-						//				AngleSaveCount++;
-						//			}
-						//			break;
-						//		}
-						//	}
-						//	ShapesAngle = (Count - 2) * 180.0f;//図形の内角を求める
-						//	if (AngleSum[0] == ShapesAngle)AngleDirectionNumber = 0;//内角の和と等しい方を調べる
-						//	else
-						//	{
-						//		if (AngleSum[1] == ShapesAngle)AngleDirectionNumber = 1;
-						//		else BadShapes = true;
-						//	}
+									AngleSave = ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x), 2) + powf((m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x), 2) + powf((m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)));
+									AngleDirection = (m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x);
+									if (AngleDirection != 0)
+									{//外積がゼロなら平行なので角度が存在しない
+										if (AngleDirection > 0)
+										{
+											Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
+											Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
+											AngleSum[0] += Angle[0][AngleSaveCount];
+											AngleSum[1] += Angle[1][AngleSaveCount];
+										}
+										else
+										{
+											Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
+											Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
+											AngleSum[0] += Angle[0][AngleSaveCount];
+											AngleSum[1] += Angle[1][AngleSaveCount];
+										}
+										AngleSaveCount++;
+									}
+									break;
+								}
+							}
+							ShapesAngle = (Count - 2) * 180.0f;//図形の内角を求める
+							if (AngleSum[0] == ShapesAngle)AngleDirectionNumber = 0;//内角の和と等しい方を調べる
+							else
+							{
+								if (AngleSum[1] == ShapesAngle)AngleDirectionNumber = 1;
+								else BadShapes = true;
+							}
 
-						//	//for (int l = 0; l < AngleSaveCount; l++)
-						//	//{
-						//	//	if (Angle[AngleDirectionNumber][l] > 180)
-						//	//	{
-						//	//		BadShapes = true;//内角のどれかが180度を超えるなら図形とみなさない
-						//	//		break;//一つでも見つければ処理抜ける
-						//	//	}
-						//	//}
-						//}
-						//if (Count > 8)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)
-						////BadShapesをtrueにする
+							for (int l = 0; l < AngleSaveCount; l++)
+							{
+								if (Angle[AngleDirectionNumber][l] > 180)
+								{
+									BadShapes = true;//内角のどれかが180度を超えるなら図形とみなさない
+									break;//一つでも見つければ処理抜ける
+								}
+							}
+						}
+						if (Count > 8)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)
+						//BadShapesをtrueにする
 						break;//最後の点を見つけたら処理を終わってほしい
 					}
 				}

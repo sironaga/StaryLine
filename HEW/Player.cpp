@@ -21,7 +21,7 @@
 #define TIMER_DOWN (900.0f)								// タイマーのサイズ下
 
 // constants
-constexpr float ce_fPlayerSize = 20.0f;				// プレイヤー(筆)のサイズ
+constexpr float ce_fPlayerSize = 10.0f;				// プレイヤー(筆)のサイズ
 
 CPlayer::CPlayer()
 	: m_ePlayerState(STOP), m_eDestination(DEFAULT)

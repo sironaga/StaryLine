@@ -15,6 +15,7 @@ static const float fFPS = static_cast<float>(FPS);
 
 #define PI (3.1415f)
 #define TORAD(deg) ((deg / 180.0f) * PI)
+#define TODEF(rad) (((rad) / PI) * 180.0f)
 
 #define	MILLISEC (1.0f / 60.0f)
 
