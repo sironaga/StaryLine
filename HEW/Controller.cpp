@@ -120,6 +120,10 @@ bool CGetButtonsTriger(WORD InButton)
 		{
 			return true;
 		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
