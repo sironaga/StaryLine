@@ -588,7 +588,10 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					DirectX::XMFLOAT2 SecondVector;//後のベクトル
 					DirectX::XMFLOAT2 NormalizeFastVector;//正規化後の先ベクトル
 					DirectX::XMFLOAT2 NormalizeSecondVector;//正規化後の後のベクトル
+					float AngleSave[25];
+					int AngleCount = 0;
 					float Error = 0.01;//誤差
+					Fill(AngleSave, -1);
 					if (Count == 5)
 					{
 						Count = Count;
@@ -619,7 +622,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								RotationFastVector.y = NormalizeFastVector.x * sinf(TORAD(float(45 * m))) + NormalizeFastVector.y * cosf(TORAD(float(45 * m)));
 								if (((RotationFastVector.x - Error <= NormalizeSecondVector.x) && (NormalizeSecondVector.x <= RotationFastVector.x + Error)) && ((RotationFastVector.y - Error <= NormalizeSecondVector.y) && (NormalizeSecondVector.y <= RotationFastVector.y + Error)))break;
 							}
-							if (m < 4)BadShapes = true;
+							AngleSave[AngleCount] = 45 * m;
+							AngleCount++;
+							for (m = 0; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
+							{
+								if (fabsf(AngleSave[m] - AngleSave[m + 1]) > 180.0f)BadShapes = true;
+							}
+							
 						}
 						else
 						{
@@ -643,7 +652,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								RotationFastVector.y = NormalizeFastVector.x * sinf(TORAD(45 * m)) + NormalizeFastVector.y * cosf(TORAD(45 * m));
 								if (((RotationFastVector.x - Error <= NormalizeSecondVector.x) && (NormalizeSecondVector.x <= RotationFastVector.x + Error)) && ((RotationFastVector.y - Error <= NormalizeSecondVector.y) && (NormalizeSecondVector.y <= RotationFastVector.y + Error)))break;
 							}
-							if (m < 4)BadShapes = true;
+							AngleSave[AngleCount] = 45 * m;
+							AngleCount++;
+							for (m = 0; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
+							{
+								if (fabsf(AngleSave[m] - AngleSave[m + 1]) > 180.0f)BadShapes = true;
+							}
 
 							//各ベクトルの計算（取得）
 							FastVector.x = m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x;
@@ -665,7 +679,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								RotationFastVector.y = NormalizeFastVector.x * sinf(TORAD(45 * m)) + NormalizeFastVector.y * cosf(TORAD(45 * m));
 								if (((RotationFastVector.x - Error <= NormalizeSecondVector.x) && (NormalizeSecondVector.x <= RotationFastVector.x + Error)) && ((RotationFastVector.y - Error <= NormalizeSecondVector.y) && (NormalizeSecondVector.y <= RotationFastVector.y + Error)))break;
 							}
-							if (m < 4)BadShapes = true;
+							AngleSave[AngleCount] = 45 * m;
+							AngleCount++;
+							for (m = 0; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
+							{
+								if (fabsf(AngleSave[m] - AngleSave[m + 1]) > 180.0f)BadShapes = true;
+							}
 
 							break;
 						}
