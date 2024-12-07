@@ -535,7 +535,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				}
 				//何角形か判定
 				int Count = 0;
-				bool BadShapes = false;
 				for (int l = 2; l < MAX_VERTEX; l++)
 				{
 					if (Comparison3[l] != -1)//最後の点まで
@@ -578,109 +577,104 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								Count++;//辺が繋がってないとき角ができてる
 							}
 						}
-						//凹角形判定
-						if (Count != 3 && !(Count > 8))
-						{
-							float Angle[2][8];//マックス角形の角度 右回りと左回りの角度を保存
-							float AngleSum[2] = { 0.0f,0.0f };//角度の合計
-							float ShapesAngle;//図形の内角の和
-							int AngleDirectionNumber;//右回りの角度か左回りの角度か
-							float AngleSave;
-							float AngleDirection;
-							int AngleSaveCount = 0;
-							for (int l = 2; l < MAX_VERTEX; l++)
-							{
-								if (Comparison3[l] != -1)//最後の点まで
-								{
-									//内積の公式から
-									AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y))/(sqrtf(powf((m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
-									AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x);
-									if (AngleDirection == 0)continue;//外積がゼロなら平行なので角度が存在しない
-									if (AngleDirection > 0)
-									{
-										//左回り
-										Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-										Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
-										AngleSum[0] += Angle[0][AngleSaveCount];
-										AngleSum[1] += Angle[1][AngleSaveCount];
-									}
-									else
-									{
-										//右回り
-										Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-										Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
-										AngleSum[0] += Angle[0][AngleSaveCount];
-										AngleSum[1] += Angle[1][AngleSaveCount];
-									}
-									AngleSaveCount++;
-								}
-								else
-								{
-									AngleSave = ((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x), 2) + powf((m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y), 2)));
-									AngleDirection = (m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) + (m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x);
-									if (AngleDirection != 0)
-									{//外積がゼロなら平行なので角度が存在しない
-										if (AngleDirection > 0)
-										{
-											Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-											Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
-											AngleSum[0] += Angle[0][AngleSaveCount];
-											AngleSum[1] += Angle[1][AngleSaveCount];
-										}
-										else
-										{
-											Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-											Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
-											AngleSum[0] += Angle[0][AngleSaveCount];
-											AngleSum[1] += Angle[1][AngleSaveCount];
-										}
-										AngleSaveCount++;
-									}
-
-									AngleSave = ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)) / (sqrtf(powf((m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x), 2) + powf((m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)) * sqrtf(powf((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x), 2) + powf((m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y), 2)));
-									AngleDirection = (m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) + (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x);
-									if (AngleDirection != 0)
-									{//外積がゼロなら平行なので角度が存在しない
-										if (AngleDirection > 0)
-										{
-											Angle[0][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-											Angle[1][AngleSaveCount] = TODEF(acosf(AngleSave));
-											AngleSum[0] += Angle[0][AngleSaveCount];
-											AngleSum[1] += Angle[1][AngleSaveCount];
-										}
-										else
-										{
-											Angle[1][AngleSaveCount] = TODEF(2 * PI - acosf(AngleSave));
-											Angle[0][AngleSaveCount] = TODEF(acosf(AngleSave));
-											AngleSum[0] += Angle[0][AngleSaveCount];
-											AngleSum[1] += Angle[1][AngleSaveCount];
-										}
-										AngleSaveCount++;
-									}
-									break;
-								}
-							}
-							ShapesAngle = (Count - 2) * 180.0f;//図形の内角を求める
-							if (AngleSum[0] == ShapesAngle)AngleDirectionNumber = 0;//内角の和と等しい方を調べる
-							else
-							{
-								if (AngleSum[1] == ShapesAngle)AngleDirectionNumber = 1;
-								else BadShapes = true;
-							}
-
-							for (int l = 0; l < AngleSaveCount; l++)
-							{
-								if (Angle[AngleDirectionNumber][l] > 180)
-								{
-									BadShapes = true;//内角のどれかが180度を超えるなら図形とみなさない
-									break;//一つでも見つければ処理抜ける
-								}
-							}
-						}
-						if (Count > 8)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)
-						//BadShapesをtrueにする
-						break;//最後の点を見つけたら処理を終わってほしい
+						break;//最後の頂点の処理を終えたら処理抜ける
 					}
+				}
+				//凹角形判定
+				bool BadShapes = false;
+				if (Count != 3 && !(Count > 8))
+				{
+					DirectX::XMFLOAT2 FastVector;//先のベクトル
+					DirectX::XMFLOAT2 SecondVector;//後のベクトル
+					DirectX::XMFLOAT2 NormalizeFastVector;//正規化後の先ベクトル
+					DirectX::XMFLOAT2 NormalizeSecondVector;//正規化後の後のベクトル
+					float Error = 0.01;//誤差
+					if (Count == 5)
+					{
+						Count = Count;
+					}
+					for (int l = 2; l < MAX_VERTEX; l++)
+					{
+						int m = 0;
+						DirectX::XMFLOAT2 RotationFastVector;//正規化した先ベクトルに回転行列を掛けたベクトル
+						if (Comparison3[l] != -1)//最後の点まで
+						{
+							//各ベクトルの計算（取得）
+							FastVector.x = m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
+							FastVector.y = m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
+
+							SecondVector.x = m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
+							SecondVector.y = m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
+
+							//求めたベクトルを正規化
+							NormalizeFastVector.x = FastVector.x / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
+							NormalizeFastVector.y = FastVector.y / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
+
+							NormalizeSecondVector.x = SecondVector.x / sqrtf(powf(SecondVector.x, 2) + powf(SecondVector.y, 2));
+							NormalizeSecondVector.y = SecondVector.y / sqrtf(powf(SecondVector.x, 2) + powf(SecondVector.y, 2));
+
+							for (; m < 8; m++)
+							{
+								RotationFastVector.x = NormalizeFastVector.x * cosf(TORAD(float(45 * m))) - NormalizeFastVector.y * sinf(TORAD(float(45 * m)));
+								RotationFastVector.y = NormalizeFastVector.x * sinf(TORAD(float(45 * m))) + NormalizeFastVector.y * cosf(TORAD(float(45 * m)));
+								if (((RotationFastVector.x - Error <= NormalizeSecondVector.x) && (NormalizeSecondVector.x <= RotationFastVector.x + Error)) && ((RotationFastVector.y - Error <= NormalizeSecondVector.y) && (NormalizeSecondVector.y <= RotationFastVector.y + Error)))break;
+							}
+							if (m < 4)BadShapes = true;
+						}
+						else
+						{
+							//各ベクトルの計算（取得）
+							FastVector.x = m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
+							FastVector.y = m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
+
+							SecondVector.x = m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
+							SecondVector.y = m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
+
+							//求めたベクトルを正規化
+							NormalizeFastVector.x = FastVector.x / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
+							NormalizeFastVector.y = FastVector.y / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
+
+							NormalizeSecondVector.x = SecondVector.x / sqrtf(powf(SecondVector.x, 2) + powf(SecondVector.y, 2));
+							NormalizeSecondVector.y = SecondVector.y / sqrtf(powf(SecondVector.x, 2) + powf(SecondVector.y, 2));
+
+							for (m = 0; m < 8; m++)
+							{
+								RotationFastVector.x = NormalizeFastVector.x * cosf(TORAD(45 * m)) - NormalizeFastVector.y * sinf(TORAD(45 * m));
+								RotationFastVector.y = NormalizeFastVector.x * sinf(TORAD(45 * m)) + NormalizeFastVector.y * cosf(TORAD(45 * m));
+								if (((RotationFastVector.x - Error <= NormalizeSecondVector.x) && (NormalizeSecondVector.x <= RotationFastVector.x + Error)) && ((RotationFastVector.y - Error <= NormalizeSecondVector.y) && (NormalizeSecondVector.y <= RotationFastVector.y + Error)))break;
+							}
+							if (m < 4)BadShapes = true;
+
+							//各ベクトルの計算（取得）
+							FastVector.x = m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x;
+							FastVector.y = m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y;
+
+							SecondVector.x = m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x;
+							SecondVector.y = m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y;
+
+							//求めたベクトルを正規化
+							NormalizeFastVector.x = FastVector.x / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
+							NormalizeFastVector.y = FastVector.y / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
+
+							NormalizeSecondVector.x = SecondVector.x / sqrtf(powf(SecondVector.x, 2) + powf(SecondVector.y, 2));
+							NormalizeSecondVector.y = SecondVector.y / sqrtf(powf(SecondVector.x, 2) + powf(SecondVector.y, 2));
+
+							for (m = 0; m < 8; m++)
+							{
+								RotationFastVector.x = NormalizeFastVector.x * cosf(TORAD(45 * m)) - NormalizeFastVector.y * sinf(TORAD(45 * m));
+								RotationFastVector.y = NormalizeFastVector.x * sinf(TORAD(45 * m)) + NormalizeFastVector.y * cosf(TORAD(45 * m));
+								if (((RotationFastVector.x - Error <= NormalizeSecondVector.x) && (NormalizeSecondVector.x <= RotationFastVector.x + Error)) && ((RotationFastVector.y - Error <= NormalizeSecondVector.y) && (NormalizeSecondVector.y <= RotationFastVector.y + Error)))break;
+							}
+							if (m < 4)BadShapes = true;
+
+							break;
+						}
+					}
+				}
+				if (Count > 8)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
+				if (BadShapes)
+				{
+					MessageBox(NULL, "凹角形でちゃった(はーと)","バカな君へ", MB_OK);
 				}
 				if (!BadShapes)
 				{
@@ -740,8 +734,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes], Shapes_Size);//図形の頂点と角数を渡す
-					NowShapes++;//保存場所を次の場所にする
 				}
+				NowShapes++;//保存場所を次の場所にする
 			}
 			ShapesSaveFalg = true;//重複した図形または認めない図形は保存はしないが保存したとしてみなしtrueにする
 			ShapesFlag = false;//初期化
