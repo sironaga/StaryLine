@@ -25,8 +25,8 @@ XINPUT_VIBRATION vibration;
 /* ゲームパッドの更新処理 */
 void Controller_Update()
 {
-	state = def;
-	OldButtons.Gamepad.wButtons = state.Gamepad.wButtons;
+
+	OldButtons = state;
 	XInputGetState(PAD_USER_NUMBER, &state);
 	XInputSetState(PAD_USER_NUMBER, &vibration);
 
