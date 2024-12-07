@@ -2,6 +2,7 @@
 	XInputを使用したControllerの入出力
 	2024/10/13 制作開始 動作未確認　　秋野
 	2024/10/15 バイブレーションの追加　動作未確認　秋野
+	2024/12/07 トリガー機能の追加
 */
 
 /* Include */
@@ -116,13 +117,13 @@ bool CGetButtonsTriger(WORD InButton)
 {
 	if (state.Gamepad.wButtons & InButton)
 	{
-		if (OldButtons.Gamepad.wButtons != state.Gamepad.wButtons)
+		if (OldButtons.Gamepad.wButtons & InButton)
 		{
-			return true;
+			return false;
 		}
 		else
 		{
-			return false;
+			return true;
 		}
 	}
 	else
