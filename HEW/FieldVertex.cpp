@@ -624,9 +624,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							}
 							AngleSave[AngleCount] = 45 * m;
 							AngleCount++;
-							for (m = 0; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
+							for (m = 1; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
 							{
-								if (fabsf(AngleSave[m] - AngleSave[m + 1]) > 180.0f)BadShapes = true;
+								if (fabsf(AngleSave[m] - AngleSave[m - 1]) >= 180.0f)BadShapes = true;
 							}
 							
 						}
@@ -654,9 +654,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							}
 							AngleSave[AngleCount] = 45 * m;
 							AngleCount++;
-							for (m = 0; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
+							for (m = 1; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
 							{
-								if (fabsf(AngleSave[m] - AngleSave[m + 1]) > 180.0f)BadShapes = true;
+								if (fabsf(AngleSave[m] - AngleSave[m - 1]) >= 180.0f)BadShapes = true;
 							}
 
 							//各ベクトルの計算（取得）
@@ -681,9 +681,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							}
 							AngleSave[AngleCount] = 45 * m;
 							AngleCount++;
-							for (m = 0; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
+							for (m = 1; (m < MAX_VERTEX - 1) && (AngleSave[m] != -1); m++)
 							{
-								if (fabsf(AngleSave[m] - AngleSave[m + 1]) > 180.0f)BadShapes = true;
+								if (fabsf(AngleSave[m] - AngleSave[m - 1]) >= 180.0f)BadShapes = true;
 							}
 
 							break;
