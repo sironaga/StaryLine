@@ -35,6 +35,8 @@ enum EnemyTexture
 	MAX_EnemyTex,
 };
 
+void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
+
 Texture* g_pAllyTex[MAX_AllyTex];
 //Texture* g_pAllyBufferTex[MAX_AllyBufferTex];
 Texture* g_pEnemyTex[MAX_EnemyTex];
@@ -42,6 +44,10 @@ Texture* g_pEnemyTex[MAX_EnemyTex];
 Texture* g_pLeaderTex[MAX_LEADERS];
 
 Texture* g_pCollisionTex;
+
+Texture* g_pHpGageTex[2];
+
+Sprite* g_pSprite;
 
 CFieldVertex* g_pFieldVtx;
 
@@ -60,6 +66,9 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	g_pLeaderTex[0] = new Texture();
 	g_pLeaderTex[1] = new Texture();
+
+	g_pHpGageTex[0] = new Texture();
+	g_pHpGageTex[1] = new Texture();
 
 	HRESULT hr;
 	hr = g_pAllyTex[Ally3]->Create("Asset/味方/3.png");
@@ -85,6 +94,9 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	case 2:
 		break;
 	}
+
+	g_pHpGageTex[0]->Create("Asset/HpGage/HpGageBase.png");
+	g_pHpGageTex[1]->Create("Asset/HpGage/HpGage.png");
 }
 
 CFighter::CFighter(int InCornerCount, float InSize)
@@ -104,7 +116,6 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
 	, m_nTargetNumber(-1)
-	, m_pSprite(nullptr)
 	, m_bIsHit(false)
 {
 	m_tPos.X = 0.0f;
@@ -119,6 +130,9 @@ CFighter::CFighter(int InCornerCount, float InSize)
 
 CFighter::~CFighter()
 {
+	delete m_pHpGage;
+	m_pHpGage = nullptr;
+
 	for (int i = 0; i < MAX_AllyTex; i++)
 	{
 		if (g_pAllyTex)
@@ -147,19 +161,9 @@ CFighter::~CFighter()
 	//	delete m_pEffect;
 	//	m_pEffect = nullptr;
 	//}
-	if (m_pSprite)
-	{
-		delete m_pSprite;
-		m_pSprite = nullptr;
-	}
 	if (g_pFieldVtx)
 	{
 		g_pFieldVtx = nullptr;
-	}
-	if (!m_pSprite)
-	{
-		delete m_pSprite;
-		m_pSprite = nullptr;
 	}
 	for (int i = 0; i < 3; i++)
 	{
@@ -179,7 +183,7 @@ void CFighter::CollisionDraw(void)
 	for (int i = 0; i < 8; i++)
 	{
 		//テクスチャの指定
-		m_pSprite->SetTexture(g_pCollisionTex);
+		g_pSprite->SetTexture(g_pCollisionTex);
 		switch (i)
 		{
 		case 0:	DrawSetting({ 
@@ -231,8 +235,9 @@ void CFighter::CollisionDraw(void)
 			{ 3.0f,3.0f,3.0f });
 			break;
 		}
-		m_pSprite->Draw();
+		g_pSprite->Draw();
 
+		g_pSprite->ReSetSprite();
 	}
 }
 
@@ -335,44 +340,11 @@ void CFighter::Damage(CFighter* pFighter)
 	//m_pEffect->Play();
 }
 
-void CFighter::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
-{
-	//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
-		InPos.x,
-		InPos.y,
-		InPos.z,
-		0.0f
-	));
-
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f
-	));
-
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * R * T;
-
-	DirectX::XMFLOAT4X4 wvp[3];
-	DirectX::XMMATRIX world;
-	world = mat;
-
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = GetView();
-	wvp[2] = GetProj();
-
-	m_pSprite->SetWorld(wvp[0]);
-	m_pSprite->SetView(wvp[1]);
-	m_pSprite->SetProjection(wvp[2]);
-}
-
 CAlly::CAlly(int InCornerCount, float InSize)
 	:CFighter(InCornerCount,InSize)
 {
 	SettingStatus();
+	m_pHpGage = new CHpUI(m_fHp);
 	//Vertex vtx[] = {
 	//	//背景表示の座標
 	//	{{-m_tSize.X / 2, -m_tSize.Y / 2,0.0f}, {0.0f, 0.0f}},
@@ -405,14 +377,16 @@ void CAlly::Update(void)
 
 void CAlly::Draw(void)
 {
-	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
+	m_pHpGage->Draw();
 
-	if(m_bIsHit) m_pSprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
-	else m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	g_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
+
+	if(m_bIsHit) g_pSprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+	else g_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
-	m_pSprite->Draw();
+	g_pSprite->Draw();
 
 	m_bIsHit = false;
 
@@ -421,7 +395,7 @@ void CAlly::Draw(void)
 	//m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
 	//m_pEffect->Draw();
 
-	m_pSprite->ReSetSprite();
+	g_pSprite->ReSetSprite();
 }
 
 void CAlly::CreateUpdate(void)
@@ -451,6 +425,9 @@ void CAlly::BattleUpdate(void)
 	//移動アニメーション(移動していたら)
 
 	//待機アニメーション(移動していなかったら)
+
+	//HPUIの更新処理
+	m_pHpGage->Update(m_fHp, { m_tPos.X,m_tPos.Y,m_tPos.Z }, m_tSize.Y);
 }
 
 void CAlly::DeathUpdate(void)
@@ -549,6 +526,8 @@ CEnemy::CEnemy(int InCornerCount, float InSize)
 	:CFighter(InCornerCount, InSize)
 {
 	SettingStatus();
+	m_pHpGage = new CHpUI(m_fHp);
+
 	//Vertex vtx[] = {
 	//	//背景表示の座標
 	//	{{-m_tSize.X / 2, -m_tSize.Y / 2, 0.0f}, {0.0f, 0.0f}},
@@ -566,6 +545,8 @@ CEnemy::~CEnemy()
 
 void CEnemy::Update(void)
 {
+	m_pHpGage->Update(m_fHp, { m_tPos.X,m_tPos.Y,m_tPos.Z }, m_tSize.Y);
+
 	// 状況に応じて処理を分ける
 	switch (m_tStatus)
 	{
@@ -581,17 +562,19 @@ void CEnemy::Update(void)
 
 void CEnemy::Draw(void)
 {
-	m_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
+	m_pHpGage->Draw();
+
+	g_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
-	m_pSprite->Draw();
+	g_pSprite->Draw();
 
 	//m_pEffect->SetEffectTexture();
 	//m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
 	//m_pEffect->Draw();
 
-	m_pSprite->ReSetSprite();
+	g_pSprite->ReSetSprite();
 }
 
 void CEnemy::CreateUpdate(void)
@@ -616,6 +599,9 @@ void CEnemy::BattleUpdate(void)
 	//移動アニメーション(移動していたら)
 
 	//待機アニメーション(移動していなかったら)
+
+	//HPUIの更新処理
+	m_pHpGage->Update(m_fHp, { m_tPos.X,m_tPos.Y,m_tPos.Z }, m_tSize.Y);
 }
 
 void CEnemy::DeathUpdate(void)
@@ -888,26 +874,27 @@ void CEnemy::SettingStatus(void)
 CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber)
 	:m_tStatus(St_Create)
 	,m_tPos(FirstPos)
-	,m_fHp(10.0f)
+	,m_fHp(100.0f)
 	,m_nTextureNumber(InTextureNumber)
-	,m_pSprite(nullptr)
+	, m_pHpGage(nullptr)
 {
 	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+
+	m_pHpGage = new CHpUI(m_fHp);
 }
 
 CLeader::~CLeader()
 {
-	if (m_pSprite)
-	{
-		delete m_pSprite;
-		m_pSprite = nullptr;
-	}
+	delete m_pHpGage;
+	m_pHpGage = nullptr;
 }
 
 void CLeader::Update(void)
 {
+	m_pHpGage->Update(m_fHp,{m_tPos.X,m_tPos.Y,m_tPos.Z},m_tSize.Y);
+
 	switch (m_tStatus)
 	{
 	case St_Create:CreateUpdate();
@@ -921,16 +908,18 @@ void CLeader::Update(void)
 
 void CLeader::Draw()
 {
-	m_pSprite->SetUVPos({ 0.0f,0.0f });
-	m_pSprite->SetUVScale({ 1.0f,1.0f });
+	m_pHpGage->Draw();
 
-	m_pSprite->SetTexture(g_pLeaderTex[m_nTextureNumber]);
+	g_pSprite->SetTexture(g_pLeaderTex[m_nTextureNumber]);
+
+	g_pSprite->SetUVPos({ 0.0f,0.0f });
+	g_pSprite->SetUVScale({ 1.0f,1.0f });
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
 
-	m_pSprite->Draw();
+	g_pSprite->Draw();
 	
-	m_pSprite->ReSetSprite();
+	g_pSprite->ReSetSprite();
 }
 
 void CLeader::Damage(CFighter* pFighter)
@@ -950,6 +939,9 @@ void CLeader::CreateUpdate(void)
 void CLeader::BattleUpdate(void)
 {
 	//待機アニメーション(移動していなかったら)
+	
+	//HPUIの更新処理
+	m_pHpGage->Update(m_fHp, { m_tPos.X,m_tPos.Y,m_tPos.Z }, m_tSize.Y);
 }
 
 void CLeader::DeathUpdate(void)
@@ -960,7 +952,68 @@ void CLeader::DeathUpdate(void)
 	SetStatus(St_Delete);
 }
 
-void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+void HPGageUIUpdate(void)
+{
+
+}
+
+void HPGageUIDraw(void)
+{
+
+}
+
+CHpUI::CHpUI(float FullHp)
+	:m_fFullHp(FullHp)
+	,m_tUIPos()
+	,m_tUIScale()
+{
+	m_tUIScale.y = 0.8f;
+	m_tUIScale.z = 1.0f;
+}
+
+CHpUI::~CHpUI()
+{
+}
+
+void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
+{
+	int HpRatio = 0;
+
+	m_tUIPos.x = InPos.x;
+	m_tUIPos.y = InPos.y + InSizeY + 1.0f;
+	m_tUIPos.z = InPos.z;
+
+	HpRatio = (InHp / m_fFullHp) * 10.0f;
+
+	m_tUIScale.x = HpRatio;
+}
+
+void CHpUI::Draw(void)
+{
+	//ベースの描画
+	g_pSprite->SetTexture(g_pHpGageTex[0]);
+
+	g_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z + 0.1f }, { 10.0f,1.0f,1.0f });
+
+	g_pSprite->Draw();
+
+	g_pSprite->ReSetSprite();
+
+	//ゲージの描画
+	g_pSprite->SetTexture(g_pHpGageTex[1]);
+
+	g_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	DrawSetting({ m_tUIPos.x - (5 -(m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z }, m_tUIScale);
+
+	g_pSprite->Draw();
+
+	g_pSprite->ReSetSprite();
+}
+
+void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 {
 	//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
@@ -969,6 +1022,7 @@ void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 		InPos.z,
 		0.0f
 	));
+
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
 		0.0f,
 		0.0f,
@@ -988,7 +1042,7 @@ void CLeader::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	wvp[1] = GetView();
 	wvp[2] = GetProj();
 
-	m_pSprite->SetWorld(wvp[0]);
-	m_pSprite->SetView(wvp[1]);
-	m_pSprite->SetProjection(wvp[2]);
+	g_pSprite->SetWorld(wvp[0]);
+	g_pSprite->SetView(wvp[1]);
+	g_pSprite->SetProjection(wvp[2]);
 }
