@@ -71,6 +71,6 @@ void CDebugRoom::Update()
 void CDebugRoom::Draw()
 {
 	m_pDebugModel[m_nSelect]->SetViewMatrix(GetView());
-	m_pDebugModel[m_nSelect]->SetProjection(GetProj());
+	m_pDebugModel[m_nSelect]->SetProjectionMatrix(GetProj());
 	m_pDebugModel[m_nSelect]->Draw();
 }

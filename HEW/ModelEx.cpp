@@ -1,42 +1,39 @@
 #include "ModelEx.h"
+#include "Main.h"
 
 CModelEx::CModelEx(const char *ModelFile, bool isAnime)
-	:m_bAnime(isAnime)
+	: T{}, S{}, R{}, mat{}
+	, world{}, view{}, proj{}, wvp{}
+	, tX(0.0f), tY(0.0f), tZ(0.0f)
+	, sX(1.0f), sY(1.0f), sZ(1.0f)
+	, ViewMatrix{}, ProjectionMatrix{}
+	, CModel(nullptr), m_bAnime(isAnime)
 {
 
 	CModel = new Model();
-	CModel->Load(ModelFile);
+	if (!CModel->Load(ModelFile))MessageBox(NULL, ModelFile, "ì«Ç›çûÇ›ÉGÉâÅ[", MB_OK);
 	if (isAnime)
 	{
 		Model::AnimeNo anime = CModel->AddAnimation(ModelFile);
 		CModel->Play(anime, true);
 	}
-	sX = sY = sZ = 0.0f;
 
-	T = DirectX::XMMatrixTranslation(sX,sY,sZ);
-	S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	T = DirectX::XMMatrixTranslation(tX, tY, tZ);
+	S = DirectX::XMMatrixScaling(sX, sY, sZ);
 
 	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(0.0f);//Xé≤âÒì]çsóÒ
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(0.0f);//Yé≤âÒì]çsóÒ
 	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(0.0f);//Zé≤âÒì]çsóÒ
 	R = Rx * Ry * Rz;
 
-
 	mat = S * R * T;
-
-
-	EyePosition = DirectX::XMVectorSet(0.0f, 10.0f, -10.0f, 0.0f);
-	FocusPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-    UpDirection = DirectX::XMVectorSet(0, 1, 0, 0);
-
-
 	world = mat;
-	view = DirectX::XMMatrixLookAtLH(EyePosition, FocusPosition, UpDirection);
-	proj = DirectX::XMMatrixPerspectiveFovLH(TORAD(60.0f), 16.0f / 9.0f, 10.0f, 90.0f);
 
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	DirectX::XMStoreFloat4x4(&wvp[1], DirectX::XMMatrixTranspose(view));
-	DirectX::XMStoreFloat4x4(&wvp[2], DirectX::XMMatrixTranspose(proj));
+	ViewMatrix = GetView();
+	ProjectionMatrix = GetProj();
+
+	wvp[1] = ViewMatrix;
+	wvp[2] = ProjectionMatrix;
 }
 
 CModelEx::~CModelEx()
@@ -97,10 +94,10 @@ void CModelEx::SetViewMatrix(DirectX::XMFLOAT4X4 Camera)
 	wvp[1] = ViewMatrix;
 }
 
-void CModelEx::SetProjection(DirectX::XMFLOAT4X4 Camera)
+void CModelEx::SetProjectionMatrix(DirectX::XMFLOAT4X4 Camera)
 {
-	ProjectionMatric = Camera;
-	wvp[2] = ProjectionMatric;
+	ProjectionMatrix = Camera;
+	wvp[2] = ProjectionMatrix;
 }
 
 void CModelEx::SetScale(float X, float Y, float Z)

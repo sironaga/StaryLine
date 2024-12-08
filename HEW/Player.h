@@ -4,11 +4,12 @@
 #include "DirectX.h"
 #include "FieldVertex.h"
 #include "Sprite.h"
-#include "Model.h"
+#include "ModelEx.h"
+#include "Texture.h"
 
 // defines
 #define MOVESPEED (0.5f)	// 移動速度
-#define START_PLAYER (0)	//プレイヤーの開始位置
+#define START_PLAYER (12)	//プレイヤーの開始位置
 
 class CPlayer
 {
@@ -113,7 +114,7 @@ public:
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;
-	Model* m_pModel;
+	CModelEx* m_pModel;
 	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/
 	DirectX::XMMATRIX pos;
 	DirectX::XMMATRIX size;
