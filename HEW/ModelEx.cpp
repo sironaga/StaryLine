@@ -66,6 +66,9 @@ void CModelEx::Draw()
 		Model::Mesh mesh = *CModel->GetMesh(i);
 		//メッシュに割り当てられているマテリアルを取得
 		Model::Material material = *CModel->GetMaterial(mesh.materialID);
+		material.ambient.x = 0.85f; // x (r) 
+		material.ambient.y = 0.85f; // y (g) 
+		material.ambient.z = 0.85f; // z (b) 
 		//シェーダーへマテリアルを設定
 		ShaderList::SetMaterial(material);
 

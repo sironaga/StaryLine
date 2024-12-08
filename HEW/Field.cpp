@@ -117,6 +117,11 @@ void Field::ModelDraw(FieldModel* InModel, int MaxModel)
 			Model::Mesh mesh = *m_pModel[pModel->m_Model]->GetMesh(j);
 			//  メッシュに割り当てられているマテリアルを取得
 			Model::Material material = *m_pModel[pModel->m_Model]->GetMaterial(mesh.materialID);
+
+			material.ambient.x = 0.85f; // x (r) 
+			material.ambient.y = 0.85f; // y (g) 
+			material.ambient.z = 0.85f; // z (b) 
+
 			//  シェーダーへマテリアルを設定
 			ShaderList::SetMaterial(material);
 			//  モデルの描画
