@@ -1,6 +1,7 @@
 // 3D用のSpriteを簡単にする拡張クラス
 
 #include "SpriteEx.h"
+#include<cmath>
 
 SpriteEx::SpriteEx(const char *File)
 {
@@ -96,6 +97,40 @@ void SpriteEx::SetUvPos(float X, float Y)
 	m_Sprite->SetUVPos(RePos);
 }
 
+void SpriteEx::SetCenterPosAndRotation(FLOAT3 StartPos, FLOAT3 NowPos)
+{
+	FLOAT3 Calculated;
+	Calculated.X = ((StartPos.X + NowPos.X) / 2);
+	Calculated.Y = ((StartPos.Y + NowPos.Y) / 2);
+	Calculated.Z - ((StartPos.Z + NowPos.Y) / 2);
+
+	T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		Calculated.X,
+		Calculated.Y,
+		Calculated.Z,
+		0.0f
+	));
+
+	FLOAT3 delta;
+	delta.X = NowPos.X - StartPos.X;
+	delta.Y = NowPos.Y - StartPos.Y;
+	delta.Z = NowPos.Z - StartPos.Z;
+
+	FLOAT3 Theta;
+	Theta.X = std::atan2(delta.Z, delta.Y);
+	Theta.Y = std::atan2(delta.X, delta.Z);
+	Theta.Z = std::atan2(delta.Y, delta.X);
+
+	R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		Theta.X,
+		Theta.Y,
+		Theta.Z,
+		0.0f
+	));
+
+	S = DirectX::XMMatrixScaling(delta.X, delta.Y, delta.X);
+}
+
 void SpriteEx::SetView(DirectX::XMFLOAT4X4 InView)
 {
 	View = InView;
@@ -105,3 +140,4 @@ void SpriteEx::SetProjection(DirectX::XMFLOAT4X4 InProjection)
 {
 	Project = InProjection;
 }
+

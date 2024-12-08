@@ -2,6 +2,7 @@
 
 #include"Sprite.h"
 #include"Texture.h"
+#include"_StructList.h"
 
 class SpriteEx
 {
@@ -16,6 +17,8 @@ public:
 	void SetRotation(float X, float Y, float Z);
 	void SetUvSize(float X, float Y);
 	void SetUvPos(float X, float Y);
+
+	void SetCenterPosAndRotation(FLOAT3 StartPos, FLOAT3 NowPos);
 
 	void SetView(DirectX::XMFLOAT4X4 InView);
 	void SetProjection(DirectX::XMFLOAT4X4 InProjection);
