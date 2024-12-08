@@ -30,6 +30,24 @@ enum Status
 	St_Delete,	//削除
 };
 
+
+class CHpUI
+{
+public:
+	CHpUI(float FullHp);
+	~CHpUI();
+	void Update(float InHp, DirectX::XMFLOAT3 InPos,float InSizeY);
+	void Draw(void);
+
+private:
+	float m_fFullHp;
+
+
+	DirectX::XMFLOAT3 m_tUIPos;
+	DirectX::XMFLOAT3 m_tUIScale;
+};
+
+
 //キャラクター基底クラス
 class CFighter
 {
@@ -85,7 +103,6 @@ public:
 
 protected:
 	virtual void SettingStatus(void) = 0;		//ステータス決め
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
 	
 	/*変数*/
 public:
@@ -110,7 +127,7 @@ protected:
 	//bool m_bCreateInit;				//生成状態の初期化済みかどうか
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
-	Sprite* m_pSprite;
+	CHpUI* m_pHpGage;	//体力ゲージ
 	//CEffect* m_pEffect;
 
 	/*変数のSet&Get*/
@@ -228,15 +245,14 @@ private:
 	void BattleUpdate(void);
 	void DeathUpdate(void);
 
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
 private:
 	Status m_tStatus;				//ステータス状態
 	CVector3<float> m_tPos;			//位置座標
 	CVector3<float> m_tSize;		//サイズ
 	float m_fHp;					//体力
 
-	Sprite* m_pSprite;
 	int m_nTextureNumber;
+	CHpUI* m_pHpGage;
 
 public:
 	//ステータスのSet
@@ -252,6 +268,7 @@ public:
 
 	float GetHp(void) { return m_fHp; }
 };
+
 
 ////敵ボスクラス
 //class CEnemyBoss

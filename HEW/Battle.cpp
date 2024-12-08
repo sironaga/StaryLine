@@ -238,7 +238,6 @@ void CBattle::Update(void)
 							m_pAlly[i]->m_bIsAttack = true;
 							//UŒ‚ˆ—
 							Battle(i, -1, EnemyLeader);
-							break;
 						}
 					}
 				}
@@ -289,8 +288,6 @@ void CBattle::Update(void)
 							m_pEnemy[i]->m_bIsAttack = true;
 							//UŒ‚ˆ—
 							Battle(i, -1, AllyLeader);
-
-							break;
 						}
 					}
 				}
@@ -300,7 +297,7 @@ void CBattle::Update(void)
 		if (!m_pEnemy[i]->m_bIsAttack)
 		{
 			//ˆÚ“®ˆ—
-			Move(i, Enemy);
+ 			Move(i, Enemy);
 		}
 	}
 
