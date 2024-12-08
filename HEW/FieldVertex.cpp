@@ -72,8 +72,8 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 4; i++, CenterVertexp++)
 		{
-			CenterVertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X + VERTEX_SIZE / 2;
-			CenterVertexp->Pos.y = -j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2;
+			CenterVertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X + VERTEX_SIZE / 2.0f;
+			CenterVertexp->Pos.y = -j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2.0f;
 			CenterVertexp->Pos.z = 0;
 			CenterVertexp->Use = false;
 		}
