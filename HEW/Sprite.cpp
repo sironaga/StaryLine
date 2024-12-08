@@ -54,11 +54,8 @@ float4 main(PS_IN pin) : SV_TARGET {
 	return tex.Sample(samp, pin.uv) * pin.color;
 })EOT";
 
-	struct Vertex
-	{
-		float pos[3];
-		float uv[2];
-	} vtx[] = {
+	Vertex vtx[] =
+	 {
 		{{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f}},
 		{{ 0.5f, 0.5f, 0.0f}, {1.0f, 0.0f}},
 		{{-0.5f,-0.5f, 0.0f}, {0.0f, 1.0f}},
@@ -132,6 +129,17 @@ void Sprite::SetTexture(Texture* tex)
 {
 	m_data.texture = tex;
 }
+void Sprite::SetVertex(Vertex* InData, int nSize)
+{
+	// メッシュ
+	MeshBuffer::Description desc = {};
+	desc.pVtx = &InData;
+	desc.vtxSize = sizeof(Vertex);
+	desc.vtxCount = nSize;
+	desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+	m_data.mesh = std::make_shared<MeshBuffer>();
+	m_data.mesh->Create(desc);
+}
 void Sprite::SetWorld(DirectX::XMFLOAT4X4 world)
 {
 	m_data.matrix[0] = world;
@@ -202,4 +210,22 @@ void Sprite::ReSetSprite()
 	Sprite::SetUVPos({ 0.0f, 0.0f });
 	Sprite::SetUVScale({ 1.0f, 1.0f });
 	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	Vertex vtx[] =
+	{
+	   {{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f}},
+	   {{ 0.5f, 0.5f, 0.0f}, {1.0f, 0.0f}},
+	   {{-0.5f,-0.5f, 0.0f}, {0.0f, 1.0f}},
+	   {{ 0.5f,-0.5f, 0.0f}, {1.0f, 1.0f}},
+	};
+
+	// メッシュ
+	MeshBuffer::Description desc = {};
+	desc.pVtx = vtx;
+	desc.vtxSize = sizeof(Vertex);
+	desc.vtxCount = _countof(vtx);
+	desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+	m_data.mesh = std::make_shared<MeshBuffer>();
+	m_data.mesh->Create(desc);
 }
+

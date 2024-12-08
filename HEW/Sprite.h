@@ -11,6 +11,13 @@
 class Sprite
 {
 public:
+	struct Vertex
+	{
+		float pos[3];
+		float uv[2];
+	};
+
+public:
 	static void Init();
 	static void Uninit();
 	static void Draw();
@@ -21,7 +28,7 @@ public:
 	static void SetUVScale(DirectX::XMFLOAT2 scale);
 	static void SetColor(DirectX::XMFLOAT4 color);
 	static void SetTexture(Texture* tex);
-
+	void SetVertex(Vertex* InData,int nSize);
 	static void SetWorld(DirectX::XMFLOAT4X4 world);
 	static void SetView(DirectX::XMFLOAT4X4 view);
 	static void SetProjection(DirectX::XMFLOAT4X4 proj);
