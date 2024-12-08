@@ -691,10 +691,10 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 				}
 				if (Count > 8)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
-				if (BadShapes)
+				/*if (BadShapes)
 				{
 					MessageBox(NULL, "凹角形でちゃった(はーと)","バカな君へ", MB_OK);
-				}
+				}*/
 				if (!BadShapes)
 				{
 					Shapes_Count[NowShapes] = Count;
