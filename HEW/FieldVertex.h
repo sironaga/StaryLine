@@ -90,10 +90,11 @@ private:
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
 
 	Sprite* m_pSprite;//3D描画用スプライトクラスポインター
+	Sprite* m_pSprite_Line[MAX_LINE];
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
 
 private:
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
 	Field* m_pField;
 };

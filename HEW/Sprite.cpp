@@ -133,7 +133,7 @@ void Sprite::SetVertex(Vertex* InData, int nSize)
 {
 	// ÉÅÉbÉVÉÖ
 	MeshBuffer::Description desc = {};
-	desc.pVtx = &InData;
+	desc.pVtx = InData;
 	desc.vtxSize = sizeof(Vertex);
 	desc.vtxCount = nSize;
 	desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
