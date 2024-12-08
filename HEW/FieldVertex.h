@@ -12,11 +12,12 @@
 #define MAX_CENTER_VERTEX (16)//
 #define MAX_SHAPE_VERTEX (10)//最大N角形
 #define MAX_LINE (300)//最大の線の本数
-#define LINE_SIZE (3.0f)//線のサイズ
-#define STAR_SIZE (7.0f)//頂点の星のサイズ
-#define VERTEX_POS_X (-25.0f)//頂点の描画位置X
-#define VERTEX_POS_Y (67.0f)//頂点の描画位置Y
-#define VERTEX_SIZE (13.0f)//頂点間の間隔
+#define LINE_SIZE (2.0f)//線のサイズ
+#define STAR_SIZE (10.0f)//頂点の星のサイズ
+#define VERTEX_POS_X (-30.0f)//頂点の描画位置X
+#define VERTEX_POS_Y (95.0f)//頂点の描画位置Y
+#define VERTEX_SIZE_X (13.0f)//頂点間の間隔X
+#define VERTEX_SIZE_Y (13.0f)//頂点間の間隔Y
 
 class CPlayer;
 
@@ -78,6 +79,8 @@ private:
 	Texture* m_pTex_FieldLine;
 	int NowLine;//何個目の線か
 	DirectX::XMFLOAT3 DrawLinePos[MAX_LINE];
+
+	Shader* m_pVtx_FieldLine[MAX_LINE];
 
 	bool RoadStop;//プレイヤーの行ける方向
 	DirectX::XMFLOAT3 PlayerPos;//プレイヤーの位置保存

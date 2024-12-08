@@ -13,7 +13,9 @@
 E_GAME_PHASE NowPhase;//今のフェーズ
 E_GAME_PHASE PrevPhase;//過去のフェーズ
 
+Shader* vtx_Shader_FieldLine[MAX_LINE];
 Vertex vtx_FieldLine[MAX_LINE][4];
+Shader* vtx_Shader_Vertex;
 
 CFieldVertex::CFieldVertex()
 	:RoadStop(false)
@@ -26,11 +28,18 @@ CFieldVertex::CFieldVertex()
 	, NowLine(0)
 	, DrawLinePos{}
 	, BreakVertex(-1)
+	, m_pVtx_FieldLine{nullptr}
 {
 	//m_pField = new Field();
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldLine = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
+	vtx_Shader_Vertex = new VertexShader();
+	for (int i = 0; i < MAX_LINE; i++)
+	{
+		vtx_Shader_FieldLine[i] = new VertexShader();
+	}
+	
 
 	StartVertex = START_PLAYER;//始点初期化
 	GoalVertex = START_PLAYER;//終点初期化
@@ -53,8 +62,8 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 5; i++, Vertexp++)
 		{
-			Vertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X;
-			Vertexp->Pos.y = -j * VERTEX_SIZE + VERTEX_POS_Y;
+			Vertexp->Pos.x = i * VERTEX_SIZE_X + VERTEX_POS_X;
+			Vertexp->Pos.y = -j * VERTEX_SIZE_Y + VERTEX_POS_Y;
 			Vertexp->Pos.z = 0;
 			Vertexp->Number = j * 5 + i;
 			Vertexp->Use = false;
@@ -72,8 +81,8 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 4; i++, CenterVertexp++)
 		{
-			CenterVertexp->Pos.x = i * VERTEX_SIZE + VERTEX_POS_X + VERTEX_SIZE / 2.0f;
-			CenterVertexp->Pos.y = -j * VERTEX_SIZE + VERTEX_POS_Y + VERTEX_SIZE / 2.0f;
+			CenterVertexp->Pos.x = i * VERTEX_SIZE_X + VERTEX_POS_X + VERTEX_SIZE_X / 2.0f;
+			CenterVertexp->Pos.y = -j * VERTEX_SIZE_Y + VERTEX_POS_Y + VERTEX_SIZE_Y / 2.0f;
 			CenterVertexp->Pos.z = 0;
 			CenterVertexp->Use = false;
 		}
@@ -102,6 +111,28 @@ CFieldVertex::CFieldVertex()
 	if (FAILED(hrLine)) {
 		MessageBox(NULL, "Field 画像", "Error", MB_OK);
 	}
+
+	Vertex vtx_FieldVertex[] = {
+		//背景表示の座標
+		{{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
+		{{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}},
+		{{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},
+		{{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}},
+	};
+	vtx_Shader_Vertex->WriteBuffer(4, vtx_FieldVertex);
+
+
+	for (int i = 0; i < MAX_LINE; i++)
+	{
+		//背景表示の座標
+		vtx_FieldLine[i][0] = {{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}};
+		vtx_FieldLine[i][1] = {{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}};
+		vtx_FieldLine[i][2] = {{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}};
+		vtx_FieldLine[i][3] = {{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}};
+
+		vtx_Shader_FieldLine[i]->WriteBuffer(4, vtx_FieldLine[i]);
+	}
+
 }
 
 CFieldVertex::~CFieldVertex()
@@ -222,6 +253,8 @@ void CFieldVertex::Update()
 	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
+	vtx_Shader_FieldLine[NowLine]->WriteBuffer(4, vtx_FieldLine[NowLine]);
+	
 }
 
 void CFieldVertex::Draw()
@@ -243,20 +276,17 @@ void CFieldVertex::Draw()
 			if (!Vertexp->Use)m_pSprite->SetTexture(m_pTex_FieldVertex);
 			else m_pSprite->SetTexture(m_pTex_FieldUseVertex);
 			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-
 			m_pSprite->Draw();
 		}
 		//線の描画
 		for (int i = 0; i <= NowLine; i++)
 		{
 			//スプライトの設定//大きさの設定
-			DrawSetting({ (vtx_FieldLine[i][0].pos[0] + vtx_FieldLine[i][3].pos[0]) / 2.0f,(vtx_FieldLine[i][0].pos[1] + vtx_FieldLine[i][3].pos[1]) / 2.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
-
-			//
-
+			//DrawSetting({ (vtx_FieldLine[i][0].pos[0] + vtx_FieldLine[i][3].pos[0]) / 2.0f,(vtx_FieldLine[i][0].pos[1] + vtx_FieldLine[i][3].pos[1]) / 2.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
+			DrawSetting({0.0f , 0.0f, 0.0f}, { LINE_SIZE,LINE_SIZE ,1.0f});
+			
 			//背景色の設定
 			m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
 			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
 			m_pSprite->SetTexture(m_pTex_FieldLine);
 
