@@ -308,16 +308,22 @@ void CBattle::Update(void)
 	m_nBattleTime++;//戦闘時間の更新
 
 	//勝敗判定
-	if (m_pEnemyLeader == nullptr)
+	if (GetScene() == SCENE_GAME)
 	{
-		MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
-		ChangeScene(SCENE_TITLE);
+		if (m_pEnemyLeader == nullptr)
+		{
+			MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
+			ChangeScene(SCENE_TITLE);
+		}
 	}
 
-	if (m_pAllyLeader == nullptr)
+	if (GetScene() == SCENE_GAME)
 	{
-		MessageBox(NULL, "プレイヤーが倒されたため敗北", "勝敗", MB_OK);
-		ChangeScene(SCENE_TITLE);
+		if (m_pAllyLeader == nullptr)
+		{
+			MessageBox(NULL, "プレイヤーが倒されたため敗北", "勝敗", MB_OK);
+			ChangeScene(SCENE_TITLE);
+		}
 	}
 }
 

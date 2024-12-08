@@ -207,4 +207,9 @@ void ChangeScene(E_SCENE_TYPE next)
 	}
 }
 
+E_SCENE_TYPE GetScene(void)
+{
+	return g_SceneType;
+}
+
 // EOF

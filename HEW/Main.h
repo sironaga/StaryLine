@@ -29,4 +29,5 @@ enum E_SCENE_TYPE
 //プロトタイプ宣言
 void ChangeScene(E_SCENE_TYPE next);	//シーン遷移を行う関数
 
+E_SCENE_TYPE GetScene(void);
 #endif // __MAIN_H__
