@@ -128,6 +128,8 @@ protected:
 	bool m_bIsHit;					//UŒ‚‚ğó‚¯‚½‚©‚Ì”»’è
 
 	CHpUI* m_pHpGage;	//‘Ì—ÍƒQ[ƒW
+
+	IXAudio2SourceVoice* m_pSourceAttack;
 	//CEffect* m_pEffect;
 
 	/*•Ï”‚ÌSet&Get*/

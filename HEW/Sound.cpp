@@ -24,11 +24,14 @@ CSound::CSound(const std::wstring& fileName)
 	}
 	if (FAILED(result)) MessageBox(NULL, "m_pMasteringVoiceの初期化失敗", " ", MB_OK); 
 	if (!LoadWaveFile(fileName, &waveData)) MessageBox(NULL, "ファイルの読み込み失敗", " ", MB_OK); 
+	
 }
 
 CSound::~CSound()
 {
-	if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
+	
+		if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
+	
 	if(m_pMasteringVoice)m_pMasteringVoice->DestroyVoice();
 	if (m_pXAudio2)m_pXAudio2->Release();
 	
@@ -174,7 +177,8 @@ bool CSound::CreateSourceVoice()
 	// 1サンプル当たりのバッファサイズを算出
 	waveFormat.wBitsPerSample = waveData.m_wavFormat.nBlockAlign * 8 / waveData.m_wavFormat.nChannels;
 
-	// ソースボイスの作成 ここではフォーマットのみ渡っている
+
+		// ソースボイスの作成 ここではフォーマットのみ渡っている
 		HRESULT result = m_pXAudio2->CreateSourceVoice(&m_pSourceVoice, (WAVEFORMATEX*)&waveFormat);
 		if (FAILED(result))
 		{
@@ -189,6 +193,11 @@ bool CSound::CreateSourceVoice()
 }
 IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 {
+	XAUDIO2_VOICE_STATE state;
+	int i = 0;
+	
+		m_pSourceVoice->GetState(&state);
+		
 	
 	//================================
 	// 波形データ(音データ本体)をソースボイスに渡す
@@ -208,7 +217,7 @@ IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 	}
 	// 実際に音を鳴らす
 	//m_pSourceVoice[i]->Start();
-
+	
 	return m_pSourceVoice;
 }
 
