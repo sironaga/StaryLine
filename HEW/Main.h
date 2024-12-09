@@ -30,4 +30,8 @@ enum E_SCENE_TYPE
 void ChangeScene(E_SCENE_TYPE next);	//ƒV[ƒ“‘JˆÚ‚ğs‚¤ŠÖ”
 
 E_SCENE_TYPE GetScene(void);
+
+void SetRender2D();
+void SetRender3D();
+
 #endif // __MAIN_H__
