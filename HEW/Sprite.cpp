@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include <cmath>
 
 Sprite::Data Sprite::m_data;
 std::shared_ptr<VertexShader> Sprite::m_defVS;
@@ -211,21 +212,59 @@ void Sprite::ReSetSprite()
 	Sprite::SetUVScale({ 1.0f, 1.0f });
 	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 
-	Vertex vtx[] =
-	{
-	   {{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f}},
-	   {{ 0.5f, 0.5f, 0.0f}, {1.0f, 0.0f}},
-	   {{-0.5f,-0.5f, 0.0f}, {0.0f, 1.0f}},
-	   {{ 0.5f,-0.5f, 0.0f}, {1.0f, 1.0f}},
-	};
-
-	// ÉÅÉbÉVÉÖ
-	MeshBuffer::Description desc = {};
-	desc.pVtx = vtx;
-	desc.vtxSize = sizeof(Vertex);
-	desc.vtxCount = _countof(vtx);
-	desc.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-	m_data.mesh = std::make_shared<MeshBuffer>();
-	m_data.mesh->Create(desc);
 }
 
+void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight)
+{
+	DirectX::XMFLOAT3 Calculated;
+	DirectX::XMFLOAT3 StartCenter =
+	{	(StartPosLeft.x + StartPosRight.x) / 2.0f,
+		(StartPosLeft.y + StartPosRight.y) / 2.0f,
+		(StartPosLeft.z + StartPosRight.z) / 2.0f };
+	DirectX::XMFLOAT3 NowCenter =
+	{	( NowPosLeft.x + NowPosRight.x) / 2.0f,
+		( NowPosLeft.y + NowPosRight.y) / 2.0f,
+		( NowPosLeft.z + NowPosRight.z) / 2.0f };
+
+	Calculated.x = ((StartCenter.x + NowCenter.x) / 2.0f);
+	Calculated.y = ((StartCenter.y + NowCenter.y) / 2.0f);
+	Calculated.z = ((StartCenter.z + NowCenter.z) / 2.0f);
+
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		Calculated.x,
+		Calculated.y,
+		Calculated.z,
+		0.0f
+	));
+
+	DirectX::XMFLOAT3 delta;
+	delta.x = StartCenter.x - NowCenter.x;
+	delta.y = StartCenter.y - NowCenter.y;
+	delta.z = StartCenter.z - NowCenter.z;
+
+	DirectX::XMFLOAT3 Theta;
+	Theta.x = std::atan2(delta.z, delta.y);
+	Theta.y = std::atan2(delta.x, delta.z);
+	Theta.z = std::atan2(delta.y, delta.x);
+
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		0.0f,
+		0.0f,
+		Theta.z,
+		0.0f
+	));
+	if (delta.x < 0.0f) delta.x * -1.0f;
+	if (delta.y < 0.0f) delta.y * -1.0f;
+	if (delta.z < 0.0f) delta.z * -1.0f;
+	float size = delta.x + delta.y + delta.z;
+
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size, 2.5f, delta.z);
+
+	DirectX::XMMATRIX mat = S * R * T;
+	mat = DirectX::XMMatrixTranspose(mat);
+
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMStoreFloat4x4(&world, mat);
+
+	m_data.matrix[0] = world;
+}

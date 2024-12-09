@@ -1,8 +1,9 @@
 #pragma once
 
-#include"Sprite.h"
-#include"Texture.h"
-#include"_StructList.h"
+#include "Sprite.h"
+#include "Texture.h"
+#include "_StructList.h"
+#include "Defines.h"
 
 class SpriteEx
 {
@@ -18,7 +19,7 @@ public:
 	void SetUvSize(float X, float Y);
 	void SetUvPos(float X, float Y);
 
-	void SetCenterPosAndRotation(FLOAT3 StartPos, FLOAT3 NowPos);
+	void SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos);
 
 	void SetView(DirectX::XMFLOAT4X4 InView);
 	void SetProjection(DirectX::XMFLOAT4X4 InProjection);
@@ -32,7 +33,5 @@ private:
 	DirectX::XMMATRIX T;
 	DirectX::XMMATRIX R;
 	DirectX::XMMATRIX S;
-
-
 };
 

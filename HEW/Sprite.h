@@ -38,6 +38,8 @@ public:
 
 	static void ReSetSprite();
 
+	void SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight);
+
 	// ＜テクスチャアニメーション関数＞
 	// 第1引数に横の分割数、第2引数に縦の分割数、第3引数にアニメーションが次に移るまでのフレーム数を入れてください
 	// この関数を使う際は、メンバ変数などでCVector2型の変数(m_fPosTex)を作り、そこに一旦値を入れるようにしてください

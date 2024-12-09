@@ -1,7 +1,7 @@
 // 3D用のSpriteを簡単にする拡張クラス
 
 #include "SpriteEx.h"
-#include<cmath>
+#include <cmath>
 
 SpriteEx::SpriteEx(const char *File)
 {
@@ -97,38 +97,38 @@ void SpriteEx::SetUvPos(float X, float Y)
 	m_Sprite->SetUVPos(RePos);
 }
 
-void SpriteEx::SetCenterPosAndRotation(FLOAT3 StartPos, FLOAT3 NowPos)
+void SpriteEx::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos)
 {
-	FLOAT3 Calculated;
-	Calculated.X = ((StartPos.X + NowPos.X) / 2);
-	Calculated.Y = ((StartPos.Y + NowPos.Y) / 2);
-	Calculated.Z - ((StartPos.Z + NowPos.Y) / 2);
+	DirectX::XMFLOAT3 Calculated;
+	Calculated.x = ((StartPos.x + NowPos.x) / 2);
+	Calculated.y = ((StartPos.y + NowPos.y) / 2);
+	Calculated.z - ((StartPos.z + NowPos.z) / 2);
 
 	T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
-		Calculated.X,
-		Calculated.Y,
-		Calculated.Z,
+		Calculated.x,
+		Calculated.y,
+		Calculated.z,
 		0.0f
 	));
 
-	FLOAT3 delta;
-	delta.X = NowPos.X - StartPos.X;
-	delta.Y = NowPos.Y - StartPos.Y;
-	delta.Z = NowPos.Z - StartPos.Z;
+	DirectX::XMFLOAT3 delta;
+	delta.x = NowPos.x - StartPos.x;
+	delta.y = NowPos.y - StartPos.y;
+	delta.z = NowPos.z - StartPos.z;
 
-	FLOAT3 Theta;
-	Theta.X = std::atan2(delta.Z, delta.Y);
-	Theta.Y = std::atan2(delta.X, delta.Z);
-	Theta.Z = std::atan2(delta.Y, delta.X);
+	DirectX::XMFLOAT3 Theta;
+	Theta.x = std::atan2(delta.z, delta.y);
+	Theta.y = std::atan2(delta.x, delta.z);
+	Theta.z = std::atan2(delta.y, delta.x);
 
 	R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
-		Theta.X,
-		Theta.Y,
-		Theta.Z,
+		Theta.x,
+		Theta.y,
+		Theta.z,
 		0.0f
 	));
 
-	S = DirectX::XMMatrixScaling(delta.X, delta.Y, delta.X);
+	S = DirectX::XMMatrixScaling(delta.x, delta.y, delta.z);
 }
 
 void SpriteEx::SetView(DirectX::XMFLOAT4X4 InView)

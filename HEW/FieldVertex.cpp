@@ -5,17 +5,15 @@
 #include "Player.h"
 #include <math.h>
 #include "SceneGame.h"
-#include"SpriteDrawer.h"
-#include"_StructList.h"
-#include"Defines.h"
+#include "SpriteDrawer.h"
+#include "_StructList.h"
+#include "Defines.h"
 #include "Main.h"
 
 E_GAME_PHASE NowPhase;//今のフェーズ
 E_GAME_PHASE PrevPhase;//過去のフェーズ
 
-Shader* vtx_Shader_FieldLine[MAX_LINE];
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
-Shader* vtx_Shader_Vertex;
 
 CFieldVertex::CFieldVertex()
 	:RoadStop(false)
@@ -31,34 +29,38 @@ CFieldVertex::CFieldVertex()
 	, m_pVtx_FieldLine{nullptr}
 	, m_pSprite_Line{nullptr}
 {
-	//m_pField = new Field();
-	m_pSprite = new Sprite();
+	// 星の描画用
+	// スプライト
+	m_pSprite_Star = new Sprite();
+	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
-	m_pTex_FieldLine = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
-	vtx_Shader_Vertex = new VertexShader();
+	
+	// 線の描画用
+	// スプライト
 	for (int i = 0; i < MAX_LINE; i++)
 	{
-		vtx_Shader_FieldLine[i] = new VertexShader();
 		m_pSprite_Line[i] = new Sprite();
 	}
+	// テクスチャ
+	m_pTex_FieldLine = new Texture();
 	
 
-	StartVertex = START_PLAYER;//始点初期化
-	GoalVertex = START_PLAYER;//終点初期化
-	NowShapes = 0;//格納した図形の数初期化
+	StartVertex = START_PLAYER;	// 始点初期化
+	GoalVertex = START_PLAYER;	// 終点初期化
+	NowShapes = 0;				// 格納した図形の数初期化
 
-	NowPhase = E_GAME_PHASE::DRAWING;//今のフェーズ初期化
-	PrevPhase = E_GAME_PHASE::DRAWING;//過去のフェーズ初期化
+	NowPhase = E_GAME_PHASE::DRAWING;	// 今のフェーズ初期化
+	PrevPhase = E_GAME_PHASE::DRAWING;	// 過去のフェーズ初期化
 
-	//配列-1で初期化
+	// 各配列を-1で初期化
 	Fill(OrderVertex, -1);
 	Fill(Comparison_Shapes_Vertex_Save, -1);
 	Fill(Shapes_Vertex_Save, -1);
 	Fill(Shapes_Count, -1);
 	Fill(Comparison, -1);
 
-	//頂点２５個座標初期化
+	// 頂点２５個座標情報初期化
 	FieldVertex* Vertexp;
 	Vertexp = m_tVertex;
 	for (int j = 0; j < 5; j++)
@@ -77,7 +79,7 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
-	//センター頂点16個座標初期化
+	//センター頂点16個座標情報初期化
 	CenterVertex* CenterVertexp;
 	CenterVertexp = m_tCenter_Vertex;
 	for (int j = 0; j < 4; j++)
@@ -136,9 +138,9 @@ CFieldVertex::CFieldVertex()
 
 CFieldVertex::~CFieldVertex()
 {
-	if (m_pTex_FieldLine)delete m_pTex_FieldLine;
-	if (m_pTex_FieldUseVertex)delete m_pTex_FieldUseVertex;
-	if (m_pTex_FieldVertex)delete m_pTex_FieldVertex;
+	SAFE_DELETE(m_pTex_FieldLine);
+	SAFE_DELETE(m_pTex_FieldUseVertex);
+	SAFE_DELETE(m_pTex_FieldVertex);
 }
 
 void CFieldVertex::Update()
@@ -246,12 +248,15 @@ void CFieldVertex::Update()
 
 	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//左上のｘ座標
 	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//左上のｙ座標
-	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
-	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
 	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//右上のｘ座標
 	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
+
+	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
+	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
+
+
 }
 
 void CFieldVertex::Draw()
@@ -263,24 +268,45 @@ void CFieldVertex::Draw()
 		Vertexp = m_tVertex;
 		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 		{
-			//スプライトの設定//大きさの設定
-			DrawSetting({ Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f},m_pSprite);
-
-			//背景色の設定
-			m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			// スプライトの設定		// 座標の設定						// 大きさの設定
+			DrawSetting({  Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f }, m_pSprite_Star);
+			
+			// 背景色の設定
+			m_pSprite_Star->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			if (!Vertexp->Use)m_pSprite->SetTexture(m_pTex_FieldVertex);
-			else m_pSprite->SetTexture(m_pTex_FieldUseVertex);
+			if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
+			else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
 			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-			m_pSprite->Draw();
+			m_pSprite_Star->Draw();
 		}
 		//線の描画
+		m_pSprite_Line[NowLine]->SetCenterPosAndRotation(
+			{
+				vtx_FieldLine[NowLine][1].pos[0],
+				vtx_FieldLine[NowLine][1].pos[1],
+				0.0f
+			},
+			{
+				vtx_FieldLine[NowLine][3].pos[0],
+				vtx_FieldLine[NowLine][3].pos[1],
+				0.0f
+			},
+			{	vtx_FieldLine[NowLine][0].pos[0],
+				vtx_FieldLine[NowLine][0].pos[1],
+				0.0f 
+			},
+			{
+				vtx_FieldLine[NowLine][2].pos[0],
+				vtx_FieldLine[NowLine][2].pos[1],
+				0.0f
+			}
+			);
 		for (int i = 0; i <= NowLine; i++)
 		{
 			//スプライトの設定//大きさの設定
 			//DrawSetting({ (vtx_FieldLine[i][0].pos[0] + vtx_FieldLine[i][3].pos[0]) / 2.0f,(vtx_FieldLine[i][0].pos[1] + vtx_FieldLine[i][3].pos[1]) / 2.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
-			DrawSetting({0.0f + i * 4  , 0.0f, 0.0f}, { LINE_SIZE,LINE_SIZE ,1.0f},m_pSprite_Line[i]);
+			//DrawSetting({0.0f + i * 4  , 0.0f, 0.0f}, { LINE_SIZE,LINE_SIZE ,1.0f},m_pSprite_Line[i]);
 			
 			//背景色の設定
 			m_pSprite_Line[i]->SetColor({1.0f,1.0f,1.0f,1.0f});
