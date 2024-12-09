@@ -24,10 +24,6 @@ Field::Field()
 		}
 	}
 
-	RenderTarget* pRTV = GetDefaultRTV(); // デフォルトのRenderTargetViewを取得 
-	DepthStencil* pDSV = GetDefaultDSV(); // デフォルトのDepthStencilViewを取得
-	SetRenderTargets(1, &pRTV, pDSV); //第３引数がnullの場合、２D表示となる
-
 	FieldModelInit(m_Field_Model, MAX_FIELD_MODEL);
 }
 
@@ -64,6 +60,7 @@ void Field::Update()
 
 void Field::Draw()
 {
+	SetRender3D();
 	ModelDraw(m_Field_Model, MAX_FIELD_MODEL);
 }
 

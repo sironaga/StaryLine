@@ -261,6 +261,7 @@ void CFieldVertex::Update()
 
 void CFieldVertex::Draw()
 {
+	SetRender3D();
 	//今のフェーズがDrawの時フィールドの頂点描画
 	if (NowPhase == E_GAME_PHASE::DRAWING)
 	{
