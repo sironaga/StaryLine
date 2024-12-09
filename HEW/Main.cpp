@@ -20,6 +20,7 @@
 //--- グローバル変数
 E_SCENE_TYPE g_SceneType;
 Camera* g_Camera;
+IXAudio2SourceVoice* g_pSourseTitleSE;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -41,7 +42,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// シーン作成
 	g_SceneType = SCENE_TITLE;
 	InitSceneTitle();
-
+	g_pSourseTitleSE = GetSound(SE_DECISION, false);
 	g_Camera = new CameraDebug();
 
 	return hr;
@@ -58,7 +59,7 @@ void Uninit()
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
-
+	g_pSourseTitleSE = nullptr;
 }
 
 void Update()
@@ -181,6 +182,8 @@ DirectX::XMFLOAT4X4 GetProj()
 
 void ChangeScene(E_SCENE_TYPE next)
 {
+	g_pSourseTitleSE->SetVolume(0.3f);
+	g_pSourseTitleSE->Start();
 	//現在のシーンの終了
 	switch (g_SceneType)
 	{
