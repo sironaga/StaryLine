@@ -122,6 +122,7 @@ void CPlayer::Draw()
 	//m_pPlayer->Draw();
 	//m_pPlayer->ReSetSprite();
 
+	SetRender2D();
 	//スプライトの座標の設定
 	SetSpritePos(0.0f, 0.0f);
 
@@ -140,6 +141,7 @@ void CPlayer::Draw()
 	// スプライト設定のリセット
 	ReSetSprite();;
 
+	SetRender3D();
 	m_pModel->SetPostion(m_tPos.x + PLAYER_AJUST_POSX, m_tPos.y + PLAYER_AJUST_POSY, m_tPos.z);
 	m_pModel->SetRotation(DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f);
 	m_pModel->SetScale(1.0f, 1.0f, 1.0f);
