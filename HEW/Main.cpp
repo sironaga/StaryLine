@@ -21,6 +21,8 @@
 E_SCENE_TYPE g_SceneType;
 Camera* g_Camera;
 IXAudio2SourceVoice* g_pSourseTitleSE;
+RenderTarget* pRTV;
+DepthStencil* pDSV;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -37,6 +39,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 	srand(timeGetTime());
+
+	pRTV = GetDefaultRTV();
+	pDSV = GetDefaultDSV();
 
 	// シーン作成
 	// シーン作成
@@ -215,6 +220,16 @@ void ChangeScene(E_SCENE_TYPE next)
 E_SCENE_TYPE GetScene(void)
 {
 	return g_SceneType;
+}
+
+void SetRender2D()
+{
+	SetRenderTargets(1, &pRTV, nullptr);
+}
+
+void SetRender3D()
+{
+	SetRenderTargets(1, &pRTV, pDSV);
 }
 
 // EOF
