@@ -7,6 +7,7 @@
 #include "Battle.h"
 #include <d3d11.h>
 #include "Field.h"
+#include "Sprite.h"
 
 #define MAX_VERTEX (25)//頂点数
 #define MAX_CENTER_VERTEX (16)//
@@ -16,8 +17,8 @@
 #define STAR_SIZE (10.0f)//頂点の星のサイズ
 #define VERTEX_POS_X (-30.0f)//頂点の描画位置X
 #define VERTEX_POS_Y (95.0f)//頂点の描画位置Y
-#define VERTEX_SIZE_X (13.0f)//頂点間の間隔X
-#define VERTEX_SIZE_Y (13.0f)//頂点間の間隔Y
+#define VERTEX_SIZE_X (15.0f)//頂点間の間隔X
+#define VERTEX_SIZE_Y (15.0f)//頂点間の間隔Y
 
 class CPlayer;
 
@@ -89,7 +90,7 @@ private:
 
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
 
-	Sprite* m_pSprite;//3D描画用スプライトクラスポインター
+	Sprite* m_pSprite_Star;//3D描画用スプライトクラスポインター
 	Sprite* m_pSprite_Line[MAX_LINE];
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
