@@ -32,7 +32,7 @@ public:
 
 	//void ReDrawingInit(void);	//再描画する際の初期化処理
 
-	void CreateEntity();			//エンティティ生成
+	//void CreateEntity();			//エンティティ生成
 private:
 	void TimeLapse(void);
 
@@ -49,11 +49,15 @@ private:
 	int m_nBattleTime;					//戦闘時間
 	bool m_bFirstFight;					//初期戦闘したかどうか
 	int m_nFirstPosPattern;				//初期位置のパターン
-
+	/*＝＝＝＝＝＝＝＝＝＝＝＝＝リーダー関係＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+private:
+	CLeader* m_pAllyLeader;				//プレイヤー(コア)
+	CLeader* m_pEnemyLeader;			//敵ボスのクラスポインタ
+public:
+	void CreateLeader(void);			//リーダーの生成
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
-	CLeader* m_pAllyLeader;									//プレイヤー(コア)
 
 	EntityData m_tAllyData[MAX_ALLY];					//生成予定の味方情報
 	int m_nAllyCount;									//生成した味方のカウント
@@ -68,13 +72,12 @@ public:
 	//int GetAllyBufferCount(void) { return m_nAllyBufferCount; }		//味方バッファーカウントのGet
 
 	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
-private:
-	void CreateAllyData(EntityData InData);			//味方作成
+public:
+	void CreateAlly(void);			//味方作成
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CEnemy* m_pEnemy[MAX_ENEMY];					//敵クラスポインタ
-	CLeader* m_pEnemyLeader;						//敵ボスのクラスポインタ
 
 	EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
 	int m_nEnemyCount;								//生成した敵のカウント
@@ -87,7 +90,7 @@ public:
 
 	void SaveEnemyData(int InCornerCount, int InPattern, float InSize);		//敵要素保存
 private:
-	void CreateEnemyData(EntityData InDate);	//敵作成
+	void CreateEnemy(void);	//敵作成
 
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝ デバック関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝*/
