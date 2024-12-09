@@ -98,6 +98,8 @@ void UninitSceneGame()
 //更新処理
 void UpdateSceneGame()
 {
+	g_pBattle->CreateLeader();
+
 	g_tTime.GameTime++;							// ゲーム中は経過時間を記録し続ける
 	g_tTime.GameSTime = g_tTime.GameTime / 60;	// 秒数(STime)に変換する
 
@@ -125,7 +127,7 @@ void UpdateSceneGame()
 	// 召喚開始の時間になったら
 	if ((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust) == g_tTime.GameSTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
-		g_pBattle->CreateEntity();	// キャラクターのデータを生成する
+		g_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
 	// 経過時間が召喚開始の時間からクールタイム開始の時間になるまで

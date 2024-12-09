@@ -192,7 +192,7 @@ void CBattle::Update(void)
 	//	}
 	//}
 	TimeLapse();
-	CreateEntity();
+	CreateEnemy();
 
 	//位置セッティング
 	FirstPosSetting();
@@ -506,61 +506,41 @@ void CBattle::SaveEnemyData(int InCornerCount,int InPattern, float InSize)
 	m_nEnemyDateCount[InPattern]++;
 }
 
-void CBattle::CreateEntity()
-{
-  	if (m_pAllyLeader == nullptr)
-	{
-		CVector3<float> InFirstPos;
-
-		InFirstPos.X = ALLYCORE_POSX;
-		InFirstPos.Y = 8.0f;
-		InFirstPos.Z = ALLYCORE_POSZ;
-
-		m_pAllyLeader = new CLeader(2.0f, InFirstPos, Leader_Player);
-	}
-	if (m_pEnemyLeader == nullptr)
-	{
-		CVector3<float> BossFirstPos;
-
-		BossFirstPos.X = ENEMYBOSSCORE_POSX;
-		BossFirstPos.Y = 8.0f;
-		BossFirstPos.Z = ENEMYBOSSCORE_POSZ;
-
-		m_pEnemyLeader = new CLeader(2.0f, BossFirstPos, Leader_Boss);
-	}
-
-	//指定された数だけ生成する
-	while (m_nAllyDateCount)
-	{
-		CreateAllyData(m_tAllyData[0]);
-
-		//生成に使用したため情報を消して後ろの情報を前詰めにする
-		for (int i = 0; i + 1 < MAX_ALLY; i++)
-		{
-			m_tAllyData[i] = m_tAllyData[i + 1];
-		}
-		//保存済みの総数を減らす
-		m_nAllyDateCount--;
-	}
-
-	//指定された数だけ生成する
-	while (m_nCreateEnemyNum)
-	{
-		//敵を生成する
-		CreateEnemyData(m_tEnemyData[m_nSelectPattern][m_nCreateEnemyNum - 1]);
-
-		////生成に使用したため情報を消して後ろの情報を前詰めにする
-		//for (int i = 0; i + 1 < MAX_ENEMY; i++)
-		//{
-		//	m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
-		//}
-		////保存済みの総数を減らす
-		//m_nEnemyDateCount[m_nNowWave]--;
-		
-		m_nCreateEnemyNum--;
-	}
-
-}
+//void CBattle::CreateEntity()
+//{
+//
+//	//指定された数だけ生成する
+//	//while (m_nAllyDateCount)
+//	//{
+//	//	CreateAllyData(m_tAllyData[0]);
+//
+//	//	//生成に使用したため情報を消して後ろの情報を前詰めにする
+//	//	for (int i = 0; i + 1 < MAX_ALLY; i++)
+//	//	{
+//	//		m_tAllyData[i] = m_tAllyData[i + 1];
+//	//	}
+//	//	//保存済みの総数を減らす
+//	//	m_nAllyDateCount--;
+//	//}
+//
+//	//指定された数だけ生成する
+//	//while (m_nCreateEnemyNum)
+//	//{
+//	//	//敵を生成する
+//	//	CreateEnemyData(m_tEnemyData[m_nSelectPattern][m_nCreateEnemyNum - 1]);
+//
+//	//	////生成に使用したため情報を消して後ろの情報を前詰めにする
+//	//	//for (int i = 0; i + 1 < MAX_ENEMY; i++)
+//	//	//{
+//	//	//	m_tEnemyData[m_nNowWave][m_nSelectPattern][i] = m_tEnemyData[m_nNowWave][m_nSelectPattern][i + 1];
+//	//	//}
+//	//	////保存済みの総数を減らす
+//	//	//m_nEnemyDateCount[m_nNowWave]--;
+//	//	
+//	//	m_nCreateEnemyNum--;
+//	//}
+//
+//}
 
 #define Time(Num) Num * 60
 
@@ -588,27 +568,36 @@ void CBattle::TimeLapse(void)
 	}
 }
 
-void CBattle::CreateAllyData(EntityData InData)
+void CBattle::CreateAlly(void)
 {
-	//if (m_tAllyData[m_nAllyCount].nCornerCount < 6)
-	//{
-	m_pAlly[m_nAllyCount] = new CAlly(InData.nCornerCount, InData.Size);
-	//生成数を加算
-	m_nAllyCount++;
-	//}
-	//else
-	//{
-	//	m_pAllyBuffer[m_nAllyBufferCount] = new CAllyBuffer(InData.nCornerCount, InData.Size, InFirstPos, m_pCamera);
-	//	//生成数を加算
-	//	m_nAllyBufferCount++;
-	//}
+	while (m_nAllyDateCount)
+	{
+
+		m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount, m_tAllyData[0].Size);
+		//生成数を加算
+		m_nAllyCount++;
+
+		//生成に使用したため情報を消して後ろの情報を前詰めにする
+		for (int i = 0; i + 1 < MAX_ALLY; i++)
+		{
+			m_tAllyData[i] = m_tAllyData[i + 1];
+		}
+		//保存済みの総数を減らす
+		m_nAllyDateCount--;
+	}
 }
 
-void CBattle::CreateEnemyData(EntityData InDate)
+void CBattle::CreateEnemy(void)
 {
-	m_pEnemy[m_nEnemyCount] = new CEnemy(InDate.nCornerCount,InDate.Size);
-	//生成数を加算
-	m_nEnemyCount++;
+	while (m_nCreateEnemyNum)
+	{
+
+		m_pEnemy[m_nEnemyCount] = new CEnemy(m_tEnemyData[m_nSelectPattern][m_nCreateEnemyNum - 1].nCornerCount, m_tEnemyData[m_nSelectPattern][m_nCreateEnemyNum - 1].Size);
+		//生成数を加算
+		m_nEnemyCount++;
+
+		m_nCreateEnemyNum--;
+	}
 }
 
 void CBattle::Search(int i, Entity Entity)
@@ -998,6 +987,30 @@ void CBattle::FirstPosSetting()
 				break;
 			}
 		}
+	}
+}
+
+void CBattle::CreateLeader(void)
+{
+	if (m_pAllyLeader == nullptr)
+	{
+		CVector3<float> InFirstPos;
+
+		InFirstPos.X = ALLYCORE_POSX;
+		InFirstPos.Y = 8.0f;
+		InFirstPos.Z = ALLYCORE_POSZ;
+
+		m_pAllyLeader = new CLeader(2.0f, InFirstPos, Leader_Player);
+	}
+	if (m_pEnemyLeader == nullptr)
+	{
+		CVector3<float> BossFirstPos;
+
+		BossFirstPos.X = ENEMYBOSSCORE_POSX;
+		BossFirstPos.Y = 8.0f;
+		BossFirstPos.Z = ENEMYBOSSCORE_POSZ;
+
+		m_pEnemyLeader = new CLeader(2.0f, BossFirstPos, Leader_Boss);
 	}
 }
 
