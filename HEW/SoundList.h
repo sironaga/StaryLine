@@ -15,6 +15,8 @@ enum NAME
 	,SE_COMPLETE
 	//各星に着いた時SE
 	,SE_ARRIVAL
+	//攻撃音
+	,SE_ATTACK
 	//タイトルBGM
 	,BGM_TITLE
 	//バトルBGM
