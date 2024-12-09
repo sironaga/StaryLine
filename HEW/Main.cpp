@@ -182,6 +182,8 @@ DirectX::XMFLOAT4X4 GetProj()
 
 void ChangeScene(E_SCENE_TYPE next)
 {
+	UnInitSound();
+	InitSound();
 	g_pSourseTitleSE->SetVolume(0.3f);
 	g_pSourseTitleSE->Start();
 	//Œ»İ‚ÌƒV[ƒ“‚ÌI—¹

@@ -130,6 +130,7 @@ protected:
 	CHpUI* m_pHpGage;	//‘Ì—ÍƒQ[ƒW
 
 	IXAudio2SourceVoice* m_pSourceAttack;
+	int m_Number;
 	//CEffect* m_pEffect;
 
 	/*•Ï”‚ÌSet&Get*/

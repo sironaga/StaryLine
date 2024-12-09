@@ -91,6 +91,7 @@ void UninitSceneGame()
 	}
 	if (g_pSourseGameBGM)
 	{
+		g_pSourseGameBGM->Stop();
 		g_pSourseGameBGM = nullptr;
 	}
 }

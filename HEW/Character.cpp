@@ -133,6 +133,7 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	
 	
 	m_pSourceAttack = GetSound(SE_ATTACK, false);
+	m_Number = GetSoundNumber(SE_ATTACK);
 	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
 
@@ -183,6 +184,8 @@ CFighter::~CFighter()
 		delete g_pEnemyTex[i];
 		g_pEnemyTex[i] = nullptr;
 	}
+
+	m_pSourceAttack->DestroyVoice();
 }
 
 void CFighter::CollisionDraw(void)

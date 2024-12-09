@@ -28,7 +28,8 @@ CSound* g_Source2;
 void InitSound()
 {
 	
-	
+	g_Source = new CSound(FILENAME_BATTLEBGM);
+	g_Soundvoise[BGM_BATTLE].m_Sound.push_back(g_Source);
 	
 }
 
@@ -97,4 +98,8 @@ IXAudio2SourceVoice* GetSound(NAME inName,bool Loop)
 	IXAudio2SourceVoice* g_Source2 = g_Soundvoise[inName].m_Sound[g_Soundvoise[inName].i]->PlayWaveSound(Loop);
 	g_Soundvoise[inName].i++;
 	return g_Source2;
+}
+int GetSoundNumber(NAME inName)
+{
+	return g_Soundvoise[inName].i;
 }
