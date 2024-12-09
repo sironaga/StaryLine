@@ -29,6 +29,7 @@ private:
 	IXAudio2* m_pXAudio2;
 	IXAudio2MasteringVoice* m_pMasteringVoice;
 	IXAudio2SourceVoice* m_pSourceVoice;
+	bool m_use;
 	WaveData waveData;
 	XAUDIO2_BUFFER m_xAudio2Buffer{};
 	bool LoadWaveFile(const std::wstring& wFilePath, WaveData* outData);
@@ -36,6 +37,6 @@ private:
 
 public:
 	IXAudio2SourceVoice* PlayWaveSound(bool loop);
-	
+	XAUDIO2_BUFFER GetBuffer();
 };
 

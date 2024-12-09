@@ -2,6 +2,7 @@
 #include "DirectXTex/TextureLoad.h"
 #include "FieldVertex.h"
 #include "Main.h"
+#include "SoundList.h"
 
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((Num / 2) + (m_tSize.X))	//キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(Num) ((Num / 2) + (m_tSize.Y))	//キャラクターの縦の索敵当たり判定(索敵範囲)
@@ -51,6 +52,8 @@ Sprite* g_pSprite;
 
 CFieldVertex* g_pFieldVtx;
 
+
+
 void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み込み
 {
 	g_pFieldVtx = InAddress;
@@ -97,6 +100,9 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	g_pHpGageTex[0]->Create("Asset/HpGage/HpGageBase.png");
 	g_pHpGageTex[1]->Create("Asset/HpGage/HpGage.png");
+
+	
+	
 }
 
 CFighter::CFighter(int InCornerCount, float InSize)
@@ -124,7 +130,10 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-
+	
+	
+	m_pSourceAttack = GetSound(SE_ATTACK, false);
+	m_Number = GetSoundNumber(SE_ATTACK);
 	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
 
@@ -175,6 +184,8 @@ CFighter::~CFighter()
 		delete g_pEnemyTex[i];
 		g_pEnemyTex[i] = nullptr;
 	}
+
+	m_pSourceAttack->DestroyVoice();
 }
 
 void CFighter::CollisionDraw(void)
@@ -357,6 +368,7 @@ CAlly::CAlly(int InCornerCount, float InSize)
 
 CAlly::~CAlly()
 {
+	
 	//if (m_pVtx) m_pVtx->Release();
 }
 
@@ -414,14 +426,29 @@ void CAlly::CreateUpdate(void)
 
 void CAlly::BattleUpdate(void)
 {
-	//戦闘アニメーション(攻撃範囲内に敵がいたら)
-	if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+	if (m_bIsAttack)
 	{
-		//アニメーション処理
+		//攻撃音
+		if (m_pSourceAttack)
+		{
+			m_pSourceAttack->SetVolume(0.7f);
+			m_pSourceAttack->Start();
+		}
+		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+		{
 
-		m_fAtkAnimationTime++;
-		if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
+			//アニメーション処理
+
+			m_fAtkAnimationTime++;
+			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
+		}
 	}
+	else
+	{
+		//m_pSourceAttack->Stop();
+	}
+	//戦闘アニメーション(攻撃範囲内に敵がいたら)
+	
 	//移動アニメーション(移動していたら)
 
 	//待機アニメーション(移動していなかったら)
@@ -540,6 +567,8 @@ CEnemy::CEnemy(int InCornerCount, float InSize)
 
 CEnemy::~CEnemy()
 {
+	//m_pSourceAttack = nullptr;
+	
 	//if (m_pVtx) m_pVtx->Release();
 }
 
@@ -588,14 +617,30 @@ void CEnemy::CreateUpdate(void)
 
 void CEnemy::BattleUpdate(void)
 {
-	//戦闘アニメーション(攻撃範囲内に敵がいたら)
-	if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+	if (m_bIsAttack)
 	{
-		//アニメーション処理
+		if (m_fAtkChargeMax == m_fAtkCharge + m_fAtkAnimationTime)
+		{
+			////攻撃音
+			//m_pSourceAttack = GetSound(SE_ATTACK, false);
+			m_pSourceAttack->SetVolume(0.7f);
+			m_pSourceAttack->Start();
+		}
+			if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+			{
 
-		m_fAtkAnimationTime++;
-		if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
+				//アニメーション処理
+
+				m_fAtkAnimationTime++;
+				if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
+			}
 	}
+	else
+	{
+		//m_pSourceAttack->Stop();
+	}
+	//戦闘アニメーション(攻撃範囲内に敵がいたら)
+	
 	//移動アニメーション(移動していたら)
 
 	//待機アニメーション(移動していなかったら)

@@ -26,3 +26,4 @@ void InitSound();
 void UnInitSound();
 //再生用のサウンドソースを送る
 IXAudio2SourceVoice* GetSound(NAME inName, bool Loop);
+int GetSoundNumber(NAME inName);
