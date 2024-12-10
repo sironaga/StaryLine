@@ -281,34 +281,31 @@ void CFieldVertex::Draw()
 			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 			m_pSprite_Star->Draw();
 		}
-		//線の描画
-		m_pSprite_Line[NowLine]->SetCenterPosAndRotation(
+		
+		for (int i = 0; i <= NowLine; i++)
+		{			
+			//線の描画
+			m_pSprite_Line[i]->SetCenterPosAndRotation(
 			{
-				vtx_FieldLine[NowLine][1].pos[0],
-				vtx_FieldLine[NowLine][1].pos[1],
+				vtx_FieldLine[i][1].pos[0],
+				vtx_FieldLine[i][1].pos[1],
 				0.0f
 			},
 			{
-				vtx_FieldLine[NowLine][3].pos[0],
-				vtx_FieldLine[NowLine][3].pos[1],
+				vtx_FieldLine[i][3].pos[0],
+				vtx_FieldLine[i][3].pos[1],
 				0.0f
 			},
-			{	vtx_FieldLine[NowLine][0].pos[0],
-				vtx_FieldLine[NowLine][0].pos[1],
-				0.0f 
+			{ vtx_FieldLine[i][0].pos[0],
+				vtx_FieldLine[i][0].pos[1],
+				0.0f
 			},
 			{
-				vtx_FieldLine[NowLine][2].pos[0],
-				vtx_FieldLine[NowLine][2].pos[1],
+				vtx_FieldLine[i][2].pos[0],
+				vtx_FieldLine[i][2].pos[1],
 				0.0f
 			}
 			);
-		for (int i = 0; i <= NowLine; i++)
-		{
-			//スプライトの設定//大きさの設定
-			//DrawSetting({ (vtx_FieldLine[i][0].pos[0] + vtx_FieldLine[i][3].pos[0]) / 2.0f,(vtx_FieldLine[i][0].pos[1] + vtx_FieldLine[i][3].pos[1]) / 2.0f,10.0f }, { LINE_SIZE,LINE_SIZE,1.0f });
-			//DrawSetting({0.0f + i * 4  , 0.0f, 0.0f}, { LINE_SIZE,LINE_SIZE ,1.0f},m_pSprite_Line[i]);
-			
 			//背景色の設定
 			m_pSprite_Line[i]->SetColor({1.0f,1.0f,1.0f,1.0f});
 			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
