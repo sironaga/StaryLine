@@ -390,6 +390,8 @@ void CBattle::Draw(void)
 	//7F7ŠpŒ`‚¾‚¯
 	//8F8ŠpŒ`‚¾‚¯
 
+	SetRender2D();
+
 	//–¡•û‚Ì•`‰æ
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
@@ -436,6 +438,7 @@ void CBattle::Draw(void)
 	//“G‚Ì•`‰æ
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
+
 		if (!m_pEnemy[i])continue;
 		m_pEnemy[i]->Draw();
 		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('3'))

@@ -134,6 +134,7 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	
 	m_pSourceAttack = GetSound(SE_ATTACK, false);
 	m_Number = GetSoundNumber(SE_ATTACK);
+	
 	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
 
@@ -389,8 +390,11 @@ void CAlly::Update(void)
 
 void CAlly::Draw(void)
 {
+
+	//体力ゲージの描画
 	m_pHpGage->Draw();
 
+	//キャラクターの描画
 	g_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
 	if(m_bIsHit) g_pSprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
@@ -400,7 +404,7 @@ void CAlly::Draw(void)
 
 	g_pSprite->Draw();
 
-	m_bIsHit = false;
+	//m_bIsHit = false;
 
 	
 	//m_pEffect->SetEffectTexture();
@@ -591,8 +595,11 @@ void CEnemy::Update(void)
 
 void CEnemy::Draw(void)
 {
+
+	//体力ゲージの描画
 	m_pHpGage->Draw();
 
+	//キャラクターの描画
 	g_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
 
 	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
@@ -626,14 +633,14 @@ void CEnemy::BattleUpdate(void)
 			m_pSourceAttack->SetVolume(0.7f);
 			m_pSourceAttack->Start();
 		}
-			if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
-			{
+		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+		{
 
-				//アニメーション処理
+			//アニメーション処理
 
-				m_fAtkAnimationTime++;
-				if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
-			}
+			m_fAtkAnimationTime++;
+			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
+		}
 	}
 	else
 	{
@@ -953,6 +960,7 @@ void CLeader::Update(void)
 
 void CLeader::Draw()
 {
+	//体力ゲージの描画
 	m_pHpGage->Draw();
 
 	g_pSprite->SetTexture(g_pLeaderTex[m_nTextureNumber]);
