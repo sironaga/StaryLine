@@ -101,11 +101,11 @@ CFieldVertex::CFieldVertex()
 
 	//’¸“_•`‰æ‰Šú‰»
 	HRESULT hrVertex;
-	hrVertex = m_pTex_FieldVertex->Create("Asset/Star/¯.png");
+	hrVertex = m_pTex_FieldVertex->Create("Asset/Star/star.png");
 	if (FAILED(hrVertex)) {
 		MessageBox(NULL, "Vertex ‰æ‘œ", "Error", MB_OK);
 	}
-	hrVertex = m_pTex_FieldUseVertex->Create("Asset/Star/¯2.png");
+	hrVertex = m_pTex_FieldUseVertex->Create("Asset/Star/star2.png");
 	if (FAILED(hrVertex)) {
 		MessageBox(NULL, "UseVertex ‰æ‘œ", "Error", MB_OK);
 	}
