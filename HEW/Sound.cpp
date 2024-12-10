@@ -158,13 +158,13 @@ bool CSound::LoadWaveFile(const std::wstring& wFilePath, WaveData* outData)
 		delete[] outData->m_soundBuffer;
 		return false;
 	}
-	CreateSourceVoice();
+	m_pSourceVoice=CreateSourceVoice(m_pSourceVoice);
 	// ファイルを閉じる
 	mmioClose(mmioHandle, MMIO_FHOPEN);
 
 	return true;
 }
-bool CSound::CreateSourceVoice()
+IXAudio2SourceVoice* CSound::CreateSourceVoice(IXAudio2SourceVoice* inSource)
 {
 	//=======================
 	// SourceVoiceの作成
@@ -178,18 +178,15 @@ bool CSound::CreateSourceVoice()
 	waveFormat.wBitsPerSample = waveData.m_wavFormat.nBlockAlign * 8 / waveData.m_wavFormat.nChannels;
 
 
-		// ソースボイスの作成 ここではフォーマットのみ渡っている
-		HRESULT result = m_pXAudio2->CreateSourceVoice(&m_pSourceVoice, (WAVEFORMATEX*)&waveFormat);
-		if (FAILED(result))
-		{
-			// SourceVoice作成失敗
-			return false;
-		}
-	
+	// ソースボイスの作成 ここではフォーマットのみ渡っている
+	HRESULT result = m_pXAudio2->CreateSourceVoice(&inSource, (WAVEFORMATEX*)&waveFormat);
+	if (FAILED(result))
+	{
+		// SourceVoice作成失敗
+		MessageBox(NULL, "SourceVoice作成失敗", " ", MB_OK);
+	}
 
-	
-
-	return true;
+	return inSource;
 }
 XAUDIO2_BUFFER CSound::GetBuffer(bool inLoop)
 {

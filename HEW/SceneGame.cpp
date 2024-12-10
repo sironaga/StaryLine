@@ -46,7 +46,6 @@ void InitSceneGame(int StageNum)
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	g_pSourseGameBGM = g_GameSound->GetSound(true);
 	g_pSourseGameBGM->SetVolume(0.4f);
-	//g_pSourseGameBGM->Start();
 	g_pBackGround = new CBackGround();
 	g_pFieldVertex = new CFieldVertex();
 	g_pPlayer = new CPlayer();
@@ -85,12 +84,17 @@ void UninitSceneGame()
 		g_pSourseGameBGM = nullptr;
 	}
 	SAFE_DELETE(g_GameSound);
+	UnInitSound();
+	UnIninCharacterTexture();
 }
 
 //更新処理
 void UpdateSceneGame()
 {
+	//音の再生
+	g_pSourseGameBGM->Start();
 	g_pBackGround->Update();
+
 	g_pBattle->CreateLeader();
 
 	g_tTime.GameTime++;							// ゲーム中は経過時間を記録し続ける
