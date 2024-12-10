@@ -171,6 +171,9 @@
     <ClCompile Include="SceneDebug.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="BackGround.cpp">
+      <Filter>ソース ファイル\Systems\Mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="SceneDebug.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BackGround.h">
+      <Filter>リソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

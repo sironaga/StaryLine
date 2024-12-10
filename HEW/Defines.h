@@ -13,6 +13,8 @@ static const float fFPS = static_cast<float>(FPS);
 
 #define EFFECT_PASS(efkser) "Asset/Effect/"efkser
 #define MODEL_PASS(fbx) ("Assets/Model/" fbx)
+#define TEX_PASS(tex) ("Asset/" tex)
+#define SOUND_PASS(sound) ("Asset/" sound)
 
 #define PI (3.1415f)
 #define TORAD(deg) ((deg / 180.0f) * PI)

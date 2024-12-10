@@ -18,6 +18,7 @@ public:
 	void SetRotation(float X, float Y, float Z);
 	void SetUvSize(float X, float Y);
 	void SetUvPos(float X, float Y);
+	void SetTexture();
 
 	void SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos);
 
