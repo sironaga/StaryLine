@@ -19,8 +19,8 @@ enum SceneGameTime
 {
 	SHAPE_DRAW_START = 0,		// 最初の作図開始(0～10)
 	SHAPE_SUMMON_START = 10,	// 召喚開始(10～20)
-	COOLTIME_START = 15,		// 再作図可能になるまでのクールタイムのスタート(20～30)、バトルもこの位置からずっと動かす
-	SHAPE_DRAW_RESTART = 20,	// 再作図開始(30～40)
+	COOLTIME_START = 10,		// 再作図可能になるまでのクールタイムのスタート(20～30)、バトルもこの位置からずっと動かす
+	SHAPE_DRAW_RESTART = 15,	// 再作図開始(30～40)
 	GAME_END = 90				// 時間切れ
 };
 
