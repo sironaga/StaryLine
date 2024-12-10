@@ -860,6 +860,7 @@ void CBattle::Delete(void)
 	{
 		if (m_pAlly[i]->GetStatus() == St_Delete)					//ステータスがDeleteかどうか
 		{
+			delete m_pAlly[i];
 			m_pAlly[i] = nullptr;
 			//配列前詰め
 			for (int d = i; d < m_nAllyCount; d++)
@@ -879,6 +880,7 @@ void CBattle::Delete(void)
 	{
 		if (m_pEnemy[i]->GetStatus() == St_Delete)		//ステータスがDeleteかどうか
 		{
+			delete m_pEnemy[i];
 			m_pEnemy[i] = nullptr;
 			//配列前詰め
 			for (int d = i; d < m_nEnemyCount; d++)

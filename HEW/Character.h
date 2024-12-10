@@ -21,6 +21,8 @@ enum LeaderNumber
 
 class CFieldVertex;
 void IninCharacterTexture(CFieldVertex* InAddress, int StageNum);	//テクスチャ読み込み
+void UnIninCharacterTexture();//テクスチャの終了処理
+void UnInitSound();//soundの終了処理
 
 //ステータス情報
 enum Status
@@ -129,6 +131,11 @@ protected:
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
 	CHpUI* m_pHpGage;	//体力ゲージ
+
+protected:
+	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
+	float m_fTimeSound;
+	bool m_bTimeSoundStart;
 
 	
 	int m_Number;

@@ -33,9 +33,10 @@ private:
 	WaveData waveData;
 	XAUDIO2_BUFFER m_xAudio2Buffer{};
 	bool LoadWaveFile(const std::wstring& wFilePath, WaveData* outData);
-	bool CreateSourceVoice();
+	
 
 public:
+	IXAudio2SourceVoice* CreateSourceVoice(IXAudio2SourceVoice* inSource);
 	XAUDIO2_BUFFER GetBuffer(bool inLoop);
 	IXAudio2SourceVoice* PlayWaveSound(bool loop);
 };

@@ -31,7 +31,7 @@ public:
 	//再生用のサウンドソースを送る
 	IXAudio2SourceVoice* GetSound(bool Loop);
 	XAUDIO2_BUFFER GetBuffer(bool inLoop);
-private:
+
 	CSound* m_sound;
 
 };

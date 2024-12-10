@@ -51,7 +51,6 @@ Sprite* g_pSprite;
 
 CFieldVertex* g_pFieldVtx;
 
-IXAudio2SourceVoice* g_pSourceAttack;
 CSoundList* g_AttackSound;
 
 void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み込み
@@ -102,45 +101,11 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	g_pHpGageTex[1]->Create("Asset/HpGage/HpGage.png");
 
 	g_AttackSound = new CSoundList(SE_ATTACK);
-	g_pSourceAttack = g_AttackSound->GetSound(true);
+	
 	
 }
-
-CFighter::CFighter(int InCornerCount, float InSize)
-	:m_tStatus(St_Create)
-	, m_tSearchCollision{ 0.0f,0.0f }
-	, m_tAtkCollision{ 0.0f,0.0f }
-	, nCornerCount(InCornerCount)
-	, m_fHp(0.0f)
-	//, m_fShield(0.0f)
-	, m_fAtk(0.0f)
-	//, m_tAtkType(AT_Physics)
-	, m_fAtkCharge(0.0f)
-	, m_fAtkChargeMax(0.0f)
-	, m_fAtkAnimationTime(0.0f)
-	, m_fAtkAnimationMaxTime(0.0f)
-	//, m_bCreateInit(false)
-	, m_bIsAttack(false)
-	, m_bFirstBattlePosSetting(false)
-	, m_nTargetNumber(-1)
-	, m_bIsHit(false)
+void UnIninCharacterTexture()
 {
-	m_tPos.X = 0.0f;
-	m_tPos.Y = 0.0f;
-	m_tPos.Z = 0.0f;
-	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	
-	
-	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
-}
-
-CFighter::~CFighter()
-{
-	delete m_pHpGage;
-	m_pHpGage = nullptr;
-
 	for (int i = 0; i < MAX_AllyTex; i++)
 	{
 		if (g_pAllyTex)
@@ -163,16 +128,6 @@ CFighter::~CFighter()
 		delete g_pCollisionTex;
 		g_pCollisionTex = nullptr;
 	}
-
-	//if (m_pEffect)
-	//{
-	//	delete m_pEffect;
-	//	m_pEffect = nullptr;
-	//}
-	if (g_pFieldVtx)
-	{
-		g_pFieldVtx = nullptr;
-	}
 	for (int i = 0; i < 3; i++)
 	{
 		delete g_pAllyTex[i];
@@ -183,17 +138,74 @@ CFighter::~CFighter()
 		delete g_pEnemyTex[i];
 		g_pEnemyTex[i] = nullptr;
 	}
-
+}
+void UnInitSound()
+{
 	if (g_AttackSound)
 	{
 		delete g_AttackSound;
 		g_AttackSound = nullptr;
 	}
-	if (g_pSourceAttack)
+}
+
+CFighter::CFighter(int InCornerCount, float InSize)
+	:m_tStatus(St_Create)
+	, m_tSearchCollision{ 0.0f,0.0f }
+	, m_tAtkCollision{ 0.0f,0.0f }
+	, nCornerCount(InCornerCount)
+	, m_fHp(0.0f)
+	//, m_fShield(0.0f)
+	, m_fAtk(0.0f)
+	//, m_tAtkType(AT_Physics)
+	, m_fAtkCharge(0.0f)
+	, m_fAtkChargeMax(0.0f)
+	, m_fAtkAnimationTime(0.0f)
+	, m_fAtkAnimationMaxTime(0.0f)
+	//, m_bCreateInit(false)
+	, m_bIsAttack(false)
+	, m_bFirstBattlePosSetting(false)
+	, m_nTargetNumber(-1)
+	, m_bIsHit(false)
+	, m_fTimeSound(0)
+	, m_bTimeSoundStart(false)
+{
+	m_tPos.X = 0.0f;
+	m_tPos.Y = 0.0f;
+	m_tPos.Z = 0.0f;
+	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
+	XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+	m_pSourceAttack->SubmitSourceBuffer(&buffer);
+	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
+}
+
+CFighter::~CFighter()
+{
+	delete m_pHpGage;
+	m_pHpGage = nullptr;
+
+	
+
+	//if (m_pEffect)
+	//{
+	//	delete m_pEffect;
+	//	m_pEffect = nullptr;
+	//}
+	if (g_pFieldVtx)
 	{
-		//g_pSourceAttack->ExitLoop();
-		g_pSourceAttack->Stop();
-		g_pSourceAttack = nullptr;
+		g_pFieldVtx = nullptr;
+	}
+	
+
+	
+	if (m_pSourceAttack)
+	{
+		m_pSourceAttack->ExitLoop();
+		m_pSourceAttack->Stop();
+		m_pSourceAttack->DestroyVoice();
+		m_pSourceAttack = nullptr;
 	}
 	
 }
@@ -379,6 +391,7 @@ CAlly::CAlly(int InCornerCount, float InSize)
 CAlly::~CAlly()
 {
 	
+
 	//if (m_pVtx) m_pVtx->Release();
 }
 
@@ -442,12 +455,15 @@ void CAlly::BattleUpdate(void)
 	if (m_bIsAttack)
 	{
 		//攻撃音
-		if (g_pSourceAttack)
+		if (!m_bTimeSoundStart)
 		{
-			g_pSourceAttack->Stop();
-			g_pSourceAttack->SetVolume(0.7f);
-			g_pSourceAttack->Start();
+			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->SubmitSourceBuffer(&buffer);
+			m_pSourceAttack->SetVolume(0.7f);
+			m_pSourceAttack->Start();
+			m_bTimeSoundStart = true;
 		}
+
 		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
 		{
 
@@ -457,10 +473,18 @@ void CAlly::BattleUpdate(void)
 			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 	}
-	else
+	//攻撃音の再生時間
+	if (m_bTimeSoundStart)
 	{
-		//m_pSourceAttack->Stop();
+		m_fTimeSound++;
 	}
+	if (m_fTimeSound>30)
+	{
+		m_pSourceAttack->Stop();
+		m_bTimeSoundStart = false;
+		m_fTimeSound = 0;
+	}
+
 	//戦闘アニメーション(攻撃範囲内に敵がいたら)
 	
 	//移動アニメーション(移動していたら)
@@ -581,6 +605,9 @@ CEnemy::CEnemy(int InCornerCount, float InSize)
 
 CEnemy::~CEnemy()
 {
+	
+	
+	
 	//m_pSourceAttack = nullptr;
 	
 	//if (m_pVtx) m_pVtx->Release();
@@ -636,15 +663,16 @@ void CEnemy::BattleUpdate(void)
 {
 	if (m_bIsAttack)
 	{
-		if (m_fAtkChargeMax == m_fAtkCharge + m_fAtkAnimationTime)
+		//攻撃音
+		if (!m_bTimeSoundStart)
 		{
-			g_pSourceAttack->SetVolume(0.7f);
-			g_pSourceAttack->Start();
+			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->SubmitSourceBuffer(&buffer);
+			m_pSourceAttack->SetVolume(0.7f);
+			m_pSourceAttack->Start();
+			m_bTimeSoundStart = true;
 		}
-		else
-		{
-			g_pSourceAttack->Stop();
-		}
+		
 		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
 		{
 
@@ -654,10 +682,18 @@ void CEnemy::BattleUpdate(void)
 			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 	}
-	else
+	//攻撃音の再生時間
+	if(m_bTimeSoundStart)
 	{
-		//m_pSourceAttack->Stop();
+		m_fTimeSound++;
 	}
+	if(m_fTimeSound > 30)
+	{
+		m_pSourceAttack->Stop();
+		m_bTimeSoundStart = false;
+		m_fTimeSound = 0;
+	}
+
 	//戦闘アニメーション(攻撃範囲内に敵がいたら)
 	
 	//移動アニメーション(移動していたら)
