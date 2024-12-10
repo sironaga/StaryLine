@@ -254,11 +254,15 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 		0.0f
 	));
 
-	if (delta.x < 0.0f) delta.x * -1.0f;
-	if (delta.y < 0.0f) delta.y * -1.0f;
-	if (delta.z < 0.0f) delta.z * -1.0f;
+	if (delta.x < 0.0f) delta.x *= -1.0f;
+	if (delta.z < 0.0f) delta.z *= -1.0f;
+	if (delta.y < 0.0f)delta.y *= -1.0f;
 
-	float size = delta.x;
+
+	float size = delta.x + delta.y;
+
+
+
 
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size, 2.5f, delta.z);
 
