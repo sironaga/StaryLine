@@ -2,7 +2,7 @@
 #include "Defines.h"
 #include <map>
 
-constexpr float BG_POS_Z = 800.0f;
+constexpr float BG_POS_Z = 600.0f;
 
 const char* BGPass[SCENE_MAX] =
 {
@@ -13,6 +13,8 @@ const char* BGPass[SCENE_MAX] =
 
 CBackGround::CBackGround()
 	: m_pBGSprite(nullptr)
+	, m_tPos{ 0.0f,0.0f,BG_POS_Z }, m_tSize{ SCREEN_WIDTH,SCREEN_WIDTH,0.0f }, m_tRotate{}
+	, m_tPosTex{ 0.0f,0.0f }, m_tSizeTex(1.0f, 1.0f)
 	, m_eCurrentScene(GetScene())
 {
 
@@ -48,7 +50,20 @@ CBackGround::~CBackGround()
 
 void CBackGround::Update()
 {
-
+	switch (m_eCurrentScene)
+	{
+	case SCENE_TITLE: SetRender2D();	break;
+	case STAGE_SELECT: SetRender2D();	break;
+	case SCENE_GAME:
+	{
+		m_tRotate.z += DirectX::XMConvertToRadians(0.05f);
+		break;
+	}
+	case SCENE_RESULT: SetRender2D();	break;
+	case SCENE_DEBUGROOM: SetRender3D(); break;
+	case SCENE_MAX: break;
+	default:MessageBox(NULL, "シーン参照エラー", "BackGround.cpp", MB_OK);	break;
+	}
 }
 
 void CBackGround::Draw()
@@ -63,11 +78,12 @@ void CBackGround::Draw()
 	case SCENE_MAX: break;
 	default:MessageBox(NULL, "シーン参照エラー", "BackGround.cpp", MB_OK);	break;
 	}
-	m_pBGSprite->SetPositon(0.0f, 0.0f, BG_POS_Z);
-	m_pBGSprite->SetSize(SCREEN_WIDTH , SCREEN_WIDTH, 0.0f);
-	m_pBGSprite->SetRotation(0.0f, 0.0f, 0.0f);
-	m_pBGSprite->SetUvPos(0.0f, 0.0f);
-	m_pBGSprite->SetUvSize(1.0f, 1.0f);
+
+	m_pBGSprite->SetPositon(m_tPos.x, m_tPos.y, m_tPos.z);
+	m_pBGSprite->SetSize(m_tSize.x, m_tSize.y, m_tSize.z);
+	m_pBGSprite->SetRotation(m_tRotate.x, m_tRotate.y, m_tRotate.z);
+	m_pBGSprite->SetUvPos(m_tPosTex.x, m_tPosTex.y);
+	m_pBGSprite->SetUvSize(m_tSizeTex.x, m_tSizeTex.y);
 	m_pBGSprite->SetView(GetView());
 	m_pBGSprite->SetProjection(GetProj());
 

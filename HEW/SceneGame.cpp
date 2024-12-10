@@ -7,12 +7,14 @@
 #include "StageSelect.h"
 #include "Field.h"
 #include "SoundList.h"
+#include "BackGround.h"
 
 E_GAME_PHASE g_ePhaseType;
 CFieldVertex* g_pFieldVertex;
 CPlayer* g_pPlayer;
 CBattle* g_pBattle;
 Field* g_pField;
+CBackGround* g_pBackGround;
 
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
@@ -45,6 +47,7 @@ void InitSceneGame(int StageNum)
 	g_pSourseGameBGM = g_GameSound->GetSound(true);
 	g_pSourseGameBGM->SetVolume(0.4f);
 	//g_pSourseGameBGM->Start();
+	g_pBackGround = new CBackGround();
 	g_pFieldVertex = new CFieldVertex();
 	g_pPlayer = new CPlayer();
 	g_pBattle = new CBattle();
@@ -71,42 +74,23 @@ void InitSceneGame(int StageNum)
 //終了処理
 void UninitSceneGame()
 {
-	if (g_pPlayer)
-	{
-		delete g_pPlayer;
-		g_pPlayer = nullptr;
-	}
-	if (g_pFieldVertex)
-	{
-		delete g_pFieldVertex;
-		g_pFieldVertex = nullptr;
-	}
-	if (g_pBattle)
-	{
-		delete g_pBattle;
-		g_pBattle = nullptr;
-	}
-	if (g_pField)
-	{
-		delete g_pField;
-		g_pField = nullptr;
-	}
+	SAFE_DELETE(g_pPlayer);
+	SAFE_DELETE(g_pFieldVertex);
+	SAFE_DELETE(g_pBattle);
+	SAFE_DELETE(g_pField);
+	SAFE_DELETE(g_pBackGround);
 	if (g_pSourseGameBGM)
 	{
 		g_pSourseGameBGM->Stop();
 		g_pSourseGameBGM = nullptr;
 	}
-	
-	if (g_GameSound)
-	{
-		delete g_GameSound;
-		g_GameSound = nullptr;
-	}
+	SAFE_DELETE(g_GameSound);
 }
 
 //更新処理
 void UpdateSceneGame()
 {
+	g_pBackGround->Update();
 	g_pBattle->CreateLeader();
 
 	g_tTime.GameTime++;							// ゲーム中は経過時間を記録し続ける
@@ -154,6 +138,7 @@ void UpdateSceneGame()
 //描画処理
 void DrawSceneGame()
 {
+	g_pBackGround->Draw();
 	g_pField->Draw();	// フィールドは常に描画する
 	g_pPlayer->Draw();
 	g_pFieldVertex->Draw();
