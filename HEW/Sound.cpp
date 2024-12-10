@@ -191,25 +191,23 @@ bool CSound::CreateSourceVoice()
 
 	return true;
 }
-IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
+XAUDIO2_BUFFER CSound::GetBuffer(bool inLoop)
 {
-	XAUDIO2_VOICE_STATE state;
-	int i = 0;
-	
-		m_pSourceVoice->GetState(&state);
-		
-	
-	//================================
-	// 波形データ(音データ本体)をソースボイスに渡す
-	//================================
-
+	//バッファの作成
 	m_xAudio2Buffer.pAudioData = (BYTE*)waveData.m_soundBuffer;
 	m_xAudio2Buffer.Flags = XAUDIO2_END_OF_STREAM;
 	m_xAudio2Buffer.AudioBytes = waveData.m_size;
 	// 三項演算子を用いて、ループするか否かの設定をする
-	m_xAudio2Buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
-
+	m_xAudio2Buffer.LoopCount = inLoop ? XAUDIO2_LOOP_INFINITE : 0;
+	return m_xAudio2Buffer;
+}
+IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
+{
 	
+	//================================
+	// 波形データ(音データ本体)をソースボイスに渡す
+	//================================
+	m_xAudio2Buffer = GetBuffer(loop);
 	m_pSourceVoice->SubmitSourceBuffer(&m_xAudio2Buffer);
 	if (!m_pSourceVoice)
 	{

@@ -36,6 +36,7 @@ private:
 	bool CreateSourceVoice();
 
 public:
+	XAUDIO2_BUFFER GetBuffer(bool inLoop);
 	IXAudio2SourceVoice* PlayWaveSound(bool loop);
 };
 

@@ -66,6 +66,12 @@ IXAudio2SourceVoice* CSoundList::GetSound(bool Loop)
 	return m_Source;
 }
 
+XAUDIO2_BUFFER CSoundList::GetBuffer(bool inLoop)
+{
+	XAUDIO2_BUFFER buffer = m_sound->GetBuffer(inLoop);
+	return buffer;
+}
+
 
 
 
