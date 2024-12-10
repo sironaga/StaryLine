@@ -1,13 +1,14 @@
 // 3D用のSpriteを簡単にする拡張クラス
 
 #include "SpriteEx.h"
+#include "Main.h"
 #include <cmath>
 
 SpriteEx::SpriteEx(const char *File)
 {
 	m_Texture = new Texture();
 	m_Sprite = new Sprite();
-	m_Texture->Create(File);
+	if (FAILED(m_Texture->Create(File))) MessageBox(NULL, "画像エラー", File, MB_OK);
 	T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		0.0f,
 		0.0f,
@@ -22,7 +23,8 @@ SpriteEx::SpriteEx(const char *File)
 		0.0f
 	));
 	S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-
+	View = GetView();
+	Project = GetProj();
 }
 
 SpriteEx::~SpriteEx()
@@ -95,6 +97,11 @@ void SpriteEx::SetUvPos(float X, float Y)
 	RePos.x = X;
 	RePos.y = Y;
 	m_Sprite->SetUVPos(RePos);
+}
+
+void SpriteEx::SetTexture()
+{
+	m_Sprite->SetTexture(m_Texture);
 }
 
 void SpriteEx::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos)

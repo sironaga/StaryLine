@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="Battle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackGround.h" />
     <ClInclude Include="Battle.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
