@@ -2,7 +2,6 @@
 #include "DirectXTex/TextureLoad.h"
 #include "FieldVertex.h"
 #include "Main.h"
-#include "SoundList.h"
 
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((Num / 2) + (m_tSize.X))	//キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(Num) ((Num / 2) + (m_tSize.Y))	//キャラクターの縦の索敵当たり判定(索敵範囲)
@@ -52,7 +51,8 @@ Sprite* g_pSprite;
 
 CFieldVertex* g_pFieldVtx;
 
-
+IXAudio2SourceVoice* g_pSourceAttack;
+CSoundList* g_AttackSound;
 
 void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み込み
 {
@@ -101,7 +101,8 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	g_pHpGageTex[0]->Create("Asset/HpGage/HpGageBase.png");
 	g_pHpGageTex[1]->Create("Asset/HpGage/HpGage.png");
 
-	
+	g_AttackSound = new CSoundList(SE_ATTACK);
+	g_pSourceAttack = g_AttackSound->GetSound(false);
 	
 }
 
@@ -131,9 +132,6 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	
-	
-	m_pSourceAttack = GetSound(SE_ATTACK, false);
-	m_Number = GetSoundNumber(SE_ATTACK);
 	
 	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
@@ -186,7 +184,16 @@ CFighter::~CFighter()
 		g_pEnemyTex[i] = nullptr;
 	}
 
-	m_pSourceAttack->DestroyVoice();
+	if (g_AttackSound)
+	{
+		delete g_AttackSound;
+		g_AttackSound = nullptr;
+	}
+	if (g_pSourceAttack)
+	{
+		g_pSourceAttack = nullptr;
+	}
+	
 }
 
 void CFighter::CollisionDraw(void)
@@ -433,10 +440,11 @@ void CAlly::BattleUpdate(void)
 	if (m_bIsAttack)
 	{
 		//攻撃音
-		if (m_pSourceAttack)
+		if (g_pSourceAttack)
 		{
-			m_pSourceAttack->SetVolume(0.7f);
-			m_pSourceAttack->Start();
+			g_pSourceAttack->Stop();
+			g_pSourceAttack->SetVolume(0.7f);
+			g_pSourceAttack->Start();
 		}
 		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
 		{
@@ -629,9 +637,11 @@ void CEnemy::BattleUpdate(void)
 		if (m_fAtkChargeMax == m_fAtkCharge + m_fAtkAnimationTime)
 		{
 			////攻撃音
-			//m_pSourceAttack = GetSound(SE_ATTACK, false);
-			m_pSourceAttack->SetVolume(0.7f);
-			m_pSourceAttack->Start();
+			g_pSourceAttack->Stop();
+			//g_pSourceAttack = g_AttackSound->GetSound(false);
+			//g_pSourceAttack->FlushSourceBuffers();
+			g_pSourceAttack->SetVolume(0.7f);
+			g_pSourceAttack->Start();
 		}
 		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
 		{

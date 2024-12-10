@@ -23,6 +23,7 @@ Camera* g_Camera;
 IXAudio2SourceVoice* g_pSourseTitleSE;
 RenderTarget* pRTV;
 DepthStencil* pDSV;
+CSoundList* g_mainsound;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -35,7 +36,6 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	Geometory::Init();
 	Sprite::Init();
 	InitInput();
-	InitSound();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 	srand(timeGetTime());
@@ -47,8 +47,10 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// シーン作成
 	g_SceneType = SCENE_TITLE;
 	InitSceneTitle();
-	g_pSourseTitleSE = GetSound(SE_DECISION, false);
+	g_mainsound = new CSoundList(SE_DECISION);
+	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	g_Camera = new CameraDebug();
+	
 
 	return hr;
 }
@@ -60,11 +62,12 @@ void Uninit()
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
-	UnInitSound();
+	//delete g_mainsound;
+	//g_mainsound = nullptr;
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
-	g_pSourseTitleSE = nullptr;
+	//g_pSourseTitleSE = nullptr;
 }
 
 void Update()
@@ -187,8 +190,7 @@ DirectX::XMFLOAT4X4 GetProj()
 
 void ChangeScene(E_SCENE_TYPE next)
 {
-	UnInitSound();
-	InitSound();
+	g_pSourseTitleSE->FlushSourceBuffers();
 	g_pSourseTitleSE->SetVolume(0.3f);
 	g_pSourseTitleSE->Start();
 	//現在のシーンの終了

@@ -2,6 +2,7 @@
 #define _DIRECTX_
 #include "DirectX.h"
 #include "Sprite.h"
+#include "SoundList.h"
 
 //Character.h
 //編集者：AT12C05宇留野陸斗
@@ -129,7 +130,7 @@ protected:
 
 	CHpUI* m_pHpGage;	//体力ゲージ
 
-	IXAudio2SourceVoice* m_pSourceAttack;
+	
 	int m_Number;
 	//CEffect* m_pEffect;
 

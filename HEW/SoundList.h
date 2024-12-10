@@ -22,8 +22,18 @@ enum NAME
 	//バトルBGM
 	,BGM_BATTLE
 };
-void InitSound();
-void UnInitSound();
-//再生用のサウンドソースを送る
-IXAudio2SourceVoice* GetSound(NAME inName, bool Loop);
-int GetSoundNumber(NAME inName);
+class CSoundList
+{
+public:
+	CSoundList(NAME inName);
+	~CSoundList();
+	//再生用のサウンドソースを送る
+	IXAudio2SourceVoice* GetSound(bool Loop);
+	
+private:
+	CSound* m_sound;
+
+};
+
+
+

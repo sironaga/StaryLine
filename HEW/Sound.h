@@ -37,6 +37,5 @@ private:
 
 public:
 	IXAudio2SourceVoice* PlayWaveSound(bool loop);
-	XAUDIO2_BUFFER GetBuffer();
 };
 
