@@ -16,7 +16,7 @@ Field::Field()
 	{
 		switch (i)
 		{
-		case TILELOW_FOREST:if (!m_pModel[i]->Load("Assets/Model/stage1_desert_01.fbx", 0.01f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+		case TILELOW_FOREST:if (!m_pModel[i]->Load("Assets/Model/Stage/Stage02_Desert.fbx", 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 		//case TILELOW_FOREST:if (!m_pModel[i]->Load("Assets/Model/LowPolyNature/Rock_02.fbx", 0.01f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		default:
@@ -45,9 +45,10 @@ void Field::FieldModelInit(FieldModel* InModel, int MaxModel)
 	//ÉtÉ@ÉCÉãì«Ç›çûÇ›
 	for (int i = 0, j = 0; i < MaxModel; i++, pModel++)
 	{
-		pModel->m_Pos = DirectX::XMFLOAT3(0.0f, -10.0f, 10.0f);
+		pModel->m_Pos = DirectX::XMFLOAT3(-60.0f, -12.0f, 20.0f);
 		pModel->m_Angle = DirectX::XMFLOAT3(TORAD(0), TORAD(180), TORAD(0));
-		pModel->m_Scale = DirectX::XMFLOAT3(300.0f, 300.0f, 300.0f);
+		//pModel->m_Scale = DirectX::XMFLOAT3(300.0f, 300.0f, 300.0f);
+		pModel->m_Scale = DirectX::XMFLOAT3(0.4f, 0.6f, 0.4f);
 		pModel->m_Use = true;
 		pModel->m_Model = TILELOW_FOREST;
 	}
