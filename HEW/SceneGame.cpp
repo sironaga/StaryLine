@@ -33,6 +33,7 @@ struct GAME_TIME
 }g_tTime;
 
 IXAudio2SourceVoice* g_pSourseGameBGM;
+CSoundList* g_GameSound;
 
 bool Phase;
 
@@ -40,7 +41,10 @@ bool Phase;
 void InitSceneGame(int StageNum)
 {
 	g_ePhaseType = DRAWING;
-
+	g_GameSound = new CSoundList(BGM_BATTLE);
+	g_pSourseGameBGM = g_GameSound->GetSound(true);
+	g_pSourseGameBGM->SetVolume(0.4f);
+	g_pSourseGameBGM->Start();
 	g_pFieldVertex = new CFieldVertex();
 	g_pPlayer = new CPlayer();
 	g_pBattle = new CBattle();
@@ -60,9 +64,7 @@ void InitSceneGame(int StageNum)
 	Phase = true;
 
 	InitSave();
-	g_pSourseGameBGM = GetSound(BGM_BATTLE,true);
-	g_pSourseGameBGM->SetVolume(0.4f);
-	g_pSourseGameBGM->Start();
+	
 	g_pBattle->RandomSelectPattern();
 }
 
@@ -93,6 +95,12 @@ void UninitSceneGame()
 	{
 		g_pSourseGameBGM->Stop();
 		g_pSourseGameBGM = nullptr;
+	}
+	
+	if (g_GameSound)
+	{
+		delete g_GameSound;
+		g_GameSound = nullptr;
 	}
 }
 

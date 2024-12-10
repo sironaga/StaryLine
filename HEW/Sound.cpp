@@ -30,13 +30,13 @@ CSound::CSound(const std::wstring& fileName)
 CSound::~CSound()
 {
 	
-		if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
+	/*if (m_pSourceVoice)m_pSourceVoice->DestroyVoice();
 	
 	if(m_pMasteringVoice)m_pMasteringVoice->DestroyVoice();
 	if (m_pXAudio2)m_pXAudio2->Release();
 	
 	
-	CoUninitialize();
+	CoUninitialize();*/
 
 }
 bool CSound::LoadWaveFile(const std::wstring& wFilePath, WaveData* outData)
@@ -220,6 +220,8 @@ IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 	
 	return m_pSourceVoice;
 }
+
+
 
 // ワイド文字列を ANSI 文字列に変換するヘルパー関数
 std::string ConvertWideToAnsi(const std::wstring& wideStr) {
