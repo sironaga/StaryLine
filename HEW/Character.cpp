@@ -102,7 +102,7 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ý
 	g_pHpGageTex[1]->Create("Asset/HpGage/HpGage.png");
 
 	g_AttackSound = new CSoundList(SE_ATTACK);
-	g_pSourceAttack = g_AttackSound->GetSound(false);
+	g_pSourceAttack = g_AttackSound->GetSound(true);
 	
 }
 
@@ -191,6 +191,8 @@ CFighter::~CFighter()
 	}
 	if (g_pSourceAttack)
 	{
+		//g_pSourceAttack->ExitLoop();
+		g_pSourceAttack->Stop();
 		g_pSourceAttack = nullptr;
 	}
 	
@@ -436,7 +438,7 @@ void CAlly::CreateUpdate(void)
 }
 
 void CAlly::BattleUpdate(void)
-{
+ {
 	if (m_bIsAttack)
 	{
 		//UŒ‚‰¹
@@ -636,12 +638,12 @@ void CEnemy::BattleUpdate(void)
 	{
 		if (m_fAtkChargeMax == m_fAtkCharge + m_fAtkAnimationTime)
 		{
-			////UŒ‚‰¹
-			g_pSourceAttack->Stop();
-			//g_pSourceAttack = g_AttackSound->GetSound(false);
-			//g_pSourceAttack->FlushSourceBuffers();
 			g_pSourceAttack->SetVolume(0.7f);
 			g_pSourceAttack->Start();
+		}
+		else
+		{
+			g_pSourceAttack->Stop();
 		}
 		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
 		{
