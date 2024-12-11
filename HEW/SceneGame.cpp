@@ -144,7 +144,9 @@ void UpdateSceneGame()
 	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
 	if((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
 							// ゲーム中は経過時間を記録し続ける
+	g_tTime.GameTime++;
 }
+
 
 //描画処理
 void DrawSceneGame()
@@ -180,7 +182,7 @@ void DrawSceneGame()
 	{
 		g_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 	}
-	
+
 	//１回目のCOOLTIMEが始まったらそれ以降処理
 	if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
 	{
@@ -188,13 +190,13 @@ void DrawSceneGame()
 	}
 
 	// 一つのサイクルが終わった時
-	if (g_tTime.GameTime == (float)SHAPE_DRAW_RESTART * 60.0f + g_tTime.GameSTimeSycleEnd 
+	if (g_tTime.GameTime == (float)SHAPE_DRAW_RESTART * 60.0f + g_tTime.GameSTimeSycleEnd
 		- g_tTime.GameSTimePheseAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		// 次のサイクルに向けて各処理を行う
 
 		// 時間の初期化処理
- 		g_tTime.GameSTimePheseAjust = 0;				// 移動に詰んだ時の補正値を初期化
+		g_tTime.GameSTimePheseAjust = 0;				// 移動に詰んだ時の補正値を初期化
 		g_tTime.GameSTimeSycleEnd = g_tTime.GameTime;	// 前回のサイクルが終了した時間を更新
 
 		// 各要素の初期化処理
@@ -203,7 +205,6 @@ void DrawSceneGame()
 
 		Phase = true;
 	}
-	g_tTime.GameTime++;
 }
 
 void ChangePhase(E_GAME_PHASE next)
