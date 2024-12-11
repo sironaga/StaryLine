@@ -82,14 +82,16 @@ bool EnemyLoadData(int * InCornerCount,int* pSize)
 }
 void InitSave()
 {
+	g_NowLine = 0;
 	int AllWave = 0;
 	int Wave = 0;
 	int MaxEnemy = 0;
 	int MaxPattern = 0;
 	int size = 0;
 	int CornerCount = 0;
+
 	InitLoadData(true, &MaxPattern,  &MaxEnemy );
-	g_pFileBattle->SetMaxPattern(MaxPattern);
+ 	g_pFileBattle->SetMaxPattern(MaxPattern);
 	for (int j = 0; j < MaxPattern; j++)
 	{
 		InitLoadData(false, &MaxPattern,  &MaxEnemy);
