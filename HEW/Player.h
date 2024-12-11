@@ -27,8 +27,7 @@ public:
 	// プレイヤーの状態
 	enum E_PLAYER_STATE
 	{
-		READY = 0,	// 準備状態
-		STOP,		// 止まっている状態
+		STOP = 0,	// 止まっている状態
 		MOVE,		// 動いている情報
 	}m_ePlayerState;
 
@@ -68,18 +67,13 @@ private:
 		MAX_SPRITE
 	};
 
-	void UpdateReady();							// 準備段階での更新処理
 	void UpdateStop();							// 止まっている状態での更新処理
 	void UpdateMove();							// 動いている状態での更新処理
 
-	void DrawAnimation();						// アニメーション用関数	
 	void DrawSprite3D(E_SPRITE type);
 
 	void PlayerInput();							// コントローラー入力
 private:
-	//ID3D11Buffer* m_pVtxPlayer;					// プレイヤー描画用頂点情報
-	//ID3D11ShaderResourceView* m_pTexPlayerWait;	// プレイヤー描画用テクスチャ
-
 	DirectX::XMFLOAT3 m_tPos;						// プレイヤーの座標
 	DirectX::XMFLOAT2 m_tPosTex;					// プレイヤーのテクスチャ座標
 	DirectX::XMFLOAT2 m_tSizeTex;					// プレイヤーのテクスチャサイズ

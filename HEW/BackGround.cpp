@@ -56,7 +56,7 @@ void CBackGround::Update()
 	case STAGE_SELECT: SetRender2D();	break;
 	case SCENE_GAME:
 	{
-		m_tRotate.z += DirectX::XMConvertToRadians(0.05f);
+		m_tRotate.z += DirectX::XMConvertToRadians(0.02f);
 		break;
 	}
 	case SCENE_RESULT: SetRender2D();	break;

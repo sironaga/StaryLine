@@ -92,7 +92,6 @@ void CPlayer::Update()
 	// 状態別更新処理
 	switch (m_ePlayerState)
 	{
-	case CPlayer::READY:UpdateReady(); break;
 	case CPlayer::STOP: UpdateStop(); break;
 	case CPlayer::MOVE: UpdateMove(); break;
 	default:break;
@@ -162,12 +161,6 @@ void CPlayer::Draw()
 	SetRender2D();
 	LibEffekseer::SetViewPosition(GetCameraPos());
 	LibEffekseer::SetCameraMatrix(GetView(false), GetProj(false));
-}
-
-void CPlayer::UpdateReady()
-{
-	// ×ボタンorスペースキーでスタート
-	if (WithGetKeyTriger(VK_SPACE,XINPUT_GAMEPAD_B)) m_ePlayerState = STOP;
 }
 
 void CPlayer::UpdateStop()
@@ -332,22 +325,6 @@ void CPlayer::TimeProcess()
 	vtxTimer[0][2] = { {  fTimerSize,	-TIMER_UP,	0.0f },	{ 1.0f, 0.0f} };
 	vtxTimer[0][3] = { {  fTimerSize,	-TIMER_DOWN,0.0f },	{ 1.0f, 1.0f} };
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
-}
-
-void CPlayer::DrawAnimation()
-{
-	// プレイヤー状態別アニメーション
-	switch (m_ePlayerState)
-	{
-	case CPlayer::STOP: m_pPlayer->SetTexture(m_pPlayerTex);	break; // 待機モーション
-	case CPlayer::MOVE: m_pPlayer->SetTexture(m_pPlayerTex);	break;	// 動いてるモーションに変える(後から)
-	default:break;
-	}
-
-	m_tPosTex = m_pSprite->GetPosTex(PLAYER_SPLIT_X, PLAYER_SPLIT_Y, ANIME_TIME);
-
-	m_pPlayer->SetUVPos(m_tPosTex);
-	m_pPlayer->SetUVScale(m_tSizeTex);
 }
 
 void CPlayer::DrawSprite3D(E_SPRITE type)
