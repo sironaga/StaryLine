@@ -44,6 +44,7 @@ public:
 
 private:
 	float m_fFullHp;
+	Sprite* m_pSprite;
 
 
 	DirectX::XMFLOAT3 m_tUIPos;
@@ -67,11 +68,10 @@ protected:
 	{
 		Triangle = 3,		//三角形
 		Square = 4,			//四角形
-		Pentagon = 5,		//五角形
-		Hexagon = 6,		//六角形
-		Heptagon = 7,		//七角形
-		Octagon = 8,		//八角形
-
+		//Pentagon = 5,		//五角形
+		//Hexagon = 6,		//六角形
+		//Heptagon = 7,		//七角形
+		//Octagon = 8,		//八角形
 	};
 
 	/*構造体*/
@@ -137,7 +137,7 @@ protected:
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;
 
-	
+	Sprite* m_pSprite;
 	int m_Number;
 	//CEffect* m_pEffect;
 
@@ -244,6 +244,13 @@ private:
 class CLeader
 {
 public:
+	enum PlayerMode
+	{
+		WandOn,//杖を持つ
+		WandOff,//杖を離す
+		MAX_StatusMode,
+	};
+public:
 	CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber);
 	~CLeader();
 
@@ -262,9 +269,18 @@ private:
 	CVector3<float> m_tSize;		//サイズ
 	float m_fHp;					//体力
 
+	Sprite* m_pSprite[2];
+
+	/*アニメーション関係*/
+	DirectX::XMFLOAT2 m_tUVPos;
+	DirectX::XMFLOAT2 m_tUVScale;
+	int m_nAnimationFrame;
+	int m_nAnimationX;
+	int m_nAnimationY;
+
+	int m_nStatusMode;
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
-
 public:
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
@@ -278,6 +294,8 @@ public:
 	CVector3<float> GetSize(void) { return m_tSize; }
 
 	float GetHp(void) { return m_fHp; }
+
+	void ChangePlayerMode(void) { m_nStatusMode ^= m_nStatusMode; }//プレイヤーのアニメーションの切り替え
 };
 
 
