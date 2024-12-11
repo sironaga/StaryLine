@@ -376,96 +376,45 @@ void CBattle::CharacterDraw(void)
 
 void CBattle::Draw(void)
 {
-	//SaveAllyLogDraw();
-	//CreateAllyLogDraw();
-	//CreateEnemyLogDraw();
-	/*当たり判定のデバック*/
-	//0：全て
-	//Aを押しながら：味方だけ
-	//Eを押しながら：敵だけ
-	//3：3角形だけ
-	//4：4角形だけ
-	//5：5角形だけ
-	//6：6角形だけ
-	//7：7角形だけ
-	//8：8角形だけ
-
-	SetRender2D();
-
-	//味方の描画
-	for (int i = 0; i < m_nAllyCount; i++)
-	{
-		if (!m_pAlly[i])continue;
-		m_pAlly[i]->Draw();
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('3'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 3)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('4'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 4)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('5'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 5)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('6'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 6)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('7'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 7)
-				m_pAlly[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('A') && IsKeyPress('8'))
-		{
-			if (m_pAlly[i]->GetCornerCount() == 8)
-				m_pAlly[i]->CollisionDraw();
-		}
-	}
-
-	//for (int i = 0; i < m_nAllyBufferCount; i++)
-	//{
-	//	if (m_pAllyBuffer[i])continue;
-	//	m_pAllyBuffer[i]->Draw();
-	//}
-
-	//敵の描画
-	for (int i = 0; i < m_nEnemyCount; i++)
+	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)//Z軸順に描画
 	{
 
-		if (!m_pEnemy[i])continue;
-		m_pEnemy[i]->Draw();
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('3'))
+		//味方の描画
+		for (int i = 0; i < m_nAllyCount; i++)
 		{
-			if (m_pEnemy[i]->GetCornerCount() == 3)
-				m_pEnemy[i]->CollisionDraw();
+			if (!m_pAlly[i])continue;
+			if (m_pAlly[i]->GetPos().Z > Z - 1.0f && m_pAlly[i]->GetPos().Z < Z + 1.0f)
+			{
+				m_pAlly[i]->Draw();
+			}
 		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('4'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 4)
-				m_pEnemy[i]->CollisionDraw();
-		}
-		if (IsKeyPress('0') || IsKeyPress('E') && IsKeyPress('5'))
-		{
-			if (m_pEnemy[i]->GetCornerCount() == 5)
-				m_pEnemy[i]->CollisionDraw();
-		}
-	}
 
-	if (m_pEnemyLeader)
-	{
-		m_pEnemyLeader->Draw();
-	}
+		//敵の描画
+		for (int i = 0; i < m_nEnemyCount; i++)
+		{
 
-	if (m_pAllyLeader)
-	{
-		m_pAllyLeader->Draw();
+			if (!m_pEnemy[i])continue;
+			if (m_pEnemy[i]->GetPos().Z > Z - 1.0f && m_pEnemy[i]->GetPos().Z < Z + 1.0f)
+			{
+				m_pEnemy[i]->Draw();
+			}
+		}
+
+		if (m_pEnemyLeader)
+		{
+			if (m_pEnemyLeader->GetPos().Z > Z - 1.0f && m_pEnemyLeader->GetPos().Z < Z + 1.0f)
+			{
+				m_pEnemyLeader->Draw();
+			}
+		}
+
+		if (m_pAllyLeader)
+		{
+			if (m_pAllyLeader->GetPos().Z > Z - 1.0f && m_pAllyLeader->GetPos().Z < Z + 1.0f)
+			{
+				m_pAllyLeader->Draw();
+			}
+		}
 	}
 }
 
