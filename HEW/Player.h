@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "ModelEx.h"
 #include "Texture.h"
+#include "LibEffekseer.h"
 
 // defines
 #define MOVESPEED (0.5f)	// 移動速度
@@ -120,4 +121,6 @@ private:
 	DirectX::XMMATRIX size;
 	DirectX::XMMATRIX rotate;
 	DirectX::XMMATRIX mat;
+	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
+	Effekseer::EffectRef m_Effect;
 };

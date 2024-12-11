@@ -174,6 +174,9 @@
     <ClCompile Include="BackGround.cpp">
       <Filter>ソース ファイル\Systems\Mode</Filter>
     </ClCompile>
+    <ClCompile Include="LibEffekseer.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="BackGround.h">
       <Filter>リソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="LibEffekseer.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

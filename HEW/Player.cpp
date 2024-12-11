@@ -10,6 +10,8 @@
 #include "ShaderList.h"
 #include "Geometory.h"
 
+int n = 0;
+
 // defines
 #define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
 #define DRAWTIME(bonus) (BASE_DRAWTIME  + bonus)	// 制限時間
@@ -69,6 +71,8 @@ CPlayer::CPlayer()
 	// 制限時間テクスチャ読み込み
 	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Timer.jpg", &m_pTexTimer);
 	if (FAILED(hr))MessageBox(NULL, "エラー:Timer.jpg", "Player.cpp", MB_OK);
+
+	m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 }
 
 CPlayer::~CPlayer()
@@ -92,6 +96,12 @@ void CPlayer::Update()
 	case CPlayer::STOP: UpdateStop(); break;
 	case CPlayer::MOVE: UpdateMove(); break;
 	default:break;
+	}
+
+	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
+	{
+		LibEffekseer::GetManager()->Play(m_Effect, m_tPos.x, m_tPos.y, m_tPos.z);
+		n++;
 	}
 }
 
@@ -148,6 +158,10 @@ void CPlayer::Draw()
 	m_pModel->SetViewMatrix(GetView());
 	m_pModel->SetProjectionMatrix(GetProj());
 	m_pModel->Draw();
+
+	SetRender2D();
+	LibEffekseer::SetViewPosition(GetCameraPos());
+	LibEffekseer::SetCameraMatrix(GetView(false), GetProj(false));
 }
 
 void CPlayer::UpdateReady()

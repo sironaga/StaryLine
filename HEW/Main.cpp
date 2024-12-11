@@ -14,8 +14,9 @@
 #include "SoundList.h"
 #include "Result.h"
 #include "SceneDebug.h"
-#include"Camera.h"
-#include"CameraDebug.h"
+#include "Camera.h"
+#include "CameraDebug.h"
+#include "LibEffekseer.h"
 
 //--- グローバル変数
 E_SCENE_TYPE g_SceneType;
@@ -35,6 +36,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// 他機能初期化
 	Geometory::Init();
 	Sprite::Init();
+	LibEffekseer::Init(GetDevice(), GetContext());
 	InitInput();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -64,6 +66,7 @@ void Uninit()
 	UninitInput();
 	//delete g_mainsound;
 	//g_mainsound = nullptr;
+	LibEffekseer::Uninit();
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
@@ -175,17 +178,23 @@ void Draw()
 	default:
 		break;
 	}
+	//LibEffekseer::Draw();
 	EndDrawDirectX();
 }
 
-DirectX::XMFLOAT4X4 GetView()
+DirectX::XMFLOAT4X4 GetView(bool isTranspose)
 {
-	return g_Camera->GetViewMatrix();
+	return g_Camera->GetViewMatrix(isTranspose);
 }
 
-DirectX::XMFLOAT4X4 GetProj()
+DirectX::XMFLOAT4X4 GetProj(bool isTranspose)
 {
-	return g_Camera->GetProjectionMatrix();
+	return g_Camera->GetProjectionMatrix(isTranspose);
+}
+
+DirectX::XMFLOAT3 GetCameraPos()
+{
+	return g_Camera->GetPos();
 }
 
 void ChangeScene(E_SCENE_TYPE next)

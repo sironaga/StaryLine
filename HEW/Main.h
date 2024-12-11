@@ -9,8 +9,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height);
 void Uninit();
 void Update();
 void Draw();
-DirectX::XMFLOAT4X4 GetView();
-DirectX::XMFLOAT4X4 GetProj();
+DirectX::XMFLOAT4X4 GetView(bool isTranspose = true);
+DirectX::XMFLOAT4X4 GetProj(bool isTranspose = true);
+DirectX::XMFLOAT3 GetCameraPos();
 
 
 //óÒãìå^êÈåæ

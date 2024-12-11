@@ -34,6 +34,7 @@
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputEx.cpp" />
+    <ClCompile Include="LibEffekseer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputEx.h" />
+    <ClInclude Include="LibEffekseer.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
