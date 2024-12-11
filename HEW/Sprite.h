@@ -41,10 +41,10 @@ public:
 	void SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight);
 
 	// ＜テクスチャアニメーション関数＞
-	// 第1引数に横の分割数、第2引数に縦の分割数、第3引数にアニメーションが次に移るまでのフレーム数を入れてください
+	// 第1引数に横の分割数、第2引数に縦の分割数、第3引数にアニメーションが次に移るまでのフレーム数、第4引数にいループをするかどうかを入れてください
 	// この関数を使う際は、メンバ変数などでCVector2型の変数(m_fPosTex)を作り、そこに一旦値を入れるようにしてください
 	// この関数から直接取り出すようにSetSpriteUVPos関数に入れると倍速になってしまいます
-	DirectX::XMFLOAT2 GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap);
+	void SettingUVAnimation(Sprite* pSprite,int nSplitX, int nSplitY, int nAnimationSwap,bool IsLoop = true);
 
 private:
 	struct Data
@@ -59,6 +59,10 @@ private:
 	static Data m_data;
 	static std::shared_ptr<VertexShader> m_defVS;
 	static std::shared_ptr<PixelShader> m_defPS;
+
+	int nAnimeWidth  = 0;
+	int nAnimeHeight = 0;
+	int nAnimeCount = 0;
 };
 
 #endif // __SPRITE_H__

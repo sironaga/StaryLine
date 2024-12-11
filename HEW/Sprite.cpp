@@ -168,30 +168,60 @@ void Sprite::SetPixelShader(Shader* ps)
 		m_data.ps = m_defPS.get();
 }
 
-DirectX::XMFLOAT2 Sprite::GetPosTex(int nSplitX, int nSplitY, int nAnimationSwap)
+void Sprite::SettingUVAnimation(Sprite* pSprite, int nSplitX, int nSplitY, int nAnimationSwap, bool IsLoop)
 {
 	DirectX::XMFLOAT2 tex = {};
-	static int nSplit = nSplitX * nSplitY;
-	static int nAnimePage = 0;
-	static int nAnimeCount = 0;
+
+	//int nSplit = nSplitX * nSplitY;
+
+	if (IsLoop)
+	{
+		if ((nAnimeWidth >= nSplitX) && (nAnimeHeight >= nSplitY))
+		{
+			nAnimeWidth = 0;	// 最初のシーケンステクスチャに戻る
+			nAnimeHeight = 0;
+		}
+	}
+	else
+	{
+		if ((nAnimeWidth >= nSplitX) && (nAnimeHeight >= nSplitY))
+		{
+			nAnimeWidth = nSplitX - 1;	// 最後のシーケンステクスチャに戻る
+			nAnimeHeight = nSplitY - 1;	// 最後のシーケンステクスチャに戻る
+		}
+	}
 
 	// テクスチャアニメーション用
-	if (nAnimeCount >= nAnimationSwap)
+	if ((nSplitX * nSplitY) > 1)
 	{
-		nAnimePage++;	// 次のシーケンステクスチャに移る
-		nAnimeCount = 0;
+		if ((nAnimeWidth * nAnimeHeight) != ((nSplitX - 1) * (nSplitY - 1)))
+		{
+			if (nAnimeCount >= nAnimationSwap)
+			{
+				nAnimeWidth++;	// 次のシーケンステクスチャに移る
+				if (nAnimeWidth == nSplitX)
+				{
+					if (nAnimeHeight < nSplitY)
+					{
+						nAnimeHeight++;
+						nAnimeWidth = 0;
+					}
+					else
+					{
+						nAnimeWidth -= 1;
+					}
+				}
+				nAnimeCount = 0;
+			}
+			else nAnimeCount++;
+		}
 	}
-	else nAnimeCount++;
 
-	if (nAnimePage >= nSplit)
-	{
-		nAnimePage = 0;	// 最初のシーケンステクスチャに戻る
-	}
+	tex.x = (float)nAnimeWidth / (float)nSplitX;	// 横のシーケンステクスチャの動き
+	tex.y = (float)nAnimeHeight / (float)nSplitY;	// 縦のシーケンステクスチャの動き
 
-	tex.x = (float)nAnimePage / (float)nSplitX;	// 横のシーケンステクスチャの動き
-	tex.y = (float)nAnimePage / (float)nSplitY;	// 縦のシーケンステクスチャの動き
-
-	return tex;
+	SetUVPos(tex);
+	SetUVScale({ 1.0f / nSplitX,1.0f / nSplitY });
 }
 
 void Sprite::ReSetSprite()

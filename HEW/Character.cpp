@@ -17,10 +17,10 @@ enum AllyTexture
 {
 	Ally3,
 	Ally4,
-	Ally5,
-	Ally6,
-	Ally7,
-	Ally8,
+	//Ally5,
+	//Ally6,
+	//Ally7,
+	//Ally8,
 	MAX_AllyTex,
 };
 //enum AllyBufferTexture
@@ -31,23 +31,24 @@ enum EnemyTexture
 {
 	Enemy1,
 	Enemy2,
-	Enemy3,
+	//Enemy3,
 	MAX_EnemyTex,
 };
 
-void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
+void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 
 Texture* g_pAllyTex[MAX_AllyTex];
 //Texture* g_pAllyBufferTex[MAX_AllyBufferTex];
 Texture* g_pEnemyTex[MAX_EnemyTex];
 
-Texture* g_pLeaderTex[MAX_LEADERS];
+Texture* g_pPlayerTex[CLeader::MAX_StatusMode];
+Texture* g_pBosTex;
 
 Texture* g_pCollisionTex;
 
 Texture* g_pHpGageTex[2];
 
-Sprite* g_pSprite;
+//Sprite* g_pSprite;
 
 CFieldVertex* g_pFieldVtx;
 
@@ -66,30 +67,34 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	g_pCollisionTex = new Texture();
 
-	g_pLeaderTex[0] = new Texture();
-	g_pLeaderTex[1] = new Texture();
+	g_pPlayerTex[CLeader::WandOn] = new Texture();
+	g_pPlayerTex[CLeader::WandOff] = new Texture();
+
+	g_pBosTex = new Texture();
 
 	g_pHpGageTex[0] = new Texture();
 	g_pHpGageTex[1] = new Texture();
 
 	HRESULT hr;
-	hr = g_pAllyTex[Ally3]->Create("Asset/味方/3.png");
-	hr = g_pAllyTex[Ally4]->Create("Asset/味方/4.png");
-	hr = g_pAllyTex[Ally5]->Create("Asset/味方/5.png");
-	hr = g_pAllyTex[Ally6]->Create("Asset/味方/6.png");
-	hr = g_pAllyTex[Ally7]->Create("Asset/味方/7.png");
-	hr = g_pAllyTex[Ally8]->Create("Asset/味方/8.png");
+	hr = g_pAllyTex[Ally3]->Create("Asset/味方/SankakuSD.png");
+	hr = g_pAllyTex[Ally4]->Create("Asset/味方/ShikakuSD.png");
+	//hr = g_pAllyTex[Ally5]->Create("Asset/味方/5.png");
+	//hr = g_pAllyTex[Ally6]->Create("Asset/味方/6.png");
+	//hr = g_pAllyTex[Ally7]->Create("Asset/味方/7.png");
+	//hr = g_pAllyTex[Ally8]->Create("Asset/味方/8.png");
 	hr = g_pEnemyTex[Enemy1]->Create("Asset/敵/3.png");
 	hr = g_pEnemyTex[Enemy2]->Create("Asset/敵/4.png");
-	hr = g_pEnemyTex[Enemy3]->Create("Asset/敵/5.png");
+	//hr = g_pEnemyTex[Enemy3]->Create("Asset/敵/5.png");
 
 	hr = g_pCollisionTex->Create("Asset/Star/CLStar.png");
 
-	hr = g_pLeaderTex[0]->Create("Asset/Player/Lini.png");
+	hr = g_pPlayerTex[CLeader::WandOn]->Create("Asset/Player/LinieSD_WandOn_sprite.png");
+	hr = g_pPlayerTex[CLeader::WandOff]->Create("Asset/Player/LinieSD_WandOff_sprite.png");
+
 	switch (StageNum)
 	{
 	case 0:
-		g_pLeaderTex[1]->Create("Asset/敵/BossNo1.png");
+		g_pBosTex->Create("Asset/敵/BossNo1.png");
 		break;
 	case 1:
 		break;
@@ -128,16 +133,16 @@ void UnIninCharacterTexture()
 		delete g_pCollisionTex;
 		g_pCollisionTex = nullptr;
 	}
-	for (int i = 0; i < 3; i++)
-	{
-		delete g_pAllyTex[i];
-		g_pAllyTex[i] = nullptr;
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		delete g_pEnemyTex[i];
-		g_pEnemyTex[i] = nullptr;
-	}
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	delete g_pAllyTex[i];
+	//	g_pAllyTex[i] = nullptr;
+	//}
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	delete g_pEnemyTex[i];
+	//	g_pEnemyTex[i] = nullptr;
+	//}
 }
 void UnInitSound()
 {
@@ -152,7 +157,6 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	:m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
-	, nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
 	//, m_fShield(0.0f)
 	, m_fAtk(0.0f)
@@ -169,6 +173,21 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
 {
+	m_pSprite = new Sprite();
+
+	switch (InCornerCount)
+	{
+	case 3:
+	case 5:
+	case 7:
+		nCornerCount = 3;
+		break;
+	case 4:
+	case 6:
+	case 8:
+		nCornerCount = 4;
+		break;
+	}
 	m_tPos.X = 0.0f;
 	m_tPos.Y = 0.0f;
 	m_tPos.Z = 0.0f;
@@ -216,61 +235,61 @@ void CFighter::CollisionDraw(void)
 	for (int i = 0; i < 8; i++)
 	{
 		//テクスチャの指定
-		g_pSprite->SetTexture(g_pCollisionTex);
+		m_pSprite->SetTexture(g_pCollisionTex);
 		switch (i)
 		{
 		case 0:	DrawSetting({ 
 			m_tPos.X - m_tAtkCollision.Width,
 			m_tPos.Y - m_tAtkCollision.Height,	
 			m_tPos.Z - m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f },m_pSprite);
 			break;
 		case 1:	DrawSetting({ 
 			m_tPos.X + m_tAtkCollision.Width,
 			m_tPos.Y - m_tAtkCollision.Height,	
 			m_tPos.Z - m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		case 2:	DrawSetting({ 
 			m_tPos.X - m_tAtkCollision.Width,
 			m_tPos.Y + m_tAtkCollision.Height,	
 			m_tPos.Z - m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		case 3:	DrawSetting({ 
 			m_tPos.X + m_tAtkCollision.Width,
 			m_tPos.Y + m_tAtkCollision.Height,	
 			m_tPos.Z - m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		case 4:	DrawSetting({ 
 			m_tPos.X - m_tAtkCollision.Width,
 			m_tPos.Y - m_tAtkCollision.Height,	
 			m_tPos.Z + m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		case 5:	DrawSetting({ 
 			m_tPos.X + m_tAtkCollision.Width,
 			m_tPos.Y - m_tAtkCollision.Height,	
 			m_tPos.Z + m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		case 6:	DrawSetting({ 
 			m_tPos.X - m_tAtkCollision.Width,
 			m_tPos.Y + m_tAtkCollision.Height,	
 			m_tPos.Z + m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		case 7:	DrawSetting({ 
 			m_tPos.X + m_tAtkCollision.Width,
 			m_tPos.Y + m_tAtkCollision.Height,	
 			m_tPos.Z + m_tAtkCollision.Width, },
-			{ 3.0f,3.0f,3.0f });
+			{ 3.0f,3.0f,3.0f }, m_pSprite);
 			break;
 		}
-		g_pSprite->Draw();
+		m_pSprite->Draw();
 
-		g_pSprite->ReSetSprite();
+		m_pSprite->ReSetSprite();
 	}
 }
 
@@ -417,14 +436,16 @@ void CAlly::Draw(void)
 	m_pHpGage->Draw();
 
 	//キャラクターの描画
-	g_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
+	m_pSprite->SetTexture(g_pAllyTex[nCornerCount - 3]);
 
-	if(m_bIsHit) g_pSprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
-	else g_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	if(m_bIsHit) m_pSprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+	else m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
+	m_pSprite->SetUVScale({ 1.0f, 1.0f });
 
-	g_pSprite->Draw();
+	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite);
+
+	m_pSprite->Draw();
 
 	//m_bIsHit = false;
 
@@ -433,7 +454,7 @@ void CAlly::Draw(void)
 	//m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
 	//m_pEffect->Draw();
 
-	g_pSprite->ReSetSprite();
+	m_pSprite->ReSetSprite();
 }
 
 void CAlly::CreateUpdate(void)
@@ -540,50 +561,50 @@ void CAlly::SettingStatus(void)
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
 		break;
-	case Pentagon:
-		m_fHp = 10.0f;
-		m_fAtk = 1.0f;
-		//m_tAtkType = AT_Physics;
-		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
-		break;
-	case Hexagon:
-		m_fHp = 10.0f;
-		m_fAtk = 1.0f;
-		//m_tAtkType = AT_Physics;
-		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
-		break;
-	case Heptagon:
-		m_fHp = 10.0f;
-		m_fAtk = 1.0f;
-		//m_tAtkType = AT_Physics;
-		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
-		break;
-	case Octagon:
-		m_fHp = 10.0f;
-		m_fAtk = 1.0f;
-		//m_tAtkType = AT_Physics;
-		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
-		break;
+	//case Pentagon:
+	//	m_fHp = 10.0f;
+	//	m_fAtk = 1.0f;
+	//	//m_tAtkType = AT_Physics;
+	//	m_fAtkAnimationMaxTime = 0.0f;
+	//	m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+	//	m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
+	//	m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
+	//	m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+	//	m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
+	//	break;
+	//case Hexagon:
+	//	m_fHp = 10.0f;
+	//	m_fAtk = 1.0f;
+	//	//m_tAtkType = AT_Physics;
+	//	m_fAtkAnimationMaxTime = 0.0f;
+	//	m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+	//	m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
+	//	m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
+	//	m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+	//	m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
+	//	break;
+	//case Heptagon:
+	//	m_fHp = 10.0f;
+	//	m_fAtk = 1.0f;
+	//	//m_tAtkType = AT_Physics;
+	//	m_fAtkAnimationMaxTime = 0.0f;
+	//	m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+	//	m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
+	//	m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
+	//	m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+	//	m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
+	//	break;
+	//case Octagon:
+	//	m_fHp = 10.0f;
+	//	m_fAtk = 1.0f;
+	//	//m_tAtkType = AT_Physics;
+	//	m_fAtkAnimationMaxTime = 0.0f;
+	//	m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+	//	m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
+	//	m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
+	//	m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+	//	m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
+	//	break;
 	}
 }
 
@@ -637,17 +658,17 @@ void CEnemy::Draw(void)
 	m_pHpGage->Draw();
 
 	//キャラクターの描画
-	g_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
+	m_pSprite->SetTexture(g_pEnemyTex[nCornerCount - 3]);
 
-	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
+	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite);
 
-	g_pSprite->Draw();
+	m_pSprite->Draw();
 
 	//m_pEffect->SetEffectTexture();
 	//m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
 	//m_pEffect->Draw();
 
-	g_pSprite->ReSetSprite();
+	m_pSprite->ReSetSprite();
 }
 
 void CEnemy::CreateUpdate(void)
@@ -750,17 +771,17 @@ void CEnemy::SettingStatus(void)
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
 		break;
-	case Pentagon:
-		m_fHp = 10.0f;
-		m_fAtk = 1.0f;
-		//m_tAtkType = AT_Physics;
-		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
-		break;
+	//case Pentagon:
+	//	m_fHp = 10.0f;
+	//	m_fAtk = 1.0f;
+	//	//m_tAtkType = AT_Physics;
+	//	m_fAtkAnimationMaxTime = 0.0f;
+	//	m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+	//	m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
+	//	m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
+	//	m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10000);		//キャラクターの中心からの横の索敵当たり判定
+	//	m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10000);	//キャラクターの中心からの横の索敵当たり判定
+	//	break;
 	}
 }
 
@@ -977,12 +998,34 @@ CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber)
 	,m_fHp(100.0f)
 	,m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
+	, m_nStatusMode(WandOn)
+	, m_nAnimationFrame(0)
 {
 	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
 
 	m_pHpGage = new CHpUI(m_fHp);
+	m_pSprite[0] = new Sprite();
+	m_pSprite[1] = new Sprite();
+
+	switch (m_nTextureNumber)
+	{
+	case 0://プレイヤー
+		m_nAnimationFrame = 1;
+		m_nAnimationX = 8;
+		m_nAnimationY = 8;
+		break;
+	case 1://ボス
+		m_nAnimationFrame = 1;
+		m_nAnimationX = 1;
+		m_nAnimationY = 1;
+		break;
+	}
+
+	m_tUVPos = { 0.0f,0.0f };
+	m_tUVScale = { 1.0f / m_nAnimationX,1.0f / m_nAnimationY };
+
 }
 
 CLeader::~CLeader()
@@ -1011,16 +1054,23 @@ void CLeader::Draw()
 	//体力ゲージの描画
 	m_pHpGage->Draw();
 
-	g_pSprite->SetTexture(g_pLeaderTex[m_nTextureNumber]);
+	switch (m_nTextureNumber)
+	{
+	case 0://プレイヤー
+		m_pSprite[m_nTextureNumber]->SetTexture(g_pPlayerTex[m_nStatusMode]);
+		break;
+	case 1://ボス
+		m_pSprite[m_nTextureNumber]->SetTexture(g_pBosTex);
+		break;
+	}
 
-	g_pSprite->SetUVPos({ 0.0f,0.0f });
-	g_pSprite->SetUVScale({ 1.0f,1.0f });
+	m_pSprite[m_nTextureNumber]->SettingUVAnimation(m_pSprite[m_nTextureNumber], m_nAnimationX, m_nAnimationY, m_nAnimationFrame, false);
 
-	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z });
+	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite[m_nTextureNumber]);
 
-	g_pSprite->Draw();
+	m_pSprite[m_nTextureNumber]->Draw();
 	
-	g_pSprite->ReSetSprite();
+	m_pSprite[m_nTextureNumber]->ReSetSprite();
 }
 
 void CLeader::Damage(CFighter* pFighter)
@@ -1039,8 +1089,8 @@ void CLeader::CreateUpdate(void)
 
 void CLeader::BattleUpdate(void)
 {
-	//待機アニメーション(移動していなかったら)
-	
+	//待機アニメーション
+
 	//HPUIの更新処理
 	m_pHpGage->Update(m_fHp, { m_tPos.X,m_tPos.Y,m_tPos.Z }, m_tSize.Y);
 }
@@ -1068,6 +1118,8 @@ CHpUI::CHpUI(float FullHp)
 	,m_tUIPos()
 	,m_tUIScale()
 {
+	m_pSprite = new Sprite();
+
 	m_tUIScale.y = 0.8f;
 	m_tUIScale.z = 1.0f;
 }
@@ -1092,29 +1144,29 @@ void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 void CHpUI::Draw(void)
 {
 	//ベースの描画
-	g_pSprite->SetTexture(g_pHpGageTex[0]);
+	m_pSprite->SetTexture(g_pHpGageTex[0]);
 
-	g_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-	DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z + 0.1f }, { 10.0f,1.0f,1.0f });
+	DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z + 0.1f }, { 10.0f,1.0f,1.0f }, m_pSprite);
 
-	g_pSprite->Draw();
+	m_pSprite->Draw();
 
-	g_pSprite->ReSetSprite();
+	m_pSprite->ReSetSprite();
 
 	//ゲージの描画
-	g_pSprite->SetTexture(g_pHpGageTex[1]);
+	m_pSprite->SetTexture(g_pHpGageTex[1]);
 
-	g_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-	DrawSetting({ m_tUIPos.x - (5 -(m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z }, m_tUIScale);
+	DrawSetting({ m_tUIPos.x - (5 -(m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z }, m_tUIScale, m_pSprite);
 
-	g_pSprite->Draw();
+	m_pSprite->Draw();
 
-	g_pSprite->ReSetSprite();
+	m_pSprite->ReSetSprite();
 }
 
-void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
+void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize,Sprite* Sprite)
 {
 	//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
@@ -1143,7 +1195,7 @@ void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 	wvp[1] = GetView();
 	wvp[2] = GetProj();
 
-	g_pSprite->SetWorld(wvp[0]);
-	g_pSprite->SetView(wvp[1]);
-	g_pSprite->SetProjection(wvp[2]);
+	Sprite->SetWorld(wvp[0]);
+	Sprite->SetView(wvp[1]);
+	Sprite->SetProjection(wvp[2]);
 }
