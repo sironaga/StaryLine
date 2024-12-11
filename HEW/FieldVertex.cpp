@@ -28,10 +28,14 @@ CFieldVertex::CFieldVertex()
 	, BreakVertex(-1)
 	, m_pVtx_FieldLine{nullptr}
 	, m_pSprite_Line{nullptr}
+	, SuperStarCount(1)
+	, m_pTex_SuperStar_Number{nullptr}
+	, m_pSprite_SuperStar_Number(nullptr)
 {
 	// 星の描画用
 	// スプライト
 	m_pSprite_Star = new Sprite();
+	m_pSprite_SuperStar_Number = new Sprite();
 	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
@@ -44,6 +48,10 @@ CFieldVertex::CFieldVertex()
 	}
 	// テクスチャ
 	m_pTex_FieldLine = new Texture();
+	for (int i = 0; i < 5; i++)
+	{
+		m_pTex_SuperStar_Number[i] = new Texture();
+	}
 	
 
 	StartVertex = START_PLAYER;	// 始点初期化
@@ -72,6 +80,7 @@ CFieldVertex::CFieldVertex()
 			Vertexp->Pos.z = 0;
 			Vertexp->Number = j * 5 + i;
 			Vertexp->Use = false;
+			Vertexp->SuperStar = false;
 			for (int k = 0; k < 8; k++)
 			{
 				Vertexp->Connect[k] = -1;
@@ -117,22 +126,41 @@ CFieldVertex::CFieldVertex()
 		MessageBox(NULL, "Field 画像", "Error", MB_OK);
 	}
 
-	Sprite::Vertex vtx_FieldVertex[] = {
-		//背景表示の座標
-		{{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
-		{{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}},
-		{{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}},
-	};
-
-	for (int i = 0; i < MAX_LINE; i++)
+	//スーパースター初期化
+	HRESULT hrSuperStar;
+	for (int i = 0; i < 5; i++)
 	{
-		//背景表示の座標
-		vtx_FieldLine[i][0] = {{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}};
-		vtx_FieldLine[i][1] = {{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}};
-		vtx_FieldLine[i][2] = {{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}};
-		vtx_FieldLine[i][3] = {{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}};
+		switch (i)
+		{
+		case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create("Asset/Numbers/number_1.png"); break;
+		case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create("Asset/Numbers/number_2.png"); break;
+		case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create("Asset/Numbers/number_3.png"); break;
+		case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create("Asset/Numbers/number_4.png"); break;
+		case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create("Asset/Numbers/number_5.png"); break;
+		default:
+			break;
+		}
+		if (FAILED(hrSuperStar)) {
+			MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
+		}
 	}
+
+	//Sprite::Vertex vtx_FieldVertex[] = {
+	//	//背景表示の座標
+	//	{{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
+	//	{{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}},
+	//	{{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},
+	//	{{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}},
+	//};
+
+	//for (int i = 0; i < MAX_LINE; i++)
+	//{
+	//	//背景表示の座標
+	//	vtx_FieldLine[i][0] = {{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}};
+	//	vtx_FieldLine[i][1] = {{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}};
+	//	vtx_FieldLine[i][2] = {{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}};
+	//	vtx_FieldLine[i][3] = {{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}};
+	//}
 
 }
 
@@ -278,6 +306,11 @@ void CFieldVertex::Draw()
 			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
 			if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
 			else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
+			if (Vertexp->SuperStar)
+			{
+				m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
+				m_pSprite_Star->SetColor({ 1.0f,0.2f,0.2f,1.0f });
+			}
 			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 			m_pSprite_Star->Draw();
 		}
@@ -312,6 +345,19 @@ void CFieldVertex::Draw()
 			m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
 			m_pSprite_Line[i]->Draw();
 		}
+		//スーパースターの数描画
+		// スプライトの設定		// 座標の設定						// 大きさの設定
+		DrawSetting({ -55.0f, 60.0f,10.0f }, { 100.0f,100.0f,1.0f }, m_pSprite_SuperStar_Number);
+
+		// 背景色の設定
+		m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });
+
+		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+		m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount - 1]);
+		
+		//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
+		m_pSprite_SuperStar_Number->Draw();
+		m_pSprite_SuperStar_Number->ReSetSprite();
 	}
 	
 	if (NowPhase == E_GAME_PHASE::DRAWING || NowPhase == E_GAME_PHASE::SHAPESCHECK)
@@ -531,6 +577,42 @@ void CFieldVertex::InitFieldVertex()
 	m_tVertex[StartVertex].Use = true;
 
 	NowLine = 0;
+}
+
+void CFieldVertex::SetSuperStar()
+{
+	//頂点２５個初期化
+	FieldVertex* Vertexp;
+	Vertexp = m_tVertex;
+	int UseCount = 0;//使ったスーパースターを数える
+	if (SuperStarCount == 2)
+	{
+		UseCount = 0;
+	}
+	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+	{
+		
+		if (Vertexp->SuperStar && Vertexp->SuperStarUse)
+		{
+			UseCount++;//スーパースターを使っていたら使用回数増やす
+		}
+		Vertexp->SuperStar = false;
+		Vertexp->SuperStarUse = false;
+	}
+	if (UseCount == SuperStarCount)SuperStarCount++;//盤面のスーパースターの数と使った数が同じなら増やす
+	else SuperStarCount = 1;
+	if (SuperStarCount > 5)SuperStarCount = 5;//盤面のスーパースターは5を超えない
+	for (int i = 0; i < SuperStarCount; i++)
+	{
+		int Vertex;
+		Vertex = rand() % 25;
+		if (m_tVertex[Vertex].SuperStar || Vertex == GoalVertex)//すでにスーパースターならもう一度抽選
+		{
+			i--;
+		}
+		m_tVertex[Vertex].SuperStar = true;
+	}
+
 }
 
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
@@ -803,6 +885,11 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes], Shapes_Size);//図形の頂点と角数を渡す
+					for (int m = 0; Comparison2[m] != -1; m++)
+					{
+						m_tVertex[Comparison2[m]].SuperStarUse = true;//保存した各頂点のスーパースターを使用に変える
+						//のちの処理でスーパースターがtrueでないならSuperStarUseがなんであろうとはじかれる
+					}
 				}
 				NowShapes++;//保存場所を次の場所にする
 			}

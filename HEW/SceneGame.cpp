@@ -29,7 +29,7 @@ enum SceneGameTime
 struct GAME_TIME
 {
 	float GameTime;				// 1/60秒
-	float GameSTime;			// 秒
+	//float GameSTime;			// 秒
 	float GameSTimeSycleEnd;	// 一つのサイクルが終わった時の時間
 	float GameSTimePheseAjust;	// 行き止まりになった際の時間の補正(行き止まりにならなかった時は0)
 }g_tTime;
@@ -97,8 +97,8 @@ void UpdateSceneGame()
 
 	g_pBattle->CreateLeader();
 
-	g_tTime.GameTime++;							// ゲーム中は経過時間を記録し続ける
-	g_tTime.GameSTime = g_tTime.GameTime / 60;	// 秒数(STime)に変換する
+	
+	//g_tTime.GameSTime = g_tTime.GameTime / 60;	// 秒数(STime)に変換する
 
 	g_pField->Update();		// フィールドは常に更新する
 
@@ -107,14 +107,20 @@ void UpdateSceneGame()
 	{
 		// 召喚開始の時間(本来の値 + 前回のサイクルが終了した時間)と現在時間(経過時間)の差を求めて
 		// フェーズごとの補正値(STimePheseAjust)に代入する
-		g_tTime.GameSTimePheseAjust = (SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd) - g_tTime.GameSTime;
+		g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime;
 		Phase = false;
+	}
+
+	//毎描画開始時スーパースターをセット
+	if ((float)SHAPE_DRAW_START *60.0f + g_tTime.GameSTimeSycleEnd == g_tTime.GameTime)
+	{
+		g_pFieldVertex->SetSuperStar();
 	}
 
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
-	if ((SHAPE_DRAW_START + g_tTime.GameSTimeSycleEnd <= g_tTime.GameSTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
-		(g_tTime.GameSTime < SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	if (((float)SHAPE_DRAW_START * 60.0f + g_tTime.GameSTimeSycleEnd <= g_tTime.GameTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
+		(g_tTime.GameTime < (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間更新する
 		g_pPlayer->Update();
@@ -122,21 +128,22 @@ void UpdateSceneGame()
 	}
 
 	// 召喚開始の時間になったら
-	if ((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust) == g_tTime.GameSTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		g_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
 	// 経過時間が召喚開始の時間からクールタイム開始の時間になるまで
 	// キャラクターを召喚する時間
-	if (((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust) <= g_tTime.GameSTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
-		(g_tTime.GameSTime < (COOLTIME_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust)))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
+		(g_tTime.GameTime < (float)COOLTIME_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		g_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
 	}
 
 	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
-	if((COOLTIME_START - g_tTime.GameSTimePheseAjust) <= g_tTime.GameSTime)g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+	if((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+							// ゲーム中は経過時間を記録し続ける
 }
 
 //描画処理
@@ -158,24 +165,37 @@ void DrawSceneGame()
 
 	// 経過時間が召喚開始の時間からクールタイム開始の時間になるまで
 	// キャラクターを召喚する時間
-	if (((SHAPE_SUMMON_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust ) <= g_tTime.GameSTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
-		(g_tTime.GameSTime < (COOLTIME_START + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust )))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	//if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
+	//	(g_tTime.GameTime < (float)COOLTIME_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	//{
+	//	g_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
+	//}
+	if (10.0f * 60.0f == g_tTime.GameTime)
+	{
+		int a;
+		a = 0;
+	}
+	//キャラクターを召喚する時間
+	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
 		g_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 	}
-
+	
 	//１回目のCOOLTIMEが始まったらそれ以降処理
-	if (COOLTIME_START <= g_tTime.GameSTime)g_pBattle->Draw();	// バトル全体の描画
+	if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
+	{
+		g_pBattle->Draw();	// バトル全体の描画
+	}
 
 	// 一つのサイクルが終わった時
-	if (g_tTime.GameTime == (SHAPE_DRAW_RESTART + g_tTime.GameSTimeSycleEnd 
-		- g_tTime.GameSTimePheseAjust) * 60)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if (g_tTime.GameTime == (float)SHAPE_DRAW_RESTART * 60.0f + g_tTime.GameSTimeSycleEnd 
+		- g_tTime.GameSTimePheseAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		// 次のサイクルに向けて各処理を行う
 
 		// 時間の初期化処理
  		g_tTime.GameSTimePheseAjust = 0;				// 移動に詰んだ時の補正値を初期化
-		g_tTime.GameSTimeSycleEnd = g_tTime.GameSTime;	// 前回のサイクルが終了した時間を更新
+		g_tTime.GameSTimeSycleEnd = g_tTime.GameTime;	// 前回のサイクルが終了した時間を更新
 
 		// 各要素の初期化処理
 		g_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
@@ -183,6 +203,7 @@ void DrawSceneGame()
 
 		Phase = true;
 	}
+	g_tTime.GameTime++;
 }
 
 void ChangePhase(E_GAME_PHASE next)

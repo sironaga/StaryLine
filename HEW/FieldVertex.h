@@ -38,6 +38,7 @@ public:
 	void SetPlayerAddress(CPlayer*);
 
 	void InitFieldVertex();
+	void SetSuperStar();
 	
 private:
 
@@ -45,6 +46,8 @@ private:
 	{
 		DirectX::XMFLOAT3 Pos;
 		bool Use;
+		bool SuperStar;//スーパースター
+		bool SuperStarUse;//スーパースター使ったか
 		int Connect[8];
 		int Number;
 	};
@@ -75,6 +78,7 @@ private:
 
 	Texture* m_pTex_FieldVertex;
 	Texture* m_pTex_FieldUseVertex;
+	Texture* m_pTex_SuperStar_Number[5];
 	float m_offsetU_Field;
 
 	Texture* m_pTex_FieldLine;
@@ -91,11 +95,13 @@ private:
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
 
 	Sprite* m_pSprite_Star;//3D描画用スプライトクラスポインター
-	Sprite* m_pSprite_Line[MAX_LINE];
+	Sprite* m_pSprite_Line[MAX_LINE];//線の描画
+	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
 
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
 	Field* m_pField;
+	int SuperStarCount;//スーパースターの個数
 };
