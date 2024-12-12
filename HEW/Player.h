@@ -94,7 +94,7 @@ private:
 private:
 	ID3D11Buffer* m_pVtxTimer;					// タイマー描画用頂点情報
 	ID3D11ShaderResourceView* m_pTexTimer;		// タイマー描画用テクスチャ
-	Vertex vtxTimer[1][4];						// タイマー用頂点情報
+	Vertex vtxTimer[4];						// タイマー用頂点情報
 	FPSTIMER tPlayerTimer;						// タイマー
 	float fTimerSize;							// 時間によって減らすタイマーのサイズ
 	float fDrawTime;							// 描画制限時間

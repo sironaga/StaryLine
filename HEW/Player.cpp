@@ -10,8 +10,6 @@
 #include "ShaderList.h"
 #include "Geometory.h"
 
-int n = 0;
-
 // defines
 #define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
 #define DRAWTIME(bonus) (BASE_DRAWTIME  + bonus)	// 制限時間
@@ -62,10 +60,10 @@ CPlayer::CPlayer()
 	if (FAILED(hr))MessageBox(NULL, "エラー:Player.png", "Player.cpp", MB_OK);
 
 	// 制限時間頂点情報
-	vtxTimer[0][0] = { { -TIMER_LEFT,	-TIMER_UP,		0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[0][1] = { { -TIMER_LEFT,	-TIMER_DOWN,	0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[0][2] = { {  fTimerSize,	-TIMER_UP,		0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[0][3] = { {  fTimerSize,	-TIMER_DOWN,	0.0f },	{ 1.0f, 1.0f} };
+	vtxTimer[0] = { { -TIMER_LEFT,	-TIMER_UP,		0.0f },	{ 0.0f, 0.0f} };
+	vtxTimer[1] = { { -TIMER_LEFT,	-TIMER_DOWN,	0.0f },	{ 0.0f, 1.0f} };
+	vtxTimer[2] = { {  fTimerSize,	-TIMER_UP,		0.0f },	{ 1.0f, 0.0f} };
+	vtxTimer[3] = { {  fTimerSize,	-TIMER_DOWN,	0.0f },	{ 1.0f, 1.0f} };
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
 
 	// 制限時間テクスチャ読み込み
@@ -320,10 +318,10 @@ void CPlayer::TimeProcess()
 		}
 	}
 	// 制限時間頂点情報の更新
-	vtxTimer[0][0] = { { -TIMER_LEFT,	-TIMER_UP,	0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[0][1] = { { -TIMER_LEFT,	-TIMER_DOWN,0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[0][2] = { {  fTimerSize,	-TIMER_UP,	0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[0][3] = { {  fTimerSize,	-TIMER_DOWN,0.0f },	{ 1.0f, 1.0f} };
+	vtxTimer[0] = { { -TIMER_LEFT,	-TIMER_UP,	0.0f },	{ 0.0f, 0.0f} };
+	vtxTimer[1] = { { -TIMER_LEFT,	-TIMER_DOWN,0.0f },	{ 0.0f, 1.0f} };
+	vtxTimer[2] = { {  fTimerSize,	-TIMER_UP,	0.0f },	{ 1.0f, 0.0f} };
+	vtxTimer[3] = { {  fTimerSize,	-TIMER_DOWN,0.0f },	{ 1.0f, 1.0f} };
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
 }
 
