@@ -18,28 +18,26 @@
 #define PLAYER_SPLIT_Y (4)	// プレイヤーテクスチャ分割数Y
 #define ANIME_TIME (10)		// プレイヤーアニメーションカウント
 
-#define TIMER_LEFT (1400.0f)							// タイマーのサイズ左
-#define TIMER_RIGHT(time) (time * 60.0f + -TIMER_LEFT)	// タイマーのサイズ右
-#define TIMER_UP (950.0f)								// タイマーのサイズ上
-#define TIMER_DOWN (900.0f)								// タイマーのサイズ下
-
 #define PLAYER_AJUST_POSX (3.0f)
 #define PLAYER_AJUST_POSY (8.0f)
 
 // constants
-constexpr float ce_fPlayerSize = 10.0f;				// プレイヤー(筆)のサイズ
+constexpr float BRUSH_SIZE = 10.0f;				// プレイヤー(筆)のサイズ
+constexpr float TIMER_HARFSIZE_X = 100.0f;
+constexpr float TIMER_HARFSIZE_Y = 600.0f;
 
 CPlayer::CPlayer()
 	: m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	//, m_pVtxPlayer(nullptr), m_pTexPlayerWait(nullptr)
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
-	, m_tPos{}, m_tPosTex{ 0.0f, 0.0f }, m_tSizeTex{ 0.25f ,0.25f }
-	, bCanMoveCheck(false), m_bChangePhase(false)
+	, m_tBrushPos{}
+	, bCanMoveCheck(false), m_bDrawing(true)
 	, m_pPlayer(nullptr), m_pPlayerTex(nullptr)
 	, pos{}, size{}, rotate{}, mat{}
+	, m_fBrushSize(BRUSH_SIZE), m_tBrushRotate{ DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f }
 
 	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
-	, vtxTimer{}, fTimerSize(TIMER_RIGHT(DRAWTIME(0.0f)))
+	, vtxTimer{},fTimerSize(-TIMER_HARFSIZE_Y)
 	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
 	, bTimerStart(false)
 
@@ -60,10 +58,10 @@ CPlayer::CPlayer()
 	if (FAILED(hr))MessageBox(NULL, "エラー:Player.png", "Player.cpp", MB_OK);
 
 	// 制限時間頂点情報
-	vtxTimer[0] = { { -TIMER_LEFT,	-TIMER_UP,		0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[1] = { { -TIMER_LEFT,	-TIMER_DOWN,	0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[2] = { {  fTimerSize,	-TIMER_UP,		0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[3] = { {  fTimerSize,	-TIMER_DOWN,	0.0f },	{ 1.0f, 1.0f} };
+	vtxTimer[0] = { { -TIMER_HARFSIZE_X ,	fTimerSize,	0.0f },	{ 0.0f, 0.0f} };
+	vtxTimer[1] = { { -TIMER_HARFSIZE_X ,	TIMER_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f} };
+	vtxTimer[2] = { {  TIMER_HARFSIZE_X	,	fTimerSize,	0.0f },	{ 1.0f, 0.0f} };
+	vtxTimer[3] = { {  TIMER_HARFSIZE_X	,	TIMER_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f} };
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
 
 	// 制限時間テクスチャ読み込み
@@ -88,17 +86,19 @@ void CPlayer::Update()
 	TimeProcess();
 
 	// 状態別更新処理
-	switch (m_ePlayerState)
+	if (m_bDrawing)	//召喚フェーズじゃない時
 	{
-	case CPlayer::STOP: UpdateStop(); break;
-	case CPlayer::MOVE: UpdateMove(); break;
-	default:break;
+		switch (m_ePlayerState)
+		{
+		case CPlayer::STOP: UpdateStop(); break;
+		case CPlayer::MOVE: UpdateMove(); break;
+		default:break;
+		}
 	}
 
 	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 	{
-		LibEffekseer::GetManager()->Play(m_Effect, m_tPos.x, m_tPos.y, m_tPos.z);
-		n++;
+		LibEffekseer::GetManager()->Play(m_Effect, m_tBrushPos.x, m_tBrushPos.y, m_tBrushPos.z);
 	}
 }
 
@@ -131,13 +131,14 @@ void CPlayer::Draw()
 
 	SetRender2D();
 	//スプライトの座標の設定
-	SetSpritePos(0.0f, 0.0f);
+	SetSpritePos(-700.0f, -400.0f);
 
 	//大きさの設定
 	SetSpriteScale(1.0f, 1.0f);
 
 	//背景色の設定
-	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+	if (m_bDrawing)SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+	else SetSpriteColor(1.0f, 1.0f, 1.0f, 0.3f);
 
 	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
 	SetSpriteTexture(m_pTexTimer);
@@ -146,15 +147,9 @@ void CPlayer::Draw()
 	DrawSprite(m_pVtxTimer, sizeof(Vertex));
 
 	// スプライト設定のリセット
-	ReSetSprite();;
+	ReSetSprite();
 
-	SetRender3D();
-	m_pModel->SetPostion(m_tPos.x + PLAYER_AJUST_POSX, m_tPos.y + PLAYER_AJUST_POSY, m_tPos.z);
-	m_pModel->SetRotation(DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f);
-	m_pModel->SetScale(1.0f, 1.0f, 1.0f);
-	m_pModel->SetViewMatrix(GetView());
-	m_pModel->SetProjectionMatrix(GetProj());
-	m_pModel->Draw();
+	DrawModel(PLAYER);
 
 	SetRender2D();
 	LibEffekseer::SetViewPosition(GetCameraPos());
@@ -163,11 +158,7 @@ void CPlayer::Draw()
 
 void CPlayer::UpdateStop()
 {
-	// プレイヤーの座標を現在の頂点番号の座標と同じにする
-	m_tPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
-
-	// 八方向いずれかに移動可能か確認
-	if (!bCanMoveCheck)
+	if (!bCanMoveCheck)	// 移動可能か未チェック
 	{
 		// 移動方向を真ん中に初期化
 		m_eDestination = DEFAULT;
@@ -177,18 +168,22 @@ void CPlayer::UpdateStop()
 			// 行けない方向がある場合、その度にカウントを増やす
 			if (m_pFieldVtx->GetRoadStop(i))Count++;
 
-			// 8方向全てに移動が出来ないなら即座にクールタイムに移る
+			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
-				m_bChangePhase = true;
-				fTimerSize = -TIMER_LEFT;
-				bCanMoveCheck = true;
-				return;
+				m_bDrawing = false;				// 即座に作図終了
+				bCanMoveCheck = true;			// 移動可能かのチェック終了
+				fTimerSize = TIMER_HARFSIZE_Y;	// タイマーを一番下まで落とす
+				return;					// 移動不可を返す
 			}
 		}
 		// 移動可能かのチェック終了
 		bCanMoveCheck = true;
 	}
+
+
+	// プレイヤーの座標を現在の頂点番号の座標と同じにする
+	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 
 	// プレイヤーのコントローラー、キーボード入力処理
 	PlayerInput();
@@ -210,39 +205,39 @@ void CPlayer::UpdateMove()
 	switch (m_eDestination)
 	{
 	case CPlayer::UP:
-		m_tPos.y += MOVESPEED;
+		m_tBrushPos.y += MOVESPEED;
 		break;
 	case CPlayer::UPRIGHT:
-		m_tPos.x += MOVESPEED;
-		m_tPos.y += MOVESPEED;
+		m_tBrushPos.x += MOVESPEED;
+		m_tBrushPos.y += MOVESPEED;
 		break;
 	case CPlayer::RIGHT:
-		m_tPos.x += MOVESPEED;
+		m_tBrushPos.x += MOVESPEED;
 		break;
 	case CPlayer::DOWNRIGHT:
-		m_tPos.x += MOVESPEED;
-		m_tPos.y -= MOVESPEED;
+		m_tBrushPos.x += MOVESPEED;
+		m_tBrushPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWN:
-		m_tPos.y -= MOVESPEED;
+		m_tBrushPos.y -= MOVESPEED;
 		break;
 	case CPlayer::DOWNLEFT:
-		m_tPos.x -= MOVESPEED;
-		m_tPos.y -= MOVESPEED;
+		m_tBrushPos.x -= MOVESPEED;
+		m_tBrushPos.y -= MOVESPEED;
 		break;
 	case CPlayer::LEFT:
-		m_tPos.x -= MOVESPEED;
+		m_tBrushPos.x -= MOVESPEED;
 		break;
 	case CPlayer::UPLEFT:
-		m_tPos.x -= MOVESPEED;
-		m_tPos.y += MOVESPEED;
+		m_tBrushPos.x -= MOVESPEED;
+		m_tBrushPos.y += MOVESPEED;
 		break;
 	default:
 		break;
 	}
 
 	// プレイヤーが目的地の頂点に到着したら
-	if (m_tPos.x == m_pFieldVtx->GetVertexPos(m_nDestination).x && m_tPos.y == m_pFieldVtx->GetVertexPos(m_nDestination).y)
+	if (m_tBrushPos.x == m_pFieldVtx->GetVertexPos(m_nDestination).x && m_tBrushPos.y == m_pFieldVtx->GetVertexPos(m_nDestination).y)
 	{
 		// 今の頂点を目的地の頂点に更新する
 		m_nNowVertex = m_nDestination;
@@ -292,54 +287,70 @@ void CPlayer::PlayerInput()
 void CPlayer::TimeProcess()
 {
 	//タイマースタート
-	if (!bTimerStart)
+	if (m_bDrawing)	// 作図してる時
 	{
-		fTimerSize = TIMER_RIGHT(DRAWTIME(fBonusTime));
-		tPlayerTimer.time = tPlayerTimer.oldTime = timeGetTime();
-		bTimerStart = true;
+		fTimerSize += (TIMER_HARFSIZE_Y * 2) / (10.0f * 60.0f);
+		if (fTimerSize >= TIMER_HARFSIZE_Y)
+		{
+			fTimerSize = TIMER_HARFSIZE_Y;
+			m_bDrawing = false;
+		}
 	}
-	else
+	else			// 作図してない時
 	{
-		// 現在時刻の更新
-		tPlayerTimer.time = timeGetTime();
+		fTimerSize -= 5.0f;
+		if (fTimerSize <= -TIMER_HARFSIZE_Y)
+		{
+			fTimerSize = -TIMER_HARFSIZE_Y;
+		}
+	}
 
-		// 制限時間がきたら図形判定に移る
-		if (tPlayerTimer.time - tPlayerTimer.oldTime >= SECONDS(DRAWTIME(fBonusTime)))
-		{
-			fTimerSize = TIMER_RIGHT(DRAWTIME(fBonusTime));
-			return;
-		}
-		else
-		{
-			// 時間に応じてタイマーを減らす
-			// タイマーの左端と右端の差の絶対値を取って、それを600フレームで消費する
-			fTimerSize -= (TIMER_LEFT - TIMER_RIGHT(DRAWTIME(fBonusTime)) * -1) / (DRAWTIME(fBonusTime) * 60);
-			if (fTimerSize <= -TIMER_LEFT) fTimerSize = -TIMER_LEFT;
-		}
-	}
 	// 制限時間頂点情報の更新
-	vtxTimer[0] = { { -TIMER_LEFT,	-TIMER_UP,	0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[1] = { { -TIMER_LEFT,	-TIMER_DOWN,0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[2] = { {  fTimerSize,	-TIMER_UP,	0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[3] = { {  fTimerSize,	-TIMER_DOWN,0.0f },	{ 1.0f, 1.0f} };
+	vtxTimer[0] = { { -TIMER_HARFSIZE_X ,	fTimerSize,			0.0f },	{ 0.0f, 0.0f} };
+	vtxTimer[1] = { { -TIMER_HARFSIZE_X ,	TIMER_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f} };
+	vtxTimer[2] = { {  TIMER_HARFSIZE_X	,	fTimerSize,			0.0f },	{ 1.0f, 0.0f} };
+	vtxTimer[3] = { {  TIMER_HARFSIZE_X	,	TIMER_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f} };
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
 }
 
-void CPlayer::DrawSprite3D(E_SPRITE type)
+void CPlayer::DrawModel(E_SPRITE type)
 {
+	DirectX::XMFLOAT4X4 world;
+
+	if (m_bDrawing)
+	{
+		
+		if (m_fBrushSize >= 1.0f) m_fBrushSize = 1.0f;
+		else
+		{
+			m_fBrushSize += 0.05f;
+			
+		}
+	}
+	else
+	{
+		if (m_fBrushSize <= 0.0f)
+		{
+			m_fBrushSize = 0.0f;
+			m_tBrushRotate = { DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f };
+		}
+		else
+		{
+			m_fBrushSize -= 0.05f;
+			m_tBrushRotate.z += DirectX::XMConvertToRadians(20.0f);
+		}
+	}
+
 	switch (type)
 	{
 	case CPlayer::PLAYER:
-		pos = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
-		size = DirectX::XMMatrixScaling(ce_fPlayerSize, ce_fPlayerSize, 0.0f);
-		rotate = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		mat = size * rotate * pos;
-		mat = DirectX::XMMatrixTranspose(mat);
-		DirectX::XMFLOAT4X4 world;
-		DirectX::XMStoreFloat4x4(&world, mat);
-		m_pPlayer->SetWorld(world);
-		m_pPlayer->SetView(GetView());
-		m_pPlayer->SetProjection(GetProj());
+		SetRender3D();
+		m_pModel->SetPostion(m_tBrushPos.x + PLAYER_AJUST_POSX, m_tBrushPos.y + PLAYER_AJUST_POSY, m_tBrushPos.z);
+		m_pModel->SetRotation(m_tBrushRotate.x, m_tBrushRotate.y, m_tBrushRotate.z);
+		m_pModel->SetScale(m_fBrushSize, m_fBrushSize, m_fBrushSize);
+		m_pModel->SetViewMatrix(GetView());
+		m_pModel->SetProjectionMatrix(GetProj());
+		m_pModel->Draw();
 		break;
 	case CPlayer::TIMER:
 		break;
@@ -354,10 +365,17 @@ void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)
 	m_pFieldVtx = InAddress;
 }
 
+bool CPlayer::GetCanMove()
+{
+	return m_bDrawing;	// 移動可能かを返す
+}
+
 void CPlayer::SetPlayerStop()
 {
-	m_ePlayerState = STOP;//プレイヤーの動きを止める
-	bCanMoveCheck = false;//
-	m_bChangePhase = false;//フェーズの変更を初期化
-	bTimerStart = false;
+	m_ePlayerState = STOP;	// プレイヤーの動きを止める
+	bCanMoveCheck = false;	// 	移動可能かのチェック再開
+	m_bDrawing = true;
+
+	//m_bChangePhase = false;//フェーズの変更を初期化
+	//bTimerStart = false;
 }
