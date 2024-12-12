@@ -230,9 +230,6 @@
     <ClInclude Include="SceneGame.h">
       <Filter>ヘッダー ファイル\App</Filter>
     </ClInclude>
-    <ClInclude Include="_StructList.h">
-      <Filter>ヘッダー ファイル\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="SpriteDrawer.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
@@ -266,14 +263,8 @@
     <ClInclude Include="Conection_Sys.h">
       <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
-    <ClInclude Include="SceneTitle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Result.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugRoom.h">
-      <Filter>ヘッダー ファイル\Systems</Filter>
     </ClInclude>
     <ClInclude Include="SoundList.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
@@ -287,14 +278,23 @@
     <ClInclude Include="SpriteEx.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
-    <ClInclude Include="SceneDebug.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="BackGround.h">
       <Filter>リソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="LibEffekseer.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTitle.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="_StructList.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneDebug.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugRoom.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

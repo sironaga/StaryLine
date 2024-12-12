@@ -35,13 +35,13 @@ public:
 	// プレイヤーの座標取得
 	Sprite* m_pPlayer;
 
-	const DirectX::XMFLOAT3 GetPlayerPos() { return m_tPos; }
+	const DirectX::XMFLOAT3 GetPlayerPos() { return m_tBrushPos; }
 	// プレイヤーの状態取得
 	const E_PLAYER_STATE GetPlayerState() { return m_ePlayerState; }
 	// 目的地の取得
 	const int GetPlayerDestination() { return m_eDestination; }
 
-	const bool GetPlayerPhase() { return m_bChangePhase; }
+	const bool GetPlayerPhase() { return m_bDrawing; }
 
 private:
 	// 移動方向用列挙型
@@ -70,20 +70,20 @@ private:
 	void UpdateStop();							// 止まっている状態での更新処理
 	void UpdateMove();							// 動いている状態での更新処理
 
-	void DrawSprite3D(E_SPRITE type);
+	void DrawModel(E_SPRITE type);
 
 	void PlayerInput();							// コントローラー入力
 private:
-	DirectX::XMFLOAT3 m_tPos;						// プレイヤーの座標
-	DirectX::XMFLOAT2 m_tPosTex;					// プレイヤーのテクスチャ座標
-	DirectX::XMFLOAT2 m_tSizeTex;					// プレイヤーのテクスチャサイズ
+	DirectX::XMFLOAT3 m_tBrushPos;						// プレイヤーの座標
+	DirectX::XMFLOAT3 m_tBrushRotate;
+	float m_fBrushSize;
 	Texture* m_pPlayerTex;
 
 	int m_nNowVertex;							// 今の頂点
 	int m_nDestination;							// 目的地の頂点
 	bool bCanMoveCheck;							// 目的地へ行けるかどうか
 
-	bool m_bChangePhase;                        //描画タイムから召喚タイムに移動させるかどうか
+	bool m_bDrawing;                      //描画タイム中かどうか
 
 public:
 	void SetPlayerStop();
@@ -106,6 +106,7 @@ public:
 	/* Setter */
 	// Playerクラスアドレス引き渡し
 	void SetFieldVertexAddress(CFieldVertex*);
+	bool GetCanMove();
 private:
 	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
 	Sprite* m_pSprite;

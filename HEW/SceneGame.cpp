@@ -103,7 +103,7 @@ void UpdateSceneGame()
 	g_pField->Update();		// フィールドは常に更新する
 
 	// 移動が詰んだ時
-	if (g_pPlayer->GetPlayerPhase() && Phase)
+	if (!g_pPlayer->GetCanMove() && Phase)
 	{
 		// 召喚開始の時間(本来の値 + 前回のサイクルが終了した時間)と現在時間(経過時間)の差を求めて
 		// フェーズごとの補正値(STimePheseAjust)に代入する
@@ -117,13 +117,13 @@ void UpdateSceneGame()
 		g_pFieldVertex->SetSuperStar();
 	}
 
+	g_pPlayer->Update();
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
 	if (((float)SHAPE_DRAW_START * 60.0f + g_tTime.GameSTimeSycleEnd <= g_tTime.GameTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
 		(g_tTime.GameTime < (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間更新する
-		g_pPlayer->Update();
 		g_pFieldVertex->Update();
 	}
 

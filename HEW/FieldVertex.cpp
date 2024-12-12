@@ -347,7 +347,7 @@ void CFieldVertex::Draw()
 		}
 		//スーパースターの数描画
 		// スプライトの設定		// 座標の設定						// 大きさの設定
-		DrawSetting({ -55.0f, 60.0f,10.0f }, { 100.0f,100.0f,1.0f }, m_pSprite_SuperStar_Number);
+		DrawSetting({ -80.0f, 60.0f,10.0f }, { 100.0f,100.0f,1.0f }, m_pSprite_SuperStar_Number);
 
 		// 背景色の設定
 		m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });
