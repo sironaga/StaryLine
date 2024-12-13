@@ -258,7 +258,7 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 
 	Calculated.x = ((StartCenter.x + NowCenter.x) / 2.0f);
 	Calculated.y = ((StartCenter.y + NowCenter.y) / 2.0f);
-	Calculated.z = 9.0f;
+	Calculated.z = 11.0f;
 
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		Calculated.x,
