@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include"Defines.h"
 #include <cmath>
 
 Sprite::Data Sprite::m_data;
@@ -258,11 +259,11 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 
 	Calculated.x = ((StartCenter.x + NowCenter.x) / 2.0f);
 	Calculated.y = ((StartCenter.y + NowCenter.y) / 2.0f);
-	Calculated.z = 11.0f;
+	Calculated.z = 15.0f;
 
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		Calculated.x,
-		Calculated.y,
+		Calculated.y + 1.0f,
 		Calculated.z,
 		0.0f
 	));
@@ -277,10 +278,36 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 	Theta.y = std::atan2(delta.x, delta.z);
 	Theta.z = std::atan2(delta.y, delta.x);
 
+	float Rot = 0.0f;
+
+	if (Theta.z > TORAD(20.0f) && Theta.z < TORAD(70.0f))
+	{
+ 		Rot= TORAD(45.0f);
+	}
+
+	if (Theta.z > TORAD(110.0f) && Theta.z < TORAD(160.0f))
+	{
+ 		Rot = TORAD(135.0f);
+	}
+
+	if (Theta.z > TORAD(-20.0f) && Theta.z < TORAD(-70.0f))
+	{
+ 		Rot = TORAD(-45.0f);
+	}
+
+	if (Theta.z > TORAD(-110.0f) && Theta.z < TORAD(-160.f))
+	{
+		Rot = TORAD(-135.0f);
+	}
+
+
+
+
+
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
 		0.0f,
 		0.0f,
-		Theta.z,
+		Rot,
 		0.0f
 	));
 

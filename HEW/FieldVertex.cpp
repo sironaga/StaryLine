@@ -289,32 +289,13 @@ void CFieldVertex::Update()
 
 void CFieldVertex::Draw()
 {
-	SetRender3D();
+	SetRender2D();
 	//今のフェーズがDrawの時フィールドの頂点描画
 	if (NowPhase == E_GAME_PHASE::DRAWING)
 	{
 		FieldVertex* Vertexp;
 		Vertexp = m_tVertex;
-		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
-		{
-			// スプライトの設定		// 座標の設定						// 大きさの設定
-			DrawSetting({  Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f }, m_pSprite_Star);
-			
-			// 背景色の設定
-			m_pSprite_Star->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
-			else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
-			if (Vertexp->SuperStar)
-			{
-				m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
-				m_pSprite_Star->SetColor({ 1.0f,0.2f,0.2f,1.0f });
-			}
-			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-			m_pSprite_Star->Draw();
-		}
-		
+	
 		for (int i = 0; i <= NowLine; i++)
 		{			
 			//線の描画
@@ -345,6 +326,28 @@ void CFieldVertex::Draw()
 			m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
 			m_pSprite_Line[i]->Draw();
 		}
+
+		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+		{
+
+			// スプライトの設定		// 座標の設定						// 大きさの設定
+			DrawSetting({ Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f }, m_pSprite_Star);
+
+			// 背景色の設定
+			m_pSprite_Star->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+			if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
+			else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
+			if (Vertexp->SuperStar)
+			{
+				m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
+				m_pSprite_Star->SetColor({ 1.0f,0.2f,0.2f,1.0f });
+			}
+			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
+			m_pSprite_Star->Draw();
+		}
+
 		//スーパースターの数描画
 		// スプライトの設定		// 座標の設定						// 大きさの設定
 		DrawSetting({ -80.0f, 60.0f,10.0f }, { 100.0f,100.0f,1.0f }, m_pSprite_SuperStar_Number);
@@ -359,7 +362,9 @@ void CFieldVertex::Draw()
 		m_pSprite_SuperStar_Number->Draw();
 		m_pSprite_SuperStar_Number->ReSetSprite();
 	}
-	
+
+	SetRender3D();
+
 	if (NowPhase == E_GAME_PHASE::DRAWING || NowPhase == E_GAME_PHASE::SHAPESCHECK)
 	{
 		m_pBattle->SaveAllyLogDraw();

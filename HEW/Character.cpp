@@ -56,6 +56,8 @@ CSoundList* g_AttackSound;
 
 void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み込み
 {
+
+	
 	g_pFieldVtx = InAddress;
 
 	for(int i = 0; i < MAX_AllyTex;i++)

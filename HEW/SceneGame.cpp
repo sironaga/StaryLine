@@ -153,9 +153,9 @@ void DrawSceneGame()
 {
 	g_pBackGround->Draw();
 	g_pField->Draw();	// フィールドは常に描画する
-	g_pPlayer->Draw();
-	g_pFieldVertex->Draw();
 
+	g_pFieldVertex->Draw();
+	g_pPlayer->Draw();
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
 	//if ((SHAPE_DRAW_START + g_tTime.GameSTimeSycleEnd <= g_tTime.GameSTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
