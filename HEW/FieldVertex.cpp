@@ -607,17 +607,16 @@ void CFieldVertex::SetSuperStar()
 	if (UseCount == SuperStarCount)SuperStarCount++;//盤面のスーパースターの数と使った数が同じなら増やす
 	else SuperStarCount = 1;
 	if (SuperStarCount > 5)SuperStarCount = 5;//盤面のスーパースターは5を超えない
-	for (int i = 0; i < SuperStarCount; i++)
+	for (int i = 0; i < SuperStarCount;)
 	{
 		int Vertex;
 		Vertex = rand() % 25;
-		if (m_tVertex[Vertex].SuperStar || Vertex == GoalVertex)//すでにスーパースターならもう一度抽選
+		if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex)//すでにスーパースターか今いる頂点ならもう一度抽選
 		{
-			i--;
+			m_tVertex[Vertex].SuperStar = true;
+			i++;
 		}
-		m_tVertex[Vertex].SuperStar = true;
 	}
-
 }
 
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
