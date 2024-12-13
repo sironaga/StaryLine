@@ -258,15 +258,40 @@ void CPlayer::PlayerInput()
 	if (tControllerMove.y <= DEADZONE && tControllerMove.y >= -DEADZONE) tControllerMove.y = 0.0f;
 
 	// 目的地の更新
-	if ((tControllerMove.x > 0.0f		&& tControllerMove.y > 0.0f)  || IsKeyPress('E')) m_eDestination = UPRIGHT;
-	else if ((tControllerMove.x >  0.0f && tControllerMove.y < 0.0f)  || IsKeyPress('C')) m_eDestination = DOWNRIGHT;
-	else if ((tControllerMove.x <  0.0f && tControllerMove.y < 0.0f)  || IsKeyPress('Z')) m_eDestination = DOWNLEFT;
-	else if ((tControllerMove.x <  0.0f && tControllerMove.y > 0.0f)  || IsKeyPress('Q')) m_eDestination = UPLEFT;
-	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f)  || IsKeyPress('W'))m_eDestination = UP;
-	else if ((tControllerMove.x >  0.0f && tControllerMove.y == 0.0f) || IsKeyPress('D')) m_eDestination = RIGHT;
-	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f)  || IsKeyPress('X')) m_eDestination = DOWN;
-	else if ((tControllerMove.x <  0.0f && tControllerMove.y == 0.0f) || IsKeyPress('A')) m_eDestination = LEFT;
+	if ((tControllerMove.x > 0.0f		&& tControllerMove.y > 0.0f) ) m_eDestination = UPRIGHT;
+	else if ((tControllerMove.x >  0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWNRIGHT;
+	else if ((tControllerMove.x <  0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWNLEFT;
+	else if ((tControllerMove.x <  0.0f && tControllerMove.y > 0.0f) ) m_eDestination = UPLEFT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f) )m_eDestination = UP;
+	else if ((tControllerMove.x >  0.0f && tControllerMove.y == 0.0f)) m_eDestination = RIGHT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWN;
+	else if ((tControllerMove.x <  0.0f && tControllerMove.y == 0.0f)) m_eDestination = LEFT;
 	//else m_eDestination = DEFAULT
+
+	DIRECTION KeyData = WASDKeyBorad();
+
+	switch (KeyData)
+	{
+	case D_above: m_eDestination = UP;
+		break; 
+	case D_upper_right:m_eDestination = UPRIGHT;
+		break; 
+	case D_upper_left: m_eDestination = UPLEFT;
+		break; 
+	case D_right: m_eDestination = RIGHT;
+		break; 
+	case D_left:m_eDestination = LEFT;
+		break;
+	case D_under: m_eDestination = DOWN;
+		break;
+	case D_under_right:m_eDestination = DOWNRIGHT;
+		break; 
+	case D_under_left: m_eDestination = DOWNLEFT;
+		break;
+	case D_no:
+		break;
+	}
+
 
 	// 目的地ごとに目的地の頂点を設定
 	switch (m_eDestination)
