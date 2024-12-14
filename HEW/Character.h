@@ -3,6 +3,7 @@
 #include "DirectX.h"
 #include "Sprite.h"
 #include "SoundList.h"
+#include "Model.h"
 
 //Character.h
 //編集者：AT12C05宇留野陸斗
@@ -37,20 +38,28 @@ enum Status
 class CHpUI
 {
 public:
-	CHpUI(float FullHp);
+	enum HpUINumber
+	{
+		Ally,
+		Enemy,
+		Bos,
+		Player,
+	};
+public:
+	CHpUI(float FullHp, HpUINumber Number);
 	~CHpUI();
 	void Update(float InHp, DirectX::XMFLOAT3 InPos,float InSizeY);
 	void Draw(void);
 
 private:
 	float m_fFullHp;
+	float m_fAnchorPoint;
 	Sprite* m_pSprite;
-
+	HpUINumber m_tNumber;
 
 	DirectX::XMFLOAT3 m_tUIPos;
 	DirectX::XMFLOAT3 m_tUIScale;
 };
-
 
 //キャラクター基底クラス
 class CFighter
@@ -98,10 +107,11 @@ public:
 	virtual void Update(void) = 0;	//更新処理
 	virtual void Draw(void) = 0;	//描画処理
 
-	void CollisionDraw(void);
+	//void CollisionDraw(void);
 
 	bool AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
 	bool SearchCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
+	bool OverlapCheck(CVector3<float> InPos, CVector3<float> InSize);	//重なっていないか判定
 	void Damage(CFighter* pFighter);
 
 protected:
@@ -137,7 +147,8 @@ protected:
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;
 
-	Sprite* m_pSprite;
+	//Sprite* m_pSprite;
+	Model* m_pModel;
 	int m_Number;
 	//CEffect* m_pEffect;
 
@@ -223,6 +234,7 @@ private:
 	void SettingStatus(void) override;
 };
 
+//敵キャラクタークラス
 class CEnemy : public CFighter
 {
 public:
