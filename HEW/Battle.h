@@ -38,6 +38,9 @@ private:
 
 	void Search(int i,Entity Entity);	//索敵処理
 	void Move(int i, Entity Entity);	//移動処理
+	bool OverlapMove(int i,Entity Entity);	//重なってた場合の補正移動処理
+	void ScopeMove();					//範囲内補正
+
 	void Battle(int i, int l , Entity Entity);	//戦闘処理
 	void Alive(void);					//生存判定
 	void Delete(void);					//削除処理と配列前詰め
@@ -49,6 +52,8 @@ private:
 	int m_nBattleTime;					//戦闘時間
 	bool m_bFirstFight;					//初期戦闘したかどうか
 	int m_nFirstPosPattern;				//初期位置のパターン
+
+
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝リーダー関係＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	CLeader* m_pAllyLeader;				//プレイヤー(コア)
@@ -91,7 +96,6 @@ public:
 	void SaveEnemyData(int InCornerCount, int InPattern, float InSize);		//敵要素保存
 private:
 	void CreateEnemy(void);	//敵作成
-
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝ デバック関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
