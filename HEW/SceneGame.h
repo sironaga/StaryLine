@@ -11,13 +11,3 @@ void InitSceneGame(int StageNum);
 void UninitSceneGame();
 void UpdateSceneGame();
 void DrawSceneGame();
-
-enum E_GAME_PHASE
-{
-	DRAWING = 0,
-	SHAPESCHECK,
-	BATTLE
-};
-
-void ChangePhase(E_GAME_PHASE next);
-E_GAME_PHASE GetNowPhase();
