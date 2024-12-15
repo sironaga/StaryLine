@@ -1,15 +1,12 @@
 #pragma once
+
 // includes
-#define _DIRECTX_
 #include "DirectX.h"
-#include "FieldVertex.h"
-#include "Sprite.h"
 #include "ModelEx.h"
-#include "Texture.h"
 #include "LibEffekseer.h"
+#include "FieldVertex.h"
 
 // defines
-#define MOVESPEED (0.5f)	// 移動速度
 #define START_PLAYER (12)	//プレイヤーの開始位置
 
 class CPlayer
@@ -23,27 +20,13 @@ public:
 
 	/*＝＝＝＝＝＝＝＝＝＝内部処理＝＝＝＝＝＝＝＝＝＝*/
 	/*＝＝＝＝＝＝＝＝＝ プレイヤー ＝＝＝＝＝＝＝＝＝*/
-public:
+private:
 	// プレイヤーの状態
 	enum E_PLAYER_STATE
 	{
 		STOP = 0,	// 止まっている状態
 		MOVE,		// 動いている情報
 	}m_ePlayerState;
-
-	/* Getter */
-	// プレイヤーの座標取得
-	Sprite* m_pPlayer;
-
-	const DirectX::XMFLOAT3 GetPlayerPos() { return m_tBrushPos; }
-	// プレイヤーの状態取得
-	const E_PLAYER_STATE GetPlayerState() { return m_ePlayerState; }
-	// 目的地の取得
-	const int GetPlayerDestination() { return m_eDestination; }
-
-	const bool GetPlayerPhase() { return m_bDrawing; }
-
-private:
 	// 移動方向用列挙型
 	enum E_DESTINATION
 	{
@@ -59,63 +42,58 @@ private:
 		DEFAULT,	// 真ん中(基本状態)
 	}m_eDestination;
 
-	enum E_SPRITE
-	{
-		PLAYER = 0,
-		TIMER,
+	void UpdateStop();						// 止まっている状態での更新処理
+	void UpdateMove();						// 動いている状態での更新処理
 
-		MAX_SPRITE
-	};
+	void DrawModel();						// モデルの描画処理
 
-	void UpdateStop();							// 止まっている状態での更新処理
-	void UpdateMove();							// 動いている状態での更新処理
-
-	void DrawModel(E_SPRITE type);
-
-	void PlayerInput();							// コントローラー入力
+	void PlayerInput();						// コントローラー入力処理
 private:
-	DirectX::XMFLOAT3 m_tBrushPos;						// プレイヤーの座標
-	DirectX::XMFLOAT3 m_tBrushRotate;
-	float m_fBrushSize;
-	Texture* m_pPlayerTex;
+	CModelEx* m_pModel;						// プレイヤー(筆)のモデル
+	DirectX::XMFLOAT3 m_tBrushPos;			// プレイヤー(筆)の座標
+	DirectX::XMFLOAT3 m_tBrushRotate;		// プレイヤー(筆)の回転
+	float m_fBrushSize;						// プレイヤー(筆)のサイズ
+	float m_fBrushSpeed;					// プレイヤー(筆)の速度
+	float m_fAddSpeed;						// 速度の加算
 
-	int m_nNowVertex;							// 今の頂点
-	int m_nDestination;							// 目的地の頂点
-	bool bCanMoveCheck;							// 目的地へ行けるかどうか
+	int m_nNowVertex;						// 今の頂点
+	int m_nDestination;						// 目的地の頂点
+	bool m_bCanMoveCheck;					// 目的地へ行けるかどうか
 
-	bool m_bDrawing;                      //描画タイム中かどうか
+	bool m_bDrawing;						// 作図中かどうか
 
 public:
-	void SetPlayerStop();
+	/* Getter */
+	// プレイヤーの座標取得
+	const DirectX::XMFLOAT3 GetPlayerPos() { return m_tBrushPos; }
+	// 目的地の取得
+	const int GetPlayerDestination() { return m_eDestination; }
+	// 描画中か取得
+	const bool GetCanMove() { return m_bDrawing; }
+
+	/* Setter */
+	// 再作図開始のための設定
+	void SetPlayerStop();						
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:
-	void TimeProcess();							// タイマー処理用関数
+	void TimeProcess();						// タイマーの処理
 private:
-	ID3D11Buffer* m_pVtxTimer;					// タイマー描画用頂点情報
-	ID3D11ShaderResourceView* m_pTexTimer;		// タイマー描画用テクスチャ
-	Vertex vtxTimer[4];						// タイマー用頂点情報
-	FPSTIMER tPlayerTimer;						// タイマー
-	float fTimerSize;							// 時間によって減らすタイマーのサイズ
-	float fDrawTime;							// 描画制限時間
-	float fBonusTime;							// 描画時間のボーナス
-	bool bTimerStart;							// タイマーが始まるかどうか
+	ID3D11Buffer* m_pVtxTimer;				// タイマー描画用頂点情報
+	ID3D11ShaderResourceView* m_pTexTimer;	// タイマー描画用テクスチャ
+	Vertex vtxTimer[4];						// タイマーの各頂点
+	float fTimerSize;						// 時間によって減らすタイマーのサイズ
+	float fDrawTime;						// 作図制限時間
+
+	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
+private:
+	Effekseer::EffectRef m_Effect;			// エフェクトの読み込み
 
 	/*＝＝＝＝＝＝＝＝＝フィールド＝＝＝＝＝＝＝＝＝*/
 public:
 	/* Setter */
-	// Playerクラスアドレス引き渡し
-	void SetFieldVertexAddress(CFieldVertex*);
-	bool GetCanMove();
+	// FieldVertexクラスアドレス引き渡し
+	void SetFieldVertexAddress(CFieldVertex* InAddress);
 private:
-	CFieldVertex* m_pFieldVtx;	// FieldVertexクラスのアドレス
-	Sprite* m_pSprite;
-	CModelEx* m_pModel;
-	/*＝＝＝＝＝＝＝＝＝スプライト＝＝＝＝＝＝＝＝＝*/
-	DirectX::XMMATRIX pos;
-	DirectX::XMMATRIX size;
-	DirectX::XMMATRIX rotate;
-	DirectX::XMMATRIX mat;
-	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
-	Effekseer::EffectRef m_Effect;
+	CFieldVertex* m_pFieldVtx;				// FieldVertexクラスのアドレス
 };

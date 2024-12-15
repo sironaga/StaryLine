@@ -1,88 +1,70 @@
 // includes
 #include "Player.h"
-#include "Controller.h"
-#include "SceneGame.h"
-#include "DirectXTex/TextureLoad.h"
-#include "SpriteDrawer.h"
-#include "InputEx.h"
 #include "Main.h"
+#include "SceneGame.h"
 #include "Defines.h"
-#include "ShaderList.h"
-#include "Geometory.h"
+#include "InputEx.h"
+#include "SpriteDrawer.h"
+#include "DirectXTex/TextureLoad.h"
 
 // defines
-#define BASE_DRAWTIME (10.0f)						// ボーナス抜きの基礎制限時間
-#define DRAWTIME(bonus) (BASE_DRAWTIME  + bonus)	// 制限時間
+#define BRUSH_SPEED (0.5f)	// 移動速度
 
-#define PLAYER_SPLIT_X (4)	// プレイヤーテクスチャ分割数X
-#define PLAYER_SPLIT_Y (4)	// プレイヤーテクスチャ分割数Y
-#define ANIME_TIME (10)		// プレイヤーアニメーションカウント
-
-#define PLAYER_AJUST_POSX (3.0f)
-#define PLAYER_AJUST_POSY (8.0f)
-
-// constants
+// constans
+constexpr float BRUSH_AJUSTPOS_X = 3.0f;		// プレイヤー(筆)の横座標補正値
+constexpr float BRUSH_AJUSTPOS_Y = 8.0f;		// プレイヤー(筆)の縦座標補正値
 constexpr float BRUSH_SIZE = 10.0f;				// プレイヤー(筆)のサイズ
-constexpr float TIMER_HARFSIZE_X = 100.0f;
-constexpr float TIMER_HARFSIZE_Y = 600.0f;
+constexpr float BRUSH_ROTATE_X = 140.0f;		// プレイヤー(筆)のX軸回転
+constexpr float BRUSH_ROTATE_Y = -20.0f;		// プレイヤー(筆)のY軸回転
+
+constexpr float TIMER_HARFSIZE_X = 100.0f;		// タイマーの横ハーフサイズ
+constexpr float TIMER_HARFSIZE_Y = 600.0f;		// タイマーの縦ハーフサイズ
 
 CPlayer::CPlayer()
-	: m_ePlayerState(STOP), m_eDestination(DEFAULT)
-	//, m_pVtxPlayer(nullptr), m_pTexPlayerWait(nullptr)
+	// プレイヤー(筆)の初期化処理
+	: m_pModel(nullptr)
+	, m_tBrushPos{}, m_fBrushSize(BRUSH_SIZE), m_tBrushRotate{ DirectX::XMConvertToRadians(BRUSH_ROTATE_X), DirectX::XMConvertToRadians(BRUSH_ROTATE_Y), 0.0f }
+	, m_fBrushSpeed(BRUSH_SPEED), m_fAddSpeed(BRUSH_SPEED)
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
-	, m_tBrushPos{}
-	, bCanMoveCheck(false), m_bDrawing(true)
-	, m_pPlayer(nullptr), m_pPlayerTex(nullptr)
-	, pos{}, size{}, rotate{}, mat{}
-	, m_fBrushSize(BRUSH_SIZE), m_tBrushRotate{ DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f }
+	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
+	, m_bCanMoveCheck(false), m_bDrawing(true)
 
+	// タイマーの初期化処理
 	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
 	, vtxTimer{},fTimerSize(-TIMER_HARFSIZE_Y)
-	, tPlayerTimer{}, fDrawTime(BASE_DRAWTIME), fBonusTime(0.0f)
-	, bTimerStart(false)
 
-	, m_pFieldVtx(nullptr), m_pSprite(nullptr),m_pModel(nullptr)
+	// FieldVertexアドレスの初期化処理
+	, m_pFieldVtx(nullptr)
 {
-
-	// プレイヤー頂点情報
-	m_pPlayer->Init();
-
+	// プレイヤー(筆)モデルの読み込み
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
-	// プレイヤーテクスチャ読み込み
-	//HRESULT hr;
-	//hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Player.png", &m_pTexPlayerWait);
-	//if (FAILED(hr))MessageBox(NULL, "エラー:Player.png", "Player.cpp", MB_OK);
-	m_pPlayerTex = new Texture();
-	HRESULT hr = m_pPlayerTex->Create("Asset/Player/Player.png");
-	if (FAILED(hr))MessageBox(NULL, "エラー:Player.png", "Player.cpp", MB_OK);
-
 	// 制限時間頂点情報
-	vtxTimer[0] = { { -TIMER_HARFSIZE_X ,	fTimerSize,	0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[1] = { { -TIMER_HARFSIZE_X ,	TIMER_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[2] = { {  TIMER_HARFSIZE_X	,	fTimerSize,	0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[3] = { {  TIMER_HARFSIZE_X	,	TIMER_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f} };
+	vtxTimer[0] = { { -TIMER_HARFSIZE_X , fTimerSize,		0.0f },	{ 0.0f, 0.0f } };
+	vtxTimer[1] = { { -TIMER_HARFSIZE_X , TIMER_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f } };
+	vtxTimer[2] = { {  TIMER_HARFSIZE_X	, fTimerSize,		0.0f },	{ 1.0f, 0.0f } };
+	vtxTimer[3] = { {  TIMER_HARFSIZE_X	, TIMER_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f } };
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
 
 	// 制限時間テクスチャ読み込み
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Timer.jpg", &m_pTexTimer);
+	HRESULT hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Timer.jpg", &m_pTexTimer);
 	if (FAILED(hr))MessageBox(NULL, "エラー:Timer.jpg", "Player.cpp", MB_OK);
 
+	// エフェクト読み込み
 	m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 }
 
 CPlayer::~CPlayer()
-{
-	//プレイヤー頂点情報、テクスチャ情報の解放
-	if (m_pPlayer)m_pPlayer->Uninit();
-	SAFE_DELETE(m_pPlayerTex);
+{	
+	SAFE_RELEASE(m_pVtxTimer);	// タイマー頂点情報の解放
+	SAFE_RELEASE(m_pTexTimer);	// タイマーテクスチャ情報の解放
 
-	SAFE_RELEASE(m_pVtxTimer);
-	SAFE_RELEASE(m_pTexTimer);
+	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
 }
 
 void CPlayer::Update()
 {
+	// タイマー処理
 	TimeProcess();
 
 	// 状態別更新処理
@@ -90,12 +72,13 @@ void CPlayer::Update()
 	{
 		switch (m_ePlayerState)
 		{
-		case CPlayer::STOP: UpdateStop(); break;
-		case CPlayer::MOVE: UpdateMove(); break;
+		case CPlayer::STOP: UpdateStop(); break;	// 停止状態の処理
+		case CPlayer::MOVE: UpdateMove(); break;	// 動いている状態の処理
 		default:break;
 		}
 	}
 
+	// エフェクトのテスト
 	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 	{
 		LibEffekseer::GetManager()->Play(m_Effect, m_tBrushPos.x, m_tBrushPos.y, m_tBrushPos.z);
@@ -104,83 +87,48 @@ void CPlayer::Update()
 
 void CPlayer::Draw()
 {
-	////スプライトの座標の設定
-	//SetSpritePos(m_tPos.x, m_tPos.Y);
+	/* タイマーの描画 */
+	SetRender2D();											// 2D表現のセット
+	SetSpritePos(-700.0f, -400.0f);							// タイマーの座標の設定
+	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
+	if (m_bDrawing)SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
+	else SetSpriteColor(1.0f, 1.0f, 1.0f, 0.3f);			// 作図時間でないときは透明度を上げる
+	SetSpriteTexture(m_pTexTimer);							// タイマーのテクスチャの設定
+	DrawSprite(m_pVtxTimer, sizeof(Vertex));				// タイマーの描画
 
-	////大きさの設定
-	//SetSpriteScale(1.0f, 1.0f);
+	ReSetSprite();											// スプライト設定のリセット
 
-	////背景色の設定
-	//SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+	/* プレイヤーの描画 */
+	DrawModel();											// プレイヤー(筆)の描画
 
-	//// テクスチャアニメーション
-
-	//// UVのセット
-
-
-	//// 描画
-	//DrawSprite(m_pVtxPlayer, sizeof(Vertex));
-
-	// スプライト設定のリセット
-	//ReSetSprite();
-
-	//DrawAnimation();
-	//DrawSprite3D(PLAYER);
-	//m_pPlayer->Draw();
-	//m_pPlayer->ReSetSprite();
-
-	SetRender2D();
-	//スプライトの座標の設定
-	SetSpritePos(-700.0f, -400.0f);
-
-	//大きさの設定
-	SetSpriteScale(1.0f, 1.0f);
-
-	//背景色の設定
-	if (m_bDrawing)SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-	else SetSpriteColor(1.0f, 1.0f, 1.0f, 0.3f);
-
-	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-	SetSpriteTexture(m_pTexTimer);
-
-	// 描画
-	DrawSprite(m_pVtxTimer, sizeof(Vertex));
-
-	// スプライト設定のリセット
-	ReSetSprite();
-
-	DrawModel(PLAYER);
-
-	SetRender2D();
-	LibEffekseer::SetViewPosition(GetCameraPos());
-	LibEffekseer::SetCameraMatrix(GetView(false), GetProj(false));
+	/* エフェクトの描画 */
+	SetRender3D();											// 3D表現のセット
+	LibEffekseer::SetViewPosition(GetCameraPos());			// カメラ座標のセット
+	LibEffekseer::SetCameraMatrix(GetView(false), GetProj(false));	// view座標,projection座標のセット 
 }
 
 void CPlayer::UpdateStop()
 {
-	if (!bCanMoveCheck)	// 移動可能か未チェック
+	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
-		// 移動方向を真ん中に初期化
-		m_eDestination = DEFAULT;
+		m_eDestination = DEFAULT;	// 移動方向を真ん中に初期化
 		for (int i = 0, Count = 0; i < 8; i++)
 		{
 			// 8方向に行けるかどうかチェック
 			// 行けない方向がある場合、その度にカウントを増やす
-			if (m_pFieldVtx->GetRoadStop(i))Count++;
+			if (m_pFieldVtx->GetRoadStop(i)) Count++;
 
 			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
 				m_bDrawing = false;				// 即座に作図終了
-				bCanMoveCheck = true;			// 移動可能かのチェック終了
+				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
 				fTimerSize = TIMER_HARFSIZE_Y;	// タイマーを一番下まで落とす
-				return;					// 移動不可を返す
+				return;							// 関数を抜ける
 			}
 		}
-		// 移動可能かのチェック終了
-		bCanMoveCheck = true;
+		m_bCanMoveCheck = true;					// 移動可能かのチェック終了
 	}
-
 
 	// プレイヤーの座標を現在の頂点番号の座標と同じにする
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
@@ -194,7 +142,7 @@ void CPlayer::UpdateStop()
 		// ×ボタンorスペースキーで移動開始
 		if (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE))
 		{
-			m_ePlayerState = MOVE;
+			m_ePlayerState = MOVE;	// 動いている状態に変える
 		}
 	}
 }
@@ -205,32 +153,32 @@ void CPlayer::UpdateMove()
 	switch (m_eDestination)
 	{
 	case CPlayer::UP:
-		m_tBrushPos.y += MOVESPEED;
+		m_tBrushPos.y += m_fBrushSpeed;
 		break;
 	case CPlayer::UPRIGHT:
-		m_tBrushPos.x += MOVESPEED;
-		m_tBrushPos.y += MOVESPEED;
+		m_tBrushPos.x += m_fBrushSpeed;
+		m_tBrushPos.y += m_fBrushSpeed;
 		break;
 	case CPlayer::RIGHT:
-		m_tBrushPos.x += MOVESPEED;
+		m_tBrushPos.x += m_fBrushSpeed;
 		break;
 	case CPlayer::DOWNRIGHT:
-		m_tBrushPos.x += MOVESPEED;
-		m_tBrushPos.y -= MOVESPEED;
+		m_tBrushPos.x += m_fBrushSpeed;
+		m_tBrushPos.y -= m_fBrushSpeed;
 		break;
 	case CPlayer::DOWN:
-		m_tBrushPos.y -= MOVESPEED;
+		m_tBrushPos.y -= m_fBrushSpeed;
 		break;
 	case CPlayer::DOWNLEFT:
-		m_tBrushPos.x -= MOVESPEED;
-		m_tBrushPos.y -= MOVESPEED;
+		m_tBrushPos.x -= m_fBrushSpeed;
+		m_tBrushPos.y -= m_fBrushSpeed;
 		break;
 	case CPlayer::LEFT:
-		m_tBrushPos.x -= MOVESPEED;
+		m_tBrushPos.x -= m_fBrushSpeed;
 		break;
 	case CPlayer::UPLEFT:
-		m_tBrushPos.x -= MOVESPEED;
-		m_tBrushPos.y += MOVESPEED;
+		m_tBrushPos.x -= m_fBrushSpeed;
+		m_tBrushPos.y += m_fBrushSpeed;
 		break;
 	default:
 		break;
@@ -239,13 +187,44 @@ void CPlayer::UpdateMove()
 	// プレイヤーが目的地の頂点に到着したら
 	if (m_tBrushPos.x == m_pFieldVtx->GetVertexPos(m_nDestination).x && m_tBrushPos.y == m_pFieldVtx->GetVertexPos(m_nDestination).y)
 	{
-		// 今の頂点を目的地の頂点に更新する
-		m_nNowVertex = m_nDestination;
-		// 8方向に移動可能かどうかを再び判定する
-		bCanMoveCheck = false;
-		// 止まっている状態に変更する
-		m_ePlayerState = STOP;
+		m_nNowVertex = m_nDestination;	// 今の頂点を目的地の頂点に更新する
+		m_bCanMoveCheck = false;		// 8方向に移動可能かどうかを再び判定する
+		m_ePlayerState = STOP;			// 止まっている状態に変更する
 	}
+}
+
+void CPlayer::DrawModel()
+{
+	DirectX::XMFLOAT4X4 world;	// ワールド座標格納用
+
+	// アニメーション
+	if (m_bDrawing)	// 作図中のとき
+	{
+		if (m_fBrushSize >= 1.0f) m_fBrushSize = 1.0f;
+		else m_fBrushSize += 0.05f;
+	}
+	else // 作図中でないとき
+	{
+		if (m_fBrushSize <= 0.0f)
+		{
+			m_fBrushSize = 0.0f;
+			m_tBrushRotate = { DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f };
+		}
+		else
+		{
+			m_fBrushSize -= 0.05f;
+			m_tBrushRotate.z += DirectX::XMConvertToRadians(20.0f);
+		}
+	}
+
+
+	SetRender3D();		// 3D表現のセット
+	m_pModel->SetPostion(m_tBrushPos.x + BRUSH_AJUSTPOS_X, m_tBrushPos.y + BRUSH_AJUSTPOS_Y, m_tBrushPos.z);	// 座標のセット
+	m_pModel->SetRotation(m_tBrushRotate.x, m_tBrushRotate.y, m_tBrushRotate.z);	// 回転のセット
+	m_pModel->SetScale(m_fBrushSize, m_fBrushSize, m_fBrushSize);	// サイズのセット
+	m_pModel->SetViewMatrix(GetView());			// View座標のセット
+	m_pModel->SetProjectionMatrix(GetProj());	// Projection座標のセット
+	m_pModel->Draw();	// モデルの描画
 }
 
 void CPlayer::PlayerInput()
@@ -257,7 +236,7 @@ void CPlayer::PlayerInput()
 	if (tControllerMove.x <= DEADZONE && tControllerMove.x >= -DEADZONE) tControllerMove.x = 0.0f;
 	if (tControllerMove.y <= DEADZONE && tControllerMove.y >= -DEADZONE) tControllerMove.y = 0.0f;
 
-	// 目的地の更新
+	/* 目的地の更新 */
 	if ((tControllerMove.x > 0.0f		&& tControllerMove.y > 0.0f) ) m_eDestination = UPRIGHT;
 	else if ((tControllerMove.x >  0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWNRIGHT;
 	else if ((tControllerMove.x <  0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWNLEFT;
@@ -266,30 +245,20 @@ void CPlayer::PlayerInput()
 	else if ((tControllerMove.x >  0.0f && tControllerMove.y == 0.0f)) m_eDestination = RIGHT;
 	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWN;
 	else if ((tControllerMove.x <  0.0f && tControllerMove.y == 0.0f)) m_eDestination = LEFT;
-	//else m_eDestination = DEFAULT
 
+	// キー入力情報の取得
 	DIRECTION KeyData = WASDKeyBorad();
-
 	switch (KeyData)
 	{
-	case D_above: m_eDestination = UP;
-		break; 
-	case D_upper_right:m_eDestination = UPRIGHT;
-		break; 
-	case D_upper_left: m_eDestination = UPLEFT;
-		break; 
-	case D_right: m_eDestination = RIGHT;
-		break; 
-	case D_left:m_eDestination = LEFT;
-		break;
-	case D_under: m_eDestination = DOWN;
-		break;
-	case D_under_right:m_eDestination = DOWNRIGHT;
-		break; 
-	case D_under_left: m_eDestination = DOWNLEFT;
-		break;
-	case D_no:
-		break;
+	case D_above: m_eDestination = UP;				break; 
+	case D_upper_right:m_eDestination = UPRIGHT;	break; 
+	case D_upper_left: m_eDestination = UPLEFT;		break; 
+	case D_right: m_eDestination = RIGHT;			break; 
+	case D_left:m_eDestination = LEFT;				break;
+	case D_under: m_eDestination = DOWN;			break;
+	case D_under_right:m_eDestination = DOWNRIGHT;	break;
+	case D_under_left: m_eDestination = DOWNLEFT;	break;
+	case D_no:break;
 	}
 
 
@@ -312,22 +281,19 @@ void CPlayer::PlayerInput()
 void CPlayer::TimeProcess()
 {
 	//タイマースタート
-	if (m_bDrawing)	// 作図してる時
+	if (m_bDrawing)	// 作図中のとき
 	{
-		fTimerSize += (TIMER_HARFSIZE_Y * 2) / (10.0f * 60.0f);
+		fTimerSize += (TIMER_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
 		if (fTimerSize >= TIMER_HARFSIZE_Y)
 		{
-			fTimerSize = TIMER_HARFSIZE_Y;
-			m_bDrawing = false;
+			fTimerSize = TIMER_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
+			m_bDrawing = false;				// 作図を終わる
 		}
 	}
-	else			// 作図してない時
+	else // 作図中でないとき
 	{
-		fTimerSize -= 5.0f;
-		if (fTimerSize <= -TIMER_HARFSIZE_Y)
-		{
-			fTimerSize = -TIMER_HARFSIZE_Y;
-		}
+		fTimerSize -= 5.0f;	// タイマーを上げ続ける
+		if (fTimerSize <= -TIMER_HARFSIZE_Y) fTimerSize = -TIMER_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
 	}
 
 	// 制限時間頂点情報の更新
@@ -338,69 +304,14 @@ void CPlayer::TimeProcess()
 	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
 }
 
-void CPlayer::DrawModel(E_SPRITE type)
-{
-	DirectX::XMFLOAT4X4 world;
-
-	if (m_bDrawing)
-	{
-		
-		if (m_fBrushSize >= 1.0f) m_fBrushSize = 1.0f;
-		else
-		{
-			m_fBrushSize += 0.05f;
-			
-		}
-	}
-	else
-	{
-		if (m_fBrushSize <= 0.0f)
-		{
-			m_fBrushSize = 0.0f;
-			m_tBrushRotate = { DirectX::XMConvertToRadians(140.0f), DirectX::XMConvertToRadians(-20.0f), 0.0f };
-		}
-		else
-		{
-			m_fBrushSize -= 0.05f;
-			m_tBrushRotate.z += DirectX::XMConvertToRadians(20.0f);
-		}
-	}
-
-	switch (type)
-	{
-	case CPlayer::PLAYER:
-		SetRender3D();
-		m_pModel->SetPostion(m_tBrushPos.x + PLAYER_AJUST_POSX, m_tBrushPos.y + PLAYER_AJUST_POSY, m_tBrushPos.z);
-		m_pModel->SetRotation(m_tBrushRotate.x, m_tBrushRotate.y, m_tBrushRotate.z);
-		m_pModel->SetScale(m_fBrushSize, m_fBrushSize, m_fBrushSize);
-		m_pModel->SetViewMatrix(GetView());
-		m_pModel->SetProjectionMatrix(GetProj());
-		m_pModel->Draw();
-		break;
-	case CPlayer::TIMER:
-		break;
-	default:
-		break;
-	}
-}
-
 void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)
 {
-	// CFieldVertexアドレスの取得
-	m_pFieldVtx = InAddress;
-}
-
-bool CPlayer::GetCanMove()
-{
-	return m_bDrawing;	// 移動可能かを返す
+	m_pFieldVtx = InAddress;	// CFieldVertexアドレスの取得
 }
 
 void CPlayer::SetPlayerStop()
 {
-	m_ePlayerState = STOP;	// プレイヤーの動きを止める
-	bCanMoveCheck = false;	// 	移動可能かのチェック再開
-	m_bDrawing = true;
-
-	//m_bChangePhase = false;//フェーズの変更を初期化
-	//bTimerStart = false;
+	m_ePlayerState = STOP;		// プレイヤーの動きを止める
+	m_bCanMoveCheck = false;	// 移動可能かのチェック再開
+	m_bDrawing = true;			// 作図中にする
 }
