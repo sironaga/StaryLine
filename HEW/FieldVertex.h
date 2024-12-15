@@ -8,6 +8,7 @@
 #include <d3d11.h>
 #include "Field.h"
 #include "Sprite.h"
+#include "ModelEx.h"
 
 #define MAX_VERTEX (25)//頂点数
 #define MAX_CENTER_VERTEX (16)//
@@ -100,8 +101,11 @@ private:
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
 
+	CModelEx* m_pStar_Model[3];//Starのモデル
+
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
+	void DrawStarModel(int color, int Vertex);//色と頂点番号を使って描画
 	Field* m_pField;
 	int SuperStarCount;//スーパースターの個数
 };
