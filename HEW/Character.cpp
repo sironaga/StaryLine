@@ -11,10 +11,6 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.X * (Num / 2)) + (m_tSize.X))		//キャラクターの横の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.Y * (Num / 2)) + (m_tSize.Y))		//キャラクターの縦の攻撃当たり判定(相手の人数)
 
-#define PLAYER_SPLIT_X (4)	// プレイヤーテクスチャ分割数X
-#define PLAYER_SPLIT_Y (4)	// プレイヤーテクスチャ分割数Y
-#define ANIME_TIME (10)		// プレイヤーアニメーションカウント
-
 enum AllyTexture
 {
 	Ally3,
