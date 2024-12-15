@@ -9,7 +9,6 @@
 #include "SoundList.h"
 #include "BackGround.h"
 
-E_GAME_PHASE g_ePhaseType;
 CFieldVertex* g_pFieldVertex;
 CPlayer* g_pPlayer;
 CBattle* g_pBattle;
@@ -42,7 +41,6 @@ bool Phase;
 // 初期化処理
 void InitSceneGame(int StageNum)
 {
-	g_ePhaseType = DRAWING;
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	g_pSourseGameBGM = g_GameSound->GetSound(true);
 	g_pSourseGameBGM->SetVolume(0.4f);
@@ -205,15 +203,4 @@ void DrawSceneGame()
 
 		Phase = true;
 	}
-}
-
-void ChangePhase(E_GAME_PHASE next)
-{
-	// 現在のシーンの更新
-	g_ePhaseType = next;
-}
-
-E_GAME_PHASE GetNowPhase()
-{
-	return g_ePhaseType;
 }
