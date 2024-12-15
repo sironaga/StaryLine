@@ -31,6 +31,7 @@ CFieldVertex::CFieldVertex()
 	, SuperStarCount(1)
 	, m_pTex_SuperStar_Number{nullptr}
 	, m_pSprite_SuperStar_Number(nullptr)
+	, m_pStar_Model{nullptr}
 {
 	// 星の描画用
 	// スプライト
@@ -53,6 +54,9 @@ CFieldVertex::CFieldVertex()
 		m_pTex_SuperStar_Number[i] = new Texture();
 	}
 	
+	m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
+	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
+	m_pStar_Model[2] = new CModelEx(MODEL_PASS("Board_Star/Red/Board_Star_Red.fbx"));
 
 	StartVertex = START_PLAYER;	// 始点初期化
 	GoalVertex = START_PLAYER;	// 終点初期化
@@ -96,7 +100,7 @@ CFieldVertex::CFieldVertex()
 		for (int i = 0; i < 4; i++, CenterVertexp++)
 		{
 			CenterVertexp->Pos.x = i * VERTEX_SIZE_X + VERTEX_POS_X + VERTEX_SIZE_X / 2.0f;
-			CenterVertexp->Pos.y = -j * VERTEX_SIZE_Y + VERTEX_POS_Y + VERTEX_SIZE_Y / 2.0f;
+			CenterVertexp->Pos.y = -j * VERTEX_SIZE_Y + VERTEX_POS_Y - VERTEX_SIZE_Y / 2.0f;
 			CenterVertexp->Pos.z = 0;
 			CenterVertexp->Use = false;
 		}
@@ -236,7 +240,7 @@ void CFieldVertex::Update()
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2 == CenterVertexp->Pos.y))
+				if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2.0f == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2.0f == CenterVertexp->Pos.y))
 				{
 					if (!CenterVertexp->Use)CenterVertexp->Use = true;
 				}
@@ -329,23 +333,29 @@ void CFieldVertex::Draw()
 
 		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 		{
-
-			// スプライトの設定		// 座標の設定						// 大きさの設定
-			DrawSetting({ Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f }, m_pSprite_Star);
-
-			// 背景色の設定
-			m_pSprite_Star->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
-			else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
-			if (Vertexp->SuperStar)
+			if (Vertexp->SuperStar)DrawStarModel(2, i);
+			else
 			{
-				m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
-				m_pSprite_Star->SetColor({ 1.0f,0.2f,0.2f,1.0f });
+				if (Vertexp->Use)DrawStarModel(1, i);
+				else DrawStarModel(0, i);
 			}
-			//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-			m_pSprite_Star->Draw();
+
+			//// スプライトの設定		// 座標の設定						// 大きさの設定
+			//DrawSetting({ Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f }, m_pSprite_Star);
+
+			//// 背景色の設定
+			//m_pSprite_Star->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+			////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+			//if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
+			//else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
+			//if (Vertexp->SuperStar)
+			//{
+			//	m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
+			//	m_pSprite_Star->SetColor({ 1.0f,0.2f,0.2f,1.0f });
+			//}
+			////if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
+			//m_pSprite_Star->Draw();
 		}
 
 		//スーパースターの数描画
@@ -363,7 +373,7 @@ void CFieldVertex::Draw()
 		m_pSprite_SuperStar_Number->ReSetSprite();
 	}
 
-	SetRender3D();
+	//SetRender3D();
 
 	if (NowPhase == E_GAME_PHASE::DRAWING || NowPhase == E_GAME_PHASE::SHAPESCHECK)
 	{
@@ -962,6 +972,17 @@ void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize
 	InSprite->SetWorld(wvp[0]);
 	InSprite->SetView(wvp[1]);
 	InSprite->SetProjection(wvp[2]);
+}
+
+void CFieldVertex::DrawStarModel(int color, int Vertex)
+{
+		SetRender3D();
+		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);
+		m_pStar_Model[color]->SetRotation(0.0f,TORAD(180), 0.0f);
+		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);
+		m_pStar_Model[color]->SetViewMatrix(GetView());
+		m_pStar_Model[color]->SetProjectionMatrix(GetProj());
+		m_pStar_Model[color]->Draw();
 }
 
 
