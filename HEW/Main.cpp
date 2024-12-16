@@ -25,15 +25,18 @@ IXAudio2SourceVoice* g_pSourseTitleSE;
 RenderTarget* pRTV;
 DepthStencil* pDSV;
 CSoundList* g_mainsound;
+bool IsGame = true;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
+
 	HRESULT hr;
 	// DirectX‰Šú‰»
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
 
 	// ‘¼‹@”\‰Šú‰»
+	g_Camera = new CameraDebug();
 	Geometory::Init();
 	Sprite::Init();
 	LibEffekseer::Init(GetDevice(), GetContext());
@@ -51,7 +54,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	InitSceneTitle();
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
-	g_Camera = new CameraDebug();
+
 	
 
 	return hr;
@@ -231,6 +234,16 @@ void ChangeScene(E_SCENE_TYPE next)
 E_SCENE_TYPE GetScene(void)
 {
 	return g_SceneType;
+}
+
+bool IsGaming()
+{
+	return IsGame;
+}
+
+void SetGameEnd()
+{
+	IsGame = false;
 }
 
 void SetRender2D()

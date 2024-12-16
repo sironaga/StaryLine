@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DWORD preExecTime = countStartTime;
 
 	//--- ウィンドウの管理
-	while (1)
+	while (IsGaming())
 	{
 		if (PeekMessage(&message, NULL, 0, 0, PM_NOREMOVE))
 		{
