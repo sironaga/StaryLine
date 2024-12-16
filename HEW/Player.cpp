@@ -96,6 +96,14 @@ void CPlayer::Update()
 		default:break;
 		}
 	}
+	else
+	{
+		g_WalkSe->Stop();
+		XAUDIO2_BUFFER buffer;
+		buffer = g_PlayerSound->GetBuffer(true);
+		g_WalkSe->FlushSourceBuffers();
+		g_WalkSe->SubmitSourceBuffer(&buffer);
+	}
 
 	// エフェクトのテスト
 	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
@@ -129,6 +137,10 @@ void CPlayer::Draw()
 void CPlayer::UpdateStop()
 {
 	g_WalkSe->Stop();
+	XAUDIO2_BUFFER buffer;
+	buffer = g_PlayerSound->GetBuffer(true);
+	g_WalkSe->FlushSourceBuffers();
+	g_WalkSe->SubmitSourceBuffer(&buffer);
 
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
@@ -213,6 +225,7 @@ void CPlayer::UpdateMove()
 		m_ePlayerState = STOP;			// 止まっている状態に変更する
 	}
 
+	g_WalkSe->SetVolume(0.7f);
 	g_WalkSe->Start();
 }
 
