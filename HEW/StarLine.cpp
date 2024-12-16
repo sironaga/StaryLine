@@ -4,7 +4,7 @@
 #define LINE_DEBUG (true)
 
 StarLine::StarLine()
-	:Pos{},Scl{},Rot{}
+	:Pos{},Scl{},Rot{},world{}
 {
 	m_pModel = new CModelEx("aaaa", false);
 	m_pBox = new Geometory();
