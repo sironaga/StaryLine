@@ -180,6 +180,9 @@
     <ClCompile Include="SceneTransition.cpp">
       <Filter>ソース ファイル\Systems\Mode</Filter>
     </ClCompile>
+    <ClCompile Include="Option.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -301,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="SceneTransition.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Option.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

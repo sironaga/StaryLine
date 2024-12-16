@@ -34,6 +34,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(hr)) { return hr; }
 
 	// ‘¼‹@”\‰Šú‰»
+	g_Camera = new CameraDebug();
 	Geometory::Init();
 	Sprite::Init();
 	LibEffekseer::Init(GetDevice(), GetContext());
@@ -51,7 +52,6 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	InitSceneTitle();
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
-	g_Camera = new CameraDebug();
 	
 
 	return hr;
