@@ -101,7 +101,7 @@ protected:
 
 	
 public:
-	CFighter(int InCornerCount, float InSize);	//コンストラクタ
+	CFighter(int InCornerCount);	//コンストラクタ
 	virtual ~CFighter() = 0;						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
@@ -220,7 +220,7 @@ public:
 class CAlly : public CFighter
 {
 public:
-	CAlly(int InCornerCount, float InSize);		//コンストラクタ
+	CAlly(int InCornerCount);		//コンストラクタ
 	~CAlly();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
@@ -238,7 +238,7 @@ private:
 class CEnemy : public CFighter
 {
 public:
-	CEnemy(int InCornerCount, float InSize);		//コンストラクタ
+	CEnemy(int InCornerCount);		//コンストラクタ
 	~CEnemy();						//デストラクタ
 
 	void Update(void)	override;	//更新処理
