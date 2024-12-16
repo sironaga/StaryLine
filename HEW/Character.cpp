@@ -172,7 +172,7 @@ void UnInitSound()
 	}
 }
 
-CFighter::CFighter(int InCornerCount, float InSize)
+CFighter::CFighter(int InCornerCount)
 	:m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
@@ -211,9 +211,9 @@ CFighter::CFighter(int InCornerCount, float InSize)
 	m_tPos.X = 0.0f;
 	m_tPos.Y = 0.0f;
 	m_tPos.Z = 0.0f;
-	m_tSize.X = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	m_tSize.Y = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
-	m_tSize.Z = NORMAL_SIZE * InSize;	//面積分サイズを大きくする
+	m_tSize.X = NORMAL_SIZE;	//面積分サイズを大きくする
+	m_tSize.Y = NORMAL_SIZE;	//面積分サイズを大きくする
+	m_tSize.Z = NORMAL_SIZE;	//面積分サイズを大きくする
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
 	XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
 	m_pSourceAttack->SubmitSourceBuffer(&buffer);
@@ -493,8 +493,8 @@ void CFighter::Damage(CFighter* pFighter)
 }
 
 
-CAlly::CAlly(int InCornerCount, float InSize)
-	:CFighter(InCornerCount,InSize)
+CAlly::CAlly(int InCornerCount)
+	:CFighter(InCornerCount)
 {
 	SettingStatus();
 	m_pHpGage = new CHpUI(m_fHp,CHpUI::Ally);
@@ -507,15 +507,6 @@ CAlly::CAlly(int InCornerCount, float InSize)
 		m_pModel = g_pAllyModel[Ally4];
 		break;
 	}
-
-	//Vertex vtx[] = {
-	//	//背景表示の座標
-	//	{{-m_tSize.X / 2, -m_tSize.Y / 2,0.0f}, {0.0f, 0.0f}},
-	//	{{-m_tSize.X / 2,  m_tSize.Y / 2,0.0f}, {0.0f, 1.0f}},
-	//	{{ m_tSize.X / 2, -m_tSize.Y / 2,0.0f}, {1.0f, 0.0f}},
-	//	{{ m_tSize.X / 2,  m_tSize.Y / 2,0.0f}, {1.0f, 1.0f}},
-	//};
-	//m_pVtx = CreateVertexBuffer(vtx, 4);
 }
 
 CAlly::~CAlly()
@@ -760,8 +751,8 @@ void CAlly::SettingStatus(void)
 	}
 }
 
-CEnemy::CEnemy(int InCornerCount, float InSize)
-	:CFighter(InCornerCount, InSize)
+CEnemy::CEnemy(int InCornerCount)
+	:CFighter(InCornerCount)
 {
 	SettingStatus();
 	m_pHpGage = new CHpUI(m_fHp,CHpUI::Enemy);
@@ -775,25 +766,11 @@ CEnemy::CEnemy(int InCornerCount, float InSize)
 		m_pModel = g_pEnemyModel[Enemy2];
 		break;
 	}
-
-	//Vertex vtx[] = {
-	//	//背景表示の座標
-	//	{{-m_tSize.X / 2, -m_tSize.Y / 2, 0.0f}, {0.0f, 0.0f}},
-	//	{{-m_tSize.X / 2,  m_tSize.Y / 2, 0.0f}, {0.0f, 1.0f}},
-	//	{{ m_tSize.X / 2, -m_tSize.Y / 2, 0.0f}, {1.0f, 0.0f}},
-	//	{{ m_tSize.X / 2,  m_tSize.Y / 2, 0.0f}, {1.0f, 1.0f}},
-	//};
-	//m_pVtx = CreateVertexBuffer(vtx, 4);
 }
 
 CEnemy::~CEnemy()
 {
-	
-	
-	
-	//m_pSourceAttack = nullptr;
-	
-	//if (m_pVtx) m_pVtx->Release();
+
 }
 
 void CEnemy::Update(void)
