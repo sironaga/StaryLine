@@ -40,7 +40,7 @@ public:
 
 	void InitFieldVertex();
 	void SetSuperStar();
-	
+	void SoundStop();
 private:
 
 	typedef struct FieldVertex

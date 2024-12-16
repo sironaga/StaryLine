@@ -56,8 +56,8 @@ CSoundList::CSoundList(NAME inName)
 
 CSoundList::~CSoundList()
 {
-	/*delete m_sound;
-	m_sound = nullptr;*/
+	delete m_sound;
+	m_sound = nullptr;
 }
 
 IXAudio2SourceVoice* CSoundList::GetSound(bool Loop)

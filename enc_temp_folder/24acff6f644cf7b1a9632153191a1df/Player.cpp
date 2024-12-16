@@ -76,7 +76,7 @@ CPlayer::~CPlayer()
 	}
 	if (g_WalkSe)
 	{
-		//g_WalkSe->Stop();
+		g_WalkSe->Stop();
 		g_WalkSe = nullptr;
 	}
 }
