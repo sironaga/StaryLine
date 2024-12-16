@@ -10,6 +10,7 @@
 #include "Defines.h"
 #include "Main.h"
 #include "SoundList.h"
+#include "StarLine.h"
 
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
 IXAudio2SourceVoice* g_FieldSe;
