@@ -124,6 +124,11 @@ void UpdateSceneGame()
 		// プレイヤーと作図処理は図形を作っている間更新する
 		g_pFieldVertex->Update();
 	}
+	else
+	{
+		//描画時間外だと停止
+		g_pFieldVertex->SoundStop();
+	}
 
 	// 召喚開始の時間になったら
 	if ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時

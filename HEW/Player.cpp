@@ -6,6 +6,7 @@
 #include "InputEx.h"
 #include "SpriteDrawer.h"
 #include "DirectXTex/TextureLoad.h"
+#include "SoundList.h"
 
 // defines
 #define BRUSH_SPEED (0.5f)	// 移動速度
@@ -19,6 +20,9 @@ constexpr float BRUSH_ROTATE_Y = -20.0f;		// プレイヤー(筆)のY軸回転
 
 constexpr float TIMER_HARFSIZE_X = 100.0f;		// タイマーの横ハーフサイズ
 constexpr float TIMER_HARFSIZE_Y = 600.0f;		// タイマーの縦ハーフサイズ
+
+IXAudio2SourceVoice* g_WalkSe;
+CSoundList* g_PlayerSound;
 
 CPlayer::CPlayer()
 	// プレイヤー(筆)の初期化処理
@@ -52,6 +56,9 @@ CPlayer::CPlayer()
 
 	// エフェクト読み込み
 	m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
+
+	g_PlayerSound = new CSoundList(SE_WALK);
+	g_WalkSe = g_PlayerSound->GetSound(true);
 }
 
 CPlayer::~CPlayer()
@@ -60,6 +67,18 @@ CPlayer::~CPlayer()
 	SAFE_RELEASE(m_pTexTimer);	// タイマーテクスチャ情報の解放
 
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
+
+	//音の解放
+	if (g_PlayerSound)
+	{
+		delete g_PlayerSound;
+		g_PlayerSound = nullptr;
+	}
+	if (g_WalkSe)
+	{
+		//g_WalkSe->Stop();
+		g_WalkSe = nullptr;
+	}
 }
 
 void CPlayer::Update()
@@ -76,6 +95,14 @@ void CPlayer::Update()
 		case CPlayer::MOVE: UpdateMove(); break;	// 動いている状態の処理
 		default:break;
 		}
+	}
+	else
+	{
+		g_WalkSe->Stop();
+		XAUDIO2_BUFFER buffer;
+		buffer = g_PlayerSound->GetBuffer(true);
+		g_WalkSe->FlushSourceBuffers();
+		g_WalkSe->SubmitSourceBuffer(&buffer);
 	}
 
 	// エフェクトのテスト
@@ -109,6 +136,12 @@ void CPlayer::Draw()
 
 void CPlayer::UpdateStop()
 {
+	g_WalkSe->Stop();
+	XAUDIO2_BUFFER buffer;
+	buffer = g_PlayerSound->GetBuffer(true);
+	g_WalkSe->FlushSourceBuffers();
+	g_WalkSe->SubmitSourceBuffer(&buffer);
+
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
 		m_eDestination = DEFAULT;	// 移動方向を真ん中に初期化
@@ -191,6 +224,9 @@ void CPlayer::UpdateMove()
 		m_bCanMoveCheck = false;		// 8方向に移動可能かどうかを再び判定する
 		m_ePlayerState = STOP;			// 止まっている状態に変更する
 	}
+
+	g_WalkSe->SetVolume(0.7f);
+	g_WalkSe->Start();
 }
 
 void CPlayer::DrawModel()

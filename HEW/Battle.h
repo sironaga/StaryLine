@@ -2,12 +2,14 @@
 #include "Character.h"
 #include "VectorOperator.h"
 
-#define MAX_PATTERN (5)	//パターンの最大数
+//パターンの最大数
+#define MAX_PATTERN (5)
 
 class CBattle
 {
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝総合処理＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
+	//エンティティ番号
 	enum Entity
 	{
 		AllyLeader,
@@ -18,113 +20,148 @@ private:
 private:
 	struct EntityData
 	{
-		int nCornerCount;				//バリエーション番号
-		float Size;						//サイズ
+		//角数番号
+		int nCornerCount;
 	};
 
 public:
-	CBattle();				//コンストラクタ
-	~CBattle();				//デストラクタ
-	void Update(void);		//更新処理
-	void CharacterUpdate(void);//キャラクターたちの更新
-	void CharacterDraw(void);//キャラクターたちの描画
-	void Draw(void);		//描画処理
+	//コンストラクタ
+	CBattle();
+	//デストラクタ
+	~CBattle();	
+	//更新処理
+	void Update(void);
+	//キャラクターたちの更新
+	void CharacterUpdate(void);
+	//キャラクターたちの描画
+	void CharacterDraw(void);
+	//描画処理
+	void Draw(void);		
 
-	//void ReDrawingInit(void);	//再描画する際の初期化処理
-
-	//void CreateEntity();			//エンティティ生成
 private:
+	//時間軸処理
 	void TimeLapse(void);
-
-	void Search(int i,Entity Entity);	//索敵処理
-	void Move(int i, Entity Entity);	//移動処理
-	bool OverlapMove(int i,Entity Entity);	//重なってた場合の補正移動処理
-	void ScopeMove();					//範囲内補正
-
-	void Battle(int i, int l , Entity Entity);	//戦闘処理
-	void Alive(void);					//生存判定
-	void Delete(void);					//削除処理と配列前詰め
-	void FirstPosSetting();				//戦闘初期位置のセッティング
+	//索敵処理
+	void Search(int i,Entity Entity);
+	//移動処理
+	void Move(int i, Entity Entity);
+	//重なってた場合の補正移動処理
+	bool OverlapMove(int i,Entity Entity);
+	//範囲内補正
+	void ScopeMove();
+	//戦闘処理
+	void Battle(int i, int l , Entity Entity);
+	//生存判定
+	void Alive(void);
+	//削除処理と配列前詰め
+	void Delete(void);
+	//戦闘初期位置のセッティング
+	void FirstPosSetting();
 
 public:
-	int m_nStageNum;					//ステージナンバー
+	//ステージナンバー
+	int m_nStageNum;
 private:
-	int m_nBattleTime;					//戦闘時間
-	bool m_bFirstFight;					//初期戦闘したかどうか
-	int m_nFirstPosPattern;				//初期位置のパターン
+	//戦闘時間
+	int m_nBattleTime;
+	//初期戦闘したかどうか
+	bool m_bFirstFight;
+	//初期位置のパターン
+	int m_nFirstPosPattern;
 
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝リーダー関係＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
-	CLeader* m_pAllyLeader;				//プレイヤー(コア)
-	CLeader* m_pEnemyLeader;			//敵ボスのクラスポインタ
+	//プレイヤー
+	CLeader* m_pAllyLeader;
+	//敵ボスのクラスポインタ
+	CLeader* m_pEnemyLeader;
 public:
-	void CreateLeader(void);			//リーダーの生成
+	//リーダーの生成
+	void CreateLeader(void);
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
-	CAlly* m_pAlly[MAX_ALLY];							//味方クラスポインタ
+	//味方クラスポインタ
+	CAlly* m_pAlly[MAX_ALLY];
 
-	EntityData m_tAllyData[MAX_ALLY];					//生成予定の味方情報
-	int m_nAllyCount;									//生成した味方のカウント
-	int m_nAllyDateCount;								//保存した味方の情報数
-	int m_nAllyTypes[6];								//現在生成している味方の種類別カウント変数
-
-	//CAllyBuffer* m_pAllyBuffer[MAX_ALLY];				//味方バッファークラスポインタ
-	//int m_nAllyBufferCount;								//生成した味方バッファーのカウント
-
+	//生成予定の味方情報
+	EntityData m_tAllyData[MAX_ALLY];
+	//生成した味方のカウント
+	int m_nAllyCount;
+	//保存した味方の情報数
+	int m_nAllyDateCount;
+	//現在生成している味方の種類別カウント変数
+	int m_nAllyTypes[6];
 public:
-	int GetAllyCount(void) { return m_nAllyCount; }		//味方カウントのGet
-	//int GetAllyBufferCount(void) { return m_nAllyBufferCount; }		//味方バッファーカウントのGet
-
-	void SaveAllyData(int InCornerCount, float InSize);//味方要素保存
+	//味方カウントのGet
+	int GetAllyCount(void) { return m_nAllyCount; }	
+	//味方要素保存
+	void SaveAllyData(int InCornerCount);
 public:
-	void CreateAlly(void);			//味方作成
+	//味方作成
+	void CreateAlly(void);
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
-	CEnemy* m_pEnemy[MAX_ENEMY];					//敵クラスポインタ
-
-	EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];	//生成予定敵情報
-	int m_nEnemyCount;								//生成した敵のカウント
-	int m_nEnemyDateCount[MAX_PATTERN];				//保存した敵の情報数
-	int m_nEnemyTypes[3];							//現在生成している敵の種類別カウント変数
-	int m_nCreateEnemyNum;								//生成してほしい数
-
+	//敵クラスポインタ
+	CEnemy* m_pEnemy[MAX_ENEMY];
+	//生成予定敵情報
+	EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];
+	//生成した敵のカウント
+	int m_nEnemyCount;
+	//保存した敵の情報数
+	int m_nEnemyDateCount[MAX_PATTERN];
+	//現在生成している敵の種類別カウント変数
+	int m_nEnemyTypes[3];
+	//生成してほしい数
+	int m_nCreateEnemyNum;
 public:
-	int GetEnemyCount(void) { return m_nEnemyCount; }			//敵カウントのGet
-
-	void SaveEnemyData(int InCornerCount, int InPattern, float InSize);		//敵要素保存
+	//敵カウントのGet
+	int GetEnemyCount(void) { return m_nEnemyCount; }
+	//敵要素保存
+	void SaveEnemyData(int InCornerCount, int InPattern);		
 private:
-	void CreateEnemy(void);	//敵作成
+	//敵作成
+	void CreateEnemy(void);
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝ デバック関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
+	//数字のバッファーポインタ
 	ID3D11Buffer* m_pLogVtx;
 private:
 	/*バトル用*/
-	void DebugMove(void);							//デバック移動
+	//味方生成種類別カウント
+	void CreateAllyLog(void);
+	//味方生成ログの描画
+	void CreateAllyLogDraw(void);
+	//敵生成種類別カウント
+	void CreateEnemyLog(void);
+	//敵生成ログの描画
+	void CreateEnemyLogDraw(void);
 
-	void CreateAllyLog(void);						//味方生成種類別カウント
-	void CreateAllyLogDraw(void);					//味方生成ログの描画
-
-	void CreateEnemyLog(void);						//敵生成種類別カウント
-	void CreateEnemyLogDraw(void);					//敵生成ログの描画
 	/*図形判定用*/
 private:
-	void SaveAllyLog(void);							//味方保存種類別カウント
+	//味方保存種類別カウント
+	void SaveAllyLog(void);
 public:
-	void SaveAllyLogDraw(void);						//味方保存ログの描画
+	//味方保存ログの描画
+	void SaveAllyLogDraw(void);
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝Pattern関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
-	int m_nSelectPattern;	//選択されたパターン
-	int m_nMaxPattern;		//最大パターン数
+	//選択されたパターン
+	int m_nSelectPattern;
+	//最大パターン数
+	int m_nMaxPattern;
 
 public:
-	int GetSelectPattern(void) { return m_nSelectPattern; }					//選択されたパターンのGet
-	void RandomSelectPattern(void);											//用意された範囲でパターンを選ぶ
-
-	void SetMaxPattern(int InMaxPattern) { m_nMaxPattern = InMaxPattern; }	//最大パターン数のSet
-	int GetMaxPattern(void) { return m_nMaxPattern; }						//最大パターン数のGet
+	//選択されたパターンのGet
+	int GetSelectPattern(void) { return m_nSelectPattern; }
+	//用意された範囲でパターンを選ぶ
+	void RandomSelectPattern(void);
+	//最大パターン数のSet
+	void SetMaxPattern(int InMaxPattern) { m_nMaxPattern = InMaxPattern; }
+	//最大パターン数のGet
+	int GetMaxPattern(void) { return m_nMaxPattern; }
 
 };

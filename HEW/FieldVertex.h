@@ -9,6 +9,7 @@
 #include "Field.h"
 #include "Sprite.h"
 #include "ModelEx.h"
+#include "StarLine.h" // ---- 3D用のやつ←これ
 
 #define MAX_VERTEX (25)//頂点数
 #define MAX_CENTER_VERTEX (16)//
@@ -40,7 +41,7 @@ public:
 
 	void InitFieldVertex();
 	void SetSuperStar();
-	
+	void SoundStop();
 private:
 
 	typedef struct FieldVertex
@@ -107,5 +108,6 @@ private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
 	void DrawStarModel(int color, int Vertex);//色と頂点番号を使って描画
 	Field* m_pField;
+	StarLine* m_pStarLine;
 	int SuperStarCount;//スーパースターの個数
 };

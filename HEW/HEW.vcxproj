@@ -54,6 +54,7 @@
     <ClCompile Include="SpriteDrawer.cpp" />
     <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="StageSelect.cpp" />
+    <ClCompile Include="StarLine.cpp" />
     <ClCompile Include="StartTitle.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="SpriteDrawer.h" />
     <ClInclude Include="SpriteEx.h" />
     <ClInclude Include="StageSelect.h" />
+    <ClInclude Include="StarLine.h" />
     <ClInclude Include="StartTitle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VectorOperator.h" />

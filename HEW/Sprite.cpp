@@ -260,6 +260,7 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 	Calculated.x = ((StartCenter.x + NowCenter.x) / 2.0f);
 	Calculated.y = ((StartCenter.y + NowCenter.y) / 2.0f);
 	Calculated.z = 10.0f;
+	
 
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		Calculated.x,
@@ -284,30 +285,30 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 
 	if (delta.x < 0.0f) delta.x *= -1.0f;
 	if (delta.z < 0.0f) delta.z *= -1.0f;
-	if (delta.y < 0.0f)delta.y *= -1.0f;
+	if (delta.y < 0.0f) delta.y *= -1.0f;
 
 	if (Theta.z > TORAD(20.0f) && Theta.z < TORAD(70.0f))
 	{
-   		Rot= TORAD(45.0f);
-		delta.x -= 10.0f;
+		Rot = TORAD(45.0f);
+		delta.x -= 5.0f;
 	}
 
 	if (Theta.z > TORAD(110.0f) && Theta.z < TORAD(160.0f))
 	{
- 		Rot = TORAD(135.0f);
-		delta.x -= 10.0f;
+		Rot = TORAD(135.0f);
+		delta.x -= 5.0f;
 	}
 
 	if (Theta.z < TORAD(-20.0f) && Theta.z > TORAD(-70.0f))
 	{
- 		Rot = TORAD(-45.0f);
-		delta.x -= 10.0f;
+		Rot = TORAD(-45.0f);
+		delta.x -= 5.0f;
 	}
 
 	if (Theta.z < TORAD(-110.0f) && Theta.z > TORAD(-160.f))
 	{
 		Rot = TORAD(-135.0f);
-		delta.x -= 10.0f;
+		delta.x -= 5.0f;
 	}
 
 
@@ -322,15 +323,9 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 	));
 
 
-	
+
 
 	float size = (delta.x + delta.y) * 1.1f;
-
-	if (size < 5.0f)
-	{
-		size = 0.0f;
-	}
-
 
 
 
@@ -343,4 +338,5 @@ void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XM
 	DirectX::XMStoreFloat4x4(&world, mat);
 
 	m_data.matrix[0] = world;
+	
 }
