@@ -9,8 +9,11 @@
 #include "_StructList.h"
 #include "Defines.h"
 #include "Main.h"
+#include "SoundList.h"
 
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
+IXAudio2SourceVoice* g_FieldSe;
+CSoundList* g_Fieldsound;
 
 CFieldVertex::CFieldVertex()
 	:RoadStop(false)
@@ -30,6 +33,8 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pStar_Model{nullptr}
 {
+	g_Fieldsound = new CSoundList(SE_COMPLETE);
+	g_FieldSe = g_Fieldsound->GetSound(false);
 	// 星の描画用
 	// スプライト
 	m_pSprite_Star = new Sprite();
@@ -164,6 +169,10 @@ CFieldVertex::CFieldVertex()
 
 CFieldVertex::~CFieldVertex()
 {
+	g_FieldSe->Stop();
+	g_FieldSe = nullptr;
+	delete g_Fieldsound;
+	g_FieldSe = nullptr;
 	SAFE_DELETE(m_pTex_FieldLine);
 	SAFE_DELETE(m_pTex_FieldUseVertex);
 	SAFE_DELETE(m_pTex_FieldVertex);
@@ -616,6 +625,12 @@ void CFieldVertex::SetSuperStar()
 	}
 }
 
+//音を止めるか
+void CFieldVertex::SoundStop()
+{
+	g_FieldSe->Stop();
+}
+
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 {
 	int NowVertex = 0;//仮頂点保存のどの位置に今格納したのかを保存する
@@ -886,6 +901,16 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes], Shapes_Size);//図形の頂点と角数を渡す
+
+					//音を再生
+					g_FieldSe->Stop();
+					XAUDIO2_BUFFER buffer;
+					buffer =g_Fieldsound->GetBuffer(false);
+					g_FieldSe->FlushSourceBuffers();
+					g_FieldSe->SubmitSourceBuffer(&buffer);
+					g_FieldSe->SetVolume(0.6f);
+					g_FieldSe->Start();
+
 					for (int m = 0; Comparison2[m] != -1; m++)
 					{
 						m_tVertex[Comparison2[m]].SuperStarUse = true;//保存した各頂点のスーパースターを使用に変える
