@@ -43,7 +43,7 @@
 //移動関係計算マクロ
 #define MOVESPEED(Speed) Speed / 10
 //移動力
-#define MOVEPOWER (0.3f)
+#define MOVEPOWER (0.4f)
 
 //時間の計算マクロ
 #define Time(Num) Num * 60
@@ -438,22 +438,22 @@ void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
 //戦闘時間軸処理
 void CBattle::TimeLapse(void)
 {
-	if (   m_nBattleTime == Time(0)
-		|| m_nBattleTime == Time(1)
-		|| m_nBattleTime == Time(2)
-		|| m_nBattleTime == Time(3)
-		|| m_nBattleTime == Time(4)
-		|| m_nBattleTime == Time(5)
-		|| m_nBattleTime == Time(6)
-		|| m_nBattleTime == Time(7)
-		|| m_nBattleTime == Time(8)
-		|| m_nBattleTime == Time(9)
-		|| m_nBattleTime == Time(10)
-		|| m_nBattleTime == Time(11)
-		|| m_nBattleTime == Time(12)
-		|| m_nBattleTime == Time(13)
-		|| m_nBattleTime == Time(14)
-		|| m_nBattleTime == Time(15)
+	if (   m_nBattleTime == Time(0*2)
+		|| m_nBattleTime == Time(1*2)
+		|| m_nBattleTime == Time(2*2)
+		|| m_nBattleTime == Time(3*2)
+		|| m_nBattleTime == Time(4*2)
+		|| m_nBattleTime == Time(5*2)
+		|| m_nBattleTime == Time(6*2)
+		|| m_nBattleTime == Time(7*2)
+		|| m_nBattleTime == Time(8*2)
+		|| m_nBattleTime == Time(9*2)
+		|| m_nBattleTime == Time(10*2)
+		|| m_nBattleTime == Time(11*2)
+		|| m_nBattleTime == Time(12*2)
+		|| m_nBattleTime == Time(13*2)
+		|| m_nBattleTime == Time(14*2)
+		|| m_nBattleTime == Time(15*2)
 		)
 	{
 		//敵の生成数を指定
