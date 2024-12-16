@@ -18,7 +18,7 @@
 #include "CameraDebug.h"
 #include "LibEffekseer.h"
 
-//--- ƒOƒ[ƒoƒ‹•Ï”
+//--- ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 E_SCENE_TYPE g_SceneType;
 Camera* g_Camera;
 IXAudio2SourceVoice* g_pSourseTitleSE;
@@ -31,11 +31,11 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
 
 	HRESULT hr;
-	// DirectX‰Šú‰»
+	// DirectXåˆæœŸåŒ–
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
 
-	// ‘¼‹@”\‰Šú‰»
+	// ä»–æ©Ÿèƒ½åˆæœŸåŒ–
 	g_Camera = new CameraDebug();
 	Geometory::Init();
 	Sprite::Init();
@@ -48,13 +48,12 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 
-	// ƒV[ƒ“ì¬
-	// ƒV[ƒ“ì¬
+	// ã‚·ãƒ¼ãƒ³ä½œæˆ
+	// ã‚·ãƒ¼ãƒ³ä½œæˆ
 	g_SceneType = SCENE_TITLE;
 	InitSceneTitle();
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
-
 	
 
 	return hr;
@@ -104,9 +103,9 @@ void Draw()
 {
 	BeginDrawDirectX();
 
-	// ²ü‚Ì•\¦
+	// è»¸ç·šã®è¡¨ç¤º
 #ifdef _DEBUG
-	// ƒOƒŠƒbƒh
+	// ã‚°ãƒªãƒƒãƒ‰
 	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
 	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
 	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
@@ -126,7 +125,7 @@ void Draw()
 		pos[0].z = pos[1].z = -grid;
 		Geometory::AddLine(pos[0], pos[1], lineColor);
 	}
-	// ²
+	// è»¸
 	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
 	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
 	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
@@ -135,7 +134,7 @@ void Draw()
 
 	Geometory::DrawLines();
 
-	// ƒJƒƒ‰‚Ì’l
+	// ã‚«ãƒ¡ãƒ©ã®å€¤
 	static bool camPosSwitch = false;
 	if (IsKeyTrigger(VK_RETURN)) {
 		camPosSwitch ^= true;
@@ -149,7 +148,7 @@ void Draw()
 		camPos = DirectX::XMVectorSet(2.5f, 3.5f, -4.0f, 0.0f);
 	}
 
-	// ƒWƒIƒƒgƒŠ—pƒJƒƒ‰‰Šú‰»
+	// ã‚¸ã‚ªãƒ¡ãƒˆãƒªç”¨ã‚«ãƒ¡ãƒ©åˆæœŸåŒ–
 	DirectX::XMFLOAT4X4 mat[2];
 	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixLookAtLH(
@@ -205,7 +204,7 @@ void ChangeScene(E_SCENE_TYPE next)
 	g_pSourseTitleSE->FlushSourceBuffers();
 	g_pSourseTitleSE->SetVolume(0.3f);
 	g_pSourseTitleSE->Start();
-	//Œ»İ‚ÌƒV[ƒ“‚ÌI—¹
+	//ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã®çµ‚äº†
 	switch (g_SceneType)
 	{
 	case(SCENE_TITLE):UninitSceneTitle();	break;
@@ -216,10 +215,10 @@ void ChangeScene(E_SCENE_TYPE next)
 	default:break;
 	}
 
-	//Œ»İ‚ÌƒV[ƒ“‚ÌXV
+	//ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã®æ›´æ–°
 	g_SceneType = next;
 
-	//Ÿ‚ÌƒV[ƒ“‚Ì‰Šú‰»
+	//æ¬¡ã®ã‚·ãƒ¼ãƒ³ã®åˆæœŸåŒ–
 	switch (g_SceneType)
 	{
 	case(SCENE_TITLE):InitSceneTitle();				break;

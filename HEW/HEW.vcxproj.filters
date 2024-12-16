@@ -183,6 +183,9 @@
     <ClCompile Include="StarLine.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
+    <ClCompile Include="Option.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -305,6 +308,7 @@
     <ClInclude Include="SceneTransition.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
+
     <ClInclude Include="StarLine.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
