@@ -58,7 +58,7 @@
     <Filter Include="ヘッダー ファイル\Systems\Communication_Systems">
       <UniqueIdentifier>{1102fa29-bfb1-4b5f-9617-f52961bfac5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Systems\Mode">
+    <Filter Include="ソース ファイル\GameSystem\Mode">
       <UniqueIdentifier>{98849ed4-9171-400f-8d84-2e8b55a04dd9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -124,25 +124,25 @@
       <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="StageSelect.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="StartTitle.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="Battle.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="FieldVertex.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="Conection_Sys.cpp">
       <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
@@ -151,7 +151,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Result.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="DebugRoom.cpp">
       <Filter>ソース ファイル\Systems</Filter>
@@ -160,7 +160,7 @@
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
     <ClCompile Include="Field.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="InputEx.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
@@ -172,13 +172,16 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="BackGround.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="LibEffekseer.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
     <ClCompile Include="SceneTransition.cpp">
-      <Filter>ソース ファイル\Systems\Mode</Filter>
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="StarLine.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="SceneTransition.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="StarLine.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
