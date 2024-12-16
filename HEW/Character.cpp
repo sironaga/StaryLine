@@ -570,7 +570,7 @@ void CAlly::Draw(void)
 	ShaderList::SetWVP(wvp);
 
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
 	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 	{
@@ -843,7 +843,7 @@ void CEnemy::Draw(void)
 	ShaderList::SetWVP(wvp);
 
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
 	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 	{
