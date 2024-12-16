@@ -23,6 +23,7 @@ private:
 		IMAGE_POINT,
 
 
+
 		IMAGE_MAX
 	};
 
