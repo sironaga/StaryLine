@@ -2,6 +2,7 @@
 
 #define _DIRECTX_
 #include"DirectX.h"
+#include "Option.h"
 
 enum E_TITLE_TYPE
 {
@@ -35,6 +36,7 @@ private:
 	float f_Rotation;
 	float f_Rad;
 	float f_SelectY;
+	COption* m_pOption;
 
 };
 

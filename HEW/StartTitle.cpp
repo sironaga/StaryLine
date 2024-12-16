@@ -13,17 +13,19 @@
 #define SET_POTION_Y (0)
 #define E_WID (540)
 #define E_HID (300)
-#define SELECT_POSX (-300.0f)
+#define SELECT_POSX (-320.0f)
+#define SELECT_MOVE (185.0f)
 
 E_TITLE_TYPE g_Title_type;
 
 CStartTitle::CStartTitle()
 	:m_vLogo(nullptr)
 	, m_tLogo(nullptr)
-	,m_tAccessories{}
-	,f_Rotation(0)
-	,f_Rad(0)
-	,f_SelectY(200)
+	, m_tAccessories{}
+	, f_Rotation(0)
+	, f_Rad(0)
+	, f_SelectY(350)
+	, m_pOption(nullptr)
 {
 	g_Title_type = GAMESTART;
 
@@ -88,12 +90,14 @@ CStartTitle::CStartTitle()
 	m_vBackGround = CreateVertexBuffer(vtx2, 4);
 	m_vE = CreateVertexBuffer(vtx3, 4);
 	m_vSelect = CreateVertexBuffer(vtx4, 4);
+
+	m_pOption = new COption();
 }
 
 CStartTitle::~CStartTitle()
 {
 	
-
+	SAFE_DELETE(m_pOption);
 }
 
 void CStartTitle::UpdateStartTitle()
@@ -101,13 +105,15 @@ void CStartTitle::UpdateStartTitle()
 	f_Rotation += 0.1f;
 	f_Rad = DirectX::XMConvertToRadians(f_Rotation);
 
+	m_pOption->Update();
+
 	switch (g_Title_type)
 	{
 	case(GAMESTART):
 		if (IsKeyTrigger(VK_DOWN)) 
 		{
 			g_Title_type = GAMECONTINUE;
-			f_SelectY += 200;
+			f_SelectY += SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
@@ -119,33 +125,39 @@ void CStartTitle::UpdateStartTitle()
 		if (IsKeyTrigger(VK_DOWN))
 		{
 			g_Title_type = GAMEOPTION;
-			f_SelectY += 200;
+			f_SelectY += SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_UP))
 		{
 			g_Title_type = GAMESTART;
-			f_SelectY -= 200;
+			f_SelectY -= SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
 			//コンティニューシーンへ切り替える処理
+			
 		}
 		break;
 
 	case(GAMEOPTION):
-		if (IsKeyTrigger(VK_DOWN))
+		if (!m_pOption->GetOption())
 		{
-			g_Title_type = GAMEEND;
-			f_SelectY += 200;
-		}
-		if (IsKeyTrigger(VK_UP))
-		{
-			g_Title_type = GAMECONTINUE;
-			f_SelectY -= 200;
+			if (IsKeyTrigger(VK_DOWN))
+			{
+				g_Title_type = GAMEEND;
+				f_SelectY += SELECT_MOVE;
+			}
+			if (IsKeyTrigger(VK_UP))
+			{
+				g_Title_type = GAMECONTINUE;
+				f_SelectY -= SELECT_MOVE;
+			}
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
 			//オプションへ切り替える処理
+			m_pOption->SetOption();
+
 		}
 		break;
 
@@ -153,7 +165,7 @@ void CStartTitle::UpdateStartTitle()
 		if (IsKeyTrigger(VK_UP)) 
 		{
 			g_Title_type = GAMEOPTION; 
-			f_SelectY -= 200;
+			f_SelectY -= SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
@@ -194,4 +206,6 @@ void CStartTitle::DrawStartTitle()
 	SetSpriteTexture(m_tSelect);
 	DrawSprite(m_vSelect, sizeof(Vertex));
 	ReSetSprite();
+
+	m_pOption->Draw();
 }
