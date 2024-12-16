@@ -928,7 +928,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
-					m_pBattle->SaveAllyData(Shapes_Count[NowShapes], Shapes_Size);//}Œ`‚Ì’¸“_‚ÆŠp”‚ð“n‚·
+					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//}Œ`‚Ì’¸“_‚ÆŠp”‚ð“n‚·
 
 					//‰¹‚ðÄ¶
 					g_FieldSe->Stop();
