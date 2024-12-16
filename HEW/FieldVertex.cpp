@@ -33,6 +33,7 @@ CFieldVertex::CFieldVertex()
 	, m_pTex_SuperStar_Number{nullptr}
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pStar_Model{nullptr}
+	, m_pStarLine(nullptr)
 {
 
 
@@ -47,6 +48,8 @@ CFieldVertex::CFieldVertex()
 	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
+
+	m_pStarLine = new StarLine();
 	
 	// 線の描画用
 	// スプライト
@@ -301,15 +304,35 @@ void CFieldVertex::Update()
 
 void CFieldVertex::Draw()
 {
-	SetRender2D();
+	//SetRender2D();
 	//今のフェーズがDrawの時フィールドの頂点描画
-
+	SetRender3D();
 	FieldVertex* Vertexp;
 	Vertexp = m_tVertex;
 	
 	for (int i = 0; i <= NowLine; i++)
 	{			
-		//線の描画
+		//////線の描画
+		//m_pStarLine->SetLineInfo(	{
+		//		vtx_FieldLine[i][1].pos[0],
+		//		vtx_FieldLine[i][1].pos[1],
+		//		0.0f
+		//	},
+		//	{
+		//		vtx_FieldLine[i][3].pos[0],
+		//		vtx_FieldLine[i][3].pos[1],
+		//		0.0f
+		//	},
+		//	{ vtx_FieldLine[i][0].pos[0],
+		//		vtx_FieldLine[i][0].pos[1],
+		//		0.0f
+		//	},
+		//	{
+		//		vtx_FieldLine[i][2].pos[0],
+		//		vtx_FieldLine[i][2].pos[1],
+		//		0.0f
+		//	});
+		//m_pStarLine->DispLine();
 		m_pSprite_Line[i]->SetCenterPosAndRotation(
 		{
 			vtx_FieldLine[i][1].pos[0],
@@ -993,7 +1016,6 @@ void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize
 
 void CFieldVertex::DrawStarModel(int color, int Vertex)
 {
-		SetRender3D();
 		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);
 		m_pStar_Model[color]->SetRotation(0.0f,TORAD(180), 0.0f);
 		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);

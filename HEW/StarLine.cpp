@@ -1,12 +1,12 @@
 #include "StarLine.h"
 #include <cmath>
 
-#define LINE_DEBUG (true)
+#define LINE_DEBUG (false)
 
 StarLine::StarLine()
 	:Pos{},Scl{},Rot{},world{}
 {
-	m_pModel = new CModelEx("aaaa", false);
+	m_pModel = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"), false);
 	m_pBox = new Geometory();
 	
 
@@ -21,10 +21,10 @@ StarLine::~StarLine()
 		delete m_pModel;
 		m_pModel = nullptr;
 	}
-	if (m_pCamera)
+	if (m_pBox)
 	{
-		delete m_pCamera;
-		m_pCamera = nullptr;
+		delete m_pBox;
+		m_pBox = nullptr;
 	}
 }
 
@@ -48,7 +48,7 @@ void StarLine::SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 Sta
 	// ---地点Sと地点Nの中心座標を計算
 	Pos.x = ((StartCenter.x + NowCenter.x) / 2.0f);
 	Pos.y = ((StartCenter.y + NowCenter.y) / 2.0f);
-	Pos.z = ((StartCenter.y + NowCenter.y) / 2.0f);
+	Pos.z = ((StartCenter.z + NowCenter.z) / 2.0f);
 	// --- 座標の変換
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		Pos.x,
@@ -135,7 +135,7 @@ void StarLine::DispLine()
 		m_pModel->SetProjectionMatrix(Proj);
 		m_pModel->SetPostion(Pos.x, Pos.y, Pos.z);
 		m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
-		m_pModel->SetScale(Scl.x, 0.0f, 0.0f);
+		m_pModel->SetScale(Scl.x, 1.0f, 1.0f);
 		m_pModel->Draw();
 	}
 }
