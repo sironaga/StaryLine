@@ -32,6 +32,8 @@ void ChangeScene(E_SCENE_TYPE next);	//ƒV[ƒ“‘JˆÚ‚ğs‚¤ŠÖ”
 
 E_SCENE_TYPE GetScene(void);
 
+bool IsGaming();
+void SetGameEnd();
 void SetRender2D();
 void SetRender3D();
 

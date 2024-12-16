@@ -6,7 +6,7 @@ constexpr float BG_POS_Z = 600.0f;
 
 const char* BGPass[SCENE_MAX] =
 {
-	TEX_PASS("BackGround/B_1.png"),
+	TEX_PASS("BackGround/TitleBackGround.png"),
 	TEX_PASS("BackGround/B_1.png"),
 	TEX_PASS("BackGround/B_1.png"),
 };
@@ -21,7 +21,7 @@ CBackGround::CBackGround()
 	switch (m_eCurrentScene)
 	{
 	case SCENE_TITLE:
-		// m_pBGSprite = new SpriteEx(BGPass[SCENE_TITLE]);
+		m_pBGSprite = new SpriteEx(BGPass[SCENE_TITLE]);
 		break;
 	case STAGE_SELECT:
 		// m_pBGSprite = new SpriteEx(BGPass[STAGE_SELECT]);
