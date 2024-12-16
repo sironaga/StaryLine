@@ -124,21 +124,18 @@ void StarLine::DispLine()
 {
 	if (LINE_DEBUG)
 	{
-		m_pBox->SetView(m_pCamera->GetViewMatrix());
-		m_pBox->SetProjection(m_pCamera->GetProjectionMatrix());
+		m_pBox->SetView(View);
+		m_pBox->SetProjection(Proj);
 		m_pBox->SetWorld(world);
 		m_pBox->DrawBox();
 	}
 	else
 	{
+		m_pModel->SetViewMatrix(View);
+		m_pModel->SetProjectionMatrix(Proj);
 		m_pModel->SetPostion(Pos.x, Pos.y, Pos.z);
 		m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
 		m_pModel->SetScale(Scl.x, 0.0f, 0.0f);
 		m_pModel->Draw();
 	}
-}
-
- void StarLine::SetCamera(Camera* InCamera)
-{
-	m_pCamera = InCamera;
 }

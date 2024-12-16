@@ -10,7 +10,7 @@
 #include "Defines.h"
 #include "Main.h"
 #include "SoundList.h"
-#include "StarLine.h"
+
 
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
 IXAudio2SourceVoice* g_FieldSe;
@@ -34,6 +34,10 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pStar_Model{nullptr}
 {
+
+
+	
+
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
 	g_FieldSe = g_Fieldsound->GetSound(false);
 	// ¯‚Ì•`‰æ—p
