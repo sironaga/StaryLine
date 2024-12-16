@@ -138,7 +138,7 @@ void StarLine::DispLine()
 	}
 }
 
-void StarLine::SetCamera(Camera* InCamera)
+ void StarLine::SetCamera(Camera* InCamera)
 {
 	m_pCamera = InCamera;
 }

@@ -13,7 +13,7 @@ public:
 	void SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight);
 	void DispLine();
 	// --- ƒJƒƒ‰î•ñ‚Ìİ’è
-	static void SetCamera(Camera* InCamera);
+	void SetCamera(Camera* InCamera);
 
 
 private:
@@ -24,6 +24,6 @@ private:
 private:
 	Geometory* m_pBox;
 	CModelEx *m_pModel;
-	static Camera   *m_pCamera;
+    Camera   *m_pCamera;
 };
 
