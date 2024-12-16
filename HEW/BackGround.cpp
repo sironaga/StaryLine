@@ -70,17 +70,33 @@ void CBackGround::Draw()
 {
 	switch (m_eCurrentScene)
 	{
-	case SCENE_TITLE: SetRender2D();	break;
-	case STAGE_SELECT: SetRender2D();	break;
-	case SCENE_GAME: SetRender3D();		break;
-	case SCENE_RESULT: SetRender2D();	break;
+	case SCENE_TITLE: 
+		SetRender2D();
+		m_pBGSprite->SetPositon(GetCameraPos().x, GetCameraPos().y, GetCameraPos().z + 10.0f);
+		m_pBGSprite->SetSize(20.6f, 11.5f, m_tSize.z);
+		m_pBGSprite->SetRotation(DirectX::XMConvertToRadians(60.0f), m_tRotate.y, m_tRotate.z);
+		break;
+	case STAGE_SELECT:
+		SetRender2D();
+		m_pBGSprite->SetPositon(GetCameraPos().x, GetCameraPos().y, GetCameraPos().z);
+		m_pBGSprite->SetSize(16.0f, 9.0f, m_tSize.z);
+		break;
+	case SCENE_GAME: 
+		SetRender3D();
+		m_pBGSprite->SetPositon(m_tPos.x, m_tPos.y, m_tPos.z);
+		m_pBGSprite->SetSize(m_tSize.x, m_tSize.y, m_tSize.z);
+		break;
+	case SCENE_RESULT:
+		SetRender2D();
+		m_pBGSprite->SetPositon(GetCameraPos().x, GetCameraPos().y, GetCameraPos().z);
+		m_pBGSprite->SetSize(16.0f, 9.0f, m_tSize.z);
+		break;
 	case SCENE_DEBUGROOM: SetRender3D();break;
 	case SCENE_MAX: break;
 	default:MessageBox(NULL, "シーン参照エラー", "BackGround.cpp", MB_OK);	break;
 	}
 
-	m_pBGSprite->SetPositon(m_tPos.x, m_tPos.y, m_tPos.z);
-	m_pBGSprite->SetSize(m_tSize.x, m_tSize.y, m_tSize.z);
+
 	m_pBGSprite->SetRotation(m_tRotate.x, m_tRotate.y, m_tRotate.z);
 	m_pBGSprite->SetUvPos(m_tPosTex.x, m_tPosTex.y);
 	m_pBGSprite->SetUvSize(m_tSizeTex.x, m_tSizeTex.y);

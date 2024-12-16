@@ -92,7 +92,7 @@ void COption::Update()
 			break;
 		}
 
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))SetOption();
+		/*if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))SetOption();*/
 	}
 }
 
@@ -158,6 +158,11 @@ void COption::SetOption()
 {
 	m_bOption ^= true;
 	m_nSelect = 0;
+}
+
+bool COption::GetOption()
+{
+	return m_bOption;
 }
 
 float COption::GetBGMVoluem()

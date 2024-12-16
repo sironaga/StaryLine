@@ -4,7 +4,7 @@
 
 
 CameraDebug::CameraDebug()
-	:m_radXZ(0.0f), m_radY(TORAD(-2.0f)), m_radius(-90.0f) //0.0f,0.0f,10.0f
+	:m_radXZ(0.0f), m_radY(TORAD(-0.0f)), m_radius(-90.0f) //0.0f,0.0f,10.0f
 {
 
 }

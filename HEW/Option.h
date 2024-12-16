@@ -13,6 +13,7 @@ public:
 	void Draw();
 
 	void SetOption();
+	bool GetOption();
 	float GetBGMVoluem();
 	float GetSEVoluem();
 private:
