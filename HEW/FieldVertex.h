@@ -19,8 +19,8 @@
 #define STAR_SIZE (10.0f)//頂点の星のサイズ
 #define VERTEX_POS_X (-30.0f)//頂点の描画位置X
 #define VERTEX_POS_Y (95.0f)//頂点の描画位置Y
-#define VERTEX_SIZE_X (15.0f)//頂点間の間隔X
-#define VERTEX_SIZE_Y (15.0f)//頂点間の間隔Y
+#define VERTEX_SPACE_X (15.0f)//頂点間の間隔X
+#define VERTEX_SPACE_Y (15.0f)//頂点間の間隔Y
 
 class CPlayer;
 
@@ -80,7 +80,7 @@ private:
 
 	Texture* m_pTex_FieldVertex;
 	Texture* m_pTex_FieldUseVertex;
-	Texture* m_pTex_SuperStar_Number[5];
+	Texture* m_pTex_SuperStar_Number[6];
 	float m_offsetU_Field;
 
 	Texture* m_pTex_FieldLine;

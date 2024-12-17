@@ -5,6 +5,7 @@
 #include "ModelEx.h"
 #include "LibEffekseer.h"
 #include "FieldVertex.h"
+#include "EffectManager.h"
 
 // defines
 #define START_PLAYER (12)	//プレイヤーの開始位置
@@ -87,7 +88,7 @@ private:
 
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
 private:
-	Effekseer::EffectRef m_Effect;			// エフェクトの読み込み
+	CEffectManager* m_pEffect;
 
 	/*＝＝＝＝＝＝＝＝＝フィールド＝＝＝＝＝＝＝＝＝*/
 public:
