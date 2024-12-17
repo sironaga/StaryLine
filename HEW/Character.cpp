@@ -672,7 +672,7 @@ void CAlly::SettingStatus(void)
 	switch (nCornerCount)
 	{
 	default:
-		m_fHp = 10.0f;
+		m_fHp = 50.0f;
 		m_fAtk = 1.0f;
 		//m_tAtkType = AT_Physics;
 		m_fAtkAnimationMaxTime = 0.0f;
@@ -683,7 +683,7 @@ void CAlly::SettingStatus(void)
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Triangle:
-		m_fHp = 10.0f;
+		m_fHp = 50.0f;
 		m_fAtk = 1.0f;
 		//m_tAtkType = AT_Physics;
 		m_fAtkAnimationMaxTime = 0.0f;
@@ -694,7 +694,7 @@ void CAlly::SettingStatus(void)
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Square:
-		m_fHp = 10.0f;
+		m_fHp = 50.0f;
 		m_fAtk = 1.0f;
 		//m_tAtkType = AT_Physics;
 		m_fAtkAnimationMaxTime = 0.0f;
@@ -920,7 +920,7 @@ void CEnemy::SettingStatus(void)
 	switch (nCornerCount)
 	{
 	default:
-		m_fHp = 10.0f;
+		m_fHp = 50.0f;
 		m_fAtk = 1.0f;
 		//m_tAtkType = AT_Physics;
 		m_fAtkAnimationMaxTime = 0.0f;
@@ -931,7 +931,7 @@ void CEnemy::SettingStatus(void)
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Triangle:
-		m_fHp = 10.0f;
+		m_fHp = 50.0f;
 		m_fAtk = 1.0f;
 		//m_tAtkType = AT_Physics;
 		m_fAtkAnimationMaxTime = 0.0f;
@@ -942,7 +942,7 @@ void CEnemy::SettingStatus(void)
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Square:
-		m_fHp = 10.0f;
+		m_fHp = 50.0f;
 		m_fAtk = 1.0f;
 		//m_tAtkType = AT_Physics;
 		m_fAtkAnimationMaxTime = 0.0f;

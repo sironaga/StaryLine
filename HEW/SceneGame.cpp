@@ -145,7 +145,10 @@ void UpdateSceneGame()
 	}
 
 	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
-	if((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+	//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
+	{
+		g_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+	}
 							// ゲーム中は経過時間を記録し続ける
 	g_tTime.GameTime++;
 }
@@ -175,11 +178,6 @@ void DrawSceneGame()
 	//{
 	//	g_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 	//}
-	if (10.0f * 60.0f == g_tTime.GameTime)
-	{
-		int a;
-		a = 0;
-	}
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
@@ -187,7 +185,7 @@ void DrawSceneGame()
 	}
 
 	//１回目のCOOLTIMEが始まったらそれ以降処理
-	if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
+	//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
 	{
 		g_pBattle->Draw();	// バトル全体の描画
 	}
