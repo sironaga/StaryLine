@@ -38,7 +38,8 @@
 #define BATTLE_X (80)
 //戦闘範囲Z軸
 #define BATTLE_Z (30)
-
+//移動のZ軸方向をし始めるライン
+#define MOVEBATTLE_LINE (80)
 
 //移動関係計算マクロ
 #define MOVESPEED(Speed) Speed / 10
@@ -580,14 +581,17 @@ void CBattle::Search(int i, Entity Entity)
 //移動処理
 void CBattle::Move(int i, Entity Entity)
 {
-	//キャラクター同士が重なっていた場合の移動処理をしているかどうか
-	if (OverlapMove(i,Entity))
+	//エンティティ番号別に処理
+	switch (Entity)
 	{
-		//していなかった場合はエンティティ番号別に処理
-		switch (Entity)
-		{
 		/*味方の判定*/
-		case CBattle::Ally:
+	case CBattle::Ally:
+		//現在位置を保存
+		m_pAlly[i]->SetOldPos(m_pAlly[i]->GetPos());
+		//キャラクター同士が重なっていた場合の移動処理をしているかどうか
+		if (OverlapMove(i, Ally))
+		{
+
 			//標的番号を設定済みだった場合
 			if (m_pAlly[i]->m_nTargetNumber != -1)
 			{
@@ -604,10 +608,19 @@ void CBattle::Move(int i, Entity Entity)
 					//相手のリーダーが生成されているか
 					if (m_pEnemyLeader)
 					{
-						//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-						m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).X);
-						m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).Z);
-
+						//自分の位置が敵の一定のラインまで来たら
+						if (m_pAlly[i]->GetPos().X < MOVEBATTLE_LINE)
+						{
+							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
+							m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).X);
+							m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).Z);
+						}
+						//そこより手前だったら
+						else
+						{
+							//X軸を移動させる
+							m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+						}
 					}
 				}
 			}
@@ -622,10 +635,16 @@ void CBattle::Move(int i, Entity Entity)
 					m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).Z);
 				}
 			}
-			break;
+		}
+		break;
 
-			/*敵の判定*/
-		case CBattle::Enemy:
+		/*敵の判定*/
+	case CBattle::Enemy:
+		//現在位置を保存
+		m_pEnemy[i]->SetOldPos(m_pEnemy[i]->GetPos());
+		//キャラクター同士が重なっていた場合の移動処理をしているかどうか
+		if (OverlapMove(i, Enemy))
+		{
 			//標的番号を設定済みだった場合
 			if (m_pEnemy[i]->m_nTargetNumber != -1)
 			{
@@ -642,9 +661,20 @@ void CBattle::Move(int i, Entity Entity)
 					//相手のリーダーが生成されているか
 					if (m_pAllyLeader)
 					{
-						//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-						m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).X);
-						m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).Z);
+						//自分の位置が敵の一定のラインまで来たら
+						if (m_pEnemy[i]->GetPos().X > MOVEBATTLE_LINE)
+						{
+							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
+							m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).X);
+							m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).Z);
+						}
+						//そこより手前だったら
+						else
+						{
+							//X軸を移動させる
+							m_pEnemy[i]->AddPosX(MOVESPEED(MOVEPOWER));
+						}
+
 					}
 				}
 			}
@@ -659,9 +689,9 @@ void CBattle::Move(int i, Entity Entity)
 					m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).Z);
 				}
 			}
-			break;
 
 		}
+		break;
 	}
 }
 
@@ -693,7 +723,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				if (m_pAlly[l]->GetPos().Z > Z - 1.0f && m_pAlly[l]->GetPos().Z < Z + 1.0f)
 				{
 					//自分より奥にいる奴は処理しない
-					if (m_pAlly[i]->GetPos().Z > m_pAlly[l]->GetPos().Z)continue;
+					if (m_pAlly[i]->GetPos().Z <= m_pAlly[l]->GetPos().Z)continue;
 
 					//重なっているか確認
 					if (m_pAlly[i]->OverlapCheck(m_pAlly[l]->GetPos(), m_pAlly[l]->GetSize()))
@@ -732,7 +762,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				if (m_pEnemy[l]->GetPos().Z > Z - 1.0f && m_pEnemy[l]->GetPos().Z < Z + 1.0f)
 				{
 					//自分より奥にいる奴は処理しない
-					if (m_pEnemy[i]->GetPos().Z > m_pEnemy[l]->GetPos().Z)continue;
+					if (m_pEnemy[i]->GetPos().Z <= m_pEnemy[l]->GetPos().Z)continue;
 
 					//重なっているか確認
 					if (m_pEnemy[i]->OverlapCheck(m_pEnemy[l]->GetPos(), m_pEnemy[l]->GetSize()))

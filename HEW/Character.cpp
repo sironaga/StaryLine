@@ -176,6 +176,7 @@ CFighter::CFighter(int InCornerCount)
 	:m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
+	, m_tOldPos()
 	, m_fHp(0.0f)
 	//, m_fShield(0.0f)
 	, m_fAtk(0.0f)
@@ -419,6 +420,7 @@ bool CFighter::SearchCollisionCheck(CVector3<float> InSize, CVector3<float>InPos
 
 bool CFighter::OverlapCheck(CVector3<float> InPos, CVector3<float> InSize)
 {
+	//サイズを重なりように調整
 	CVector3<float> Size;
 	Size.X = m_tSize.X * 0.2f;
 	Size.Y = m_tSize.Y * 0.2f;
@@ -1309,13 +1311,13 @@ CHpUI::CHpUI(float FullHp, HpUINumber Number)
 	case CHpUI::Enemy:
 		m_tUIScale.y = 5.0f;
 		m_tUIScale.z = 1.0f;
-		m_fAnchorPoint = 4.5f;
+		m_fAnchorPoint = 5.0f;
 		break;
 	case CHpUI::Bos:
 	case CHpUI::Player:
 		m_tUIScale.y = 15.0f;
 		m_tUIScale.z = 1.0f;
-		m_fAnchorPoint = 14.5f;
+		m_fAnchorPoint = 15.0f;
 		break;
 	}
 }
