@@ -119,6 +119,8 @@ CFieldVertex::CFieldVertex()
 
 	m_tVertex[START_PLAYER].Use = true;//最初の頂点を使用に
 
+	SetSuperStar();
+
 	//頂点描画初期化
 	HRESULT hrVertex;
 	hrVertex = m_pTex_FieldVertex->Create("Asset/Star/star.png");
@@ -571,6 +573,8 @@ void CFieldVertex::SetPlayerAddress(CPlayer* InAddress)
 
 void CFieldVertex::InitFieldVertex()
 {
+	
+
 	//頂点２５個初期化
 	FieldVertex* Vertexp;
 	Vertexp = m_tVertex;
@@ -616,6 +620,8 @@ void CFieldVertex::InitFieldVertex()
 	m_tVertex[StartVertex].Use = true;
 
 	NowLine = 0;
+
+	SuperStarCount = 1;
 }
 
 void CFieldVertex::SetSuperStar()
@@ -624,32 +630,39 @@ void CFieldVertex::SetSuperStar()
 	FieldVertex* Vertexp;
 	Vertexp = m_tVertex;
 	int UseCount = 0;//使ったスーパースターを数える
-	if (SuperStarCount == 2)
-	{
-		UseCount = 0;
-	}
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
 		
-		if (Vertexp->SuperStar && Vertexp->SuperStarUse)
-		{
-			UseCount++;//スーパースターを使っていたら使用回数増やす
-		}
+		//if (Vertexp->SuperStar && Vertexp->SuperStarUse)
+		//{
+		//	UseCount++;//スーパースターを使っていたら使用回数増やす
+		//}
 		Vertexp->SuperStar = false;
 		Vertexp->SuperStarUse = false;
 	}
-	if (UseCount == SuperStarCount)SuperStarCount++;//盤面のスーパースターの数と使った数が同じなら増やす
-	else SuperStarCount = 1;
-	if (SuperStarCount > 5)SuperStarCount = 5;//盤面のスーパースターは5を超えない
-	for (int i = 0; i < SuperStarCount;)
+	//if (UseCount == SuperStarCount)SuperStarCount++;//盤面のスーパースターの数と使った数が同じなら増やす
+	//else SuperStarCount = 1;
+	//if (SuperStarCount > 5)SuperStarCount = 5;//盤面のスーパースターは5を超えない
+	if (SuperStarCount < 6)
 	{
-		int Vertex;
-		Vertex = rand() % 25;
-		if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex)//すでにスーパースターか今いる頂点ならもう一度抽選
+		if (SuperStarCount == 3)
 		{
-			m_tVertex[Vertex].SuperStar = true;
-			i++;
+			SuperStarCount = 3;
 		}
+		for (int i = 0; i < 1/*SuperStarCount*/;)
+		{
+			int Vertex;
+			Vertex = rand() % 25;
+			if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
+			{
+				m_tVertex[Vertex].SuperStar = true;
+				i++;
+			}
+		}
+	}
+	else
+	{
+		SuperStarCount = SuperStarCount;
 	}
 }
 
@@ -941,9 +954,17 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 					for (int m = 0; Comparison2[m] != -1; m++)
 					{
-						m_tVertex[Comparison2[m]].SuperStarUse = true;//保存した各頂点のスーパースターを使用に変える
+						//保存した各頂点のスーパースターを使用に変える
 						//のちの処理でスーパースターがtrueでないならSuperStarUseがなんであろうとはじかれる
+						if (m_tVertex[Comparison2[m]].SuperStar)
+						{
+							m_tVertex[Comparison2[m]].SuperStarUse = true;
+							SuperStarCount++;
+							SetSuperStar();
+						}
 					}
+					
+					
 				}
 				NowShapes++;//保存場所を次の場所にする
 			}
