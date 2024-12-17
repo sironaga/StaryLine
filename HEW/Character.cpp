@@ -192,6 +192,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_bIsHit(false)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
+	, m_MoveFlag(false)
 {
 	//m_pSprite = new Sprite();
 
