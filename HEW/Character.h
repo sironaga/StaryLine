@@ -122,6 +122,7 @@ public:
 	int m_nTargetNumber;			//標的の選別番号
 	bool m_bIsAttack;				//攻撃しているかどうか
 	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
+	bool m_MoveFlag;//移動したか
 protected:
 	Status m_tStatus;				//ステータス状態
 	Collision m_tSearchCollision;	//索敵当たり判定

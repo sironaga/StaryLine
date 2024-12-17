@@ -700,9 +700,61 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 {
 	//移動先の座標保存変数
 	CVector3<float> m_tMovePos;
+	float comparison;
 	//移動したかどうか(していたらfalse)
 	bool bMove = true;
+	//if (Entity == Entity::Ally)
+	//{
+	//	for (int j = 0; j < MAX_ALLY; j++)
+	//	{
+	//		//存在しているか確認
+	//		if (!m_pAlly[j])continue;
+	//		//自分と同じ番号の場合は処理しない
+	//		if (i == j)continue;
+	//		comparison = sqrtf(powf(m_pAlly[i]->GetPos().X - m_pAlly[j]->GetPos().X, 2) + powf(m_pAlly[i]->GetPos().Z - m_pAlly[j]->GetPos().Z, 2));
+	//		if (comparison < 1.0f && m_pAlly[j]->m_MoveFlag == true)
+	//		{
+	//			bMove = false;
+	//			m_pAlly[i]->m_MoveFlag = false;
+	//			m_pAlly[j]->m_MoveFlag = false;
+	//			//j = MAX_ALLY;
+	//			//m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).X);
+	//			//m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).Z);
+	//		}
+	//		else
+	//		{
+	//			m_pAlly[i]->m_MoveFlag = true;
+	//			m_pAlly[j]->m_MoveFlag = true;
+	//		}
 
+	//	}
+	//}
+	//else
+	//{
+	//	for (int j = 0; j < MAX_ENEMY; j++)
+	//	{
+	//		//存在しているか確認
+	//		if (!m_pEnemy[j])continue;
+	//		//自分と同じ番号の場合は処理しない
+	//		if (i == j)continue;
+	//		comparison = sqrtf(powf(m_pEnemy[i]->GetPos().X - m_pEnemy[j]->GetPos().X, 2) + powf(m_pEnemy[i]->GetPos().Z - m_pEnemy[j]->GetPos().Z, 2));
+	//		if (comparison < 1.0f && m_pEnemy[j]->m_MoveFlag == true)
+	//		{
+	//			bMove = false;
+	//			m_pEnemy[i]->m_MoveFlag = false;
+	//			m_pEnemy[j]->m_MoveFlag = true;
+	//			//j = MAX_ENEMY;
+	//			//m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).X);
+	//			//m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).Z);
+	//		}
+	//		else
+	//		{
+	//			m_pEnemy[i]->m_MoveFlag = true;
+	//			m_pEnemy[j]->m_MoveFlag = false;
+	//		}
+
+	//	}
+	//}
 	//Z軸順に確認
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
