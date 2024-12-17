@@ -180,7 +180,7 @@ void Draw()
 	default:
 		break;
 	}
-	//LibEffekseer::Draw();
+	LibEffekseer::Draw();
 	EndDrawDirectX();
 }
 

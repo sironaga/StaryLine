@@ -55,10 +55,12 @@ CPlayer::CPlayer()
 	if (FAILED(hr))MessageBox(NULL, "エラー:Timer.jpg", "Player.cpp", MB_OK);
 
 	// エフェクト読み込み
-	m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
+	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 
 	g_PlayerSound = new CSoundList(SE_WALK);
 	g_WalkSe = g_PlayerSound->GetSound(true);
+
+	m_pEffect = new CEffectManager(TEX_PASS("Effect/Fire.efk"));
 }
 
 CPlayer::~CPlayer()
@@ -105,10 +107,12 @@ void CPlayer::Update()
 		g_WalkSe->SubmitSourceBuffer(&buffer);
 	}
 
+	m_pEffect->Update();
+
 	// エフェクトのテスト
 	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 	{
-		LibEffekseer::GetManager()->Play(m_Effect, m_tBrushPos.x, m_tBrushPos.y, m_tBrushPos.z);
+		m_pEffect->Play(m_tBrushPos,120);
 	}
 }
 
@@ -130,8 +134,7 @@ void CPlayer::Draw()
 
 	/* エフェクトの描画 */
 	SetRender3D();											// 3D表現のセット
-	LibEffekseer::SetViewPosition(GetCameraPos());			// カメラ座標のセット
-	LibEffekseer::SetCameraMatrix(GetView(false), GetProj(false));	// view座標,projection座標のセット 
+	m_pEffect->Draw();
 }
 
 void CPlayer::UpdateStop()

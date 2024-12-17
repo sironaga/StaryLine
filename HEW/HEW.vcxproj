@@ -28,6 +28,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DebugRoom.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldVertex.cpp" />
     <ClCompile Include="File.cpp" />
@@ -73,6 +74,7 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldVertex.h" />
     <ClInclude Include="File.h" />

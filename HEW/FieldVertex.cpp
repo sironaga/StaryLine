@@ -29,7 +29,7 @@ CFieldVertex::CFieldVertex()
 	, BreakVertex(-1)
 	, m_pVtx_FieldLine{nullptr}
 	, m_pSprite_Line{nullptr}
-	, SuperStarCount(1)
+	, SuperStarCount(0)
 	, m_pTex_SuperStar_Number{nullptr}
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pStar_Model{nullptr}
@@ -59,7 +59,7 @@ CFieldVertex::CFieldVertex()
 	}
 	// テクスチャ
 	m_pTex_FieldLine = new Texture();
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		m_pTex_SuperStar_Number[i] = new Texture();
 	}
@@ -86,8 +86,8 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 5; i++, Vertexp++)
 		{
-			Vertexp->Pos.x = i * VERTEX_SIZE_X + VERTEX_POS_X;
-			Vertexp->Pos.y = -j * VERTEX_SIZE_Y + VERTEX_POS_Y;
+			Vertexp->Pos.x = i * VERTEX_SPACE_X + VERTEX_POS_X;
+			Vertexp->Pos.y = -j * VERTEX_SPACE_Y + VERTEX_POS_Y;
 			Vertexp->Pos.z = 0;
 			Vertexp->Number = j * 5 + i;
 			Vertexp->Use = false;
@@ -106,8 +106,8 @@ CFieldVertex::CFieldVertex()
 	{
 		for (int i = 0; i < 4; i++, CenterVertexp++)
 		{
-			CenterVertexp->Pos.x = i * VERTEX_SIZE_X + VERTEX_POS_X + VERTEX_SIZE_X / 2.0f;
-			CenterVertexp->Pos.y = -j * VERTEX_SIZE_Y + VERTEX_POS_Y - VERTEX_SIZE_Y / 2.0f;
+			CenterVertexp->Pos.x = i * VERTEX_SPACE_X + VERTEX_POS_X + VERTEX_SPACE_X / 2.0f;
+			CenterVertexp->Pos.y = -j * VERTEX_SPACE_Y + VERTEX_POS_Y - VERTEX_SPACE_Y / 2.0f;
 			CenterVertexp->Pos.z = 0;
 			CenterVertexp->Use = false;
 		}
@@ -141,15 +141,16 @@ CFieldVertex::CFieldVertex()
 
 	//スーパースター初期化
 	HRESULT hrSuperStar;
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		switch (i)
 		{
-		case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create("Asset/Numbers/number_1.png"); break;
-		case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create("Asset/Numbers/number_2.png"); break;
-		case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create("Asset/Numbers/number_3.png"); break;
-		case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create("Asset/Numbers/number_4.png"); break;
-		case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create("Asset/Numbers/number_5.png"); break;
+		case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create("Asset/Numbers/number_0.png"); break;
+		case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create("Asset/Numbers/number_1.png"); break;
+		case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create("Asset/Numbers/number_2.png"); break;
+		case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create("Asset/Numbers/number_3.png"); break;
+		case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create("Asset/Numbers/number_4.png"); break;
+		case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create("Asset/Numbers/number_5.png"); break;
 		default:
 			break;
 		}
@@ -356,6 +357,30 @@ void CFieldVertex::Draw()
 			0.0f
 		}
 		);
+		if (i == NowLine && !m_pPlayer->GetCanMove())
+		{
+			m_pSprite_Line[i]->SetCenterPosAndRotation(
+				{
+					vtx_FieldLine[i - 1][1].pos[0],
+					vtx_FieldLine[i - 1][1].pos[1],
+					0.0f
+				},
+				{
+					vtx_FieldLine[i - 1][3].pos[0],
+					vtx_FieldLine[i - 1][3].pos[1],
+					0.0f
+				},
+				{ 
+					vtx_FieldLine[i - 1][0].pos[0],
+					vtx_FieldLine[i - 1][0].pos[1],
+					0.0f
+				},
+				{
+					vtx_FieldLine[i - 1][2].pos[0],
+					vtx_FieldLine[i - 1][2].pos[1],
+					0.0f
+		});
+		}
 		//背景色の設定
 		m_pSprite_Line[i]->SetColor({1.0f,1.0f,1.0f,1.0f});
 		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
@@ -398,7 +423,7 @@ void CFieldVertex::Draw()
 	m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });
 
 	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-	m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount - 1]);
+	m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);
 	
 	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 	m_pSprite_SuperStar_Number->Draw();
@@ -621,7 +646,7 @@ void CFieldVertex::InitFieldVertex()
 
 	NowLine = 0;
 
-	SuperStarCount = 1;
+	SuperStarCount = 0;
 }
 
 void CFieldVertex::SetSuperStar()
@@ -643,12 +668,9 @@ void CFieldVertex::SetSuperStar()
 	//if (UseCount == SuperStarCount)SuperStarCount++;//盤面のスーパースターの数と使った数が同じなら増やす
 	//else SuperStarCount = 1;
 	//if (SuperStarCount > 5)SuperStarCount = 5;//盤面のスーパースターは5を超えない
-	if (SuperStarCount < 6)
+	if (SuperStarCount < 5)
 	{
-		if (SuperStarCount == 3)
-		{
-			SuperStarCount = 3;
-		}
+
 		for (int i = 0; i < 1/*SuperStarCount*/;)
 		{
 			int Vertex;

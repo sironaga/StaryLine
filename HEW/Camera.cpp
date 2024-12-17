@@ -3,7 +3,7 @@
 
 Camera::Camera()
 	: m_pos(0.0f, 10.0f, 0.0f)
-	, m_look(-3.0f, 44.0f, -11.0f)
+	, m_look(0.0f, 45.0f, -15.0f)
 	, m_up(0.0f, 1.0f, 0.0f)
 	, m_fovy(DirectX::XMConvertToRadians(60.0f))
 	, m_aspect(16.0f / 9.0f)
