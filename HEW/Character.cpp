@@ -45,9 +45,11 @@ Model* g_pEnemyModel[MAX_EnemyTex];
 Texture* g_pPlayerTex[CLeader::MAX_StatusMode];
 Texture* g_pBosTex;
 
+Model* g_pBosCar;
+
 //Texture* g_pCollisionTex;
 
-Texture* g_pHpGageTex[2][2];
+Texture* g_pHpGageTex[2][3];
 
 //Sprite* g_pSprite;
 
@@ -78,10 +80,14 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	g_pBosTex = new Texture();
 
+	g_pBosCar = new Model();
+
 	g_pHpGageTex[0][0] = new Texture();
 	g_pHpGageTex[0][1] = new Texture();
+	g_pHpGageTex[0][2] = new Texture();
 	g_pHpGageTex[1][0] = new Texture();
 	g_pHpGageTex[1][1] = new Texture();
+	g_pHpGageTex[1][2] = new Texture();
 
 	HRESULT hr;
 	//hr = g_pAllyTex[Ally3]->Create("Asset/味方/SankakuSD.png");
@@ -107,6 +113,7 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 	{
 	case 0:
 		g_pBosTex->Create("Asset/敵/BossNo1.png");
+		g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
 		break;
 	case 1:
 		break;
@@ -114,10 +121,13 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 		break;
 	}
 
-	g_pHpGageTex[0][0]->Create("Asset/HpGage/UI_HP_Linie.png");
-	g_pHpGageTex[0][1]->Create("Asset/HpGage/UI_HP_Gage_Linie.png");
-	g_pHpGageTex[1][0]->Create("Asset/HpGage/UI_HP_Nugar.png");
-	g_pHpGageTex[1][1]->Create("Asset/HpGage/UI_HP_Gage_Nugar.png");
+	g_pHpGageTex[0][0]->Create("Asset/HpGage/UI_HP_Gage_Linie.png");
+	g_pHpGageTex[0][1]->Create("Asset/HpGage/UI_HP_top_Linie.png");
+	g_pHpGageTex[0][2]->Create("Asset/HpGage/UI_HP_under_Linie.png");
+
+	g_pHpGageTex[1][0]->Create("Asset/HpGage/UI_HP_Gage_Nugar.png");
+	g_pHpGageTex[1][1]->Create("Asset/HpGage/UI_HP_top_Nugar.png");
+	g_pHpGageTex[1][2]->Create("Asset/HpGage/UI_HP_under_Nugar.png");
 
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	
@@ -1243,19 +1253,63 @@ void CLeader::Draw()
 	{
 	case 0://プレイヤー
 		m_pSprite[m_nTextureNumber]->SetTexture(g_pPlayerTex[m_nStatusMode]);
+		DrawSetting({ m_tPos.X, m_tPos.Y , m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite[m_nTextureNumber]);
 		break;
 	case 1://ボス
+		if (g_pBosCar)
+		{
+			SetRender3D();
+			DirectX::XMFLOAT4X4 wvp[3];
+			DirectX::XMMATRIX world;
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X - 2.0f, m_tPos.Y, m_tPos.Z, 0.0f));
+			//拡大縮小行列(Scaling)
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
+			//回転行列(Rotation)
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			//それぞれの行列を掛け合わせて格納
+			DirectX::XMMATRIX mat = S * R * T;
+
+			world = mat;
+
+			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+			wvp[1] = GetView();
+			wvp[2] = GetProj();
+
+			Geometory::SetView(wvp[1]);
+			Geometory::SetProjection(wvp[2]);
+
+			ShaderList::SetWVP(wvp);
+
+			g_pBosCar->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			g_pBosCar->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+			for (int i = 0; i < g_pBosCar->GetMeshNum(); ++i)
+			{
+
+				Model::Mesh mesh = *g_pBosCar->GetMesh(i);
+
+				Model::Material material = *g_pBosCar->GetMaterial(mesh.materialID);
+				material.ambient.x = 0.85f; // x (r) 
+				material.ambient.y = 0.85f; // y (g) 
+				material.ambient.z = 0.85f; // z (b) 
+				ShaderList::SetMaterial(material);
+
+				if (g_pBosCar) {
+					g_pBosCar->Draw(i);
+				}
+			}
+		}
 		m_pSprite[m_nTextureNumber]->SetTexture(g_pBosTex);
+		DrawSetting({ m_tPos.X, m_tPos.Y + 30.0f, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite[m_nTextureNumber]);
 		break;
 	}
 
 	m_pSprite[m_nTextureNumber]->SettingUVAnimation(m_pSprite[m_nTextureNumber], m_nAnimationX, m_nAnimationY, m_nAnimationFrame, false);
 
-	DrawSetting({ m_tPos.X, m_tPos.Y, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite[m_nTextureNumber]);
-
 	m_pSprite[m_nTextureNumber]->Draw();
 	
 	m_pSprite[m_nTextureNumber]->ReSetSprite();
+
 }
 
 void CLeader::Damage(CFighter* pFighter)
@@ -1288,37 +1342,31 @@ void CLeader::DeathUpdate(void)
 	SetStatus(St_Delete);
 }
 
-void HPGageUIUpdate(void)
-{
-
-}
-
-void HPGageUIDraw(void)
-{
-
-}
-
 CHpUI::CHpUI(float FullHp, HpUINumber Number)
 	:m_fFullHp(FullHp)
 	,m_tUIPos()
 	,m_tUIScale()
-	, m_tNumber(Number)
+	,m_tNumber(Number)
 {
 	m_pSprite = new Sprite();
 
 	switch (m_tNumber)
 	{
 	case CHpUI::Ally:
+		m_tUIScale.y = 0.8f;
+		m_tUIScale.z = 0.5f;
+		m_fAnchorPoint = 2.5f;
+		break;
 	case CHpUI::Enemy:
-		m_tUIScale.y = 5.0f;
-		m_tUIScale.z = 1.0f;
-		m_fAnchorPoint = 5.0f;
+		m_tUIScale.y = 0.8f;
+		m_tUIScale.z = 0.5f;
+		m_fAnchorPoint = 4.0f;
 		break;
 	case CHpUI::Bos:
 	case CHpUI::Player:
-		m_tUIScale.y = 15.0f;
+		m_tUIScale.y = 3.0f;
 		m_tUIScale.z = 1.0f;
-		m_fAnchorPoint = 15.0f;
+		m_fAnchorPoint = 5.0f;
 		break;
 	}
 }
@@ -1334,18 +1382,28 @@ void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 	switch (m_tNumber)
 	{
 	case CHpUI::Ally:
+		m_tUIPos.x = InPos.x;
+		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
+		m_tUIPos.z = InPos.z;
+		HpRatio = (InHp / m_fFullHp) * 4.0f;
+		break;
 	case CHpUI::Enemy:
 		m_tUIPos.x = InPos.x;
-		m_tUIPos.y = InPos.y + InSizeY + 3.0f;
+		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 10.0f;
+		HpRatio = (InHp / m_fFullHp) * 4.0f;
 		break;
 	case CHpUI::Bos:
+		m_tUIPos.x = InPos.x;
+		m_tUIPos.y = InPos.y + InSizeY + 21.0f;
+		m_tUIPos.z = InPos.z;
+		HpRatio = (InHp / m_fFullHp) * 50.0f;
+		break;
 	case CHpUI::Player:
 		m_tUIPos.x = InPos.x;
-		m_tUIPos.y = InPos.y + InSizeY + 1.0f;
+		m_tUIPos.y = InPos.y + InSizeY + 0.0f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 30.0f;
+		HpRatio = (InHp / m_fFullHp) * 50.0f;
 		break;
 	}
 
@@ -1360,31 +1418,31 @@ void CHpUI::Draw(void)
 	{
 	case CHpUI::Ally:
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[0][1]);
-
-		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
-
-		m_pSprite->Draw();
-
-		m_pSprite->ReSetSprite();
-
-		//ベースの描画
 		m_pSprite->SetTexture(g_pHpGageTex[0][0]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 10.0f,5.0f,5.0f }, m_pSprite);
+		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
 		m_pSprite->ReSetSprite();
+
+		////ベースの描画
+		//m_pSprite->SetTexture(g_pHpGageTex[0][0]);
+
+		//m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+		//DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 10.0f,5.0f,5.0f }, m_pSprite);
+
+		//m_pSprite->Draw();
+
+		//m_pSprite->ReSetSprite();
 
 		break;
 	case CHpUI::Enemy:
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[1][1]);
+		m_pSprite->SetTexture(g_pHpGageTex[1][0]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
@@ -1394,36 +1452,48 @@ void CHpUI::Draw(void)
 
 		m_pSprite->ReSetSprite();
 
-		//ベースの描画
-		m_pSprite->SetTexture(g_pHpGageTex[1][0]);
+		////ベースの描画
+		//m_pSprite->SetTexture(g_pHpGageTex[1][0]);
 
-		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		//m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 10.0f,5.0f,5.0f }, m_pSprite);
+		//DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 10.0f,5.0f,5.0f }, m_pSprite);
 
-		m_pSprite->Draw();
+		//m_pSprite->Draw();
 
-		m_pSprite->ReSetSprite();
+		//m_pSprite->ReSetSprite();
 
 		break;
 	case CHpUI::Bos:
-		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[1][1]);
+
+		//ベース(Under)の下描画
+		m_pSprite->SetTexture(g_pHpGageTex[1][2]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x - 20.0f,m_tUIPos.y,m_tUIPos.z }, { 60.0f,15.0f,5.0f }, m_pSprite);
 
 		m_pSprite->Draw();
 
 		m_pSprite->ReSetSprite();
 
-		//ベースの描画
+		//ゲージの描画
 		m_pSprite->SetTexture(g_pHpGageTex[1][0]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 30.0f,15.0f,5.0f }, m_pSprite);
+		DrawSetting({ m_tUIPos.x + (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+
+		m_pSprite->Draw();
+
+		m_pSprite->ReSetSprite();
+
+		//ベース(Top)の描画
+		m_pSprite->SetTexture(g_pHpGageTex[1][1]);
+
+		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+		DrawSetting({ m_tUIPos.x - 20.0f,m_tUIPos.y,m_tUIPos.z }, { 60.0f,15.0f,5.0f }, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1432,8 +1502,19 @@ void CHpUI::Draw(void)
 		break;
 
 	case CHpUI::Player:
+		//ベース(Under)の描画
+		m_pSprite->SetTexture(g_pHpGageTex[0][2]);
+
+		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+		DrawSetting({ m_tUIPos.x + 20.0f,m_tUIPos.y,m_tUIPos.z }, { 60.0f,15.0f,5.0f }, m_pSprite);
+
+		m_pSprite->Draw();
+
+		m_pSprite->ReSetSprite();
+
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[0][1]);
+		m_pSprite->SetTexture(g_pHpGageTex[0][0]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
@@ -1443,12 +1524,12 @@ void CHpUI::Draw(void)
 
 		m_pSprite->ReSetSprite();
 
-		//ベースの描画
-		m_pSprite->SetTexture(g_pHpGageTex[0][0]);
+		//ベース(Top)の描画
+		m_pSprite->SetTexture(g_pHpGageTex[0][1]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 30.0f,15.0f,5.0f }, m_pSprite);
+		DrawSetting({ m_tUIPos.x + 20.0f,m_tUIPos.y,m_tUIPos.z }, { 60.0f,15.0f,5.0f }, m_pSprite);
 
 		m_pSprite->Draw();
 

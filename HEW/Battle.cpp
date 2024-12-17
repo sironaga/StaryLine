@@ -591,7 +591,6 @@ void CBattle::Move(int i, Entity Entity)
 		//キャラクター同士が重なっていた場合の移動処理をしているかどうか
 		if (OverlapMove(i, Ally))
 		{
-
 			//標的番号を設定済みだった場合
 			if (m_pAlly[i]->m_nTargetNumber != -1)
 			{
@@ -609,7 +608,7 @@ void CBattle::Move(int i, Entity Entity)
 					if (m_pEnemyLeader)
 					{
 						//自分の位置が敵の一定のラインまで来たら
-						if (m_pAlly[i]->GetPos().X < MOVEBATTLE_LINE)
+						if (m_pAlly[i]->GetPos().X > ENEMYBOSSCORE_POSX - 10)
 						{
 							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 							m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).X);
@@ -630,14 +629,23 @@ void CBattle::Move(int i, Entity Entity)
 				//相手のリーダーが生成されているか
 				if (m_pEnemyLeader)
 				{
-					//標的がいないのでボスに向かってMOVESPEEDの大きさで進む
-					m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).X);
-					m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).Z);
+					//自分の位置が敵の一定のラインまで来たら
+					if (m_pAlly[i]->GetPos().X > ENEMYBOSSCORE_POSX - 10)
+					{
+						//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
+						m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).X);
+						m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_pEnemyLeader->GetPos()).Z);
+					}
+					//そこより手前だったら
+					else
+					{
+						//X軸を移動させる
+						m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+					}
 				}
 			}
 		}
 		break;
-
 		/*敵の判定*/
 	case CBattle::Enemy:
 		//現在位置を保存
@@ -662,7 +670,7 @@ void CBattle::Move(int i, Entity Entity)
 					if (m_pAllyLeader)
 					{
 						//自分の位置が敵の一定のラインまで来たら
-						if (m_pEnemy[i]->GetPos().X > MOVEBATTLE_LINE)
+						if (m_pEnemy[i]->GetPos().X < ALLYCORE_POSX + 10)
 						{
 							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 							m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).X);
@@ -672,9 +680,8 @@ void CBattle::Move(int i, Entity Entity)
 						else
 						{
 							//X軸を移動させる
-							m_pEnemy[i]->AddPosX(MOVESPEED(MOVEPOWER));
+							m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
 						}
-
 					}
 				}
 			}
@@ -684,12 +691,21 @@ void CBattle::Move(int i, Entity Entity)
 				//相手のリーダーが生成されているか
 				if (m_pAllyLeader)
 				{
-					//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-					m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).X);
-					m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).Z);
+					//自分の位置が敵の一定のラインまで来たら
+					if (m_pEnemy[i]->GetPos().X < ALLYCORE_POSX + 10)
+					{
+						//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
+						m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).X);
+						m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_pAllyLeader->GetPos()).Z);
+					}
+					//そこより手前だったら
+					else
+					{
+						//X軸を移動させる
+						m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
+					}
 				}
 			}
-
 		}
 		break;
 	}
@@ -1286,7 +1302,7 @@ void CBattle::CreateAllyLogDraw(void)
 
 	CreateAllyLog();
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		int nDigits = 0;	//桁数
 		int nNumbers[3];
@@ -1319,18 +1335,18 @@ void CBattle::CreateAllyLogDraw(void)
 		case 1:
 				fPosY = -500;
 			break;
-		case 2:
-				fPosY = -200;
-			break;
-		case 3:
-				fPosY = 200;
-			break;
-		case 4:
-				fPosY = 500;
-			break;
-		case 5:
-				fPosY = 800;
-			break;
+		//case 2:
+		//		fPosY = -200;
+		//	break;
+		//case 3:
+		//		fPosY = 200;
+		//	break;
+		//case 4:
+		//		fPosY = 500;
+		//	break;
+		//case 5:
+		//		fPosY = 800;
+		//	break;
 		}
 
 		for (int l = 0; l < nDigits; l++)
@@ -1404,7 +1420,6 @@ void CBattle::CreateEnemyLogDraw(void)
 
 		for (int l = 0; l < nDigits; l++)
 		{
-
 			//スプライトの座標の設定
 			SetSpritePos(fPosX[l], fPosY);
 
@@ -1477,10 +1492,10 @@ void CBattle::SaveAllyLog(void)
 {
 	m_nAllyTypes[0] = 0;
 	m_nAllyTypes[1] = 0;
-	m_nAllyTypes[2] = 0;
-	m_nAllyTypes[3] = 0;
-	m_nAllyTypes[4] = 0;
-	m_nAllyTypes[5] = 0;
+	//m_nAllyTypes[2] = 0;
+	//m_nAllyTypes[3] = 0;
+	//m_nAllyTypes[4] = 0;
+	//m_nAllyTypes[5] = 0;
 	for (int i = 0; i < m_nAllyDateCount; i++)
 	{
 		switch (m_tAllyData[i].nCornerCount)
@@ -1491,18 +1506,18 @@ void CBattle::SaveAllyLog(void)
 		case 4:
 			m_nAllyTypes[1]++;
 			break;
-		case 5:
-			m_nAllyTypes[2]++;
-			break;
-		case 6:
-			m_nAllyTypes[3]++;
-			break;
-		case 7:
-			m_nAllyTypes[4]++;
-			break;
-		case 8:
-			m_nAllyTypes[5]++;
-			break;
+		//case 5:
+		//	m_nAllyTypes[2]++;
+		//	break;
+		//case 6:
+		//	m_nAllyTypes[3]++;
+		//	break;
+		//case 7:
+		//	m_nAllyTypes[4]++;
+		//	break;
+		//case 8:
+		//	m_nAllyTypes[5]++;
+		//	break;
 		}
 	}
 }
@@ -1514,7 +1529,7 @@ void CBattle::SaveAllyLogDraw(void)
 
 	SaveAllyLog();
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		int nDigits = 0;	//桁数
 		int nNumbers[3];
@@ -1547,22 +1562,23 @@ void CBattle::SaveAllyLogDraw(void)
 		case 1:
 			fPosY = -700;
 			break;
-		case 2:
-			fPosY = -500;
-			break;
-		case 3:
-			fPosY = -300;
-			break;
-		case 4:
-			fPosY = -100;
-			break;
-		case 5:
-			fPosY = 100;
-			break;
+		//case 2:
+		//	fPosY = -500;
+		//	break;
+		//case 3:
+		//	fPosY = -300;
+		//	break;
+		//case 4:
+		//	fPosY = -100;
+		//	break;
+		//case 5:
+		//	fPosY = 100;
+		//	break;
 		}
 
 		for (int l = 0; l < nDigits; l++)
 		{
+			SetRender2D();
 
 			//スプライトの座標の設定
 			SetSpritePos(fPosX[l], fPosY);
