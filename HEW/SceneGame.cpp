@@ -110,10 +110,10 @@ void UpdateSceneGame()
 	}
 
 	//毎描画開始時スーパースターをセット
-	if ((float)SHAPE_DRAW_START *60.0f + g_tTime.GameSTimeSycleEnd == g_tTime.GameTime)
+	/*if ((float)SHAPE_DRAW_START *60.0f + g_tTime.GameSTimeSycleEnd == g_tTime.GameTime)
 	{
 		g_pFieldVertex->SetSuperStar();
-	}
+	}*/
 
 	g_pPlayer->Update();
 	// 図形を作る時間
