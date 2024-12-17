@@ -127,6 +127,7 @@ protected:
 	Collision m_tSearchCollision;	//索敵当たり判定
 	Collision m_tAtkCollision;		//攻撃当たり判定
 	CVector3<float> m_tPos;			//位置座標
+	CVector3<float> m_tOldPos;		//移動前位置座標
 	CVector3<float> m_tSize;		//サイズ
 	int nCornerCount;				//属性
 	float m_fHp;					//体力
@@ -164,6 +165,9 @@ public:
 	//攻撃当たり判定のGet
 	Collision GetAtkCollision(void) { return m_tAtkCollision; }
 
+	//移動する前に位置を保存
+	void SetOldPos(CVector3<float> InPos) { m_tOldPos = InPos; }
+	CVector3<float> GetOldPos(void) { return m_tOldPos; }
 	//X座標の加算
 	void AddPosX(float fAdd) { m_tPos.X += fAdd; }
 	//Y座標の加算
