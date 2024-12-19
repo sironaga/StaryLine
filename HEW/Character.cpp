@@ -33,6 +33,12 @@ enum EnemyTexture
 	MAX_EnemyTex,
 };
 
+enum class CharactersEffect
+{
+	FighterAttack,
+	MAX,
+};
+
 void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 
 //Texture* g_pAllyTex[MAX_AllyTex];
@@ -57,10 +63,10 @@ CFieldVertex* g_pFieldVtx;
 
 CSoundList* g_AttackSound;
 
+CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
+
 void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み込み
 {
-
-	
 	g_pFieldVtx = InAddress;
 
 	for (int i = 0; i < MAX_AllyTex; i++)
@@ -131,7 +137,7 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//テクスチャ読み
 
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	
-	
+	g_pCharacterEffects[(int)CharactersEffect::FighterAttack] = new CEffectManager(TEX_PASS("Effect/Fire.efk"));
 }
 void UnIninCharacterTexture()
 {
@@ -156,7 +162,11 @@ void UnIninCharacterTexture()
 			g_pEnemyModel[i] = nullptr;
 		}
 	}
-
+	for (int i= 0; i < (int)CharactersEffect::MAX; i++)
+	{
+		delete g_pCharacterEffects[i];
+		g_pCharacterEffects[i] = nullptr;
+	}
 	//if (g_pCollisionTex)
 	//{
 	//	delete g_pCollisionTex;
@@ -203,6 +213,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
 	, m_MoveFlag(false)
+	, m_pEffect{}
 {
 	//m_pSprite = new Sprite();
 
@@ -238,12 +249,13 @@ CFighter::~CFighter()
 	m_pHpGage = nullptr;
 
 	
-
-	//if (m_pEffect)
-	//{
-	//	delete m_pEffect;
-	//	m_pEffect = nullptr;
-	//}
+	for (int i = 0; i < (int)CharactersEffect::MAX; i++)
+	{
+		if (m_pEffect[i])
+		{
+			m_pEffect[i] = nullptr;
+		}
+	}
 	if (g_pFieldVtx)
 	{
 		g_pFieldVtx = nullptr;
@@ -520,6 +532,7 @@ CAlly::CAlly(int InCornerCount)
 		m_pModel = g_pAllyModel[Ally4];
 		break;
 	}
+	m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::FighterAttack];
 }
 
 CAlly::~CAlly()
@@ -541,7 +554,11 @@ void CAlly::Update(void)
 		break;
 	}
 
-	//m_pEffect->Update();
+	for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	{
+		if(m_pEffect[i])
+		m_pEffect[i]->Update();
+	}
 }
 
 void CAlly::Draw(void)
@@ -608,8 +625,11 @@ void CAlly::Draw(void)
 	//
 	////m_pEffect->SetEffectTexture();
 	////m_pEffect->SetEffect3D({ m_tPos.X,m_tPos.Y,m_tPos.Z });
-	////m_pEffect->Draw();
-
+	for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	{
+		if (m_pEffect[i])
+		m_pEffect[i]->Draw();
+	}
 	//m_pSprite->ReSetSprite();
 }
 
@@ -631,6 +651,8 @@ void CAlly::BattleUpdate(void)
  {
 	if (m_bIsAttack)
 	{
+		//攻撃エフェクト
+		m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.X, m_tPos.Y, m_tPos.Z - m_tSize.Z/2}, 60);
 		//攻撃音
 		if (!m_bTimeSoundStart)
 		{
