@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "SoundList.h"
 #include "Model.h"
+#include "EffectManager.h"
 
 //Character.h
 //編集者：AT12C05宇留野陸斗
@@ -65,12 +66,12 @@ private:
 class CFighter
 {
 	/*＝＝＝＝＝＝＝＝＝＝列挙型＝＝＝＝＝＝＝＝＝＝*/
-//public:
-//	enum AtkType
-//	{
-//		AT_Physics,
-//		AT_Magic,
-//	};
+public:
+	enum class FighterEffect
+	{
+		Attack,
+		MAX,
+	};
 protected:
 	//角数
 	enum Corner
@@ -143,16 +144,15 @@ protected:
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
 	CHpUI* m_pHpGage;	//体力ゲージ
+	CEffectManager* m_pEffect[(int)FighterEffect::MAX]; //エフェクト関係
 
 protected:
 	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;
 
-	//Sprite* m_pSprite;
 	Model* m_pModel;
 	int m_Number;
-	//CEffect* m_pEffect;
 
 	/*変数のSet&Get*/
 public:
