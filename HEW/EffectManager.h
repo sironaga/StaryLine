@@ -17,5 +17,5 @@ private:
 	Effekseer::EffectRef m_Effect;
 	int m_nLimit;
 	std::vector<int> m_nPlayTime;
-	std::vector<Effekseer::Handle> m_Handle;
+	Effekseer::Handle m_Handle;
 };
