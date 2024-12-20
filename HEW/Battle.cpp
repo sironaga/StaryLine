@@ -516,7 +516,7 @@ void CBattle::Search(int i, Entity Entity)
 			if (m_pEnemy[l]->GetStatus() == St_Battle)
 			{
 				//索敵当たり判定内に敵がいるかどうか
-				if (m_pAlly[i]->SearchCollisionCheck(m_pEnemy[l]->GetPos(), m_pEnemy[l]->GetSize()))
+				if (m_pAlly[i]->SearchCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
 				{
 					//標的番号がすでに保存済みかどうか
 					if (m_pAlly[i]->m_nTargetNumber != -1)
@@ -551,7 +551,7 @@ void CBattle::Search(int i, Entity Entity)
 			if (m_pAlly[l]->GetStatus() == St_Battle)
 			{
 				//索敵当たり判定内に味方がいるかどうか
-				if (m_pEnemy[i]->SearchCollisionCheck(m_pAlly[l]->GetPos(), m_pAlly[l]->GetSize()))
+				if (m_pEnemy[i]->SearchCollisionCheck(m_pAlly[l]->GetSize(),m_pAlly[l]->GetPos()))
 				{
 					//標的番号がすでに保存済みかどうか
 					if (m_pEnemy[i]->m_nTargetNumber != -1)
@@ -779,7 +779,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 		{
 			/*味方の処理*/
 		case CBattle::Ally:
-
+			
 			//生成順に判定
 			for (int l = 0; l < m_nAllyCount; l++)
 			{
@@ -790,25 +790,28 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				//Z軸の範囲判定
 				if (m_pAlly[l]->GetPos().Z > Z - 1.0f && m_pAlly[l]->GetPos().Z < Z + 1.0f)
 				{
-					//自分より奥にいる奴は処理しない
-					if (m_pAlly[i]->GetPos().Z <= m_pAlly[l]->GetPos().Z)continue;
+					//中心位置から自分の位置が相手の位置より近いは処理しない
+					float Z1 = m_pAlly[i]->GetPos().Z;
+					float Z2 = m_pAlly[l]->GetPos().Z;
+
+					if (Z1 < 0)Z1 * -1.0f;
+					if (Z2 < 0)Z2 * -1.0f;
+
+					if (Z1 <= Z2)continue;
 
 					//重なっているか確認
 					if (m_pAlly[i]->OverlapCheck(m_pAlly[l]->GetPos(), m_pAlly[l]->GetSize()))
 					{
 
 						/*対象の位置の真反対側を補正移動先に指定*/
-						m_tMovePos = m_pAlly[l]->GetPos();
-						m_tMovePos.X = m_tMovePos.X * -1.0f;
-						m_tMovePos.Y = m_tMovePos.Y * -1.0f;
-						m_tMovePos.Z = m_tMovePos.Z * -1.0f;
+						//m_tMovePos = m_pAlly[l]->GetPos();
 
 						//移動していなかったら
 						if (bMove)
 						{
 							//補正移動先に移動
-							m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).X);
-							m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).Z);
+							m_pAlly[i]->AddPosX(-MoveCalculation(m_pAlly[i]->GetPos(),m_pAlly[l]->GetPos()).X);
+							m_pAlly[i]->AddPosZ(-MoveCalculation(m_pAlly[i]->GetPos(),m_pAlly[l]->GetPos()).Z);
 						}
 						//移動した
 						bMove = false;
@@ -829,25 +832,28 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				//Z軸の範囲判定
 				if (m_pEnemy[l]->GetPos().Z > Z - 1.0f && m_pEnemy[l]->GetPos().Z < Z + 1.0f)
 				{
-					//自分より奥にいる奴は処理しない
-					if (m_pEnemy[i]->GetPos().Z <= m_pEnemy[l]->GetPos().Z)continue;
+					//中心位置から自分の位置が相手の位置より近いは処理しない
+					float Z1 = m_pEnemy[i]->GetPos().Z;
+					float Z2 = m_pEnemy[l]->GetPos().Z;
+
+					if (Z1 < 0)Z1 * -1.0f;
+					if (Z2 < 0)Z2 * -1.0f;
+
+					if (Z1 <= Z2)continue;
 
 					//重なっているか確認
 					if (m_pEnemy[i]->OverlapCheck(m_pEnemy[l]->GetPos(), m_pEnemy[l]->GetSize()))
 					{
 
 						/*対象の位置の真反対側を補正移動先に指定*/
-						m_tMovePos = m_pEnemy[l]->GetPos();
-						m_tMovePos.X = m_tMovePos.X * -1.0f;
-						m_tMovePos.Y = m_tMovePos.Y * -1.0f;
-						m_tMovePos.Z = m_tMovePos.Z * -1.0f;
+						//m_tMovePos = m_pEnemy[l]->GetPos();
 
 						//移動していなかったら
 						if (bMove)
 						{
 							//補正移動先に移動
-							m_pEnemy[i]->AddPosX(MoveCalculation(m_pEnemy[i]->GetPos(), m_tMovePos).X);
-							m_pEnemy[i]->AddPosZ(MoveCalculation(m_pEnemy[i]->GetPos(), m_tMovePos).Z);
+							m_pEnemy[i]->AddPosX(-MoveCalculation(m_pEnemy[i]->GetPos(), m_pEnemy[l]->GetPos()).X);
+							m_pEnemy[i]->AddPosZ(-MoveCalculation(m_pEnemy[i]->GetPos(), m_pEnemy[l]->GetPos()).Z);
 						}
 						//移動している
 						bMove = false;
@@ -1627,8 +1633,21 @@ MovePower MoveCalculation(CVector3<float> nPos, CVector3<float> nEnemyPos)
 
 	ShortDis = sqrtf(powf(X, 2) + powf(Z, 2));
 
-	Movepower.X = (X / (ShortDis / MOVESPEED(MOVEPOWER))) / 60.0f;
-	Movepower.Z = (Z / (ShortDis / MOVESPEED(MOVEPOWER))) / 60.0f;
+	/*正規化*/
+	float NorX = X / (ShortDis);
+	float NorZ = Z / (ShortDis);
+
+	/*絶対値*/
+	float absX = fabs(NorX);
+	float absZ = fabs(NorZ);
+
+	float absXZ = absX + absZ;
+
+	Movepower.X = (MOVESPEED(MOVEPOWER) * NorX) / absXZ;
+	Movepower.Z = (MOVESPEED(MOVEPOWER) * NorZ) / absXZ;
+
+	//float hehe = Movepower.X + Movepower.Z;
+	//Movepower.Z = MOVESPEED(MOVEPOWER) - Movepower.X;
 
 	return Movepower;
 }
