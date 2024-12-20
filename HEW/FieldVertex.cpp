@@ -34,10 +34,11 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pStar_Model{nullptr}
 	, m_pStarLine(nullptr)
+	, m_pTex_Fever_Star{nullptr}
+	, m_pSprite_Fever_Star{nullptr}
+	, FeverPoint(0.0f)
+	, Partition(30.0f)
 {
-
-
-	
 
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
 	g_FieldSe = g_Fieldsound->GetSound(false);
@@ -45,9 +46,13 @@ CFieldVertex::CFieldVertex()
 	// スプライト
 	m_pSprite_Star = new Sprite();
 	m_pSprite_SuperStar_Number = new Sprite();
+	m_pSprite_Fever_Star[0] = new Sprite();
+	m_pSprite_Fever_Star[1] = new Sprite();
 	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
+	m_pTex_Fever_Star[0] = new Texture();
+	m_pTex_Fever_Star[1] = new Texture();
 
 	m_pStarLine = new StarLine();
 	
@@ -63,6 +68,7 @@ CFieldVertex::CFieldVertex()
 	{
 		m_pTex_SuperStar_Number[i] = new Texture();
 	}
+	
 	
 	m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
@@ -159,6 +165,22 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
+	//スーパースター初期化
+	HRESULT hrFeverStar;
+	for (int i = 0; i < 2; i++)
+	{
+		switch (i)
+		{
+		case 0:hrFeverStar = m_pTex_Fever_Star[0]->Create("Asset/Fever_Star/Gray_Fever_Star.png"); break;
+		case 1:hrFeverStar = m_pTex_Fever_Star[1]->Create("Asset/Fever_Star/Red_Fever_Star.png"); break;
+		default:
+			break;
+		}
+		if (FAILED(hrFeverStar)) {
+			MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
+		}
+	}	
+
 	//Sprite::Vertex vtx_FieldVertex[] = {
 	//	//背景表示の座標
 	//	{{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
@@ -175,7 +197,7 @@ CFieldVertex::CFieldVertex()
 	//	vtx_FieldLine[i][2] = {{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}};
 	//	vtx_FieldLine[i][3] = {{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}};
 	//}
-
+	FeverPoint = 0.0f;
 }
 
 CFieldVertex::~CFieldVertex()
@@ -312,9 +334,9 @@ void CFieldVertex::Draw()
 	SetRender3D();
 	FieldVertex* Vertexp;
 	Vertexp = m_tVertex;
-	
+
 	for (int i = 0; i <= NowLine; i++)
-	{			
+	{
 		//////線の描画
 		//m_pStarLine->SetLineInfo(	{
 		//		vtx_FieldLine[i][1].pos[0],
@@ -337,20 +359,20 @@ void CFieldVertex::Draw()
 		//	});
 		//m_pStarLine->DispLine();
 		m_pSprite_Line[i]->SetCenterPosAndRotation(
-		{
-			vtx_FieldLine[i][1].pos[0],
-			vtx_FieldLine[i][1].pos[1],
-			0.0f
-		},
+			{
+				vtx_FieldLine[i][1].pos[0],
+				vtx_FieldLine[i][1].pos[1],
+				0.0f
+			},
 		{
 			vtx_FieldLine[i][3].pos[0],
 			vtx_FieldLine[i][3].pos[1],
 			0.0f
 		},
-		{ vtx_FieldLine[i][0].pos[0],
-			vtx_FieldLine[i][0].pos[1],
-			0.0f
-		},
+			{ vtx_FieldLine[i][0].pos[0],
+				vtx_FieldLine[i][0].pos[1],
+				0.0f
+			},
 		{
 			vtx_FieldLine[i][2].pos[0],
 			vtx_FieldLine[i][2].pos[1],
@@ -370,7 +392,7 @@ void CFieldVertex::Draw()
 					vtx_FieldLine[i - 1][3].pos[1],
 					0.0f
 				},
-				{ 
+				{
 					vtx_FieldLine[i - 1][0].pos[0],
 					vtx_FieldLine[i - 1][0].pos[1],
 					0.0f
@@ -379,10 +401,10 @@ void CFieldVertex::Draw()
 					vtx_FieldLine[i - 1][2].pos[0],
 					vtx_FieldLine[i - 1][2].pos[1],
 					0.0f
-		});
+				});
 		}
 		//背景色の設定
-		m_pSprite_Line[i]->SetColor({1.0f,1.0f,1.0f,1.0f});
+		m_pSprite_Line[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
 		m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
 		m_pSprite_Line[i]->Draw();
@@ -414,20 +436,53 @@ void CFieldVertex::Draw()
 		////if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 		//m_pSprite_Star->Draw();
 	}
-
+	SetRender2D();
 	//スーパースターの数描画
 	// スプライトの設定		// 座標の設定						// 大きさの設定
-	DrawSetting({ -80.0f, 60.0f,10.0f }, { 100.0f,100.0f,1.0f }, m_pSprite_SuperStar_Number);
+	DrawSetting({ -60.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);
 
 	// 背景色の設定
 	m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });
 
 	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
 	m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);
-	
+
 	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 	m_pSprite_SuperStar_Number->Draw();
 	m_pSprite_SuperStar_Number->ReSetSprite();
+
+	
+	//フィーバースター描画
+	 float Fever_Star_Size = 40.0f;
+	// スプライトの設定		// 座標の設定						// 大きさの設定
+	DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[0]);
+
+	// 背景色の設定
+	m_pSprite_Fever_Star[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+	m_pSprite_Fever_Star[0]->SetTexture(m_pTex_Fever_Star[0]);
+
+	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
+	m_pSprite_Fever_Star[0]->Draw();
+	m_pSprite_Fever_Star[0]->ReSetSprite();
+	
+	// スプライトの設定		// 座標の設定						// 大きさの設定
+	DrawSetting({ -90.0f, 40.0f + (Fever_Star_Size / Partition) * FeverPoint  ,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[1]);
+
+	m_pSprite_Fever_Star[1]->SetUVPos({ 0.0f,1.0f - FeverPoint / Partition });
+	m_pSprite_Fever_Star[1]->SetUVScale({ 1.0f,1.0f});
+	// 背景色の設定
+	m_pSprite_Fever_Star[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+	m_pSprite_Fever_Star[1]->SetTexture(m_pTex_Fever_Star[1]);
+
+	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
+	m_pSprite_Fever_Star[1]->Draw();
+	m_pSprite_Fever_Star[1]->SetUVPos({ 0.0f,0.0f });
+	m_pSprite_Fever_Star[1]->SetUVScale({ 1.0f,1.0f });
+	m_pSprite_Fever_Star[1]->ReSetSprite();
 
 	m_pBattle->SaveAllyLogDraw();
 }
@@ -598,7 +653,6 @@ void CFieldVertex::SetPlayerAddress(CPlayer* InAddress)
 
 void CFieldVertex::InitFieldVertex()
 {
-	
 
 	//頂点２５個初期化
 	FieldVertex* Vertexp;
@@ -896,7 +950,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							{
 								if (fabsf(AngleSave[m] - AngleSave[m - 1]) >= 180.0f)BadShapes = true;
 							}
-
 							break;
 						}
 					}
@@ -983,8 +1036,11 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							m_tVertex[Comparison2[m]].SuperStarUse = true;
 							SuperStarCount++;
 							SetSuperStar();
+							FeverPoint += 1.0f;
 						}
 					}
+					FeverPoint += 1.0f;
+					if (FeverPoint > Partition)FeverPoint = Partition;
 					
 					
 				}
