@@ -81,6 +81,7 @@ private:
 	Texture* m_pTex_FieldVertex;
 	Texture* m_pTex_FieldUseVertex;
 	Texture* m_pTex_SuperStar_Number[6];
+	Texture* m_pTex_Fever_Star[2];
 	float m_offsetU_Field;
 
 	Texture* m_pTex_FieldLine;
@@ -99,15 +100,19 @@ private:
 	Sprite* m_pSprite_Star;//3D描画用スプライトクラスポインター
 	Sprite* m_pSprite_Line[MAX_LINE];//線の描画
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
+	Sprite* m_pSprite_Fever_Star[2];//フィーバースター
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
 
 	CModelEx* m_pStar_Model[3];//Starのモデル
-
+	void GetFeverPoint() { FeverPoint; }
+	
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
 	void DrawStarModel(int color, int Vertex);//色と頂点番号を使って描画
 	Field* m_pField;
 	StarLine* m_pStarLine;
 	int SuperStarCount;//スーパースターの個数
+	float FeverPoint;//ポイントカウント
+	float Partition;//分割数
 };
