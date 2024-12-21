@@ -202,7 +202,7 @@ DirectX::XMFLOAT3 GetCameraPos()
 void ChangeScene(E_SCENE_TYPE next)
 {
 	g_pSourseTitleSE->FlushSourceBuffers();
-	g_pSourseTitleSE->SetVolume(0.3f);
+	if(g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
 	g_pSourseTitleSE->Start();
 	//現在のシーンの終了
 	switch (g_SceneType)

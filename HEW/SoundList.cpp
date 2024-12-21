@@ -16,6 +16,8 @@
 #define FILENAME_TITLEBGM (L"Asset/Sound/title.wav")
 #define FILENAME_BATTLEBGM (L"Asset/Sound/battle.wav")
 
+float g_volumeBGM = 0;
+float g_volumeSE = 0;
 
 CSoundList::CSoundList(NAME inName)
 {
@@ -60,6 +62,8 @@ CSoundList::~CSoundList()
 	m_sound = nullptr;
 }
 
+
+
 IXAudio2SourceVoice* CSoundList::GetSound(bool Loop)
 {
 	IXAudio2SourceVoice* m_Source = m_sound->PlayWaveSound(Loop);
@@ -73,7 +77,25 @@ XAUDIO2_BUFFER CSoundList::GetBuffer(bool inLoop)
 }
 
 
+void SetAllVolumeBGM(float volume)
+{
+	volume = volume / 100.0f;
+	g_volumeBGM = volume;
+}
+void SetAllVolumeSE(float volume)
+{
+	volume = volume / 100.0f;
+	g_volumeSE = volume;
+}
 
+void SetVolumeBGM(IXAudio2SourceVoice* InSouse)
+{
+	InSouse->SetVolume(g_volumeBGM);
+}
+void SetVolumeSE(IXAudio2SourceVoice* InSouse)
+{
+	InSouse->SetVolume(g_volumeSE);
+}
 
 
 
