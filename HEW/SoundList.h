@@ -28,6 +28,9 @@ class CSoundList
 public:
 	CSoundList(NAME inName);
 	~CSoundList();
+
+	
+
 	//再生用のサウンドソースを送る
 	IXAudio2SourceVoice* GetSound(bool Loop);
 	XAUDIO2_BUFFER GetBuffer(bool inLoop);
@@ -35,6 +38,11 @@ public:
 	CSound* m_sound;
 
 };
+
+void SetAllVolumeBGM(float volume);
+void SetAllVolumeSE(float volume);
+void SetVolumeBGM(IXAudio2SourceVoice* InSouse);
+void SetVolumeSE(IXAudio2SourceVoice* InSouse);
 
 
 

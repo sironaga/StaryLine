@@ -4,6 +4,7 @@
 #include "Defines.h"
 #include "Input.h"
 #include "Main.h"
+#include "SoundList.h"
 
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
@@ -105,8 +106,12 @@ void CStartTitle::UpdateStartTitle()
 	f_Rotation += 0.1f;
 	f_Rad = DirectX::XMConvertToRadians(f_Rotation);
 
-	m_pOption->Update();
+	//‰¹—Ê‚ðÝ’è
+	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
+	SetAllVolumeSE(m_pOption->GetSEVoluem());
 
+	m_pOption->Update();
+	
 	switch (g_Title_type)
 	{
 	case(GAMESTART):
@@ -175,6 +180,8 @@ void CStartTitle::UpdateStartTitle()
 
 	default:break;
 	}
+
+	
 }
 
 void CStartTitle::DrawStartTitle()

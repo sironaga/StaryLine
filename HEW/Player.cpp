@@ -228,7 +228,7 @@ void CPlayer::UpdateMove()
 		m_ePlayerState = STOP;			// 止まっている状態に変更する
 	}
 
-	g_WalkSe->SetVolume(0.7f);
+	if(g_WalkSe)SetVolumeSE(g_WalkSe);
 	g_WalkSe->Start();
 }
 

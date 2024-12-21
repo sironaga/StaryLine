@@ -43,7 +43,7 @@ void InitSceneGame(int StageNum)
 {
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	g_pSourseGameBGM = g_GameSound->GetSound(true);
-	g_pSourseGameBGM->SetVolume(0.4f);
+	
 	g_pBackGround = new CBackGround();
 	g_pFieldVertex = new CFieldVertex();
 	g_pPlayer = new CPlayer();
@@ -90,6 +90,7 @@ void UninitSceneGame()
 void UpdateSceneGame()
 {
 	//‰¹‚ÌÄ¶
+	if(g_pSourseGameBGM)SetVolumeBGM(g_pSourseGameBGM);
 	g_pSourseGameBGM->Start();
 	g_pBackGround->Update();
 

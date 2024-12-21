@@ -1024,7 +1024,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					buffer =g_Fieldsound->GetBuffer(false);
 					g_FieldSe->FlushSourceBuffers();
 					g_FieldSe->SubmitSourceBuffer(&buffer);
-					g_FieldSe->SetVolume(0.6f);
+					if(g_FieldSe)SetVolumeSE(g_FieldSe);
 					g_FieldSe->Start();
 
 					for (int m = 0; Comparison2[m] != -1; m++)

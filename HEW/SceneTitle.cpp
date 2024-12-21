@@ -21,7 +21,7 @@ void InitSceneTitle()
 	g_TitleSound = new CSoundList(BGM_TITLE);
 	g_pSourseTitleBGM = g_TitleSound->GetSound(true);
 	
-	g_pSourseTitleBGM->SetVolume(0.4f);
+	
 	g_pSourseTitleBGM->Start();
 	g_pStartTilte = new CStartTitle();
 	g_pTitleBG = new CBackGround();
@@ -64,6 +64,7 @@ void UpdateSceneTitle()
 	
 		ChangeScene(SCENE_DEBUGROOM);
 	}
+	if(g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
 }
 
 //•`‰æˆ—
