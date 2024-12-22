@@ -939,14 +939,14 @@ CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber)
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
-		m_pMpdel = g_pLeaderModel[Leader_Player];
+		m_pModel = g_pLeaderModel[Leader_Player];
 		m_pHpGage = new CHpUI(m_fHp,CHpUI::Player);
 		m_nAnimationFrame = 1;
 		m_nAnimationX = 8;
 		m_nAnimationY = 8;
 		break;
 	case 1://ボス
-		m_pMpdel = g_pLeaderModel[Leader_Boss];
+		m_pModel = g_pLeaderModel[Leader_Boss];
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
 		m_nAnimationFrame = 1;
 		m_nAnimationX = 1;
@@ -988,7 +988,7 @@ void CLeader::Draw()
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
-		if (m_pMpdel)
+		if (m_pModel)
 		{
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
@@ -1012,22 +1012,22 @@ void CLeader::Draw()
 
 			ShaderList::SetWVP(wvp);
 
-			m_pMpdel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-			m_pMpdel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
-			for (int i = 0; i < m_pMpdel->GetMeshNum(); ++i)
+			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 			{
 
-				Model::Mesh mesh = *m_pMpdel->GetMesh(i);
+				Model::Mesh mesh = *m_pModel->GetMesh(i);
 
-				Model::Material material = *m_pMpdel->GetMaterial(mesh.materialID);
+				Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
 				ShaderList::SetMaterial(material);
 
-				if (m_pMpdel) {
-					m_pMpdel->Draw(i);
+				if (m_pModel) {
+					m_pModel->Draw(i);
 				}
 			}
 		}
@@ -1077,7 +1077,7 @@ void CLeader::Draw()
 				}
 			}
 		}
-		if (m_pMpdel)
+		if (m_pModel)
 		{
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
@@ -1101,22 +1101,22 @@ void CLeader::Draw()
 
 			ShaderList::SetWVP(wvp);
 
-			m_pMpdel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-			m_pMpdel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
-			for (int i = 0; i < m_pMpdel->GetMeshNum(); ++i)
+			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 			{
 
-				Model::Mesh mesh = *m_pMpdel->GetMesh(i);
+				Model::Mesh mesh = *m_pModel->GetMesh(i);
 
-				Model::Material material = *m_pMpdel->GetMaterial(mesh.materialID);
+				Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
 				ShaderList::SetMaterial(material);
 
-				if (m_pMpdel) {
-					m_pMpdel->Draw(i);
+				if (m_pModel) {
+					m_pModel->Draw(i);
 				}
 			}
 		}
