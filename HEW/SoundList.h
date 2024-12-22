@@ -22,6 +22,8 @@ enum NAME
 	,BGM_TITLE
 	//バトルBGM
 	,BGM_BATTLE
+	//フィーバー時SE
+	,BGM_FEVER
 };
 class CSoundList
 {
