@@ -1153,6 +1153,24 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 		{
 			m_tVertex[Vertex].Angle[1] = 0.0f;
 		}
+		if (GetFeverMode())
+		{
+			//m_tVertex[Vertex].Angle[0] += (360.0 / 30.0f);
+			m_tVertex[Vertex].Angle[2] += (360.0 / 60.0f);
+			/*if (m_tVertex[Vertex].Angle[0] > 360.0f)
+			{
+				m_tVertex[Vertex].Angle[0] = 0.0f;
+			}*/
+			if (m_tVertex[Vertex].Angle[2] > 360.0f)
+			{
+				m_tVertex[Vertex].Angle[2] = 0.0f;
+			}
+		}
+		else
+		{
+			m_tVertex[Vertex].Angle[0] = 0.0f;
+			m_tVertex[Vertex].Angle[2] = 0.0f;
+		}
 }
 
 
