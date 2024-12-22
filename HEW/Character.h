@@ -242,6 +242,7 @@ public:
 
 	void Update(void);	//XVˆ—
 	void Draw(void);	//•`‰æˆ—
+	void HpDraw(void);	//Hp‚Ì•`‰æˆ—
 
 	void Damage(CFighter* pFighter);
 private:

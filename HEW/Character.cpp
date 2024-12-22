@@ -941,9 +941,6 @@ void CLeader::Update(void)
 
 void CLeader::Draw()
 {
-	//‘Ì—ÍƒQ[ƒW‚Ì•`‰æ
-	m_pHpGage->Draw();
-
 	switch (m_nTextureNumber)
 	{
 	case 0://ƒvƒŒƒCƒ„[
@@ -1092,6 +1089,12 @@ void CLeader::Draw()
 	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(180.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	////‚»‚ê‚¼‚ê‚Ìs—ñ‚ðŠ|‚¯‡‚í‚¹‚ÄŠi”[
 	//DirectX::XMMATRIX mat = S * R * T;
+}
+
+void CLeader::HpDraw(void)
+{
+	//‘Ì—ÍƒQ[ƒW‚Ì•`‰æ
+	m_pHpGage->Draw();
 }
 
 void CLeader::Damage(CFighter* pFighter)

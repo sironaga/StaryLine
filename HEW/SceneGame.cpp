@@ -59,7 +59,7 @@ void InitSceneGame(int StageNum)
 	g_pPlayer->SetFieldVertexAddress(g_pFieldVertex);
 	SetFileAddress(g_pBattle);
 
-	IninCharacterTexture(g_pFieldVertex, StageNum);//キャラクターテクスチャ～の初期化
+	InitCharacterTexture(g_pFieldVertex, StageNum);//キャラクターテクスチャ～の初期化
 	g_pBattle->m_nStageNum = StageNum;
 
 	// タイマー初期化
@@ -98,8 +98,7 @@ void UninitSceneGame()
 	}
 	SAFE_DELETE(g_FeverSound);
 	
-	UnInitSound();
-	UnIninCharacterTexture();
+	UnInitCharacterTexture();
 }
 
 //更新処理
