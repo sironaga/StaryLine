@@ -99,9 +99,7 @@ void UninitSceneGame()
 //更新処理
 void UpdateSceneGame()
 {
-	
-	
-	
+
 	g_pBackGround->Update();
 
 	g_pBattle->CreateLeader();
@@ -120,7 +118,10 @@ void UpdateSceneGame()
 		// フェーズごとの補正値(STimePheseAjust)に代入する
 		if (!Fever)
 		{
-			g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime;
+			if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime) &&((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime) <= 600.0f)
+			{
+				g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime;
+			}
 		}
 		else
 		{
@@ -128,8 +129,10 @@ void UpdateSceneGame()
 			g_pFieldVertex->ResetFeverPoint();
 		}
 		Phase = false;
+		
+	
 	}
-
+	
 	// 召喚開始の時間になったらフィーバーかチェック
 	if ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
@@ -262,7 +265,6 @@ void DrawSceneGame()
 	}
 	if (Fever && (g_pFieldVertex->GetFeverPoint() <= 0.0f))
 	{
-		Fever = false;
 		if (g_pSourseFeverBGM)
 		{
 			g_pSourseFeverBGM->Stop();
@@ -270,6 +272,7 @@ void DrawSceneGame()
 		}
 		SAFE_DELETE(g_FeverSound);
 		g_pSourseGameBGM->Start();
+		Fever = false;
 	}
 }
 

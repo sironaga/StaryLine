@@ -98,6 +98,9 @@ CFieldVertex::CFieldVertex()
 			Vertexp->Number = j * 5 + i;
 			Vertexp->Use = false;
 			Vertexp->SuperStar = false;
+			Vertexp->Angle[0] = 0.0f;
+			Vertexp->Angle[1] = 180.0f;
+			Vertexp->Angle[2] = 0.0f;
 			for (int k = 0; k < 8; k++)
 			{
 				Vertexp->Connect[k] = -1;
@@ -291,6 +294,7 @@ void CFieldVertex::Update()
 				ShapesCheck(m_tVertex[StartVertex]);//再帰処理(開始頂点のみ)
 			}
 			Vertexp->Use = true;//頂点が追加されたので今の頂点をtureに
+			Vertexp->Angle[1] = 181.0f;
 			NowLine++;//線の数増やす
 		}
 	}
@@ -660,6 +664,9 @@ void CFieldVertex::InitFieldVertex()
 	for (int j = 0; j < MAX_VERTEX; j++, Vertexp++)
 	{
 		Vertexp->Use = false;
+		Vertexp->Angle[0] = 0.0f;
+		Vertexp->Angle[1] = 180.0f;
+		Vertexp->Angle[2] = 0.0f;
 		for (int k = 0; k < 8; k++)
 		{
 			Vertexp->Connect[k] = -1;
@@ -1133,11 +1140,19 @@ void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize
 void CFieldVertex::DrawStarModel(int color, int Vertex)
 {
 		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);
-		m_pStar_Model[color]->SetRotation(0.0f,TORAD(180), 0.0f);
+		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle[0]), TORAD(m_tVertex[Vertex].Angle[1]), TORAD(m_tVertex[Vertex].Angle[2]));
 		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);
 		m_pStar_Model[color]->SetViewMatrix(GetView());
 		m_pStar_Model[color]->SetProjectionMatrix(GetProj());
 		m_pStar_Model[color]->Draw();
+		if (!(m_tVertex[Vertex].Angle[1] == 180.0f))
+		{
+			m_tVertex[Vertex].Angle[1] += (360.0 / 60.0f);
+		}
+		if (m_tVertex[Vertex].Angle[1] > 360.0f)
+		{
+			m_tVertex[Vertex].Angle[1] = 0.0f;
+		}
 }
 
 
