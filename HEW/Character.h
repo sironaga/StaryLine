@@ -286,7 +286,8 @@ private:
 	CVector3<float> m_tSize;		//サイズ
 	float m_fHp;					//体力
 
-	Sprite* m_pSprite[2];
+	//Sprite* m_pSprite[2];
+	Model* m_pMpdel;
 
 	/*アニメーション関係*/
 	DirectX::XMFLOAT2 m_tUVPos;
@@ -314,100 +315,3 @@ public:
 
 	void ChangePlayerMode(void) { m_nStatusMode ^= m_nStatusMode; }//プレイヤーのアニメーションの切り替え
 };
-
-
-////敵ボスクラス
-//class CEnemyBoss
-//{
-//private:
-//	enum BossType
-//	{
-//		Type1,
-//		Type2,
-//		Type3,
-//	};
-//public:
-//	CEnemyBoss(int BossTypeNum, float InSize, CVector3<float> FirstPos, Camera* InAddress);	//コンストラクタ
-//	~CEnemyBoss();
-//	
-//	void Update(void);//更新処理
-//	void Draw(void);	//描画処理
-//private:
-//	void CreateUpdate(void);
-//	void BattleUpdate(void);
-//	void DeathUpdate(void);
-//
-//	void SettingStatus(void);
-//
-//};
-////味方バッファークラス
-//class CAllyBuffer
-//{
-//public:
-//	enum BuffType
-//	{
-//		BT_Shield,
-//		BT_Attack,
-//		BT_ReSummon,
-//	};
-//private:
-//	enum Corner
-//	{
-//		Hexagon = 6,		//六角形
-//		Heptagon = 7,		//七角形
-//		Octagon = 8,		//八角形
-//	};
-//public:
-//	CAllyBuffer(int InCornerCount, float InSize, CVector3<float> FirstPos, Camera* InAddress);		//コンストラクタ
-//	~CAllyBuffer();						//デストラクタ
-//
-//	void Update(void);	//更新処理
-//	void Draw(void);	//描画処理
-//
-//private:
-//	void CreateUpdate(void);
-//	void BattleUpdate(void);
-//	void DeathUpdate(void);
-//
-//	void SettingStatus(void);
-//	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);
-//public:
-//	bool IsBuff;					//Buffをかける処理をもう行ったかどうか
-//private:
-//	Status m_tStatus;				//ステータス状態
-//	BuffType m_tBuff;				//バフの種類	
-//	Corner nCornerCount;			//属性
-//	CVector3<float> m_tPos;			//位置座標
-//	CVector3<float> m_tSize;		//サイズ
-//
-//	Camera* m_pCamera;
-//	Sprite* m_pSprite;
-//public:
-//	//ステータスのSet
-//	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
-//	//ステータスのget
-//	Status GetStatus(void) { return m_tStatus; }
-//
-//	//属性のGet
-//	int GetCornerCount(void) { return nCornerCount; }
-//
-//	//X座標の加算
-//	void AddPosX(float fAdd) { m_tPos.X += fAdd; }
-//	//Y座標の加算
-//	void AddPosY(float fAdd) { m_tPos.Y += fAdd; }
-//	//Z座標の加算
-//	void AddPosZ(float fAdd) { m_tPos.Z += fAdd; }
-//	//位置座標のSet
-//	void SetPos(CVector3<float> InPos) { m_tPos = InPos; }
-//
-//	//位置座標のGet
-//	CVector3<float> GetPos(void) { return m_tPos; }
-//
-//	//サイズのGet
-//	CVector3<float> GetSize(void) { return m_tSize; }
-//
-//	BuffType GetBuffType(void) { return m_tBuff; }
-//
-//	//カメラのアドレス設定
-//	void SetCameraAddress(Camera* InAddress) { m_pCamera = InAddress; }
-//};
