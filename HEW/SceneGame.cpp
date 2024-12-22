@@ -91,6 +91,12 @@ void UninitSceneGame()
 		g_pSourseGameBGM = nullptr;
 	}
 	SAFE_DELETE(g_GameSound);
+	if (g_pSourseFeverBGM)
+	{
+		g_pSourseFeverBGM->Stop();
+		g_pSourseFeverBGM = nullptr;
+	}
+	SAFE_DELETE(g_FeverSound);
 	
 	UnInitSound();
 	UnIninCharacterTexture();
