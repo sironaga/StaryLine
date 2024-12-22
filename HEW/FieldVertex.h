@@ -42,6 +42,9 @@ public:
 	void InitFieldVertex();
 	void SetSuperStar();
 	void SoundStop();
+	float GetFeverPoint() { return FeverPoint; }
+	void SubtractFeverPoint();
+	void ResetFeverPoint();
 private:
 
 	typedef struct FieldVertex
@@ -105,7 +108,7 @@ private:
 	void ShapesCheck(FieldVertex VertexNumber);//‘½ŠpŒ`”»’èÄ‹Aˆ—
 
 	CModelEx* m_pStar_Model[3];//Star‚Ìƒ‚ƒfƒ‹
-	void GetFeverPoint() { FeverPoint; }
+	
 	
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);

@@ -748,6 +748,17 @@ void CFieldVertex::SoundStop()
 	g_FieldSe->Stop();
 }
 
+void CFieldVertex::SubtractFeverPoint()
+{
+	FeverPoint -= (30.0f / 60.0f) / 10.0f;
+	if (FeverPoint < 0.0f)FeverPoint = 0.0f;
+}
+
+void CFieldVertex::ResetFeverPoint()
+{
+	FeverPoint = 0.0f;
+}
+
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 {
 	int NowVertex = 0;//‰¼’¸“_•Û‘¶‚Ì‚Ç‚ÌˆÊ’u‚É¡Ši”[‚µ‚½‚Ì‚©‚ð•Û‘¶‚·‚é
@@ -1036,10 +1047,16 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							m_tVertex[Comparison2[m]].SuperStarUse = true;
 							SuperStarCount++;
 							SetSuperStar();
-							FeverPoint += 1.0f;
+							if (!GetFeverMode())
+							{
+								FeverPoint += 1.0f;
+							}
 						}
 					}
-					FeverPoint += 1.0f;
+					if (!GetFeverMode())
+					{
+						FeverPoint += 1.0f;
+					}
 					if (FeverPoint > Partition)FeverPoint = Partition;
 					
 					

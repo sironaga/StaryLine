@@ -16,6 +16,8 @@
 #define FILENAME_TITLEBGM (L"Asset/Sound/title.wav")
 #define FILENAME_BATTLEBGM (L"Asset/Sound/battle.wav")
 
+#define FILENAME_FEVERBGM (L"Asset/Sound/fever.wav")
+
 float g_volumeBGM = 0;
 float g_volumeSE = 0;
 
@@ -50,6 +52,8 @@ CSoundList::CSoundList(NAME inName)
 	case BGM_BATTLE:
 		m_sound = new CSound(FILENAME_BATTLEBGM);
 		break;
+	case BGM_FEVER:
+		m_sound = new CSound(FILENAME_FEVERBGM);
 	default:
 		break;
 	}

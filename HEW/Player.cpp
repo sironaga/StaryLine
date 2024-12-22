@@ -320,19 +320,26 @@ void CPlayer::PlayerInput()
 void CPlayer::TimeProcess()
 {
 	//タイマースタート
+	if (GetFeverMode())m_bDrawing = true;
 	if (m_bDrawing)	// 作図中のとき
 	{
-		fTimerSize += (TIMER_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
-		if (fTimerSize >= TIMER_HARFSIZE_Y)
+		if (!GetFeverMode())
 		{
-			fTimerSize = TIMER_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
-			m_bDrawing = false;				// 作図を終わる
+			fTimerSize += (TIMER_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
+			if (fTimerSize >= TIMER_HARFSIZE_Y)
+			{
+				fTimerSize = TIMER_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
+				m_bDrawing = false;				// 作図を終わる
+			}
 		}
 	}
 	else // 作図中でないとき
 	{
-		fTimerSize -= 5.0f;	// タイマーを上げ続ける
-		if (fTimerSize <= -TIMER_HARFSIZE_Y) fTimerSize = -TIMER_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
+		if (!GetFeverMode())
+		{
+			fTimerSize -= 5.0f;	// タイマーを上げ続ける
+			if (fTimerSize <= -TIMER_HARFSIZE_Y) fTimerSize = -TIMER_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
+		}
 	}
 
 	// 制限時間頂点情報の更新

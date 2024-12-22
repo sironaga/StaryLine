@@ -11,3 +11,5 @@ void InitSceneGame(int StageNum);
 void UninitSceneGame();
 void UpdateSceneGame();
 void DrawSceneGame();
+
+bool GetFeverMode();
