@@ -1123,49 +1123,16 @@ void CLeader::Draw()
 		break;
 	}
 /*ModelÉeÉXÉgóp*/
-//if (m_pMpdel)
-//{
-//	SetRender3D();
-//	DirectX::XMFLOAT4X4 wvp[3];
-//	DirectX::XMMATRIX world;
-//	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.Z, 0.0f));
-//	//ägëÂèkè¨çsóÒ(Scaling)
-//	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
-//	//âÒì]çsóÒ(Rotation)
-//	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(270.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
-//	//ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
-//	DirectX::XMMATRIX mat = S * R * T;
-
-//	world = mat;
-
-//	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-//	wvp[1] = GetView();
-//	wvp[2] = GetProj();
-
-//	Geometory::SetView(wvp[1]);
-//	Geometory::SetProjection(wvp[2]);
-
-//	ShaderList::SetWVP(wvp);
-
-//	m_pMpdel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-//	m_pMpdel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-
-//	for (int i = 0; i < m_pMpdel->GetMeshNum(); ++i)
-//	{
-
-//		Model::Mesh mesh = *m_pMpdel->GetMesh(i);
-
-//		Model::Material material = *m_pMpdel->GetMaterial(mesh.materialID);
-//		material.ambient.x = 0.85f; // x (r) 
-//		material.ambient.y = 0.85f; // y (g) 
-//		material.ambient.z = 0.85f; // z (b) 
-//		ShaderList::SetMaterial(material);
-
-//		if (m_pMpdel) {
-//			m_pMpdel->Draw(i);
-//		}
-//	}
-//}
+	//SetRender3D();
+	//DirectX::XMFLOAT4X4 wvp[3];
+	//DirectX::XMMATRIX world;
+	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.Z, 0.0f));
+	////ägëÂèkè¨çsóÒ(Scaling)
+	//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
+	////âÒì]çsóÒ(Rotation)
+	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(180.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	////ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
+	//DirectX::XMMATRIX mat = S * R * T;
 }
 
 void CLeader::Damage(CFighter* pFighter)
