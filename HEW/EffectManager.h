@@ -9,8 +9,7 @@ class CEffectManager
 {
 public:
 	CEffectManager(const char* efc);
-	CEffectManager(CEffectManager* InAddrres);
-	CEffectManager(CEffectManager* InAddrres, DirectX::XMFLOAT3 pos, int PlayTime);
+
 	~CEffectManager();
 	void Uninit();
 	void Update();
@@ -20,12 +19,11 @@ public:
 
 	void SetPos(DirectX::XMFLOAT3 pos);
 	int GetEffectNum();
-	Effekseer::ManagerRef GetManager();
-	Effekseer::EffectRef GetEffect();
-	Effekseer::Handle GetHandle();
 private:
-	Effekseer::ManagerRef m_Manager;
-	Effekseer::EffectRef m_Effect;
+	Effekseer::ManagerRef m_Man;
+	Effekseer::EffectRef m_Ef;
+	Effekseer::ManagerRef* m_Manager;
+	Effekseer::EffectRef* m_Effect;
 	CEffectManager* m_pEffectAddrres;
 	Effekseer::Handle m_Handle;
 	struct Effect 

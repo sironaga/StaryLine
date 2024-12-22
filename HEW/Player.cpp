@@ -106,14 +106,14 @@ void CPlayer::Update()
 		g_WalkSe->FlushSourceBuffers();
 		g_WalkSe->SubmitSourceBuffer(&buffer);
 	}
-
-	m_pEffect->Update();
-
 	// エフェクトのテスト
 	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 	{
 		m_pEffect->Play(m_tBrushPos,120);
 	}
+
+	m_pEffect->Update();
+
 }
 
 void CPlayer::Draw()
