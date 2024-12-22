@@ -530,8 +530,6 @@ CAlly::CAlly(int InCornerCount)
 
 CAlly::~CAlly()
 {
-	
-
 	//if (m_pVtx) m_pVtx->Release();
 }
 
@@ -649,7 +647,10 @@ void CAlly::BattleUpdate(void)
 	if (m_bIsAttack)
 	{
 		//攻撃エフェクト
-		m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.X, m_tPos.Y, m_tPos.Z - m_tSize.Z/2}, 60);
+		if (m_pEffect[(int)FighterEffect::Attack]->GetEffectNum() < MAX_EFFECT)
+		{
+			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.X, m_tPos.Y, m_tPos.Z - m_tSize.Z/2}, 60);
+		}
 		//攻撃音
 		if (!m_bTimeSoundStart)
 		{
