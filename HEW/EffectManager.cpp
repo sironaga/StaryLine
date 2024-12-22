@@ -3,20 +3,22 @@
 #include "time.h"
 
 CEffectManager::CEffectManager(const char* efc)
-	:m_nEffectNum(0), m_pEffectAddrres(nullptr), m_nTime(0),m_Handle(NULL)
+	:m_nEffectNum(0), m_pEffectAddrres(nullptr), m_nTime(0)
 {
 	m_effects.clear();
 	m_Ef = LibEffekseer::Create(efc);
 	m_Effect = &m_Ef;
 	m_Man = LibEffekseer::GetManager();
 	m_Manager = &m_Man;
+	m_Manager->Get()->Create(8000);
 }
 
 
 
 CEffectManager::~CEffectManager()
 {
-
+	m_Manager->Get()->StopAllEffects();
+	m_effects.clear();
 }
 
 void CEffectManager::Uninit()

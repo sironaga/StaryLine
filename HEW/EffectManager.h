@@ -25,7 +25,6 @@ private:
 	Effekseer::ManagerRef* m_Manager;
 	Effekseer::EffectRef* m_Effect;
 	CEffectManager* m_pEffectAddrres;
-	Effekseer::Handle m_Handle;
 	struct Effect 
 	{
 		Effekseer::Handle m_Handle;
