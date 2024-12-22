@@ -15,21 +15,13 @@ enum AllyTexture
 {
 	Ally3,
 	Ally4,
-	//Ally5,
-	//Ally6,
-	//Ally7,
-	//Ally8,
 	MAX_AllyTex,
 };
-//enum AllyBufferTexture
-//{
-//	MAX_AllyBufferTex,
-//};
+
 enum EnemyTexture
 {
 	Enemy1,
 	Enemy2,
-	//Enemy3,
 	MAX_EnemyTex,
 };
 
@@ -41,23 +33,18 @@ enum class CharactersEffect
 
 void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 
-//Texture* g_pAllyTex[MAX_AllyTex];
 Model* g_pAllyModel[MAX_AllyTex];
 
-//Texture* g_pAllyBufferTex[MAX_AllyBufferTex];
-//Texture* g_pEnemyTex[MAX_EnemyTex];
 Model* g_pEnemyModel[MAX_EnemyTex];
 
-Texture* g_pPlayerTex[CLeader::MAX_StatusMode];
-Texture* g_pBosTex;
+//Texture* g_pPlayerTex[CLeader::MAX_StatusMode];
+//Texture* g_pBosTex;
+
+Model* g_pLeaderModel[MAX_LEADERS];
 
 Model* g_pBosCar;
 
-//Texture* g_pCollisionTex;
-
 Texture* g_pHpGageTex[2][3];
-
-//Sprite* g_pSprite;
 
 CFieldVertex* g_pFieldVtx;
 
@@ -72,19 +59,13 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ý
 	for (int i = 0; i < MAX_AllyTex; i++)
 		g_pAllyModel[i] = new Model();
 
-		//g_pAllyTex[i] = new Texture();
-	//for (int i = 0; i < MAX_AllyBufferTex; i++)
-	//	g_pAllyBufferTex[i] = new Texture();
 	for (int i = 0; i < MAX_EnemyTex; i++)
 		g_pEnemyModel[i] = new Model();
-		//g_pEnemyTex[i] = new Texture();
 
-	//g_pCollisionTex = new Texture();
+	//g_pPlayerTex[CLeader::WandOn] = new Texture();
+	//g_pPlayerTex[CLeader::WandOff] = new Texture();
 
-	g_pPlayerTex[CLeader::WandOn] = new Texture();
-	g_pPlayerTex[CLeader::WandOff] = new Texture();
-
-	g_pBosTex = new Texture();
+	//g_pBosTex = new Texture();
 
 	g_pBosCar = new Model();
 
@@ -95,30 +76,27 @@ void IninCharacterTexture(CFieldVertex* InAddress,int StageNum)	//ƒeƒNƒXƒ`ƒƒ“Ç‚Ý
 	g_pHpGageTex[1][1] = new Texture();
 	g_pHpGageTex[1][2] = new Texture();
 
-	HRESULT hr;
-	//hr = g_pAllyTex[Ally3]->Create("Asset/–¡•û/SankakuSD.png");
-	//hr = g_pAllyTex[Ally4]->Create("Asset/–¡•û/ShikakuSD.png");
+	//HRESULT hr;
+	//hr = g_pPlayerTex[CLeader::WandOn]->Create("Asset/Player/LinieSD_WandOn_sprite.png");
+	//hr = g_pPlayerTex[CLeader::WandOff]->Create("Asset/Player/LinieSD_WandOff_sprite.png");
+
 	g_pAllyModel[Ally3]->Load("Assets/Model/Character/Triangle/Triangle.fbx", 0.05f, Model::XFlip);
 	g_pAllyModel[Ally4]->Load("Assets/Model/Character/Square/Square.fbx", 0.05f, Model::XFlip);
-	//hr = g_pAllyTex[Ally5]->Create("Asset/–¡•û/5.png");
-	//hr = g_pAllyTex[Ally6]->Create("Asset/–¡•û/6.png");
-	//hr = g_pAllyTex[Ally7]->Create("Asset/–¡•û/7.png");
-	//hr = g_pAllyTex[Ally8]->Create("Asset/–¡•û/8.png");
-	//hr = g_pEnemyTex[Enemy1]->Create("Asset/“G/zako1SD_Left.png");
-	//hr = g_pEnemyTex[Enemy2]->Create("Asset/“G/4.png");
+
 	g_pEnemyModel[Enemy1]->Load("Assets/Model/Character/Square/Square.fbx", 0.05f, Model::XFlip);
 	g_pEnemyModel[Enemy2]->Load("Assets/Model/Character/Triangle/Triangle.fbx", 0.05f, Model::XFlip);
-	//hr = g_pEnemyTex[Enemy3]->Create("Asset/“G/5.png");
 
-	//hr = g_pCollisionTex->Create("Asset/Star/CLStar.png");
+	g_pLeaderModel[Leader_Player] = new Model();
+	g_pLeaderModel[Leader_Boss] = new Model();
 
-	hr = g_pPlayerTex[CLeader::WandOn]->Create("Asset/Player/LinieSD_WandOn_sprite.png");
-	hr = g_pPlayerTex[CLeader::WandOff]->Create("Asset/Player/LinieSD_WandOff_sprite.png");
+	g_pLeaderModel[Leader_Player]->Load("Assets/Model/Leader/Linie/Char_Linie.fbx", 1.0f, Model::XFlip);
 
 	switch (StageNum)
 	{
 	case 0:
-		g_pBosTex->Create("Asset/“G/BossNo1.png");
+		//g_pBosTex->Create("Asset/“G/BossNo1.png");
+
+		g_pLeaderModel[Leader_Boss]->Load("Assets/Model/Leader/Nugar/Char_Boss02_Nugar.fbx", 1.0f, Model::XFlip);
 		g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
 		break;
 	case 1:
@@ -193,14 +171,11 @@ CFighter::CFighter(int InCornerCount)
 	, m_tAtkCollision{ 0.0f,0.0f }
 	, m_tOldPos()
 	, m_fHp(0.0f)
-	//, m_fShield(0.0f)
 	, m_fAtk(0.0f)
-	//, m_tAtkType(AT_Physics)
 	, m_fAtkCharge(0.0f)
 	, m_fAtkChargeMax(0.0f)
 	, m_fAtkAnimationTime(0.0f)
 	, m_fAtkAnimationMaxTime(0.0f)
-	//, m_bCreateInit(false)
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
 	, m_nTargetNumber(-1)
@@ -210,8 +185,6 @@ CFighter::CFighter(int InCornerCount)
 	, m_MoveFlag(false)
 	, m_pEffect{}
 {
-	//m_pSprite = new Sprite();
-
 
 	switch (InCornerCount)
 	{
@@ -229,13 +202,12 @@ CFighter::CFighter(int InCornerCount)
 	m_tPos.X = 0.0f;
 	m_tPos.Y = 0.0f;
 	m_tPos.Z = 0.0f;
-	m_tSize.X = NORMAL_SIZE;	//–ÊÏ•ªƒTƒCƒY‚ð‘å‚«‚­‚·‚é
-	m_tSize.Y = NORMAL_SIZE;	//–ÊÏ•ªƒTƒCƒY‚ð‘å‚«‚­‚·‚é
-	m_tSize.Z = NORMAL_SIZE;	//–ÊÏ•ªƒTƒCƒY‚ð‘å‚«‚­‚·‚é
+	m_tSize.X = NORMAL_SIZE;	
+	m_tSize.Y = NORMAL_SIZE;	
+	m_tSize.Z = NORMAL_SIZE;	
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
 	XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
 	m_pSourceAttack->SubmitSourceBuffer(&buffer);
-	//m_pEffect = new CEffect("Asset/Player/Player.png", 4, 4);
 }
 
 CFighter::~CFighter()
@@ -951,7 +923,7 @@ void CEnemy::SettingStatus(void)
 CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber)
 	:m_tStatus(St_Create)
 	,m_tPos(FirstPos)
-	,m_fHp(100.0f)
+	,m_fHp(300.0f)
 	,m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
 	, m_nStatusMode(WandOff)
@@ -961,18 +933,20 @@ CLeader::CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber)
 	m_tSize.Y = NORMAL_SIZE * InSize;	//–ÊÏ•ªƒTƒCƒY‚ð‘å‚«‚­‚·‚é
 	m_tSize.Z = NORMAL_SIZE * InSize;	//–ÊÏ•ªƒTƒCƒY‚ð‘å‚«‚­‚·‚é
 
-	m_pSprite[0] = new Sprite();
-	m_pSprite[1] = new Sprite();
+	//m_pSprite[0] = new Sprite();
+	//m_pSprite[1] = new Sprite();
 
 	switch (m_nTextureNumber)
 	{
 	case 0://ƒvƒŒƒCƒ„[
+		m_pModel = g_pLeaderModel[Leader_Player];
 		m_pHpGage = new CHpUI(m_fHp,CHpUI::Player);
 		m_nAnimationFrame = 1;
 		m_nAnimationX = 8;
 		m_nAnimationY = 8;
 		break;
 	case 1://ƒ{ƒX
+		m_pModel = g_pLeaderModel[Leader_Boss];
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
 		m_nAnimationFrame = 1;
 		m_nAnimationX = 1;
@@ -1014,8 +988,50 @@ void CLeader::Draw()
 	switch (m_nTextureNumber)
 	{
 	case 0://ƒvƒŒƒCƒ„[
-		m_pSprite[m_nTextureNumber]->SetTexture(g_pPlayerTex[m_nStatusMode]);
-		DrawSetting({ m_tPos.X, m_tPos.Y , m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite[m_nTextureNumber]);
+		if (m_pModel)
+		{
+			SetRender3D();
+			DirectX::XMFLOAT4X4 wvp[3];
+			DirectX::XMMATRIX world;
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X - 2.0f, m_tPos.Y, m_tPos.Z, 0.0f));
+			//Šg‘åk¬s—ñ(Scaling)
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+			//‰ñ“]s—ñ(Rotation)
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(85.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			//‚»‚ê‚¼‚ê‚Ìs—ñ‚ðŠ|‚¯‡‚í‚¹‚ÄŠi”[
+			DirectX::XMMATRIX mat = S * R * T;
+
+			world = mat;
+
+			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+			wvp[1] = GetView();
+			wvp[2] = GetProj();
+
+			Geometory::SetView(wvp[1]);
+			Geometory::SetProjection(wvp[2]);
+
+			ShaderList::SetWVP(wvp);
+
+			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+			{
+
+				Model::Mesh mesh = *m_pModel->GetMesh(i);
+
+				Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+				material.ambient.x = 0.85f; // x (r) 
+				material.ambient.y = 0.85f; // y (g) 
+				material.ambient.z = 0.85f; // z (b) 
+				ShaderList::SetMaterial(material);
+
+				if (m_pModel) {
+					m_pModel->Draw(i);
+				}
+			}
+		}
+
 		break;
 	case 1://ƒ{ƒX
 		if (g_pBosCar)
@@ -1061,17 +1077,95 @@ void CLeader::Draw()
 				}
 			}
 		}
-		m_pSprite[m_nTextureNumber]->SetTexture(g_pBosTex);
-		DrawSetting({ m_tPos.X, m_tPos.Y + 30.0f, m_tPos.Z }, { m_tSize.X, m_tSize.Y, m_tSize.Z }, m_pSprite[m_nTextureNumber]);
+		if (m_pModel)
+		{
+			SetRender3D();
+			DirectX::XMFLOAT4X4 wvp[3];
+			DirectX::XMMATRIX world;
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.X - 2.0f, m_tPos.Y + 23.0f, m_tPos.Z, 0.0f));
+			//Šg‘åk¬s—ñ(Scaling)
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+			//‰ñ“]s—ñ(Rotation)
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			//‚»‚ê‚¼‚ê‚Ìs—ñ‚ðŠ|‚¯‡‚í‚¹‚ÄŠi”[
+			DirectX::XMMATRIX mat = S * R * T;
+
+			world = mat;
+
+			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+			wvp[1] = GetView();
+			wvp[2] = GetProj();
+
+			Geometory::SetView(wvp[1]);
+			Geometory::SetProjection(wvp[2]);
+
+			ShaderList::SetWVP(wvp);
+
+			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+			{
+
+				Model::Mesh mesh = *m_pModel->GetMesh(i);
+
+				Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+				material.ambient.x = 0.85f; // x (r) 
+				material.ambient.y = 0.85f; // y (g) 
+				material.ambient.z = 0.85f; // z (b) 
+				ShaderList::SetMaterial(material);
+
+				if (m_pModel) {
+					m_pModel->Draw(i);
+				}
+			}
+		}
 		break;
 	}
+/*ModelƒeƒXƒg—p*/
+//if (m_pMpdel)
+//{
+//	SetRender3D();
+//	DirectX::XMFLOAT4X4 wvp[3];
+//	DirectX::XMMATRIX world;
+//	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.Z, 0.0f));
+//	//Šg‘åk¬s—ñ(Scaling)
+//	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
+//	//‰ñ“]s—ñ(Rotation)
+//	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(270.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+//	//‚»‚ê‚¼‚ê‚Ìs—ñ‚ðŠ|‚¯‡‚í‚¹‚ÄŠi”[
+//	DirectX::XMMATRIX mat = S * R * T;
 
-	m_pSprite[m_nTextureNumber]->SettingUVAnimation(m_pSprite[m_nTextureNumber], m_nAnimationX, m_nAnimationY, m_nAnimationFrame, false);
+//	world = mat;
 
-	m_pSprite[m_nTextureNumber]->Draw();
-	
-	m_pSprite[m_nTextureNumber]->ReSetSprite();
+//	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+//	wvp[1] = GetView();
+//	wvp[2] = GetProj();
 
+//	Geometory::SetView(wvp[1]);
+//	Geometory::SetProjection(wvp[2]);
+
+//	ShaderList::SetWVP(wvp);
+
+//	m_pMpdel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+//	m_pMpdel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+//	for (int i = 0; i < m_pMpdel->GetMeshNum(); ++i)
+//	{
+
+//		Model::Mesh mesh = *m_pMpdel->GetMesh(i);
+
+//		Model::Material material = *m_pMpdel->GetMaterial(mesh.materialID);
+//		material.ambient.x = 0.85f; // x (r) 
+//		material.ambient.y = 0.85f; // y (g) 
+//		material.ambient.z = 0.85f; // z (b) 
+//		ShaderList::SetMaterial(material);
+
+//		if (m_pMpdel) {
+//			m_pMpdel->Draw(i);
+//		}
+//	}
+//}
 }
 
 void CLeader::Damage(CFighter* pFighter)
@@ -1157,13 +1251,13 @@ void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 		break;
 	case CHpUI::Bos:
 		m_tUIPos.x = InPos.x;
-		m_tUIPos.y = InPos.y + InSizeY + 21.0f;
+		m_tUIPos.y = InPos.y + InSizeY - 32.0f;
 		m_tUIPos.z = InPos.z;
 		HpRatio = (InHp / m_fFullHp) * 50.0f;
 		break;
 	case CHpUI::Player:
 		m_tUIPos.x = InPos.x;
-		m_tUIPos.y = InPos.y + InSizeY + 0.0f;
+		m_tUIPos.y = InPos.y + InSizeY - 32.0f;
 		m_tUIPos.z = InPos.z;
 		HpRatio = (InHp / m_fFullHp) * 50.0f;
 		break;
@@ -1190,17 +1284,6 @@ void CHpUI::Draw(void)
 
 		m_pSprite->ReSetSprite();
 
-		////ƒx[ƒX‚Ì•`‰æ
-		//m_pSprite->SetTexture(g_pHpGageTex[0][0]);
-
-		//m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-		//DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 10.0f,5.0f,5.0f }, m_pSprite);
-
-		//m_pSprite->Draw();
-
-		//m_pSprite->ReSetSprite();
-
 		break;
 	case CHpUI::Enemy:
 		//ƒQ[ƒW‚Ì•`‰æ
@@ -1213,17 +1296,6 @@ void CHpUI::Draw(void)
 		m_pSprite->Draw();
 
 		m_pSprite->ReSetSprite();
-
-		////ƒx[ƒX‚Ì•`‰æ
-		//m_pSprite->SetTexture(g_pHpGageTex[1][0]);
-
-		//m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-		//DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 10.0f,5.0f,5.0f }, m_pSprite);
-
-		//m_pSprite->Draw();
-
-		//m_pSprite->ReSetSprite();
 
 		break;
 	case CHpUI::Bos:
