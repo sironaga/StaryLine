@@ -55,6 +55,7 @@ private:
 		bool SuperStarUse;//スーパースター使ったか
 		int Connect[8];
 		int Number;
+		float Angle[3];
 	};
 
 	typedef struct CenterVertex
