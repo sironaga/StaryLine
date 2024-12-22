@@ -287,7 +287,7 @@ private:
 	float m_fHp;					//体力
 
 	//Sprite* m_pSprite[2];
-	Model* m_pMpdel;
+	Model* m_pModel;
 
 	/*アニメーション関係*/
 	DirectX::XMFLOAT2 m_tUVPos;
