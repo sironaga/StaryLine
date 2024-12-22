@@ -1,3 +1,7 @@
+//Character.h
+//編集者：AT12C05宇留野陸斗
+//編集者：AT12A07小川蓮
+
 #pragma once
 #define _DIRECTX_
 #include "DirectX.h"
@@ -6,25 +10,13 @@
 #include "Model.h"
 #include "EffectManager.h"
 
-//Character.h
-//編集者：AT12C05宇留野陸斗
-//編集者：AT12A07小川蓮
-
-enum LeaderNumber
-{
-	Leader_Player,
-	Leader_Boss,
-	MAX_LEADERS,
-};
-
 #define MAX_ALLY  (200)	//味方の最大数
 #define MAX_ENEMY (200)	//敵の最大数
 #define NORMAL_SIZE (10)//キャラクターの基本サイズ
 
 class CFieldVertex;
-void IninCharacterTexture(CFieldVertex* InAddress, int StageNum);	//テクスチャ読み込み
-void UnIninCharacterTexture();//テクスチャの終了処理
-void UnInitSound();//soundの終了処理
+void InitCharacterTexture(CFieldVertex* InAddress, int StageNum);	//テクスチャ読み込み
+void UnInitCharacterTexture();//テクスチャの終了処理
 
 //ステータス情報
 enum Status
@@ -51,7 +43,8 @@ public:
 	~CHpUI();
 	void Update(float InHp, DirectX::XMFLOAT3 InPos,float InSizeY);
 	void Draw(void);
-
+private:
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 private:
 	float m_fFullHp;
 	float m_fAnchorPoint;
@@ -78,10 +71,6 @@ protected:
 	{
 		Triangle = 3,		//三角形
 		Square = 4,			//四角形
-		//Pentagon = 5,		//五角形
-		//Hexagon = 6,		//六角形
-		//Heptagon = 7,		//七角形
-		//Octagon = 8,		//八角形
 	};
 
 	/*構造体*/
@@ -103,16 +92,14 @@ protected:
 	
 public:
 	CFighter(int InCornerCount);	//コンストラクタ
-	virtual ~CFighter() = 0;						//デストラクタ
+	virtual ~CFighter();						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
 	virtual void Draw(void) = 0;	//描画処理
 
-	//void CollisionDraw(void);
-
-	bool AtkCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
-	bool SearchCollisionCheck(CVector3<float> InSize, CVector3<float> InPos);	//当たり判定の中に敵がいるかの判定
-	bool OverlapCheck(CVector3<float> InPos, CVector3<float> InSize);	//重なっていないか判定
+	bool AtkCollisionCheck(DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InPos);	//当たり判定の中に敵がいるかの判定
+	bool SearchCollisionCheck(DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InPos);	//当たり判定の中に敵がいるかの判定
+	bool OverlapCheck(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);	//重なっていないか判定
 	void Damage(CFighter* pFighter);
 
 protected:
@@ -128,19 +115,16 @@ protected:
 	Status m_tStatus;				//ステータス状態
 	Collision m_tSearchCollision;	//索敵当たり判定
 	Collision m_tAtkCollision;		//攻撃当たり判定
-	CVector3<float> m_tPos;			//位置座標
-	CVector3<float> m_tOldPos;		//移動前位置座標
-	CVector3<float> m_tSize;		//サイズ
-	int nCornerCount;				//属性
+	DirectX::XMFLOAT3 m_tPos;		//位置座標
+	DirectX::XMFLOAT3 m_tOldPos;	//移動前位置座標
+	DirectX::XMFLOAT3 m_tSize;		//サイズ
+	int m_nCornerCount;				//属性
 	float m_fHp;					//体力
-	//float m_fShield;				//シールド値
 	float m_fAtk;					//攻撃力
-	//AtkType m_tAtkType;			//攻撃タイプ
 	float m_fAtkCharge;				//攻撃チャージ(チャージがたまっていたら攻撃可能)
 	float m_fAtkChargeMax;			//攻撃チャージの到達値
 	float m_fAtkAnimationTime;		//攻撃アニメーションの時間
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
-	//bool m_bCreateInit;				//生成状態の初期化済みかどうか
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
 	CHpUI* m_pHpGage;	//体力ゲージ
@@ -152,7 +136,6 @@ protected:
 	bool m_bTimeSoundStart;
 
 	Model* m_pModel;
-	int m_Number;
 
 	/*変数のSet&Get*/
 public:
@@ -167,38 +150,34 @@ public:
 	Collision GetAtkCollision(void) { return m_tAtkCollision; }
 
 	//移動する前に位置を保存
-	void SetOldPos(CVector3<float> InPos) { m_tOldPos = InPos; }
-	CVector3<float> GetOldPos(void) { return m_tOldPos; }
+	void SetOldPos(DirectX::XMFLOAT3 InPos) { m_tOldPos = InPos; }
+	DirectX::XMFLOAT3 GetOldPos(void) { return m_tOldPos; }
 	//X座標の加算
-	void AddPosX(float fAdd) { m_tPos.X += fAdd; }
+	void AddPosX(float fAdd) { m_tPos.x += fAdd; }
 	//Y座標の加算
-	void AddPosY(float fAdd) { m_tPos.Y += fAdd; }
+	void AddPosY(float fAdd) { m_tPos.y += fAdd; }
 	//Z座標の加算
-	void AddPosZ(float fAdd) { m_tPos.Z += fAdd; }
+	void AddPosZ(float fAdd) { m_tPos.z += fAdd; }
 	//位置座標のSet
-	void SetPos(CVector3<float> InPos) { m_tPos = InPos; }
+	void SetPos(DirectX::XMFLOAT3 InPos) { m_tPos = InPos; }
 	//位置X座標のSet
-	void SetPosX(float InPosX) { m_tPos.X = InPosX; }
+	void SetPosX(float InPosX) { m_tPos.x = InPosX; }
 	//位置Y座標のSet
-	void SetPosY(float InPosY) { m_tPos.Y = InPosY; }
+	void SetPosY(float InPosY) { m_tPos.y = InPosY; }
 	//位置Z座標のSet
-	void SetPosZ(float InPosZ) { m_tPos.Z = InPosZ; }
+	void SetPosZ(float InPosZ) { m_tPos.z = InPosZ; }
 
 	//位置座標のGet
-	CVector3<float> GetPos(void) { return m_tPos; }
+	DirectX::XMFLOAT3 GetPos(void) { return m_tPos; }
 
 	//サイズのGet
-	CVector3<float> GetSize(void) { return m_tSize; }
+	DirectX::XMFLOAT3 GetSize(void) { return m_tSize; }
 
 	//属性のGet
-	int GetCornerCount(void) { return nCornerCount; }
+	int GetCornerCount(void) { return m_nCornerCount; }
 
 	//体力のGet
 	float GetHp(void) { return m_fHp; }
-
-	//シールドのGet
-	//float GetShield(void) { return m_fShield; }
-	//void SetShield(float InShield) { m_fShield = InShield; }
 
 	//攻撃力のSet
 	void SetAtk(float InAtk) { m_fAtk = InAtk; }
@@ -206,9 +185,6 @@ public:
 	float GetAtk(void) { return m_fAtk; }
 	//攻撃力のAdd
 	void AddAtk(float InAtk) { m_fAtk += InAtk; }
-
-	////攻撃タイプのGet
-	//AtkType GetAtkType(void) { return m_tAtkType; }
 
 	//攻撃チャージ到達値のGet
 	float GetCoolTime(void) { return m_fAtkChargeMax; }
@@ -261,14 +237,7 @@ private:
 class CLeader
 {
 public:
-	enum PlayerMode
-	{
-		WandOn,//杖を持つ
-		WandOff,//杖を離す
-		MAX_StatusMode,
-	};
-public:
-	CLeader(float InSize, CVector3<float>FirstPos, int InTextureNumber);
+	CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber);
 	~CLeader();
 
 	void Update(void);	//更新処理
@@ -282,11 +251,10 @@ private:
 
 private:
 	Status m_tStatus;				//ステータス状態
-	CVector3<float> m_tPos;			//位置座標
-	CVector3<float> m_tSize;		//サイズ
+	DirectX::XMFLOAT3 m_tPos;		//位置座標
+	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	float m_fHp;					//体力
 
-	//Sprite* m_pSprite[2];
 	Model* m_pModel;
 
 	/*アニメーション関係*/
@@ -306,10 +274,10 @@ public:
 	Status GetStatus(void) { return m_tStatus; }
 
 	//位置座標のGet
-	CVector3<float> GetPos(void) { return m_tPos; }
+	DirectX::XMFLOAT3 GetPos(void) { return m_tPos; }
 
 	//サイズのGet
-	CVector3<float> GetSize(void) { return m_tSize; }
+	DirectX::XMFLOAT3 GetSize(void) { return m_tSize; }
 
 	float GetHp(void) { return m_fHp; }
 
