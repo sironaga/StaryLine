@@ -81,6 +81,8 @@ CPlayer::~CPlayer()
 		//g_WalkSe->Stop();
 		g_WalkSe = nullptr;
 	}
+	delete m_pEffect;
+	m_pEffect = nullptr;
 }
 
 void CPlayer::Update()
