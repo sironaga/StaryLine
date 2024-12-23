@@ -80,12 +80,11 @@ public:
 private:
 	void TimeProcess();						// タイマーの処理
 private:
-	ID3D11Buffer* m_pVtxTimer;				// タイマー描画用頂点情報
-	ID3D11ShaderResourceView* m_pTexTimer;	// タイマー描画用テクスチャ
-	Vertex vtxTimer[4];						// タイマーの各頂点
+	ID3D11Buffer* m_pVtxTimer[3];				// タイマー描画用頂点情報
+	ID3D11ShaderResourceView* m_pTexTimer[3];	// タイマー描画用テクスチャ
+	Vertex vtxTimer[3][4];						// タイマーの各頂点
 	float fTimerSize;						// 時間によって減らすタイマーのサイズ
-	float fDrawTime;						// 作図制限時間
-
+	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
 private:
 	CEffectManager* m_pEffect;

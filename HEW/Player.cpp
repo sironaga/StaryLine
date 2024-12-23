@@ -18,8 +18,15 @@ constexpr float BRUSH_SIZE = 10.0f;				// プレイヤー(筆)のサイズ
 constexpr float BRUSH_ROTATE_X = 140.0f;		// プレイヤー(筆)のX軸回転
 constexpr float BRUSH_ROTATE_Y = -20.0f;		// プレイヤー(筆)のY軸回転
 
-constexpr float TIMER_HARFSIZE_X = 100.0f;		// タイマーの横ハーフサイズ
-constexpr float TIMER_HARFSIZE_Y = 600.0f;		// タイマーの縦ハーフサイズ
+constexpr float TIMER_BAR_HARFSIZE_X = 50.0f;		// タイマーゲージの横ハーフサイズ
+constexpr float TIMER_BAR_HARFSIZE_Y = 400.0f;		// タイマーゲージの縦ハーフサイズ
+constexpr float TIMER_OUT_HARFSIZE_X = 130.0f;		// タイマー入れ物の横ハーフサイズ
+constexpr float TIMER_OUT_HARFSIZE_Y = 780.0f;		// タイマー入れ物の縦ハーフサイズ
+
+constexpr float TIMER_BAR_OFFSET_X = -700.0;		// タイマーゲージの横オフセット
+constexpr float TIMER_BAR_OFFSET_Y = -340.0f;		// タイマーゲージの縦オフセット
+constexpr float TIMER_OUT_OFFSET_X = -700.0;		// タイマー入れ物の横オフセット
+constexpr float TIMER_OUT_OFFSET_Y = -510.0f;		// タイマー入れ物の縦オフセット
 
 IXAudio2SourceVoice* g_WalkSe;
 CSoundList* g_PlayerSound;
@@ -34,8 +41,8 @@ CPlayer::CPlayer()
 	, m_bCanMoveCheck(false), m_bDrawing(true)
 
 	// タイマーの初期化処理
-	, m_pVtxTimer(nullptr), m_pTexTimer(nullptr)
-	, vtxTimer{},fTimerSize(-TIMER_HARFSIZE_Y)
+	, m_pVtxTimer{}, m_pTexTimer{}
+	, vtxTimer{},fTimerSize(-TIMER_BAR_HARFSIZE_Y)
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
@@ -43,16 +50,28 @@ CPlayer::CPlayer()
 	// プレイヤー(筆)モデルの読み込み
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
-	// 制限時間頂点情報
-	vtxTimer[0] = { { -TIMER_HARFSIZE_X , fTimerSize,		0.0f },	{ 0.0f, 0.0f } };
-	vtxTimer[1] = { { -TIMER_HARFSIZE_X , TIMER_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f } };
-	vtxTimer[2] = { {  TIMER_HARFSIZE_X	, fTimerSize,		0.0f },	{ 1.0f, 0.0f } };
-	vtxTimer[3] = { {  TIMER_HARFSIZE_X	, TIMER_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f } };
-	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
+	vtxTimer[0][0] = { { -TIMER_BAR_HARFSIZE_X , fTimerSize,		0.0f },	{ 0.0f, 0.0f } };
+	vtxTimer[0][1] = { { -TIMER_BAR_HARFSIZE_X , TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f } };
+	vtxTimer[0][2] = { {  TIMER_BAR_HARFSIZE_X	, fTimerSize,		0.0f },	{ 1.0f, 0.0f } };
+	vtxTimer[0][3] = { {  TIMER_BAR_HARFSIZE_X	, TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f } };
+	m_pVtxTimer[0] = CreateVertexBuffer(vtxTimer[0], 4);
 
+	// 制限時間頂点情報
+	for (int i = 1; i < 3; i++)
+	{
+		vtxTimer[i][0] = { { -TIMER_OUT_HARFSIZE_X , fTimerSize,		0.0f },	{ 0.0f, 0.0f } };
+		vtxTimer[i][1] = { { -TIMER_OUT_HARFSIZE_X , TIMER_OUT_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f } };
+		vtxTimer[i][2] = { {  TIMER_OUT_HARFSIZE_X	, fTimerSize,		0.0f },	{ 1.0f, 0.0f } };
+		vtxTimer[i][3] = { {  TIMER_OUT_HARFSIZE_X	, TIMER_OUT_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f } };
+		m_pVtxTimer[i] = CreateVertexBuffer(vtxTimer[i], 4);
+	}
 	// 制限時間テクスチャ読み込み
-	HRESULT hr = LoadTextureFromFile(GetDevice(), "Asset/Player/Timer.jpg", &m_pTexTimer);
-	if (FAILED(hr))MessageBox(NULL, "エラー:Timer.jpg", "Player.cpp", MB_OK);
+	HRESULT hr = LoadTextureFromFile(GetDevice(), "Asset/Player/UI_Drawing_Gage.png", &m_pTexTimer[0]);
+	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_Gage.png", "Player.cpp", MB_OK);
+	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/UI_Drawing_top.png", &m_pTexTimer[1]);
+	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_top.png", "Player.cpp", MB_OK);
+	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/UI_Drawing_under.png", &m_pTexTimer[2]);
+	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_under.png", "Player.cpp", MB_OK);
 
 	// エフェクト読み込み
 	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
@@ -65,9 +84,11 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {	
-	SAFE_RELEASE(m_pVtxTimer);	// タイマー頂点情報の解放
-	SAFE_RELEASE(m_pTexTimer);	// タイマーテクスチャ情報の解放
-
+	for (int i = 0; i < 3; i++)
+	{
+		SAFE_RELEASE(m_pVtxTimer[i]);	// タイマー頂点情報の解放
+		SAFE_RELEASE(m_pTexTimer[i]);	// タイマーテクスチャ情報の解放
+	}
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
 
 	//音の解放
@@ -122,12 +143,29 @@ void CPlayer::Draw()
 {
 	/* タイマーの描画 */
 	SetRender2D();											// 2D表現のセット
-	SetSpritePos(-700.0f, -400.0f);							// タイマーの座標の設定
+
+	SetSpritePos(TIMER_OUT_OFFSET_X, TIMER_OUT_OFFSET_Y);							// タイマーの座標の設定
+	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
+	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
+	SetSpriteTexture(m_pTexTimer[2]);							// タイマーのテクスチャの設定
+	DrawSprite(m_pVtxTimer[2], sizeof(Vertex));				// タイマーの描画
+
+	ReSetSprite();
+
+	SetSpritePos(TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y);							// タイマーの座標の設定
 	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
 	if (m_bDrawing)SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
 	else SetSpriteColor(1.0f, 1.0f, 1.0f, 0.3f);			// 作図時間でないときは透明度を上げる
-	SetSpriteTexture(m_pTexTimer);							// タイマーのテクスチャの設定
-	DrawSprite(m_pVtxTimer, sizeof(Vertex));				// タイマーの描画
+	SetSpriteTexture(m_pTexTimer[0]);							// タイマーのテクスチャの設定
+	DrawSprite(m_pVtxTimer[0], sizeof(Vertex));				// タイマーの描画
+
+	ReSetSprite();
+	
+	SetSpritePos(TIMER_OUT_OFFSET_X, TIMER_OUT_OFFSET_Y);							// タイマーの座標の設定
+	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
+	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
+	SetSpriteTexture(m_pTexTimer[1]);							// タイマーのテクスチャの設定
+	DrawSprite(m_pVtxTimer[1], sizeof(Vertex));				// タイマーの描画
 
 	ReSetSprite();											// スプライト設定のリセット
 
@@ -161,7 +199,7 @@ void CPlayer::UpdateStop()
 			{
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
-				fTimerSize = TIMER_HARFSIZE_Y;	// タイマーを一番下まで落とす
+				fTimerSize = TIMER_BAR_HARFSIZE_X;	// タイマーを一番下まで落とす
 				return;							// 関数を抜ける
 			}
 		}
@@ -187,6 +225,10 @@ void CPlayer::UpdateStop()
 
 void CPlayer::UpdateMove()
 {
+	if (m_pFieldVtx->GetFeverPoint())
+
+
+
 	// 各種方向別移動処理
 	switch (m_eDestination)
 	{
@@ -236,8 +278,6 @@ void CPlayer::UpdateMove()
 
 void CPlayer::DrawModel()
 {
-	DirectX::XMFLOAT4X4 world;	// ワールド座標格納用
-
 	// アニメーション
 	if (m_bDrawing)	// 作図中のとき
 	{
@@ -327,10 +367,10 @@ void CPlayer::TimeProcess()
 	{
 		if (!GetFeverMode())
 		{
-			fTimerSize += (TIMER_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
-			if (fTimerSize >= TIMER_HARFSIZE_Y)
+			fTimerSize += (TIMER_BAR_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
+			if (fTimerSize >= TIMER_BAR_HARFSIZE_Y)
 			{
-				fTimerSize = TIMER_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
+				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
 				m_bDrawing = false;				// 作図を終わる
 			}
 		}
@@ -340,16 +380,16 @@ void CPlayer::TimeProcess()
 		if (!GetFeverMode())
 		{
 			fTimerSize -= 5.0f;	// タイマーを上げ続ける
-			if (fTimerSize <= -TIMER_HARFSIZE_Y) fTimerSize = -TIMER_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
+			if (fTimerSize <= -TIMER_BAR_HARFSIZE_Y) fTimerSize = -TIMER_BAR_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
 		}
 	}
 
 	// 制限時間頂点情報の更新
-	vtxTimer[0] = { { -TIMER_HARFSIZE_X ,	fTimerSize,			0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[1] = { { -TIMER_HARFSIZE_X ,	TIMER_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[2] = { {  TIMER_HARFSIZE_X	,	fTimerSize,			0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[3] = { {  TIMER_HARFSIZE_X	,	TIMER_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f} };
-	m_pVtxTimer = CreateVertexBuffer(vtxTimer, 4);
+	vtxTimer[0][0] = { { -TIMER_BAR_HARFSIZE_X ,	fTimerSize,			0.0f },	{ 0.0f, 0.0f} };
+	vtxTimer[0][1] = { { -TIMER_BAR_HARFSIZE_X ,	TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f} };
+	vtxTimer[0][2] = { {  TIMER_BAR_HARFSIZE_X	,	fTimerSize,			0.0f },	{ 1.0f, 0.0f} };
+	vtxTimer[0][3] = { {  TIMER_BAR_HARFSIZE_X	,	TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f} };
+	m_pVtxTimer[0] = CreateVertexBuffer(vtxTimer[0], 4);
 }
 
 void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)
