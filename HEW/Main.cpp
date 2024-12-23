@@ -21,6 +21,7 @@
 
 //--- グローバル変数
 E_SCENE_TYPE g_SceneType;
+CStageSelect* g_pSceneSelect;
 Camera* g_Camera;
 IXAudio2SourceVoice* g_pSourseTitleSE;
 RenderTarget* pRTV;
@@ -91,7 +92,7 @@ void Update()
 	{
 	case SCENE_TITLE:UpdateSceneTitle();
 		break;
-	case STAGE_SELECT:UpdateStageSelect();
+	case STAGE_SELECT:g_pSceneSelect->UpdateStageSelect();
 		break;
 	case SCENE_GAME:UpdateSceneGame();
 		break;
@@ -176,7 +177,7 @@ void Draw()
 	{
 	case SCENE_TITLE:DrawSceneTitle();
 		break;
-	case STAGE_SELECT:DrawStageSelect();
+	case STAGE_SELECT:g_pSceneSelect->DrawStageSelect();
 		break;
 	case SCENE_GAME:DrawSceneGame();
 		break;
@@ -219,7 +220,9 @@ void ChangeScene(E_SCENE_TYPE next)
 	switch (g_SceneType)
 	{
 	case(SCENE_TITLE):UninitSceneTitle();	break;
-	case(STAGE_SELECT):UninitStageSelect(); break;
+	case(STAGE_SELECT):delete g_pSceneSelect;
+		g_pSceneSelect = nullptr;
+		break;
 	case(SCENE_GAME):UninitSceneGame();		break;
 	case(SCENE_RESULT):UninitResult();		break;
 	case SCENE_DEBUGROOM:UninitSceneDebug(); break;
@@ -233,8 +236,8 @@ void ChangeScene(E_SCENE_TYPE next)
 	switch (g_SceneType)
 	{
 	case(SCENE_TITLE):InitSceneTitle();				break;
-	case(STAGE_SELECT):InitStageSelect();			break;
-	case(SCENE_GAME):InitSceneGame(GetStageNum());	break;
+	case(STAGE_SELECT):g_pSceneSelect = new CStageSelect();			break;
+	case(SCENE_GAME):InitSceneGame(g_pSceneSelect->GetStageNum());	break;
 	case(SCENE_RESULT):InitResult();				break;
 	case SCENE_DEBUGROOM:InitSceneDebug(); break;
 	default:break;
