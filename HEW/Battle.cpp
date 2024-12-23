@@ -1258,7 +1258,7 @@ void CBattle::CreateLeader(void)
 //味方を角数別にカウントしたものの描画処理
 void CBattle::CreateAllyLogDraw(void)
 {
-	float fPosX[3] = {-1600.0f,-1700.0f,-1800.0f};
+	float fPosX[3] = {-1800.0f,-1700.0f,-1600.0f};
 	float fPosY = 0.0f;
 
 	//生存数のカウント
