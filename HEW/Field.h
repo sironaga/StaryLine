@@ -6,12 +6,12 @@
 
 class Field
 {
-public:
-	enum ModelName
-	{
-		TILELOW_FOREST = 0,
-		MODEL_END
-	};
+public:enum ModelName
+{
+	STAGE_DESERTd = 0,
+	MODEL_END
+};
+	
 	struct FieldModel
 	{
 		DirectX::XMFLOAT3 m_Pos;
