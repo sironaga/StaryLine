@@ -224,6 +224,8 @@ CFighter::CFighter(int InCornerCount)
 	, m_pSourceAttack(nullptr)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
+	, m_bAttackEffectPlay(false)
+	, m_fEffectTimer(0.0f)
 	, m_pModel(nullptr)
 {
 	//サウンドの設定
@@ -544,9 +546,10 @@ void CAlly::BattleUpdate(void)
 	if (m_bIsAttack)
 	{
 		//攻撃エフェクト
-		if (m_pEffect[(int)FighterEffect::Attack]->GetEffectNum() < MAX_EFFECT)
+		if (!m_bAttackEffectPlay)
 		{
-			//m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z/2}, 60);
+			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
+			m_bAttackEffectPlay = true;
 		}
 		//攻撃音
 		if (!m_bTimeSoundStart)
@@ -567,6 +570,16 @@ void CAlly::BattleUpdate(void)
 			//アニメーションの時間が最大以上になったら初期化する
 			if (m_fAtkAnimationMaxTime <= m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
+	}
+	//攻撃エフェクトの再生時間
+	if (m_bAttackEffectPlay)
+	{
+		m_fEffectTimer++;
+	}
+	if (m_fEffectTimer > 60.0f)
+	{
+		m_fTimeSound = 0.0f;
+		m_bAttackEffectPlay = false;
 	}
 	//攻撃音の再生時間
 	if (m_bTimeSoundStart)
