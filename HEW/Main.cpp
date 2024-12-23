@@ -1,5 +1,6 @@
-#include "Main.h"
+// --- Include
 #include <memory>
+#include "Main.h"
 #include "DirectX.h"
 #include "Geometory.h"
 #include "Sprite.h"
@@ -66,20 +67,26 @@ void Uninit()
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
+
 	//delete g_mainsound;
 	//g_mainsound = nullptr;
+
 	LibEffekseer::Uninit();
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
+
 	//g_pSourseTitleSE = nullptr;
 }
 
 void Update()
 {
+	// --- 入力情報の更新
 	Controller_Update();
 	UpdateInput();
+	// --- カメラ情報の更新
 	g_Camera->Update();
+	// --- ゲームモードによる分岐処理
 	switch (g_SceneType)
 	{
 	case SCENE_TITLE:UpdateSceneTitle();
@@ -101,6 +108,7 @@ void Update()
 
 void Draw()
 {
+	// --- 描画処理
 	BeginDrawDirectX();
 
 	// 軸線の表示
@@ -163,6 +171,7 @@ void Draw()
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
+
 	switch (g_SceneType)
 	{
 	case SCENE_TITLE:DrawSceneTitle();
@@ -180,15 +189,17 @@ void Draw()
 	default:
 		break;
 	}
+
 	LibEffekseer::Draw();
+
 	EndDrawDirectX();
 }
-
+// --- View情報のゲッター　XMFLOAT4*4
 DirectX::XMFLOAT4X4 GetView(bool isTranspose)
 {
 	return g_Camera->GetViewMatrix(isTranspose);
 }
-
+// --- rojectionMatrix情報のゲッター　XMFLOAT4*4
 DirectX::XMFLOAT4X4 GetProj(bool isTranspose)
 {
 	return g_Camera->GetProjectionMatrix(isTranspose);
