@@ -1148,13 +1148,13 @@ void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 		break;
 	case CHpUI::Bos:
 		m_tUIPos.x = InPos.x + 8.0f;
-		m_tUIPos.y = InPos.y + InSizeY - 34.8f;
+		m_tUIPos.y = InPos.y + 20.0f - 34.8f;
 		m_tUIPos.z = InPos.z;
 		HpRatio = (InHp / m_fFullHp) * 95.0f;
 		break;
 	case CHpUI::Player:
 		m_tUIPos.x = InPos.x - 8.0f;
-		m_tUIPos.y = InPos.y + InSizeY - 34.8f;
+		m_tUIPos.y = InPos.y + 20.0f - 34.8f;
 		m_tUIPos.z = InPos.z;
 		HpRatio = (InHp / m_fFullHp) * 95.0f;
 		break;
