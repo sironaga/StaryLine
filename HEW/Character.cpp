@@ -220,7 +220,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_tPos{ 0.0f, 0.0f, 0.0f }
 	, m_tOldPos{ 0.0f,0.0f,0.0f }
 	, m_tSize{ NORMAL_SIZE ,NORMAL_SIZE ,NORMAL_SIZE }
-	, m_nCornerCount(0)
+	, m_nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
 	, m_fAtk(0.0f)
 	, m_fAtkCharge(0.0f)
@@ -239,21 +239,6 @@ CFighter::CFighter(int InCornerCount)
 	, m_bTimeSoundStart(false)
 	, m_pModel(nullptr)
 {
-	//Šp”‚Ì•â³‚Æ‰Šú‰»
-	switch (InCornerCount)
-	{
-	case 3:
-	case 5:
-	case 7:
-		m_nCornerCount = 3;
-		break;
-	case 4:
-	case 6:
-	case 8:
-		m_nCornerCount = 4;
-		break;
-	}
-
 	//ƒTƒEƒ“ƒh‚ÌÝ’è
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
 	XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
