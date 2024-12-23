@@ -545,6 +545,16 @@ void CAlly::BattleUpdate(void)
 	//攻撃していたら
 	if (m_bIsAttack)
 	{
+		//攻撃チャージが攻撃アニメーションの時間を引いたMAX数値分たまっているかどうか
+		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
+		{
+			//アニメーション処理
+
+			//アニメーションの時間の加算
+			m_fAtkAnimationTime++;
+			//アニメーションの時間が最大以上になったら初期化する
+			if (m_fAtkAnimationMaxTime <= m_fAtkCharge)m_fAtkAnimationTime = 0;
+		}
 		//攻撃エフェクト
 		if (!m_bAttackEffectPlay)
 		{
@@ -556,19 +566,9 @@ void CAlly::BattleUpdate(void)
 		{
 			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
 			m_pSourceAttack->SubmitSourceBuffer(&buffer);
-			if(m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
+			if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
 			m_pSourceAttack->Start();
 			m_bTimeSoundStart = true;
-		}
-		//攻撃チャージが攻撃アニメーションの時間を引いたMAX数値分たまっているかどうか
-		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
-		{
-			//アニメーション処理
-
-			//アニメーションの時間の加算
-			m_fAtkAnimationTime++;
-			//アニメーションの時間が最大以上になったら初期化する
-			if (m_fAtkAnimationMaxTime <= m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 	}
 	//攻撃エフェクトの再生時間
@@ -691,6 +691,8 @@ CEnemy::CEnemy(int InCornerCount)
 		m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
 		break;
 	}
+	//攻撃エフェクトのポインタ同期
+	m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::FighterAttack];
 }
 
 CEnemy::~CEnemy()
@@ -712,7 +714,12 @@ void CEnemy::Update(void)
 		break;
 	}
 
-	//m_pEffect->Update();
+	//エフェクトの更新
+	for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	{
+		if (m_pEffect[i])
+			m_pEffect[i]->Update();
+	}
 }
 
 void CEnemy::Draw(void)
@@ -762,6 +769,12 @@ void CEnemy::Draw(void)
 			m_pModel->Draw(i);
 		}
 	}
+	//エフェクトの描画
+	for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	{
+		if (m_pEffect[i])
+			m_pEffect[i]->Draw();
+	}
 }
 
 void CEnemy::CreateUpdate(void)
@@ -777,16 +790,6 @@ void CEnemy::BattleUpdate(void)
 {
 	if (m_bIsAttack)
 	{
-		//攻撃音
-		if (!m_bTimeSoundStart)
-		{
-			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
-			m_pSourceAttack->SubmitSourceBuffer(&buffer);
-			if(m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
-			m_pSourceAttack->Start();
-			m_bTimeSoundStart = true;
-		}
-		
 		if (m_fAtkCharge >= m_fAtkChargeMax - m_fAtkAnimationMaxTime)
 		{
 
@@ -795,6 +798,31 @@ void CEnemy::BattleUpdate(void)
 			m_fAtkAnimationTime++;
 			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
+		//攻撃エフェクト
+		if (!m_bAttackEffectPlay)
+		{
+			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
+			m_bAttackEffectPlay = true;
+		}
+		//攻撃音
+		if (!m_bTimeSoundStart)
+		{
+			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->SubmitSourceBuffer(&buffer);
+			if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
+			m_pSourceAttack->Start();
+			m_bTimeSoundStart = true;
+		}
+	}
+	//攻撃エフェクトの再生時間
+	if (m_bAttackEffectPlay)
+	{
+		m_fEffectTimer++;
+	}
+	if (m_fEffectTimer > 60.0f)
+	{
+		m_fTimeSound = 0.0f;
+		m_bAttackEffectPlay = false;
 	}
 	//攻撃音の再生時間
 	if(m_bTimeSoundStart)
