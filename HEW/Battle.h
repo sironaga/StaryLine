@@ -91,7 +91,7 @@ private:
 	//保存した味方の情報数
 	int m_nAllyDateCount;
 	//現在生成している味方の種類別カウント変数
-	int m_nAllyTypes[6];
+	int m_nAllyTypes[2];
 public:
 	//味方カウントのGet
 	int GetAllyCount(void) { return m_nAllyCount; }	
@@ -112,7 +112,7 @@ private:
 	//保存した敵の情報数
 	int m_nEnemyDateCount[MAX_PATTERN];
 	//現在生成している敵の種類別カウント変数
-	int m_nEnemyTypes[3];
+	int m_nEnemyTypes[2];
 	//生成してほしい数
 	int m_nCreateEnemyNum;
 public:

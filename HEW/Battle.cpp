@@ -68,7 +68,7 @@ CBattle::CBattle()
 	: m_pAlly{}
 	, m_nAllyCount(0)
 	, m_nAllyDateCount(0)
-	, m_nAllyTypes{ 0,0,0,0,0,0 }
+	, m_nAllyTypes{ 0,0}
 	, m_pEnemy{}
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
@@ -77,7 +77,7 @@ CBattle::CBattle()
 	, m_nCreateEnemyNum(0)
 	, m_pAllyLeader(nullptr)
 	, m_pEnemyLeader(nullptr)
-	, m_nEnemyTypes{ 0,0,0 }
+	, m_nEnemyTypes{ 0,0 }
 	, m_nBattleTime(0)
 	, m_bFirstFight(false)
 	, m_nFirstPosPattern(0)
@@ -424,6 +424,8 @@ void CBattle::Draw(void)
 	{
 		m_pEnemyLeader->HpDraw();
 	}
+	CreateEnemyLogDraw();
+	CreateAllyLogDraw();
 }
 
 //味方の情報保存処理
@@ -727,58 +729,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 	float comparison;
 	//移動したかどうか(していたらfalse)
 	bool bMove = true;
-	//if (Entity == Entity::Ally)
-	//{
-	//	for (int j = 0; j < MAX_ALLY; j++)
-	//	{
-	//		//存在しているか確認
-	//		if (!m_pAlly[j])continue;
-	//		//自分と同じ番号の場合は処理しない
-	//		if (i == j)continue;
-	//		comparison = sqrtf(powf(m_pAlly[i]->GetPos().x - m_pAlly[j]->GetPos().x, 2) + powf(m_pAlly[i]->GetPos().z - m_pAlly[j]->GetPos().z, 2));
-	//		if (comparison < 1.0f && m_pAlly[j]->m_MoveFlag == true)
-	//		{
-	//			bMove = false;
-	//			m_pAlly[i]->m_MoveFlag = false;
-	//			m_pAlly[j]->m_MoveFlag = false;
-	//			//j = MAX_ALLY;
-	//			//m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).x);
-	//			//m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).z);
-	//		}
-	//		else
-	//		{
-	//			m_pAlly[i]->m_MoveFlag = true;
-	//			m_pAlly[j]->m_MoveFlag = true;
-	//		}
 
-	//	}
-	//}
-	//else
-	//{
-	//	for (int j = 0; j < MAX_ENEMY; j++)
-	//	{
-	//		//存在しているか確認
-	//		if (!m_pEnemy[j])continue;
-	//		//自分と同じ番号の場合は処理しない
-	//		if (i == j)continue;
-	//		comparison = sqrtf(powf(m_pEnemy[i]->GetPos().x - m_pEnemy[j]->GetPos().x, 2) + powf(m_pEnemy[i]->GetPos().z - m_pEnemy[j]->GetPos().z, 2));
-	//		if (comparison < 1.0f && m_pEnemy[j]->m_MoveFlag == true)
-	//		{
-	//			bMove = false;
-	//			m_pEnemy[i]->m_MoveFlag = false;
-	//			m_pEnemy[j]->m_MoveFlag = true;
-	//			//j = MAX_ENEMY;
-	//			//m_pAlly[i]->AddPosX(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).x);
-	//			//m_pAlly[i]->AddPosZ(MoveCalculation(m_pAlly[i]->GetPos(), m_tMovePos).z);
-	//		}
-	//		else
-	//		{
-	//			m_pEnemy[i]->m_MoveFlag = true;
-	//			m_pEnemy[j]->m_MoveFlag = false;
-	//		}
-
-	//	}
-	//}
 	//Z軸順に確認
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
@@ -1283,7 +1234,7 @@ void CBattle::CreateLeader(void)
 		//Z座標を設定
 		InFirstPos.z = ALLYCORE_POSZ;
 		//味方のリーダーを生成
-		m_pAllyLeader = new CLeader(2.0f, InFirstPos, 0);
+		m_pAllyLeader = new CLeader(0.5f, InFirstPos, 0);
 	}
 	//敵のリーダーがnullptrだったら
 	if (m_pEnemyLeader == nullptr)
@@ -1298,13 +1249,9 @@ void CBattle::CreateLeader(void)
 		//Z座標を設定
 		BossFirstPos.z = ENEMYBOSSCORE_POSZ;
 		//敵のリーダーを生成
-		m_pEnemyLeader = new CLeader(2.0f, BossFirstPos, 1);
+		m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1);
 	}
 }
-
-/*＝＝＝＝＝＝＝＝＝＝*/
-/*	デバック画面処理  */
-/*＝＝＝＝＝＝＝＝＝＝*/
 
 /*＝＝＝＝＝バトル用＝＝＝＝＝*/
 
@@ -1314,53 +1261,54 @@ void CBattle::CreateAllyLogDraw(void)
 	float fPosX[3] = {-1600.0f,-1700.0f,-1800.0f};
 	float fPosY = 0.0f;
 
+	//生存数のカウント
 	CreateAllyLog();
 
+	//桁数別に数字テクスチャを指定を種類分行う
 	for (int i = 0; i < 2; i++)
 	{
 		int nDigits = 0;	//桁数
 		int nNumbers[3];
 
-
+		//一桁
 		if (m_nAllyTypes[i] < 10)
 		{
+			//桁数
 			nDigits = 1;
+			//一の桁のテクスチャ番号を指定
 			nNumbers[0] = m_nAllyTypes[i];
 		}
+		//二桁
 		if (m_nAllyTypes[i] > 9 && m_nAllyTypes[i] < 100)
 		{
+			//桁数
 			nDigits = 2;
+			//一の桁のテクスチャ番号を指定
 			nNumbers[1] = m_nAllyTypes[i] % 10;
+			//十の桁のテクスチャ番号を指定
 			nNumbers[0] = (m_nAllyTypes[i] / 10) % 10;
 		}
+		//三桁
 		if (m_nAllyTypes[i] > 99 && m_nAllyTypes[i] < 1000)
 		{
+			//桁数
 			nDigits = 3;
+			//一の桁のテクスチャ番号を指定
 			nNumbers[2] = m_nAllyTypes[i] % 10;
+			//十の桁のテクスチャ番号を指定
 			nNumbers[1] = (m_nAllyTypes[i] / 10) % 10;
+			//百の桁のテクスチャ番号を指定
 			nNumbers[0] = m_nAllyTypes[i] / 100;
 		}
-
+		//表示するY軸の高さ指定
 		switch (i)
 		{
 		case 0:
-				fPosY = -800;
+				fPosY =  050;
 			break;
 		case 1:
-				fPosY = -500;
+				fPosY = -100;
 			break;
-		//case 2:
-		//		fPosY = -200;
-		//	break;
-		//case 3:
-		//		fPosY = 200;
-		//	break;
-		//case 4:
-		//		fPosY = 500;
-		//	break;
-		//case 5:
-		//		fPosY = 800;
-		//	break;
 		}
 
 		for (int l = 0; l < nDigits; l++)
@@ -1392,43 +1340,51 @@ void CBattle::CreateEnemyLogDraw(void)
 	float fPosX[3] = {1600.0f,1700.0f,1800.0f};
 	float fPosY = 0.0f;
 
+	//生存数のカウント
 	CreateEnemyLog();
 
-	for (int i = 0; i < 3; i++)
+	//桁数別に数字テクスチャを指定を種類分行う
+	for (int i = 0; i < 2; i++)
 	{
-		int nDigits = 0;	//桁数
+		//桁数
+		int nDigits = 0;
 		int nNumbers[3];
-
 
 		if (m_nEnemyTypes[i] < 10)
 		{
+			//桁数
 			nDigits = 1;
+			//一の桁のテクスチャ番号を指定
 			nNumbers[0] = m_nEnemyTypes[i];
 		}
 		if (m_nEnemyTypes[i] > 9 && m_nEnemyTypes[i] < 100)
 		{
+			//桁数
 			nDigits = 2;
+			//一の桁のテクスチャ番号を指定
 			nNumbers[1] = m_nEnemyTypes[i] % 10;
+			//十の桁のテクスチャ番号を指定
 			nNumbers[0] = (m_nEnemyTypes[i] / 10) % 10;
 		}
 		if (m_nEnemyTypes[i] > 99 && m_nEnemyTypes[i] < 1000)
 		{
+			//桁数
 			nDigits = 3;
+			//一の桁のテクスチャ番号を指定
 			nNumbers[2] = m_nEnemyTypes[i] % 10;
+			//十の桁のテクスチャ番号を指定
 			nNumbers[1] = (m_nEnemyTypes[i] / 10) % 10;
+			//百の桁のテクスチャ番号を指定
 			nNumbers[0] = m_nEnemyTypes[i] / 100;
 		}
-
+		//表示するY軸の高さ指定
 		switch (i)
 		{
 		case 0:
-				fPosY = -800;
+			fPosY = 050;
 			break;
 		case 1:
-				fPosY = -500;
-			break;
-		case 2:
-				fPosY = -200;
+			fPosY = -100;
 			break;
 		}
 
@@ -1506,10 +1462,6 @@ void CBattle::SaveAllyLog(void)
 {
 	m_nAllyTypes[0] = 0;
 	m_nAllyTypes[1] = 0;
-	//m_nAllyTypes[2] = 0;
-	//m_nAllyTypes[3] = 0;
-	//m_nAllyTypes[4] = 0;
-	//m_nAllyTypes[5] = 0;
 	for (int i = 0; i < m_nAllyDateCount; i++)
 	{
 		switch (m_tAllyData[i].nCornerCount)
@@ -1520,18 +1472,6 @@ void CBattle::SaveAllyLog(void)
 		case 4:
 			m_nAllyTypes[1]++;
 			break;
-		//case 5:
-		//	m_nAllyTypes[2]++;
-		//	break;
-		//case 6:
-		//	m_nAllyTypes[3]++;
-		//	break;
-		//case 7:
-		//	m_nAllyTypes[4]++;
-		//	break;
-		//case 8:
-		//	m_nAllyTypes[5]++;
-		//	break;
 		}
 	}
 }
@@ -1576,18 +1516,6 @@ void CBattle::SaveAllyLogDraw(void)
 		case 1:
 			fPosY = -700;
 			break;
-		//case 2:
-		//	fPosY = -500;
-		//	break;
-		//case 3:
-		//	fPosY = -300;
-		//	break;
-		//case 4:
-		//	fPosY = -100;
-		//	break;
-		//case 5:
-		//	fPosY = 100;
-		//	break;
 		}
 
 		for (int l = 0; l < nDigits; l++)
