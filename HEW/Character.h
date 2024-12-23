@@ -129,7 +129,8 @@ protected:
 
 	CHpUI* m_pHpGage;	//体力ゲージ
 	CEffectManager* m_pEffect[(int)FighterEffect::MAX]; //エフェクト関係
-
+	float m_fEffectTimer;
+	bool m_bAttackEffectPlay;//エフェクトのPlayを実行したかどうか
 protected:
 	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
 	float m_fTimeSound;
