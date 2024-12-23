@@ -16,7 +16,7 @@ Field::Field()
 	{
 		switch (i)
 		{
-		case TILELOW_FOREST:if (!m_pModel[i]->Load("Assets/Model/Stage/Stage02_Desert.fbx", 1.0f/*”{—¦Žw’è */, Model::XFlip/*”½“]Ý’è*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+		case STAGE_DESERTd:if (!m_pModel[i]->Load("Assets/Model/Stage/Stage02_Desert.fbx", 1.0f/*”{—¦Žw’è */, Model::XFlip/*”½“]Ý’è*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 		//case TILELOW_FOREST:if (!m_pModel[i]->Load("Assets/Model/LowPolyNature/Rock_02.fbx", 0.01f/*”{—¦Žw’è */, Model::XFlip/*”½“]Ý’è*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		default:
@@ -50,7 +50,7 @@ void Field::FieldModelInit(FieldModel* InModel, int MaxModel)
 		//pModel->m_Scale = DirectX::XMFLOAT3(300.0f, 300.0f, 300.0f);
 		pModel->m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 		pModel->m_Use = true;
-		pModel->m_Model = TILELOW_FOREST;
+		pModel->m_Model = STAGE_DESERTd;
 	}
 }
 
