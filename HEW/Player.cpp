@@ -10,7 +10,7 @@
 
 // defines
 #define BRUSH_SPEED (0.5f)	// 移動速度
-#define BRUSH_SPEED_FEVER (1.0f)	// フィーバータイム中の移動速度
+#define BRUSH_SPEED_FEVER (0.5f)	// フィーバータイム中の移動速度
 
 // constans
 constexpr float BRUSH_AJUSTPOS_X = 3.0f;		// プレイヤー(筆)の横座標補正値
