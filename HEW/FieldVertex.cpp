@@ -865,7 +865,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				}
 				//凹角形判定
 				bool BadShapes = false;
-				if (Count != 3 && !(Count > 8))
+				if (Count != 3 && !(Count > 4))
 				{
 					DirectX::XMFLOAT2 FastVector;//先のベクトル
 					DirectX::XMFLOAT2 SecondVector;//後のベクトル
@@ -875,10 +875,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					int AngleCount = 0;
 					float Error = 0.01;//誤差
 					Fill(AngleSave, -1);
-					if (Count == 5)
-					{
-						Count = Count;
-					}
+
 					for (int l = 2; l < MAX_VERTEX; l++)
 					{
 						int m = 0;
@@ -972,7 +969,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 					}
 				}
-				if (Count > 8)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
+				if (Count > 4)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
 				/*if (BadShapes)
 				{
 					MessageBox(NULL, "凹角形でちゃった(はーと)","バカな君へ", MB_OK);
