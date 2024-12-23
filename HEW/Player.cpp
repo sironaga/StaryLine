@@ -10,6 +10,7 @@
 
 // defines
 #define BRUSH_SPEED (0.5f)	// 移動速度
+#define BRUSH_SPEED_FEVER (1.0f)	// フィーバータイム中の移動速度
 
 // constans
 constexpr float BRUSH_AJUSTPOS_X = 3.0f;		// プレイヤー(筆)の横座標補正値
@@ -129,13 +130,13 @@ void CPlayer::Update()
 		g_WalkSe->FlushSourceBuffers();
 		g_WalkSe->SubmitSourceBuffer(&buffer);
 	}
-	// エフェクトのテスト
-	if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
-	{
-		m_pEffect->Play(m_tBrushPos,120);
-	}
+	//// エフェクトのテスト
+	//if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
+	//{
+	//	m_pEffect->Play(m_tBrushPos,120);
+	//}
 
-	m_pEffect->Update();
+	//m_pEffect->Update();
 
 }
 
@@ -174,7 +175,7 @@ void CPlayer::Draw()
 
 	/* エフェクトの描画 */
 	SetRender3D();											// 3D表現のセット
-	m_pEffect->Draw();
+	//m_pEffect->Draw();
 }
 
 void CPlayer::UpdateStop()
@@ -225,9 +226,8 @@ void CPlayer::UpdateStop()
 
 void CPlayer::UpdateMove()
 {
-	if (m_pFieldVtx->GetFeverPoint())
-
-
+	if (GetFeverMode())m_fBrushSpeed = BRUSH_SPEED_FEVER;
+	else m_fBrushSpeed = BRUSH_SPEED;
 
 	// 各種方向別移動処理
 	switch (m_eDestination)
