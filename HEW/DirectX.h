@@ -38,8 +38,6 @@ typedef struct
 	DWORD fpsTime;
 }FPSTIMER;
 
-
-
 #define SAFE_DELETE(p)			do{if(p){delete p; p = nullptr;}}while(0)
 #define SAFE_DELETE_ARRAY(p)	do{if(p){delete[] p; p = nullptr;}}while(0)
 #define SAFE_RELEASE(p)			do{if(p){p->Release(); p = nullptr;}}while(0)
@@ -90,6 +88,7 @@ void SetCullingMode(D3D11_CULL_MODE cull);
 void SetDepthTest(bool enable);
 void SetBlendMode(BlendMode blend);
 void SetSamplerState(SamplerState state);
+void SetFullscreenSwap();
 ID3D11Buffer* CreateVertexBuffer(void* vtxData, UINT vtxNum);
 
 #define SECONDS(sec) (1000 * sec)

@@ -273,3 +273,10 @@ ID3D11Buffer* CreateVertexBuffer(void* vtxData, UINT vtxNum)
 	if (FAILED(hr)) { return nullptr; }
 	return pVtxBuf;
 }
+
+void SetFullscreenSwap()
+{
+	static bool b = false;
+	b ^= true;
+	g_pSwapChain->SetFullscreenState(b, NULL);
+}
