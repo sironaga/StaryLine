@@ -7,6 +7,7 @@ class CModelEx
 {
 public:
 	CModelEx(const char *ModelFile, bool isAnime = false);
+	CModelEx(Model* InData);
 	~CModelEx();
 	void Draw();
 	void SetViewMatrix(DirectX::XMFLOAT4X4 Camera);

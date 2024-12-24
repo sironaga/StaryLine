@@ -36,6 +36,11 @@ CModelEx::CModelEx(const char *ModelFile, bool isAnime)
 	wvp[2] = ProjectionMatrix;
 }
 
+CModelEx::CModelEx(Model* InData)
+{
+	CModel = InData;
+}
+
 CModelEx::~CModelEx()
 {
 	if (CModel)
