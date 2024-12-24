@@ -56,6 +56,7 @@ void CEffectManager::Update()
 			if (itr->startTime >= itr->duration)
 			{
 				m_Manager->Get()->StopEffect(itr->m_Handle);
+				(itr)->m_Handle = NULL;
 				itr = m_effects.erase(itr);
 
 				continue;
