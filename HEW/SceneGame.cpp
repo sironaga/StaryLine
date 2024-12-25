@@ -74,7 +74,8 @@ void InitSceneGame(int StageNum)
 	//‰¹‚ÌÄ¶
 	if (g_pSourseGameBGM)SetVolumeBGM(g_pSourseGameBGM);
 	g_pSourseGameBGM->Start();
-	
+	g_FeverSound = new CSoundList(BGM_FEVER);
+	g_pSourseFeverBGM = g_FeverSound->GetSound(true);
 }
 
 //I—¹ˆ—
@@ -145,11 +146,12 @@ void UpdateSceneGame()
 		t = g_pFieldVertex->GetFeverPoint();
 		if (t == 30.0f)
 		{
-			g_FeverSound = new CSoundList(BGM_FEVER);
-			g_pSourseFeverBGM = g_FeverSound->GetSound(true);
-			if (g_pSourseFeverBGM)SetVolumeBGM(g_pSourseFeverBGM);
-			g_pSourseFeverBGM->SetVolume(4);
 			g_pSourseGameBGM->Stop();
+			g_pSourseFeverBGM->FlushSourceBuffers();
+			XAUDIO2_BUFFER buffer;
+			buffer = g_FeverSound->GetBuffer(true);
+			g_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
+			if (g_pSourseFeverBGM)SetVolumeBGM(g_pSourseFeverBGM);
 			g_pSourseFeverBGM->Start();
 			Phase = true;
 			Fever = true;
@@ -273,9 +275,9 @@ void DrawSceneGame()
 		if (g_pSourseFeverBGM)
 		{
 			g_pSourseFeverBGM->Stop();
-			g_pSourseFeverBGM = nullptr;
+			//g_pSourseFeverBGM = nullptr;
 		}
-		SAFE_DELETE(g_FeverSound);
+		//SAFE_DELETE(g_FeverSound);
 		g_pSourseGameBGM->Start();
 		Fever = false;
 	}
