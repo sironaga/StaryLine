@@ -86,8 +86,8 @@ void InitCharacterTexture(CFieldVertex* InAddress,int StageNum)
 	{
 		g_pEnemyModel[i] = new Model();
 	}
-	g_pEnemyModel[(int)Enemy::Enemy1]->Load("Assets/Model/Character/Square/Square.fbx", 0.05f, Model::XFlip);
-	g_pEnemyModel[(int)Enemy::Enemy2]->Load("Assets/Model/Character/Triangle/Triangle.fbx", 0.05f, Model::XFlip);
+	g_pEnemyModel[(int)Enemy::Enemy1]->Load("Assets/Model/Character/EnemyAxe/Idiot01.fbx", 0.05f, Model::XFlip);
+	g_pEnemyModel[(int)Enemy::Enemy2]->Load("Assets/Model/Character/EnemyBow/Idiot02.fbx", 0.05f, Model::XFlip);
 
 	/*LinieŠÖ˜A‚ÌModel“Ç‚İ‚İ*/
 	//HpƒQ[ƒW
