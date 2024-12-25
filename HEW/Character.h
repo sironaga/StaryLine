@@ -110,7 +110,6 @@ public:
 	int m_nTargetNumber;			//標的の選別番号
 	bool m_bIsAttack;				//攻撃しているかどうか
 	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
-	bool m_MoveFlag;//移動したか
 protected:
 	Status m_tStatus;				//ステータス状態
 	Collision m_tSearchCollision;	//索敵当たり判定
@@ -126,6 +125,9 @@ protected:
 	float m_fAtkAnimationTime;		//攻撃アニメーションの時間
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
 	bool m_bIsHit;					//攻撃を受けたかの判定
+
+	bool m_bMoveFlag;//移動したか
+	DirectX::XMFLOAT3 m_tDestinationPos;//目的地
 
 	CHpUI* m_pHpGage;	//体力ゲージ
 	CEffectManager* m_pEffect[(int)FighterEffect::MAX]; //エフェクト関係
@@ -167,9 +169,18 @@ public:
 	void SetPosY(float InPosY) { m_tPos.y = InPosY; }
 	//位置Z座標のSet
 	void SetPosZ(float InPosZ) { m_tPos.z = InPosZ; }
-
 	//位置座標のGet
 	DirectX::XMFLOAT3 GetPos(void) { return m_tPos; }
+
+	//移動フラグのSet
+	void SetMoveFlag(bool flag) { m_bMoveFlag = flag; }
+	//移動フラグのGet
+	bool GetMoveFlag(void) { return m_bMoveFlag; }
+
+	//目的地のSet
+	void SetDestinationPos(DirectX::XMFLOAT3 pos) { m_tDestinationPos = pos; }
+	//目的地のGet
+	DirectX::XMFLOAT3 GetDestinationPos(void) { return m_tDestinationPos; }
 
 	//サイズのGet
 	DirectX::XMFLOAT3 GetSize(void) { return m_tSize; }
