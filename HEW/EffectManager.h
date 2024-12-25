@@ -20,10 +20,10 @@ public:
 	void SetPos(DirectX::XMFLOAT3 pos);
 	int GetEffectNum();
 private:
-	Effekseer::ManagerRef m_Man;
-	Effekseer::EffectRef m_Ef;
-	Effekseer::ManagerRef* m_Manager;
-	Effekseer::EffectRef* m_Effect;
+	Effekseer::ManagerRef m_Manager;
+	Effekseer::EffectRef m_Effect;
+	Effekseer::ManagerRef* m_pManager;
+	Effekseer::EffectRef* m_pEffect;
 	CEffectManager* m_pEffectAddrres;
 	struct Effect 
 	{

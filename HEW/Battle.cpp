@@ -730,6 +730,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 	//移動したかどうか(していたらfalse)
 	bool bMove = true;
 
+
 	//Z軸順に確認
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
@@ -738,7 +739,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 		{
 			/*味方の処理*/
 		case CBattle::Ally:
-			
+
 			//生成順に判定
 			for (int l = 0; l < m_nAllyCount; l++)
 			{
@@ -747,11 +748,14 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				//自分と同じ番号の場合は処理しない
 				if (l == i)continue;
 				//Z軸の範囲判定
-				if (m_pAlly[l]->GetPos().z > Z - 1.0f && m_pAlly[l]->GetPos().z < Z + 1.0f)
+				DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
+				DirectX::XMFLOAT3 AllyPos = m_pAlly[l]->GetPos();
+				DirectX::XMFLOAT3 AllySize = m_pAlly[l]->GetSize();
+				if (AllyPos.z > Z - 1.0f && AllyPos.z < Z + 1.0f)
 				{
 					//中心位置から自分の位置が相手の位置より近いは処理しない
-					float Z1 = m_pAlly[i]->GetPos().z;
-					float Z2 = m_pAlly[l]->GetPos().z;
+					float Z1 = iAllyPos.z;
+					float Z2 = AllyPos.z;
 
 					if (Z1 < 0)Z1 * -1.0f;
 					if (Z2 < 0)Z2 * -1.0f;
@@ -759,7 +763,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 					if (Z1 <= Z2)continue;
 
 					//重なっているか確認
-					if (m_pAlly[i]->OverlapCheck(m_pAlly[l]->GetPos(), m_pAlly[l]->GetSize()))
+					if (m_pAlly[i]->OverlapCheck(AllyPos, AllySize))
 					{
 
 						/*対象の位置の真反対側を補正移動先に指定*/
@@ -769,8 +773,8 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 						if (bMove)
 						{
 							//補正移動先に移動
-							m_pAlly[i]->AddPosX(-MoveCalculation(m_pAlly[i]->GetPos(),m_pAlly[l]->GetPos()).x);
-							m_pAlly[i]->AddPosZ(-MoveCalculation(m_pAlly[i]->GetPos(),m_pAlly[l]->GetPos()).z);
+							m_pAlly[i]->AddPosX(-MoveCalculation(iAllyPos, AllyPos).x);
+							m_pAlly[i]->AddPosZ(-MoveCalculation(iAllyPos, AllyPos).z);
 						}
 						//移動した
 						bMove = false;
@@ -788,12 +792,17 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				if (!m_pEnemy[l])continue;
 				//自分と同じ番号の場合は処理しない
 				if (l == i)continue;
+
+				DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
+				DirectX::XMFLOAT3 EnemyPos = m_pEnemy[l]->GetPos();
+				DirectX::XMFLOAT3 EnemySize = m_pEnemy[l]->GetSize();
+
 				//Z軸の範囲判定
-				if (m_pEnemy[l]->GetPos().z > Z - 1.0f && m_pEnemy[l]->GetPos().z < Z + 1.0f)
+				if (EnemyPos.z > Z - 1.0f && EnemyPos.z < Z + 1.0f)
 				{
 					//中心位置から自分の位置が相手の位置より近いは処理しない
-					float Z1 = m_pEnemy[i]->GetPos().z;
-					float Z2 = m_pEnemy[l]->GetPos().z;
+					float Z1 = iEnemyPos.z;
+					float Z2 = EnemyPos.z;
 
 					if (Z1 < 0)Z1 * -1.0f;
 					if (Z2 < 0)Z2 * -1.0f;
@@ -801,7 +810,7 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 					if (Z1 <= Z2)continue;
 
 					//重なっているか確認
-					if (m_pEnemy[i]->OverlapCheck(m_pEnemy[l]->GetPos(), m_pEnemy[l]->GetSize()))
+					if (m_pEnemy[i]->OverlapCheck(EnemyPos, EnemySize))
 					{
 
 						/*対象の位置の真反対側を補正移動先に指定*/
@@ -811,8 +820,8 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 						if (bMove)
 						{
 							//補正移動先に移動
-							m_pEnemy[i]->AddPosX(-MoveCalculation(m_pEnemy[i]->GetPos(), m_pEnemy[l]->GetPos()).x);
-							m_pEnemy[i]->AddPosZ(-MoveCalculation(m_pEnemy[i]->GetPos(), m_pEnemy[l]->GetPos()).z);
+							m_pEnemy[i]->AddPosX(-MoveCalculation(iEnemyPos, EnemyPos).x);
+							m_pEnemy[i]->AddPosZ(-MoveCalculation(iEnemyPos, EnemyPos).z);
 						}
 						//移動している
 						bMove = false;
@@ -836,13 +845,15 @@ void CBattle::ScopeMove()
 		//存在しているか確認
 		if (!m_pAlly[i])continue;
 
+		float posz = m_pAlly[i]->GetPos().z;
+
 		//奥行きが範囲外		
-		if (m_pAlly[i]->GetPos().z > BATTLE_Z)
+		if (posz > BATTLE_Z)
 		{
 			m_pAlly[i]->SetPosZ(BATTLE_Z);
 		}
 		//手前が範囲外
-		if (m_pAlly[i]->GetPos().z < -BATTLE_Z)
+		if (posz < -BATTLE_Z)
 		{
 			m_pAlly[i]->SetPosZ(-BATTLE_Z);
 		}
@@ -852,13 +863,16 @@ void CBattle::ScopeMove()
 	{
 		//存在しているか確認
 		if (!m_pEnemy[i])continue;
+
+		float posz = m_pEnemy[i]->GetPos().z;
+
 		//奥行きが範囲外
-		if (m_pEnemy[i]->GetPos().z > BATTLE_Z)
+		if (posz > BATTLE_Z)
 		{
 			m_pEnemy[i]->SetPosZ(BATTLE_Z);
 		}
 		//手前が範囲外
-		if (m_pEnemy[i]->GetPos().z < -BATTLE_Z)
+		if (posz < -BATTLE_Z)
 		{
 			m_pEnemy[i]->SetPosZ(-BATTLE_Z);
 		}
