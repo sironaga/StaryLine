@@ -3,7 +3,7 @@
 #include "Main.h"
 #include <stdio.h>
 #include <crtdbg.h>
-
+#include "resource.h"
 
 // timeGetTimeŽü‚è‚ÌŽg—p
 #pragma comment(lib, "winmm.lib")
@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.lpfnWndProc = WndProc;
 	wcex.style = CS_CLASSDC | CS_DBLCLKS;
 	wcex.cbSize = sizeof(WNDCLASSEX);
-	wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hIcon = (HICON)LoadImage(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), 0);
 	wcex.hIconSm = wcex.hIcon;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);

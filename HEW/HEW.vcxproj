@@ -88,6 +88,7 @@
     <ClInclude Include="ModelEx.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="SceneDebug.h" />
     <ClInclude Include="SceneGame.h" />
@@ -106,6 +107,12 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VectorOperator.h" />
     <ClInclude Include="_StructList.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HEW.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
