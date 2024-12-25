@@ -788,99 +788,99 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 	DirectX::XMFLOAT3 m_tMovePos;
 	float comparison;
 
-	//Z軸順に確認
-	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
-	{
+	////Z軸順に確認
+	//for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
+	//{
 		//エンティティ番号別に処理
-		switch (Entity)
+	switch (Entity)
+	{
+		/*味方の処理*/
+	case CBattle::Ally:
+		//生成順に判定
+		for (int l = 0; l < m_nAllyCount; l++)
 		{
-			/*味方の処理*/
-		case CBattle::Ally:
-			//生成順に判定
-			for (int l = 0; l < m_nAllyCount; l++)
+			//存在しているか確認
+			if (!m_pAlly[l])continue;
+			//自分と同じ番号の場合は処理しない
+			if (l == i)continue;
+
+			DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
+			DirectX::XMFLOAT3 AllyPos = m_pAlly[l]->GetPos();
+			DirectX::XMFLOAT3 AllySize = m_pAlly[l]->GetSize();
+
+			////Z軸の範囲判定
+			//if (AllyPos.z > Z - 1.0f && AllyPos.z < Z + 1.0f)
+			//{
+				//自分の位置から圧倒的に離れているものは判定しない
+			if (iAllyPos.x + 1.0f < AllyPos.x || iAllyPos.x - 1.0f > AllyPos.x)continue;
+			if (iAllyPos.z + 1.0f < AllyPos.z || iAllyPos.z - 1.0f > AllyPos.z)continue;
+
+			//中心位置から自分の位置が相手の位置より近いは処理しない
+			float Z1 = iAllyPos.z;
+			float Z2 = AllyPos.z;
+
+			if (Z1 < 0)Z1 * -1.0f;
+			if (Z2 < 0)Z2 * -1.0f;
+
+			if (Z1 <= Z2)continue;
+
+			//重なっているか確認
+			if (m_pAlly[i]->OverlapCheck(AllyPos, AllySize))
 			{
-				//存在しているか確認
-				if (!m_pAlly[l])continue;
-				//自分と同じ番号の場合は処理しない
-				if (l == i)continue;
+				//補正移動先を目的地に移動
+				m_pAlly[i]->SetDestinationPos({ -AllyPos.x,AllyPos.y,-AllyPos.z });
+				//移動フラグを立てる
+				m_pAlly[i]->SetMoveFlag(true);
 
-				DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-				DirectX::XMFLOAT3 AllyPos = m_pAlly[l]->GetPos();
-				DirectX::XMFLOAT3 AllySize = m_pAlly[l]->GetSize();
-
-				//Z軸の範囲判定
-				if (AllyPos.z > Z - 1.0f && AllyPos.z < Z + 1.0f)
-				{
-					//自分の位置から圧倒的に離れているものは判定しない
-					if (iAllyPos.x + 1.0f < AllyPos.x || iAllyPos.x - 1.0f > AllyPos.x)continue;
-					if (iAllyPos.z + 1.0f < AllyPos.z || iAllyPos.z - 1.0f > AllyPos.z)continue;
-
-					//中心位置から自分の位置が相手の位置より近いは処理しない
-					float Z1 = iAllyPos.z;
-					float Z2 = AllyPos.z;
-
-					if (Z1 < 0)Z1 * -1.0f;
-					if (Z2 < 0)Z2 * -1.0f;
-
-					if (Z1 <= Z2)continue;
-
-					//重なっているか確認
-					if (m_pAlly[i]->OverlapCheck(AllyPos, AllySize))
-					{
-						//補正移動先を目的地に移動
-						m_pAlly[i]->SetDestinationPos({ -AllyPos.x,AllyPos.y,-AllyPos.z });
-						//移動フラグを立てる
-						m_pAlly[i]->SetMoveFlag(true);
-
-						return false;
-					}
-				}
+				return false;
 			}
-			break;
-			/*敵の処理*/
-		case CBattle::Enemy:
-			//前から順番に重なっている奴がいないか確認
-			for (int l = 0; l < m_nEnemyCount; l++)
-			{
-				//存在しているか確認
-				if (!m_pEnemy[l])continue;
-				//自分と同じ番号の場合は処理しない
-				if (l == i)continue;
-
-				DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-				DirectX::XMFLOAT3 EnemyPos = m_pEnemy[l]->GetPos();
-				DirectX::XMFLOAT3 EnemySize = m_pEnemy[l]->GetSize();
-
-				//Z軸の範囲判定
-				if (EnemyPos.z > Z - 1.0f && EnemyPos.z < Z + 1.0f)
-				{
-					//自分の位置から圧倒的に離れているものは判定しない
-					if (iEnemyPos.x + 1.0f < EnemyPos.x || iEnemyPos.x - 1.0f > EnemyPos.x)continue;
-					if (iEnemyPos.z + 1.0f < EnemyPos.z || iEnemyPos.z - 1.0f > EnemyPos.z)continue;
-
-					//中心位置から自分の位置が相手の位置より近いは処理しない
-					float Z1 = iEnemyPos.z;
-					float Z2 = EnemyPos.z;
-
-					if (Z1 < 0)Z1 * -1.0f;
-					if (Z2 < 0)Z2 * -1.0f;
-
-					if (Z1 <= Z2)continue;
-
-					//重なっているか確認
-					if (m_pEnemy[i]->OverlapCheck(EnemyPos, EnemySize))
-					{
-						//補正移動先を目的地に移動
-						m_pEnemy[i]->SetDestinationPos({ -EnemyPos.x,EnemyPos.y,-EnemyPos.z });
-						//移動フラグを立てる
-						m_pEnemy[i]->SetMoveFlag(true);
-						
-						return false;
-					}
-				}
-			}
-			break;
+			//}
 		}
+		break;
+		/*敵の処理*/
+	case CBattle::Enemy:
+		//前から順番に重なっている奴がいないか確認
+		for (int l = 0; l < m_nEnemyCount; l++)
+		{
+			//存在しているか確認
+			if (!m_pEnemy[l])continue;
+			//自分と同じ番号の場合は処理しない
+			if (l == i)continue;
+
+			DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
+			DirectX::XMFLOAT3 EnemyPos = m_pEnemy[l]->GetPos();
+			DirectX::XMFLOAT3 EnemySize = m_pEnemy[l]->GetSize();
+
+			////Z軸の範囲判定
+			//if (EnemyPos.z > Z - 1.0f && EnemyPos.z < Z + 1.0f)
+			//{
+				//自分の位置から圧倒的に離れているものは判定しない
+			if (iEnemyPos.x + 1.0f < EnemyPos.x || iEnemyPos.x - 1.0f > EnemyPos.x)continue;
+			if (iEnemyPos.z + 1.0f < EnemyPos.z || iEnemyPos.z - 1.0f > EnemyPos.z)continue;
+
+			//中心位置から自分の位置が相手の位置より近いは処理しない
+			float Z1 = iEnemyPos.z;
+			float Z2 = EnemyPos.z;
+
+			if (Z1 < 0)Z1 * -1.0f;
+			if (Z2 < 0)Z2 * -1.0f;
+
+			if (Z1 <= Z2)continue;
+
+			//重なっているか確認
+			if (m_pEnemy[i]->OverlapCheck(EnemyPos, EnemySize))
+			{
+				//補正移動先を目的地に移動
+				m_pEnemy[i]->SetDestinationPos({ -EnemyPos.x,EnemyPos.y,-EnemyPos.z });
+				//移動フラグを立てる
+				m_pEnemy[i]->SetMoveFlag(true);
+
+				return false;
+			}
+			//}
+		}
+		break;
+		//}
 	}
 
 	//移動をしたかどうかを返す
