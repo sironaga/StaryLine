@@ -42,7 +42,7 @@ public:
 	void InitFieldVertex();
 	void SetSuperStar();
 	void SoundStop();
-	float GetFeverPoint() { return FeverPoint; }
+	float GetFeverPoint() { return nFeverPoint; }
 	void SubtractFeverPoint();
 	void ResetFeverPoint();
 private:
@@ -117,6 +117,7 @@ private:
 	Field* m_pField;
 	StarLine* m_pStarLine;
 	int SuperStarCount;//スーパースターの個数
-	float FeverPoint;//ポイントカウント
+	int nFeverPoint;//ポイントカウント
+	float fFeverPoint;//ポイントをちょっとづつ増やす用
 	float Partition;//分割数
 };

@@ -167,7 +167,7 @@ void UpdateSceneGame()
 		g_pFieldVertex->SetSuperStar();
 	}*/
 
-	g_pPlayer->Update();
+ 	g_pPlayer->Update();
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
 	if (((float)SHAPE_DRAW_START * 60.0f + g_tTime.GameSTimeSycleEnd <= g_tTime.GameTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
