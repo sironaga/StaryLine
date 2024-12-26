@@ -74,7 +74,7 @@ public:
 
 	/* Setter */
 	// 再作図開始のための設定
-	void SetPlayerStop();						
+	void SetPlayerStop();	
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:

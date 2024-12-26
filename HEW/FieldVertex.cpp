@@ -36,7 +36,8 @@ CFieldVertex::CFieldVertex()
 	, m_pStarLine(nullptr)
 	, m_pTex_Fever_Star{nullptr}
 	, m_pSprite_Fever_Star{nullptr}
-	, FeverPoint(0.0f)
+	, nFeverPoint(0)
+	, fFeverPoint(0.0f)
 	, Partition(30.0f)
 {
 
@@ -200,7 +201,6 @@ CFieldVertex::CFieldVertex()
 	//	vtx_FieldLine[i][2] = {{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}};
 	//	vtx_FieldLine[i][3] = {{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}};
 	//}
-	FeverPoint = 0.0f;
 }
 
 CFieldVertex::~CFieldVertex()
@@ -470,11 +470,14 @@ void CFieldVertex::Draw()
 	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 	m_pSprite_Fever_Star[0]->Draw();
 	m_pSprite_Fever_Star[0]->ReSetSprite();
-	
-	// スプライトの設定		// 座標の設定						// 大きさの設定
-	DrawSetting({ -90.0f, 40.0f + (Fever_Star_Size / Partition) * FeverPoint  ,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[1]);
 
-	m_pSprite_Fever_Star[1]->SetUVPos({ 0.0f,1.0f - FeverPoint / Partition });
+	//フィーバータイムじゃないときふやす
+	if(!GetFeverMode())fFeverPoint += 0.2f;
+	if (fFeverPoint > nFeverPoint)fFeverPoint = (float)nFeverPoint;//値の補正
+	// スプライトの設定		// 座標の設定						// 大きさの設定
+	DrawSetting({ -90.0f, 40.0f + (Fever_Star_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[1]);
+
+	m_pSprite_Fever_Star[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });
 	m_pSprite_Fever_Star[1]->SetUVScale({ 1.0f,1.0f});
 	// 背景色の設定
 	m_pSprite_Fever_Star[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
@@ -757,13 +760,14 @@ void CFieldVertex::SoundStop()
 
 void CFieldVertex::SubtractFeverPoint()
 {
-	FeverPoint -= (30.0f / 60.0f) / 10.0f;
-	if (FeverPoint < 0.0f)FeverPoint = 0.0f;
+	fFeverPoint -= (30.0f / 60.0f) / 10.0f;
+	if (fFeverPoint < 0.0f)fFeverPoint = 0.0f;
 }
 
 void CFieldVertex::ResetFeverPoint()
 {
-	FeverPoint = 0.0f;
+	nFeverPoint = 0;
+	fFeverPoint = 0.0f;
 }
 
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
@@ -1053,16 +1057,16 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							SetSuperStar();
 							if (!GetFeverMode())
 							{
-								FeverPoint += 1.0f;
+								nFeverPoint += 1;
 							}
 						}
 						m_tVertex[Comparison2[m]].Angle[1] = 181.0f;
 					}
 					if (!GetFeverMode())
 					{
-						FeverPoint += 1.0f;
+						nFeverPoint += 1;
 					}
-					if (FeverPoint > Partition)FeverPoint = Partition;
+					if (nFeverPoint > Partition)nFeverPoint = Partition;
 					
 					
 				}
