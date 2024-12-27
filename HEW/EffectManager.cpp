@@ -4,6 +4,7 @@
 
 CEffectManager::CEffectManager(const char* efc)
 	:m_nEffectNum(0), m_pEffectAddrres(nullptr), m_nTime(0)
+	,m_efc{},m_Handle()
 {
 	m_effects.clear();
 	m_Effect = LibEffekseer::Create(efc);
@@ -27,25 +28,6 @@ void CEffectManager::Uninit()
 
 void CEffectManager::Update()
 {
-	//auto itr = m_Handle.begin();
-	//auto itr2 = m_nPlayTime.begin();
-	//for (int i = 0; i < m_Handle.size(); i++)
-	//{
-	//	if (m_Manager->Exists(*itr))
-	//	{
-	//		(*itr2)++;
-	//		if (*itr2 >= m_nLimit)
-	//		{
-	//			m_Manager->StopEffect(*itr);
-	//			(*itr) = NULL;
-	//			(*itr2) = NULL;
-	//		}
-
-	//	}
-	//	std::advance(itr, 1);
-	//	std::advance(itr2, 1);
-	//}
-
 	for (auto itr = m_effects.begin(); itr != m_effects.end();)
 	{
 		int i = m_effects.size();
@@ -63,36 +45,6 @@ void CEffectManager::Update()
 		}
 		++itr;
 	}
-
-
-	//static int time = 0;
-	//if (m_pEffectAddrres)
-	//{
-	//	if(m_Manager->Exists(m_Handle))
-	//	{
-	//		time++;
-	//		if (time >= m_nTime)
-	//		{
-	//			time = 0;
-	//			m_Manager->StopEffect(m_Handle);
-	//			
-	//			delete m_pEffectAddrres;
-	//			m_pEffectAddrres = nullptr;
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	if (m_Manager->Exists(m_Handle))
-	//	{
-	//		time++;
-	//		if (time >= m_nTime)
-	//		{
-	//			time = 0;
-	//			m_Manager->StopEffect(m_Handle);
-	//		}
-	//	}
-	//}
 }
 
 void CEffectManager::Draw()
@@ -103,29 +55,37 @@ void CEffectManager::Draw()
 
 void CEffectManager::Play(DirectX::XMFLOAT3 pos, int PlayTime)
 {
-	Effect efc;
-	efc.m_Handle = { m_pManager->Get()->Play(*m_pEffect, pos.x, pos.y, pos.z) };
-	efc.startTime = 0;
-	efc.duration = PlayTime;
-	m_effects.push_back(efc);
-	
-	//if (m_pEffectAddrres)m_Handle  = m_pEffectAddrres->GetManager()->Play(m_pEffectAddrres->GetEffect(), pos.x, pos.y, pos.z);
-	//else m_Handle = m_Manager->Play(m_Effect, pos.x, pos.y, pos.z);
+	m_efc.m_Handle = { m_pManager->Get()->Play(*m_pEffect, pos.x, pos.y, pos.z) };
+	m_efc.startTime = 0;
+	m_efc.duration = PlayTime;
+	m_effects.push_back(m_efc);
+}
 
-	//m_nTime = PlayTime;
+void CEffectManager::Play(DirectX::XMFLOAT3 pos)
+{
+	m_Handle = m_Manager->Play(m_Effect, pos.x, pos.y, pos.z);
+}
+
+void CEffectManager::Stop()
+{
+	m_Manager->StopEffect(m_nEffectNum);
+	m_nEffectNum++;
 }
 
 void CEffectManager::AllStop()
 {
-	//m_Manager->StopAllEffects();
+	m_Manager->StopAllEffects();
 	m_effects.clear();
 }
 
 void CEffectManager::SetPos(DirectX::XMFLOAT3 pos)
 {
-	auto itr = m_effects.begin();
-	Effekseer::Vector3D effectpos = Effekseer::Vector3D(pos.x,pos.y,pos.z);
-	//m_Manager->AddLocation(m_effects[0].m_Handle, effectpos);
+	Effekseer::Matrix43 mat;
+	Effekseer::Matrix43 baseMat;
+	baseMat.Translation(0.0f,0.0f,0.0f);
+	mat.Translation(pos.x, pos.y, pos.z);
+	m_Manager->SetBaseMatrix(m_nEffectNum,baseMat);
+	m_Manager->SetMatrix(m_nEffectNum, mat);
 }
 
 int CEffectManager::GetEffectNum()
