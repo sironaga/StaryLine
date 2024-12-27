@@ -59,6 +59,7 @@
     <ClCompile Include="StartTitle.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
@@ -105,6 +106,7 @@
     <ClInclude Include="StarLine.h" />
     <ClInclude Include="StartTitle.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="VectorOperator.h" />
     <ClInclude Include="_StructList.h" />
   </ItemGroup>
