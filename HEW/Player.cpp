@@ -200,7 +200,7 @@ void CPlayer::UpdateStop()
 			{
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
-				fTimerSize = TIMER_BAR_HARFSIZE_X;	// タイマーを一番下まで落とす
+				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// タイマーを一番下まで落とす
 				return;							// 関数を抜ける
 			}
 		}
@@ -363,9 +363,9 @@ void CPlayer::TimeProcess()
 {
 	//タイマースタート
 	if (GetFeverMode())m_bDrawing = true;
-	if (m_bDrawing)	// 作図中のとき
+	else
 	{
-		if (!GetFeverMode())
+		if (m_bDrawing)	// 作図中のとき
 		{
 			fTimerSize += (TIMER_BAR_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
 			if (fTimerSize >= TIMER_BAR_HARFSIZE_Y)
@@ -374,13 +374,11 @@ void CPlayer::TimeProcess()
 				m_bDrawing = false;				// 作図を終わる
 			}
 		}
-	}
-	else // 作図中でないとき
-	{
-		if (!GetFeverMode())
+		else // 作図中でないとき
 		{
 			fTimerSize -= 5.0f;	// タイマーを上げ続ける
 			if (fTimerSize <= -TIMER_BAR_HARFSIZE_Y) fTimerSize = -TIMER_BAR_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
+
 		}
 	}
 
