@@ -507,10 +507,7 @@ void CAlly::Draw(void)
 
 	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 	{
-
-		Model::Mesh mesh = *m_pModel->GetMesh(i);
-
-		Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+		Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
 		material.ambient.x = 0.85f; // x (r) 
 		material.ambient.y = 0.85f; // y (g) 
 		material.ambient.z = 0.85f; // z (b) 
@@ -756,10 +753,7 @@ void CEnemy::Draw(void)
 
 	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 	{
-
-		Model::Mesh mesh = *m_pModel->GetMesh(i);
-
-		Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+		Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
 		material.ambient.x = 0.85f; // x (r) 
 		material.ambient.y = 0.85f; // y (g) 
 		material.ambient.z = 0.85f; // z (b) 
@@ -982,10 +976,7 @@ void CLeader::Draw()
 
 			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 			{
-
-				Model::Mesh mesh = *m_pModel->GetMesh(i);
-
-				Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+				Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
@@ -1028,10 +1019,7 @@ void CLeader::Draw()
 
 			for (int i = 0; i < g_pBosCar->GetMeshNum(); ++i)
 			{
-
-				Model::Mesh mesh = *g_pBosCar->GetMesh(i);
-
-				Model::Material material = *g_pBosCar->GetMaterial(mesh.materialID);
+				Model::Material material = *g_pBosCar->GetMaterial(m_pModel->GetMesh(i)->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
@@ -1071,10 +1059,7 @@ void CLeader::Draw()
 
 			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 			{
-
-				Model::Mesh mesh = *m_pModel->GetMesh(i);
-
-				Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+				Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 

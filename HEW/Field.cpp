@@ -110,11 +110,10 @@ void Field::ModelDraw(FieldModel* InModel, int MaxModel)
 		// 複数のメッシュで構成されている場合、ある部分は金属的な表現、ある部分は非金属的な表現と
 		//  分ける場合がある。前回の表示は同じマテリアルで一括表示していたため、メッシュごとにマテリアルを
 		//  切り替える。
-		for (int j = 0; j < m_pModel[pModel->m_Model]->GetMeshNum(); j++) {
-			//  モデルのメッシュを取得
-			Model::Mesh mesh = *m_pModel[pModel->m_Model]->GetMesh(j);
+		for (int j = 0; j < m_pModel[pModel->m_Model]->GetMeshNum(); j++) 
+		{
 			//  メッシュに割り当てられているマテリアルを取得
-			Model::Material material = *m_pModel[pModel->m_Model]->GetMaterial(mesh.materialID);
+			Model::Material material = *m_pModel[pModel->m_Model]->GetMaterial(m_pModel[pModel->m_Model]->GetMesh(i)->materialID);
 
 			material.ambient.x = 0.85f; // x (r) 
 			material.ambient.y = 0.85f; // y (g) 

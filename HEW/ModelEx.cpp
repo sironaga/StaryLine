@@ -67,10 +67,8 @@ void CModelEx::Draw()
 	//切り替える
 	for (int i = 0; i < CModel->GetMeshNum(); ++i)
 	{
-		//モデルのメッシュを取得
-		Model::Mesh mesh = *CModel->GetMesh(i);
 		//メッシュに割り当てられているマテリアルを取得
-		Model::Material material = *CModel->GetMaterial(mesh.materialID);
+		Model::Material material = *CModel->GetMaterial(CModel->GetMesh(i)->materialID);
 		material.ambient.x = 0.85f; // x (r) 
 		material.ambient.y = 0.85f; // y (g) 
 		material.ambient.z = 0.85f; // z (b) 
@@ -81,10 +79,10 @@ void CModelEx::Draw()
 		if (m_bAnime)
 		{
 			DirectX::XMFLOAT4X4 bones[200];
-			for (int j = 0; j < mesh.bones.size(); ++j)
+			for (int j = 0; j < CModel->GetMesh(i)->bones.size(); ++j)
 			{
 				DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-					mesh.bones[j].invOffset * CModel->GetBone(mesh.bones[j].index)
+					CModel->GetMesh(i)->bones[j].invOffset * CModel->GetBone(CModel->GetMesh(i)->bones[j].index)
 				));
 				ShaderList::SetBones(bones);
 			}
