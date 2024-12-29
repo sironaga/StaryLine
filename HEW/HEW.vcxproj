@@ -29,9 +29,12 @@
     <ClCompile Include="DebugRoom.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="FadeBlack.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldVertex.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="GameResult.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputEx.cpp" />
@@ -45,6 +48,7 @@
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SceneDebug.cpp" />
     <ClCompile Include="SceneGame.cpp" />
+    <ClCompile Include="SceneResult.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="SceneTransition.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -76,9 +80,12 @@
     <ClInclude Include="Definition.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="Fade.h" />
+    <ClInclude Include="FadeBlack.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldVertex.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="GameResult.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputEx.h" />
@@ -93,6 +100,7 @@
     <ClInclude Include="Result.h" />
     <ClInclude Include="SceneDebug.h" />
     <ClInclude Include="SceneGame.h" />
+    <ClInclude Include="SceneResult.h" />
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="SceneTransition.h" />
     <ClInclude Include="Shader.h" />
