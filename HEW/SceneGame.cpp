@@ -100,6 +100,8 @@ void CSceneGame::Update()
 
 	m_pBattle->CreateLeader();
 
+	m_pFieldVertex->LogUpdate();
+
 	//g_tTime.GameSTime = g_tTime.GameTime / 60;	// 秒数(STime)に変換する
 
 	m_pField->Update();		// フィールドは常に更新する
@@ -167,7 +169,6 @@ void CSceneGame::Update()
 		// プレイヤーと作図処理は図形を作っている間更新する
 		m_pEffect->SetPos({ m_pPlayer->GetPlayerPos().x, m_pPlayer->GetPlayerPos().y, m_pPlayer->GetPlayerPos().z });
 		m_pFieldVertex->Update();
-		m_pFieldVertex->LogUpdate();
 	}
 	else
 	{
