@@ -219,8 +219,8 @@ void CBattle::Update(void)
 							}
 						}
 					}
-					//移動処理
-					Move(i, Ally);
+						//移動処理
+						Move(i, Ally);
 				}
 			}
 		}
@@ -281,9 +281,8 @@ void CBattle::Update(void)
 					}
 
 				}
-
-				//移動処理
-				Move(i, Enemy);
+					//移動処理
+					Move(i, Enemy);
 			}
 		}
 	}
@@ -1167,7 +1166,14 @@ void CBattle::FirstPosSetting()
 			//初期X位置を設定
 			m_pAlly[i]->SetPosX(ALLYCREATE_POSX - PosX);
 			//初期Y位置を設定
-			m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
+			if (m_pAlly[i]->GetCornerCount() == 3)
+			{
+				m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
+			}
+			else if (m_pAlly[i]->GetCornerCount() == 4)
+			{
+				m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 2);
+			}
 			//Z座標をパターン別に設定
 			switch (m_nFirstPosPattern)
 			{
@@ -1230,8 +1236,18 @@ void CBattle::FirstPosSetting()
 		{
 			//初期X位置を設定
 			m_pEnemy[i]->SetPosX(ENEMYCREATE_POSX + PosX);
+			////初期Y位置を設定
+			//m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
 			//初期Y位置を設定
-			m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
+
+			if (m_pEnemy[i]->GetCornerCount() == 3)
+			{
+				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
+			}
+			else if (m_pEnemy[i]->GetCornerCount() == 4)
+			{
+				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y * 2);
+			}
 
 			//Z座標をパターン別に設定
 			switch (m_nFirstPosPattern)

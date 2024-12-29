@@ -130,13 +130,8 @@ void CPlayer::Update()
 		g_WalkSe->FlushSourceBuffers();
 		g_WalkSe->SubmitSourceBuffer(&buffer);
 	}
-	//// エフェクトのテスト
-	//if (CGetButtonsTriger(XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
-	//{
-	//	m_pEffect->Play(m_tBrushPos,120);
-	//}
 
-	//m_pEffect->Update();
+	m_pEffect->SetPos({m_tBrushPos.x, m_tBrushPos.y, m_tBrushPos.z});
 
 }
 
@@ -175,7 +170,7 @@ void CPlayer::Draw()
 
 	/* エフェクトの描画 */
 	SetRender3D();											// 3D表現のセット
-	//m_pEffect->Draw();
+	m_pEffect->Draw();
 }
 
 void CPlayer::UpdateStop()
@@ -201,6 +196,7 @@ void CPlayer::UpdateStop()
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
 				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// タイマーを一番下まで落とす
+				m_pEffect->Stop();
 				return;							// 関数を抜ける
 			}
 		}
@@ -220,6 +216,7 @@ void CPlayer::UpdateStop()
 		if (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE))
 		{
 			m_ePlayerState = MOVE;	// 動いている状態に変える
+			m_pEffect->Play(m_tBrushPos);
 		}
 	}
 }
@@ -270,6 +267,7 @@ void CPlayer::UpdateMove()
 		m_nNowVertex = m_nDestination;	// 今の頂点を目的地の頂点に更新する
 		m_bCanMoveCheck = false;		// 8方向に移動可能かどうかを再び判定する
 		m_ePlayerState = STOP;			// 止まっている状態に変更する
+		m_pEffect->Stop();
 	}
 
 	if(g_WalkSe)SetVolumeSE(g_WalkSe);
@@ -370,6 +368,7 @@ void CPlayer::TimeProcess()
 			fTimerSize += (TIMER_BAR_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
 			if (fTimerSize >= TIMER_BAR_HARFSIZE_Y)
 			{
+				m_pEffect->Stop();
 				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
 				m_bDrawing = false;				// 作図を終わる
 			}
