@@ -27,8 +27,15 @@ enum E_SCENE_TYPE
 	SCENE_MAX
 };
 
+struct StageType
+{
+	int StageMainNumber;
+	int StageSubNumber;
+};
+
 //プロトタイプ宣言
 void ChangeScene(E_SCENE_TYPE next);	//シーン遷移を行う関数
+void ChangeScene(E_SCENE_TYPE next, StageType StageType);	//シーン遷移を行う関数
 
 E_SCENE_TYPE GetScene(void);
 

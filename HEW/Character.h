@@ -9,13 +9,14 @@
 #include "SoundList.h"
 #include "Model.h"
 #include "EffectManager.h"
+#include "Main.h"
 
 #define MAX_ALLY  (200)	//味方の最大数
 #define MAX_ENEMY (200)	//敵の最大数
 #define NORMAL_SIZE (10)//キャラクターの基本サイズ
 
 class CFieldVertex;
-void InitCharacterTexture(CFieldVertex* InAddress, int StageNum);	//テクスチャ読み込み
+void InitCharacterTexture(CFieldVertex* InAddress, StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 
 //ステータス情報

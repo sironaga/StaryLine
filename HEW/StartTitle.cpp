@@ -122,7 +122,7 @@ void CStartTitle::UpdateStartTitle()
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
-			ChangeScene(SCENE_GAME);
+			ChangeScene(STAGE_SELECT);
 		}
 		break;
 

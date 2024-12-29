@@ -237,7 +237,40 @@ void ChangeScene(E_SCENE_TYPE next)
 	{
 	case(SCENE_TITLE):InitSceneTitle();				break;
 	case(STAGE_SELECT):g_pSceneSelect = new CStageSelect();			break;
-	case(SCENE_GAME):InitSceneGame(g_pSceneSelect->GetStageNum());	break;
+	case(SCENE_GAME):/*InitSceneGame(g_pSceneSelect);*/	break;
+	case(SCENE_RESULT):InitResult();				break;
+	case SCENE_DEBUGROOM:InitSceneDebug(); break;
+	default:break;
+	}
+}
+
+void ChangeScene(E_SCENE_TYPE next, StageType StageType)
+{
+	g_pSourseTitleSE->FlushSourceBuffers();
+	if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
+	g_pSourseTitleSE->Start();
+	//現在のシーンの終了
+	switch (g_SceneType)
+	{
+	case(SCENE_TITLE):UninitSceneTitle();	break;
+	case(STAGE_SELECT):delete g_pSceneSelect;
+		g_pSceneSelect = nullptr;
+		break;
+	case(SCENE_GAME):UninitSceneGame();		break;
+	case(SCENE_RESULT):UninitResult();		break;
+	case SCENE_DEBUGROOM:UninitSceneDebug(); break;
+	default:break;
+	}
+
+	//現在のシーンの更新
+	g_SceneType = next;
+
+	//次のシーンの初期化
+	switch (g_SceneType)
+	{
+	case(SCENE_TITLE):InitSceneTitle();				break;
+	case(STAGE_SELECT):g_pSceneSelect = new CStageSelect();			break;
+	case(SCENE_GAME):InitSceneGame(StageType);	break;
 	case(SCENE_RESULT):InitResult();				break;
 	case SCENE_DEBUGROOM:InitSceneDebug(); break;
 	default:break;

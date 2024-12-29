@@ -60,7 +60,7 @@ private:
 
 public:
 	//ステージナンバー
-	int m_nStageNum;
+	StageType m_nStageNum;
 private:
 	//戦闘時間
 	int m_nBattleTime;
