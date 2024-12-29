@@ -87,7 +87,6 @@ private:
 	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
 private:
-	CEffectManager* m_pEffect;
 
 	/*＝＝＝＝＝＝＝＝＝フィールド＝＝＝＝＝＝＝＝＝*/
 public:
