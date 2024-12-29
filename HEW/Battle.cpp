@@ -82,6 +82,7 @@ CBattle::CBattle()
 	, m_bFirstFight(false)
 	, m_nFirstPosPattern(0)
 	, m_nStageNum{ 0,0 }
+	, m_bEnd(false)
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
@@ -304,7 +305,7 @@ void CBattle::Update(void)
 		{
 			MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
 			//タイトルシーンへ移行
-			ChangeScene(SCENE_TITLE);
+			m_bEnd = true;
 		}
 	}
 	//シーンがゲームだったら
@@ -315,7 +316,7 @@ void CBattle::Update(void)
 		{
 			MessageBox(NULL, "プレイヤーが倒されたため敗北", "勝敗", MB_OK);
 			//タイトルシーンへ移行
-			ChangeScene(SCENE_TITLE);
+			m_bEnd = true;
 		}
 	}
 }
@@ -425,6 +426,11 @@ void CBattle::Draw(void)
 	}
 	CreateEnemyLogDraw();
 	CreateAllyLogDraw();
+}
+
+bool CBattle::GetEnd()
+{
+	return m_bEnd;
 }
 
 //味方の情報保存処理

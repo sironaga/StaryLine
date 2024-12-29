@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Fade.h"
+#include "Main.h"
 
 class CScene 
 {
@@ -26,10 +27,13 @@ public:
 
 	// 次の切り替え先シーンを取得 
 	int NextScene();
+	StageType GetStage();
 
 	// 切り替え先のシーンを設定 
 	void SetNext(int next);
+	void SetNext(int next, StageType stage);
 protected:
 	CFade* m_pFade; // フェード処理クラス 
 	int  m_next;  // 切り替え先のシーン 
+	StageType m_tStage;
 };

@@ -1,3 +1,4 @@
+/*
 #include "StartTitle.h"
 #include "DirectXTex/TextureLoad.h"
 #include "SpriteDrawer.h"
@@ -28,71 +29,70 @@ CStartTitle::CStartTitle()
 	, f_SelectY(350)
 	, m_pOption(nullptr)
 {
-	g_Title_type = GAMESTART;
 
-	HRESULT hr;
-	hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/B_1.png", &m_tBackGround);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/L_1.png", &m_tLogo);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/M_1.png", &m_tAccessories[0]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/M_2.png", &m_tAccessories[1]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/E_1.png", &m_tAccessories[2]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/Select.png", &m_tSelect);
+	//HRESULT hr;
 
-	if (FAILED(hr)) {
-		MessageBox(NULL, "BackGround ‰æ‘œ", "Error", MB_OK);
-	}
-
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/B_1.png", &m_tBackGround);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/L_1.png", &m_tLogo);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/M_1.png", &m_tAccessories[0]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/M_2.png", &m_tAccessories[1]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/E_1.png", &m_tAccessories[2]);
+	//hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/Select.png", &m_tSelect);
+	//if (FAILED(hr)) {
+	//	MessageBox(NULL, "BackGround ‰æ‘œ", "Error", MB_OK);
+	//}
 
 
 
-	Vertex vtx[] = {
-		//”wŒi•\Ž¦‚ÌÀ•W
-		{{-LOGO_WIND, -LOGO_HID, 0.0f}, {0.0f, 0.0f}},
-		{{-LOGO_WIND,  LOGO_HID, 0.0f}, {0.0f, 1.0f}},
-		{{ LOGO_WIND, -LOGO_HID, 0.0f}, {1.0f, 0.0f}},
-		{{ LOGO_WIND,  LOGO_HID, 0.0f}, {1.0f, 1.0f}},
-	};
 
-	Vertex vtx1[] = {
-		//”wŒi•\Ž¦‚ÌÀ•W
-		{{-ACS1_WID, -ACS1_HID, 0.0f}, {0.0f, 0.0f}},
-		{{-ACS1_WID,  ACS1_HID, 0.0f}, {0.0f, 1.0f}},
-		{{ ACS1_WID, -ACS1_HID, 0.0f}, {1.0f, 0.0f}},
-		{{ ACS1_WID,  ACS1_HID, 0.0f}, {1.0f, 1.0f}},
-	};
 
-	Vertex vtx2[] = {
-		//”wŒi•\Ž¦‚ÌÀ•W
-		{{-SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {0.0f, 0.0f}},
-		{{-SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {0.0f, 1.0f}},
-		{{ SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {1.0f, 0.0f}},
-		{{ SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {1.0f, 1.0f}},
-	};
+	//Vertex vtx[] = {
+	//	”wŒi•\Ž¦‚ÌÀ•W
+	//	{{-LOGO_WIND, -LOGO_HID, 0.0f}, {0.0f, 0.0f}},
+	//	{{-LOGO_WIND,  LOGO_HID, 0.0f}, {0.0f, 1.0f}},
+	//	{{ LOGO_WIND, -LOGO_HID, 0.0f}, {1.0f, 0.0f}},
+	//	{{ LOGO_WIND,  LOGO_HID, 0.0f}, {1.0f, 1.0f}},
+	//};
 
-	Vertex vtx3[] = {
-		//”wŒi•\Ž¦‚ÌÀ•W
-		{{-E_WID, -E_HID, 0.0f}, {0.0f, 0.0f}},
-		{{-E_WID,  E_HID, 0.0f}, {0.0f, 1.0f}},
-		{{ E_WID, -E_HID, 0.0f}, {1.0f, 0.0f}},
-		{{ E_WID,  E_HID, 0.0f}, {1.0f, 1.0f}},
-	};
+	//Vertex vtx1[] = {
+	//	”wŒi•\Ž¦‚ÌÀ•W
+	//	{{-ACS1_WID, -ACS1_HID, 0.0f}, {0.0f, 0.0f}},
+	//	{{-ACS1_WID,  ACS1_HID, 0.0f}, {0.0f, 1.0f}},
+	//	{{ ACS1_WID, -ACS1_HID, 0.0f}, {1.0f, 0.0f}},
+	//	{{ ACS1_WID,  ACS1_HID, 0.0f}, {1.0f, 1.0f}},
+	//};
 
-	Vertex vtx4[] = {
-		//‘I‘ð‚·‚é‚Æ‚«‚Ì–îˆó
-		{{-100.0f,-100.0f,0.0f},{0.0f, 0.0f}},
-		{{-100.0f, 100.0f,0.0f},{0.0f, 1.0f}},
-		{{ 100.0f,-100.0f,0.0f},{1.0f, 0.0f}},
-		{{ 100.0f, 100.0f,0.0f},{1.0f, 1.0f}},
+	//Vertex vtx2[] = {
+	//	”wŒi•\Ž¦‚ÌÀ•W
+	//	{{-SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {0.0f, 0.0f}},
+	//	{{-SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {0.0f, 1.0f}},
+	//	{{ SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {1.0f, 0.0f}},
+	//	{{ SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {1.0f, 1.0f}},
+	//};
 
-	};
+	//Vertex vtx3[] = {
+	//	”wŒi•\Ž¦‚ÌÀ•W
+	//	{{-E_WID, -E_HID, 0.0f}, {0.0f, 0.0f}},
+	//	{{-E_WID,  E_HID, 0.0f}, {0.0f, 1.0f}},
+	//	{{ E_WID, -E_HID, 0.0f}, {1.0f, 0.0f}},
+	//	{{ E_WID,  E_HID, 0.0f}, {1.0f, 1.0f}},
+	//};
 
-	m_vACS = CreateVertexBuffer(vtx1, 4);
-	m_vLogo = CreateVertexBuffer(vtx, 4);
-	m_vBackGround = CreateVertexBuffer(vtx2, 4);
-	m_vE = CreateVertexBuffer(vtx3, 4);
-	m_vSelect = CreateVertexBuffer(vtx4, 4);
+	//Vertex vtx4[] = {
+	//	‘I‘ð‚·‚é‚Æ‚«‚Ì–îˆó
+	//	{{-100.0f,-100.0f,0.0f},{0.0f, 0.0f}},
+	//	{{-100.0f, 100.0f,0.0f},{0.0f, 1.0f}},
+	//	{{ 100.0f,-100.0f,0.0f},{1.0f, 0.0f}},
+	//	{{ 100.0f, 100.0f,0.0f},{1.0f, 1.0f}},
 
-	m_pOption = new COption();
+	//};
+	//m_vSelect = CreateVertexBuffer(vtx4, 4);
+
+	//m_vACS = CreateVertexBuffer(vtx1, 4);
+	//m_vLogo = CreateVertexBuffer(vtx, 4);
+	//m_vBackGround = CreateVertexBuffer(vtx2, 4);
+	//m_vE = CreateVertexBuffer(vtx3, 4);
+
 }
 
 CStartTitle::~CStartTitle()
@@ -101,94 +101,20 @@ CStartTitle::~CStartTitle()
 	SAFE_DELETE(m_pOption);
 }
 
-void CStartTitle::UpdateStartTitle()
+void CStartTitle::Update()
 {
 	f_Rotation += 0.1f;
 	f_Rad = DirectX::XMConvertToRadians(f_Rotation);
 
-	//‰¹—Ê‚ðÝ’è
-	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
-	SetAllVolumeSE(m_pOption->GetSEVoluem());
-
-	m_pOption->Update();
-	
-	switch (g_Title_type)
-	{
-	case(GAMESTART):
-		if (IsKeyTrigger(VK_DOWN)) 
-		{
-			g_Title_type = GAMECONTINUE;
-			f_SelectY += SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			ChangeScene(STAGE_SELECT);
-		}
-		break;
-
-	case(GAMECONTINUE):
-		if (IsKeyTrigger(VK_DOWN))
-		{
-			g_Title_type = GAMEOPTION;
-			f_SelectY += SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_UP))
-		{
-			g_Title_type = GAMESTART;
-			f_SelectY -= SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			//ƒRƒ“ƒeƒBƒjƒ…[ƒV[ƒ“‚ÖØ‚è‘Ö‚¦‚éˆ—
-			
-		}
-		break;
-
-	case(GAMEOPTION):
-		if (!m_pOption->GetOption())
-		{
-			if (IsKeyTrigger(VK_DOWN))
-			{
-				g_Title_type = GAMEEND;
-				f_SelectY += SELECT_MOVE;
-			}
-			if (IsKeyTrigger(VK_UP))
-			{
-				g_Title_type = GAMECONTINUE;
-				f_SelectY -= SELECT_MOVE;
-			}
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			//ƒIƒvƒVƒ‡ƒ“‚ÖØ‚è‘Ö‚¦‚éˆ—
-			m_pOption->SetOption();
-
-		}
-		break;
-
-	case(GAMEEND):
-		if (IsKeyTrigger(VK_UP)) 
-		{
-			g_Title_type = GAMEOPTION; 
-			f_SelectY -= SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			SetGameEnd();
-		}
-		break;
-
-	default:break;
-	}
 
 	
 }
 
-void CStartTitle::DrawStartTitle()
+void CStartTitle::Draw()
 {
 	//‚»‚Ì‘¼A•\Ž¦‚É•K—v‚ÈSpriteDrawer.h‚ÌŠeŽíŠÖ”‚ðŒÄ‚Ño‚·
 
-	/*SetSpriteTexture(m_tBackGround);
+	SetSpriteTexture(m_tBackGround);
 	DrawSprite(m_vBackGround, sizeof(Vertex));
 	ReSetSprite();
 	SetSpritePos(SET_POTION_X, SET_POTION_Y);
@@ -208,11 +134,7 @@ void CStartTitle::DrawStartTitle()
 	SetSpritePos(-SET_POTION_X, SET_POTION_Y);
 	SetSpriteTexture(m_tAccessories[2]);
 	DrawSprite(m_vE,sizeof(Vertex));
-	ReSetSprite();*/
-	SetSpritePos(SELECT_POSX, f_SelectY);
-	SetSpriteTexture(m_tSelect);
-	DrawSprite(m_vSelect, sizeof(Vertex));
 	ReSetSprite();
 
-	m_pOption->Draw();
 }
+*/

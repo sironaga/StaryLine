@@ -7,7 +7,7 @@ CFadeBlack::CFadeBlack()
 	: m_pTexture(nullptr) ,m_pPS(nullptr)
 {
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Assets/Texture/Fade.png")))MessageBox(NULL, "Load failed FadeBlack.", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create("Asset/Fade/Fade.png")))MessageBox(NULL, "Load failed FadeBlack.", "Error", MB_OK);
  }
 
 CFadeBlack::~CFadeBlack()
@@ -30,18 +30,7 @@ void CFadeBlack::DrawFade(float alpha)
 	SetRender2D();
 
 	// フェードの表示設定 
-	DirectX::XMFLOAT4X4 world, view, proj;
-	DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	DirectX::XMMATRIX mProj = DirectX::XMMatrixOrthographicOffCenterLH(
-		0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 100.0f);
-	mView = DirectX::XMMatrixTranspose(mView);
-	mProj = DirectX::XMMatrixTranspose(mProj);
-	DirectX::XMStoreFloat4x4(&view, mView);
-	DirectX::XMStoreFloat4x4(&proj, mProj);
-
+	DirectX::XMFLOAT4X4 world;
 	DirectX::XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);// フレームは倍率を変更せずに表示 
@@ -50,8 +39,8 @@ void CFadeBlack::DrawFade(float alpha)
 	DirectX::XMStoreFloat4x4(&world, mWorld);
 
 	Sprite::SetWorld(world);
-	Sprite::SetView(view);
-	Sprite::SetProjection(proj);
+	Sprite::SetView(Get2DView());
+	Sprite::SetProjection(Get2DProj());
 	Sprite::SetTexture(m_pTexture);
 	Sprite::SetSize(size);
 	Sprite::SetOffset({ 0.0f, 0.0f });

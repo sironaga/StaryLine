@@ -1,25 +1,19 @@
+/*
 #pragma once
 
 #define _DIRECTX_
 #include"DirectX.h"
 #include "Option.h"
+#include "Scene.h"
 
-enum E_TITLE_TYPE
-{
-	GAMESTART = 0,
-	GAMECONTINUE,
-	GAMEOPTION,
-	GAMEEND,
-};
 
-class CStartTitle
+class CStartTitle : public CScene
 {
 public:
 	CStartTitle();
-	~CStartTitle();
-
-	void UpdateStartTitle();
-	void DrawStartTitle();
+	virtual ~CStartTitle();
+	virtual void Update()override;
+	virtual void Draw()override;
 
 
 
@@ -31,13 +25,12 @@ private:
 	POLYGON_BUFFER*		m_vE;
 	POLYGON_BUFFER*		m_vACS;
 	POLYGON_TEXTURE*	m_tAccessories[10];
-	POLYGON_BUFFER*		m_vSelect;
-	POLYGON_TEXTURE*	m_tSelect;
+
 	float f_Rotation;
 	float f_Rad;
-	float f_SelectY;
-	COption* m_pOption;
+
 
 };
 
 
+*/

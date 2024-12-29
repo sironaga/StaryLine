@@ -37,7 +37,8 @@ public:
 	void CharacterDraw(void);
 	//描画処理
 	void Draw(void);		
-
+	//リザルトにいく
+	bool GetEnd();
 private:
 	//時間軸処理
 	void TimeLapse(void);
@@ -68,7 +69,8 @@ private:
 	bool m_bFirstFight;
 	//初期位置のパターン
 	int m_nFirstPosPattern;
-
+	//ゲームが終わったどうか
+	bool m_bEnd;
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝リーダー関係＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:

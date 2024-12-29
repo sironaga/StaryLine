@@ -1,8 +1,16 @@
 #pragma once
 
 #include "DebugRoom.h"
+#include "Scene.h"
 
-void InitSceneDebug();
-void UninitSceneDebug();
-void UpdateSceneDebug();
-void DrawSceneDebug();
+class CSceneDebug : public CScene
+{
+public:
+	CSceneDebug();
+	virtual ~CSceneDebug();
+	virtual void Update()override;
+	virtual void Draw()override;
+
+private:
+	CDebugRoom* m_pDebugRoom;
+};

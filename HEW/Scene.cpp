@@ -1,7 +1,7 @@
 #include "Scene.h"
 
 CScene::CScene()
-	: m_pFade(nullptr), m_next(-1) 
+	: m_pFade(nullptr), m_next(-1) ,m_tStage{}
 {
 
 }
@@ -35,9 +35,23 @@ int CScene::NextScene()
 	return m_next;
 }
 
+StageType CScene::GetStage()
+{
+	return m_tStage;
+}
+
 void CScene::SetNext(int next)
 {
 	m_next = next;
+	// 切り替え先が発生した際にフェードも実行 
+	if (m_pFade)
+		m_pFade->Start(false);
+}
+
+void CScene::SetNext(int next, StageType stage)
+{
+	m_next = next;
+	m_tStage = stage;
 	// 切り替え先が発生した際にフェードも実行 
 	if (m_pFade)
 		m_pFade->Start(false);

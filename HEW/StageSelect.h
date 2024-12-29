@@ -2,8 +2,9 @@
 #pragma once
 
 #define _DIRECTX_
-#include"DirectX.h"
+#include "DirectX.h"
 #include "Main.h"
+#include "Scene.h"
 
 enum E_SELECT_STAGETYPE
 {
@@ -18,15 +19,13 @@ enum E_SELECT_STAGENUMBER
 	STAGE3
 };
 
-class CStageSelect
+class CStageSelect : public CScene
 {
 public:
 	CStageSelect();
-	~CStageSelect();
-
-	//プロトタイプ宣言
-	void UpdateStageSelect();
-	void DrawStageSelect();
+	virtual ~CStageSelect();
+	virtual void Update() override;
+	virtual void Draw()override;
 
 	//int GetStageNum();
 private:
