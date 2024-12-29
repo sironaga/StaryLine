@@ -7,12 +7,40 @@
 
 #pragma once
 #include"Main.h"
+#include "Character.h"
+#include "StageSelect.h"
+#include "Field.h"
+#include "SoundList.h"
+#include "BackGround.h"
+#include "FieldVertex.h"
+#include "Player.h"
+#include "Battle.h"
+#include "Scene.h"
 
-void InitSceneGame(StageType StageNum);
-void UninitSceneGame();
-void UpdateSceneGame();
-void DrawSceneGame();
+class CSceneGame : public CScene
+{
+public:
+	CSceneGame(StageType StageNum);
+	virtual ~CSceneGame();
+	virtual void Update()override;
+	virtual void Draw()override;
+
+	void SetResult(bool InWin);
+private:
+
+	CFieldVertex* m_pFieldVertex;
+	CPlayer* m_pPlayer;
+	CBattle* m_pBattle;
+	Field* m_pField;
+	CBackGround* m_pBackGround;
+	CEffectManager* m_pEffect;
+	IXAudio2SourceVoice* m_pSourseGameBGM;
+	CSoundList* g_GameSound;
+	IXAudio2SourceVoice* m_pSourseFeverBGM;
+	CSoundList* g_FeverSound;
+
+	bool m_bPhase;
+
+};
 
 bool GetFeverMode();
-
-void SetResult(bool InWin);

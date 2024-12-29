@@ -5,29 +5,28 @@
 #include "Main.h"
 #include <Xinput.h>
 
-CDebugRoom* g_pDebugRoom;
-
-void InitSceneDebug()
+CSceneDebug::CSceneDebug()
+	:m_pDebugRoom(nullptr)
 {
-	g_pDebugRoom = new CDebugRoom();
+	m_pDebugRoom = new CDebugRoom();
 }
 
-void UninitSceneDebug()
+CSceneDebug::~CSceneDebug()
 {
-	SAFE_DELETE(g_pDebugRoom);
+	SAFE_DELETE(m_pDebugRoom);
 }
 
-void UpdateSceneDebug()
+void CSceneDebug::Update()
 {
-	g_pDebugRoom->Update();
+	m_pDebugRoom->Update();
 
 	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
 	{
-		ChangeScene(SCENE_DEBUGROOM);
+		SetNext(SCENE_TITLE);
 	}
 }
 
-void DrawSceneDebug()
+void CSceneDebug::Draw()
 {
-	g_pDebugRoom->Draw();
+	m_pDebugRoom->Draw();
 }

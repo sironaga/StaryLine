@@ -2,25 +2,32 @@
 #include <memory>
 #include "Main.h"
 #include "DirectX.h"
+#include "Defines.h"
 #include "Geometory.h"
 #include "Sprite.h"
-#include "Input.h"
-#include "SceneGame.h"
-#include "Defines.h"
 #include "ShaderList.h"
 #include "SpriteDrawer.h"
+
+#include "Input.h"
 #include "Controller.h"
-#include "StageSelect.h"
-#include "SceneTitle.h"
-#include "SoundList.h"
-#include "Result.h"
-#include "SceneDebug.h"
+
 #include "Camera.h"
 #include "CameraDebug.h"
+
 #include "LibEffekseer.h"
+#include "SoundList.h"
+
+#include "Fade.h"
+#include "FadeBlack.h"
+
+#include "Scene.h"
+#include "SceneTitle.h"
+#include "StageSelect.h"
+#include "SceneGame.h"
+#include "SceneResult.h"
+#include "SceneDebug.h"
 
 //--- グローバル変数
-E_SCENE_TYPE g_SceneType;
 CStageSelect* g_pSceneSelect;
 Camera* g_Camera;
 IXAudio2SourceVoice* g_pSourseTitleSE;
@@ -28,6 +35,10 @@ RenderTarget* pRTV;
 DepthStencil* pDSV;
 CSoundList* g_mainsound;
 bool IsGame = true;
+CScene* g_pScene; // シーン 
+CFade* g_pFade; // フェード 
+
+E_SCENE_TYPE g_SceneType;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -50,20 +61,24 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 
-	// シーン作成
-	// シーン作成
-	g_SceneType = SCENE_TITLE;
-	InitSceneTitle();
+	// フェード作成 
+	g_pFade = new CFade();
+	g_pFade->SetFade(1.0f, true);
+
+	// シーン作成 
+	g_pScene = new CSceneTitle();
+	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
+
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	
-
 	return hr;
 }
 
 void Uninit()
 {
-	UninitSceneGame();
+	SAFE_DELETE(g_pScene);
+	SAFE_DELETE(g_pFade);
 
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
@@ -88,22 +103,36 @@ void Update()
 	// --- カメラ情報の更新
 	g_Camera->Update();
 	// --- ゲームモードによる分岐処理
-	switch (g_SceneType)
+	g_pScene->RootUpdate();
+
+	// シーン切り替え判定 
+	if (g_pScene->ChangeScene()) 
 	{
-	case SCENE_TITLE:UpdateSceneTitle();
-		break;
-	case STAGE_SELECT:g_pSceneSelect->UpdateStageSelect();
-		break;
-	case SCENE_GAME:UpdateSceneGame();
-		break;
-	case SCENE_RESULT:UpdateResult();
-		break;
-	case SCENE_DEBUGROOM:UpdateSceneDebug();
-		break;
-	case SCENE_MAX:
-		break;
-	default:
-		break;
+		g_pSourseTitleSE->FlushSourceBuffers();
+		if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
+		g_pSourseTitleSE->Start();
+		StageType stage = {};
+		// 次のシーンの情報を取得 
+		int scene = g_pScene->NextScene();
+		if(scene == SCENE_GAME)stage = g_pScene->GetStage();
+		g_SceneType = (E_SCENE_TYPE)scene;
+		// 現在のシーンを削除 
+		delete g_pScene;
+
+
+		// シーンの切り替え 
+		switch (scene)
+		{
+		case SCENE_TITLE:g_pScene = new CSceneTitle(); break; // TITLE 
+		case STAGE_SELECT: g_pScene = new CStageSelect(); break;
+		case SCENE_GAME:g_pScene = new CSceneGame(stage); break; // GAME 
+		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
+		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
+		}
+
+		// 次シーンに向けて初期設定 
+		g_pFade->Start(true);   // フェード開始 
+		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
 	}
 }
 
@@ -173,24 +202,8 @@ void Draw()
 	Geometory::SetProjection(mat[1]);
 #endif
 
-	switch (g_SceneType)
-	{
-	case SCENE_TITLE:DrawSceneTitle();
-		break;
-	case STAGE_SELECT:g_pSceneSelect->DrawStageSelect();
-		break;
-	case SCENE_GAME:DrawSceneGame();
-		break;
-	case SCENE_RESULT:DrawResult();
-		break;
-	case SCENE_DEBUGROOM:DrawSceneDebug();
-		break;
-	case SCENE_MAX:
-		break;
-	default:
-		break;
-	}
 
+	g_pScene->RootDraw();
 	LibEffekseer::Draw();
 
 	EndDrawDirectX();
@@ -206,76 +219,66 @@ DirectX::XMFLOAT4X4 GetProj(bool isTranspose)
 	return g_Camera->GetProjectionMatrix(isTranspose);
 }
 
+DirectX::XMFLOAT4X4 Get2DView(bool isTranspose)
+{
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	if(isTranspose)mView = DirectX::XMMatrixTranspose(mView);
+	DirectX::XMStoreFloat4x4(&view, mView);
+	return view;
+}
+
+DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose)
+{
+	DirectX::XMFLOAT4X4 proj;
+	DirectX::XMMATRIX mProj = DirectX::XMMatrixOrthographicOffCenterLH(
+		0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 100.0f);
+	mProj = DirectX::XMMatrixTranspose(mProj);
+	DirectX::XMStoreFloat4x4(&proj, mProj);
+	return proj;
+}
+
 DirectX::XMFLOAT3 GetCameraPos()
 {
 	return g_Camera->GetPos();
 }
 
-void ChangeScene(E_SCENE_TYPE next)
-{
-	g_pSourseTitleSE->FlushSourceBuffers();
-	if(g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
-	g_pSourseTitleSE->Start();
-	//現在のシーンの終了
-	switch (g_SceneType)
-	{
-	case(SCENE_TITLE):UninitSceneTitle();	break;
-	case(STAGE_SELECT):delete g_pSceneSelect;
-		g_pSceneSelect = nullptr;
-		break;
-	case(SCENE_GAME):UninitSceneGame();		break;
-	case(SCENE_RESULT):UninitResult();		break;
-	case SCENE_DEBUGROOM:UninitSceneDebug(); break;
-	default:break;
-	}
 
-	//現在のシーンの更新
-	g_SceneType = next;
-
-	//次のシーンの初期化
-	switch (g_SceneType)
-	{
-	case(SCENE_TITLE):InitSceneTitle();				break;
-	case(STAGE_SELECT):g_pSceneSelect = new CStageSelect();			break;
-	case(SCENE_GAME):/*InitSceneGame(g_pSceneSelect);*/	break;
-	case(SCENE_RESULT):InitResult();				break;
-	case SCENE_DEBUGROOM:InitSceneDebug(); break;
-	default:break;
-	}
-}
-
-void ChangeScene(E_SCENE_TYPE next, StageType StageType)
-{
-	g_pSourseTitleSE->FlushSourceBuffers();
-	if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
-	g_pSourseTitleSE->Start();
-	//現在のシーンの終了
-	switch (g_SceneType)
-	{
-	case(SCENE_TITLE):UninitSceneTitle();	break;
-	case(STAGE_SELECT):delete g_pSceneSelect;
-		g_pSceneSelect = nullptr;
-		break;
-	case(SCENE_GAME):UninitSceneGame();		break;
-	case(SCENE_RESULT):UninitResult();		break;
-	case SCENE_DEBUGROOM:UninitSceneDebug(); break;
-	default:break;
-	}
-
-	//現在のシーンの更新
-	g_SceneType = next;
-
-	//次のシーンの初期化
-	switch (g_SceneType)
-	{
-	case(SCENE_TITLE):InitSceneTitle();				break;
-	case(STAGE_SELECT):g_pSceneSelect = new CStageSelect();			break;
-	case(SCENE_GAME):InitSceneGame(StageType);	break;
-	case(SCENE_RESULT):InitResult();				break;
-	case SCENE_DEBUGROOM:InitSceneDebug(); break;
-	default:break;
-	}
-}
+//void ChangeScene(E_SCENE_TYPE next, StageType StageType)
+//{
+//	g_pSourseTitleSE->FlushSourceBuffers();
+//	if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
+//	g_pSourseTitleSE->Start();
+//	//現在のシーンの終了
+//	switch (g_SceneType)
+//	{
+//	case(SCENE_TITLE):UninitSceneTitle();	break;
+//	case(STAGE_SELECT):delete g_pSceneSelect;
+//		g_pSceneSelect = nullptr;
+//		break;
+//	case(SCENE_GAME):UninitSceneGame();		break;
+//	case(SCENE_RESULT):UninitResult();		break;
+//	case SCENE_DEBUGROOM:UninitSceneDebug(); break;
+//	default:break;
+//	}
+//
+//	//現在のシーンの更新
+//	g_SceneType = next;
+//
+//	//次のシーンの初期化
+//	switch (g_SceneType)
+//	{
+//	case(SCENE_TITLE):InitSceneTitle();				break;
+//	case(STAGE_SELECT):g_pSceneSelect = new CStageSelect();			break;
+//	case(SCENE_GAME):InitSceneGame(StageType);	break;
+//	case(SCENE_RESULT):InitResult();				break;
+//	case SCENE_DEBUGROOM:InitSceneDebug(); break;
+//	default:break;
+//	}
+//}
 
 E_SCENE_TYPE GetScene(void)
 {

@@ -11,6 +11,8 @@ void Update();
 void Draw();
 DirectX::XMFLOAT4X4 GetView(bool isTranspose = true);
 DirectX::XMFLOAT4X4 GetProj(bool isTranspose = true);
+DirectX::XMFLOAT4X4 Get2DView(bool isTranspose = true);
+DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose = true);
 DirectX::XMFLOAT3 GetCameraPos();
 
 
@@ -43,5 +45,7 @@ bool IsGaming();
 void SetGameEnd();
 void SetRender2D();
 void SetRender3D();
+
+
 
 #endif // __MAIN_H__
