@@ -40,6 +40,10 @@ CFieldVertex::CFieldVertex()
 	, nFeverPoint(0)
 	, fFeverPoint(0.0f)
 	, Partition(MAX_FEVER_POINT)
+	, m_pSprite_Summon_Log(nullptr)
+	, m_pTex_Summon_Log{nullptr}
+	, SummonLog{}
+	, NowSummonLog(0)
 {
 
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
@@ -50,11 +54,14 @@ CFieldVertex::CFieldVertex()
 	m_pSprite_SuperStar_Number = new Sprite();
 	m_pSprite_Fever_Star[0] = new Sprite();
 	m_pSprite_Fever_Star[1] = new Sprite();
+	m_pSprite_Summon_Log = new Sprite();
 	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
 	m_pTex_Fever_Star[0] = new Texture();
 	m_pTex_Fever_Star[1] = new Texture();
+	m_pTex_Summon_Log[0] = new Texture();
+	m_pTex_Summon_Log[1] = new Texture();
 
 	m_pStarLine = new StarLine();
 	
@@ -150,6 +157,17 @@ CFieldVertex::CFieldVertex()
 		MessageBox(NULL, "Field 画像", "Error", MB_OK);
 	}
 
+	//召喚ログ初期化
+	HRESULT hrSummon_Log;
+	hrSummon_Log = m_pTex_Summon_Log[0]->Create("Asset/Summon_Log/Log_Triangular.png");
+	if (FAILED(hrSummon_Log)) {
+		MessageBox(NULL, "Summon_Log_Triangular 画像", "Error", MB_OK);
+	}
+	hrSummon_Log = m_pTex_Summon_Log[1]->Create("Asset/Summon_Log/Log_Square.png");
+	if (FAILED(hrSummon_Log)) {
+		MessageBox(NULL, "Summon_Log_Square 画像", "Error", MB_OK);
+	}
+
 	//スーパースター初期化
 	HRESULT hrSuperStar;
 	for (int i = 0; i < 6; i++)
@@ -213,6 +231,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_FieldLine);
 	SAFE_DELETE(m_pTex_FieldUseVertex);
 	SAFE_DELETE(m_pTex_FieldVertex);
+
 }
 
 void CFieldVertex::Update()
@@ -329,7 +348,6 @@ void CFieldVertex::Update()
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
 
-
 }
 
 void CFieldVertex::Draw()
@@ -442,6 +460,23 @@ void CFieldVertex::Draw()
 		//m_pSprite_Star->Draw();
 	}
 	SetRender2D();
+	//召喚ログ
+	for (int i = 0; i < NowSummonLog; i++)
+	{
+		SummonLog[i].Pos.y = 100.0f - i * 5.0f;
+		DrawSetting(SummonLog[i].Pos, { 25.0f,15.0f,1.0f }, m_pSprite_Summon_Log);
+		// 背景色の設定
+		m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+		if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);
+		else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);
+
+		//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
+		m_pSprite_Summon_Log->Draw();
+	}
+	m_pSprite_Summon_Log->ReSetSprite();
+
 	//スーパースターの数描画
 	// スプライトの設定		// 座標の設定						// 大きさの設定
 	DrawSetting({ -60.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);
@@ -493,6 +528,24 @@ void CFieldVertex::Draw()
 	m_pSprite_Fever_Star[1]->ReSetSprite();
 
 	m_pBattle->SaveAllyLogDraw();
+}
+
+void CFieldVertex::LogUpdate()
+{
+	int DeleteCount = 0;
+	for (int i = 0; i < NowSummonLog; i++)
+	{
+		SummonLog[i].time -= 1.0f / 60.0f;
+		if (SummonLog[i].time <= 0.0f)DeleteCount = i + 1;
+	}
+	if (DeleteCount > 0)
+	{
+		for (int i = 0, j = DeleteCount; j < NowSummonLog; i++, j++)
+		{
+			SummonLog[i] = SummonLog[j];
+		}
+		NowSummonLog -= DeleteCount;
+	}
 }
 
 DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
@@ -1041,6 +1094,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
+
+					//召喚ログセット
+					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(100.0f, 100.0f, 10.0f);
+					SummonLog[NowSummonLog].time = 4.0f;
+					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
+					NowSummonLog++;//召喚ログを増やす
 
 					//音を再生
 					g_FieldSe->Stop();

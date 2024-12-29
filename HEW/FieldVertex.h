@@ -21,6 +21,8 @@
 #define VERTEX_POS_Y (95.0f)//頂点の描画位置Y
 #define VERTEX_SPACE_X (15.0f)//頂点間の間隔X
 #define VERTEX_SPACE_Y (15.0f)//頂点間の間隔Y
+#define MAX_LOG (300)
+#define MAX_DRAW_LOG (10)
 
 class CPlayer;
 
@@ -32,6 +34,8 @@ public:
 
 	void Update();
 	void Draw();
+
+	void LogUpdate();
 
 	DirectX::XMFLOAT3 GetVertexPos(int);
 	bool GetRoadStop(int);
@@ -46,6 +50,12 @@ public:
 	void SubtractFeverPoint();
 	void ResetFeverPoint();
 private:
+	typedef struct Log
+	{
+		DirectX::XMFLOAT3 Pos;
+		int type;//0→三角形 1→四角形
+		float time;
+	};
 
 	typedef struct FieldVertex
 	{
@@ -63,9 +73,10 @@ private:
 		DirectX::XMFLOAT3 Pos;
 		bool Use;
 	};
-
+	Log SummonLog[MAX_LOG];
 	FieldVertex m_tVertex[MAX_VERTEX];//フィールドの頂点情報保存
 	CenterVertex m_tCenter_Vertex[MAX_CENTER_VERTEX];//フィールドのセンターの頂点情報保存
+	int NowSummonLog;
 
 	int OrderVertex[MAX_LINE + 1];//頂点たどる順番格納
 	int OrderVertexCount;//頂点何回たどったか
@@ -86,6 +97,7 @@ private:
 	Texture* m_pTex_FieldUseVertex;
 	Texture* m_pTex_SuperStar_Number[6];
 	Texture* m_pTex_Fever_Star[2];
+	Texture* m_pTex_Summon_Log[2];
 	float m_offsetU_Field;
 
 	Texture* m_pTex_FieldLine;
@@ -105,11 +117,11 @@ private:
 	Sprite* m_pSprite_Line[MAX_LINE];//線の描画
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Star[2];//フィーバースター
+	Sprite* m_pSprite_Summon_Log;//召喚ログ
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
 
 	CModelEx* m_pStar_Model[3];//Starのモデル
-	
 	
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
