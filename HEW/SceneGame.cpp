@@ -103,8 +103,8 @@ void UninitSceneGame()
 	SAFE_DELETE(g_FeverSound);
 	
 	UnInitCharacterTexture();
-	delete m_pEffect;
-	m_pEffect = nullptr;
+
+	SAFE_DELETE(m_pEffect);;
 }
 
 //XVˆ—
