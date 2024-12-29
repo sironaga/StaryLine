@@ -23,7 +23,7 @@
 #define ARROW_LEFTX (-560.0f)
 #define ARROW_RIGHTY (300.0f)
 #define ARROW_LEFTY (300.0f)
-E_SELECT_TYPE g_Select_type;
+StageType g_Select_type;
 
 CStageSelect::CStageSelect()
 	: f_Rotation(0)
@@ -31,7 +31,8 @@ CStageSelect::CStageSelect()
 	, f_SelectX(350)
 	, f_SelectY(350)
 {
-	g_Select_type = STAGE1;
+	g_Select_type.StageMainNumber = DESERT;
+	g_Select_type.StageSubNumber = STAGE1;
 
 	HRESULT hr;
 	hr = LoadTextureFromFile(GetDevice(), "Asset/StageSelectBackGround/1_STAGE1.png", &m_tStage1_BackGround);
@@ -103,29 +104,29 @@ CStageSelect::~CStageSelect()
 
 void CStageSelect::UpdateStageSelect()
 {
-	switch (g_Select_type)
+	switch (g_Select_type.StageSubNumber)
 	{
 	case(STAGE1):	
-		if (IsKeyTrigger(VK_RIGHT)|| CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE2; }
+		if (IsKeyTrigger(VK_RIGHT)|| CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type.StageSubNumber = STAGE2; }
 		//if (IsKeyTrigger(VK_LEFT)|| CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type = STAGE3; }
 		break;
 
 	case(STAGE2):
-		if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE3; }
-		if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type = STAGE1; }
+		if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type.StageSubNumber = STAGE3; }
+		if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type.StageSubNumber = STAGE1; }
 		break;
 
 	case(STAGE3):
 		//if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE1; }
-		if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type = STAGE2; }
+		if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type.StageSubNumber = STAGE2; }
 	default: break;
 	}
-	if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) { ChangeScene(SCENE_GAME); }//シーン移行
+	if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) { ChangeScene(SCENE_GAME, g_Select_type); }//シーン移行
 }
 
 void CStageSelect::DrawStageSelect()
 {
-	switch (g_Select_type)
+	switch (g_Select_type.StageSubNumber)
 	{
 	case(STAGE1):
 	{
@@ -174,7 +175,7 @@ void CStageSelect::DrawStageSelect()
 	}
 }
 
-int CStageSelect::GetStageNum()
-{
-	return g_Select_type;
-}
+//int CStageSelect::GetStageNum()
+//{
+//	return g_Select_type;
+//}

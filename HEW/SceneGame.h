@@ -6,10 +6,13 @@
 
 
 #pragma once
+#include"Main.h"
 
-void InitSceneGame(int StageNum);
+void InitSceneGame(StageType StageNum);
 void UninitSceneGame();
 void UpdateSceneGame();
 void DrawSceneGame();
 
 bool GetFeverMode();
+
+void SetResult(bool InWin);

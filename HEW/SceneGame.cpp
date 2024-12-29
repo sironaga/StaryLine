@@ -35,6 +35,12 @@ struct GAME_TIME
 	float GameSTimeFeverAjust;  //フィーバー時の時間の補正
 }g_tTime;
 
+struct ResultCheck
+{
+	bool IsEnd;//勝敗が追加たらtrue
+	bool IsWin;//勝ったらtrue
+};
+
 IXAudio2SourceVoice* g_pSourseGameBGM;
 CSoundList* g_GameSound;
 IXAudio2SourceVoice* g_pSourseFeverBGM;
@@ -42,9 +48,10 @@ CSoundList* g_FeverSound;
 
 bool Phase;
 bool Fever;
+ResultCheck g_Resltcheck;
 
 // 初期化処理
-void InitSceneGame(int StageNum)
+void InitSceneGame(StageType StageNum)
 {
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	g_pSourseGameBGM = g_GameSound->GetSound(true);
@@ -53,7 +60,7 @@ void InitSceneGame(int StageNum)
 	g_pFieldVertex = new CFieldVertex();
 	g_pPlayer = new CPlayer();
 	g_pBattle = new CBattle();
-	g_pField = new Field();
+	g_pField = new Field(StageNum);
 
 	g_pFieldVertex->SetBattleAddress(g_pBattle);
 	g_pFieldVertex->SetPlayerAddress(g_pPlayer);
@@ -115,7 +122,6 @@ void UpdateSceneGame()
 	g_pBackGround->Update();
 
 	g_pBattle->CreateLeader();
-
 	
 	//g_tTime.GameSTime = g_tTime.GameTime / 60;	// 秒数(STime)に変換する
 
@@ -184,6 +190,7 @@ void UpdateSceneGame()
 		// プレイヤーと作図処理は図形を作っている間更新する
 		m_pEffect->SetPos({ g_pPlayer->GetPlayerPos().x, g_pPlayer->GetPlayerPos().y, g_pPlayer->GetPlayerPos().z });
 		g_pFieldVertex->Update();
+		g_pFieldVertex->LogUpdate();
 	}
 	else
 	{
@@ -299,4 +306,10 @@ void DrawSceneGame()
 bool GetFeverMode()
 {
 	return Fever;
+}
+
+void SetResult(bool InWin)
+{
+	g_Resltcheck.IsEnd = true;
+	g_Resltcheck.IsWin = InWin;
 }

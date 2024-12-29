@@ -3,8 +3,15 @@
 
 #define _DIRECTX_
 #include"DirectX.h"
+#include "Main.h"
 
-enum E_SELECT_TYPE
+enum E_SELECT_STAGETYPE
+{
+	GRASSLAND = 0,
+	DESERT,
+	SNOWFIELD
+};
+enum E_SELECT_STAGENUMBER
 {
 	STAGE1 = 0,
 	STAGE2,
@@ -21,7 +28,7 @@ public:
 	void UpdateStageSelect();
 	void DrawStageSelect();
 
-	int GetStageNum();
+	//int GetStageNum();
 private:
 	POLYGON_BUFFER* m_vSTAGE1_BackGround;
 	POLYGON_TEXTURE* m_tStage1_BackGround;

@@ -68,7 +68,7 @@ CBattle::CBattle()
 	: m_pAlly{}
 	, m_nAllyCount(0)
 	, m_nAllyDateCount(0)
-	, m_nAllyTypes{ 0,0}
+	, m_nAllyTypes{ 0,0 }
 	, m_pEnemy{}
 	, m_nEnemyCount(0)
 	, m_nEnemyDateCount{ 0,0,0,0,0 }
@@ -81,7 +81,7 @@ CBattle::CBattle()
 	, m_nBattleTime(0)
 	, m_bFirstFight(false)
 	, m_nFirstPosPattern(0)
-	, m_nStageNum(0)
+	, m_nStageNum{ 0,0 }
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
