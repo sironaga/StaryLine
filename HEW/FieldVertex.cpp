@@ -11,6 +11,7 @@
 #include "Main.h"
 #include "SoundList.h"
 
+#define MAX_FEVER_POINT (30.0f)
 
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
 IXAudio2SourceVoice* g_FieldSe;
@@ -38,7 +39,7 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_Fever_Star{nullptr}
 	, nFeverPoint(0)
 	, fFeverPoint(0.0f)
-	, Partition(30.0f)
+	, Partition(MAX_FEVER_POINT)
 {
 
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
@@ -473,7 +474,7 @@ void CFieldVertex::Draw()
 
 	//フィーバータイムじゃないときふやす
 	if(!GetFeverMode())fFeverPoint += 0.2f;
-	if (fFeverPoint > nFeverPoint)fFeverPoint = (float)nFeverPoint;//値の補正
+	if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
 	// スプライトの設定		// 座標の設定						// 大きさの設定
 	DrawSetting({ -90.0f, 40.0f + (Fever_Star_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[1]);
 
@@ -761,7 +762,11 @@ void CFieldVertex::SoundStop()
 void CFieldVertex::SubtractFeverPoint()
 {
 	fFeverPoint -= (30.0f / 60.0f) / 10.0f;
-	if (fFeverPoint < 0.0f)fFeverPoint = 0.0f;
+	if (fFeverPoint < 0.0f)
+	{
+		nFeverPoint = 0;
+		fFeverPoint = 0.0f;
+	}
 }
 
 void CFieldVertex::ResetFeverPoint()
@@ -1057,16 +1062,16 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							SetSuperStar();
 							if (!GetFeverMode())
 							{
-								nFeverPoint += 1;
+								nFeverPoint += 1.0f;
 							}
 						}
 						m_tVertex[Comparison2[m]].Angle[1] = 181.0f;
 					}
 					if (!GetFeverMode())
 					{
-						nFeverPoint += 1;
+						nFeverPoint += 1.0f;
 					}
-					if (nFeverPoint > Partition)nFeverPoint = Partition;
+					if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
 					
 					
 				}
@@ -1147,9 +1152,16 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 		m_pStar_Model[color]->SetViewMatrix(GetView());
 		m_pStar_Model[color]->SetProjectionMatrix(GetProj());
 		m_pStar_Model[color]->Draw();
-		if (!(m_tVertex[Vertex].Angle[1] == 180.0f))
+		if (m_tVertex[Vertex].SuperStar)
 		{
-			m_tVertex[Vertex].Angle[1] += (360.0 / 60.0f);
+			m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f) * 0.75f;
+		}
+		else
+		{
+			if (!(m_tVertex[Vertex].Angle[1] == 180.0f))
+			{
+				m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f);
+			}
 		}
 		if (m_tVertex[Vertex].Angle[1] > 360.0f)
 		{

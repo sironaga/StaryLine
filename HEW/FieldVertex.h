@@ -42,7 +42,7 @@ public:
 	void InitFieldVertex();
 	void SetSuperStar();
 	void SoundStop();
-	float GetFeverPoint() { return nFeverPoint; }
+	float GetFeverPoint() { return fFeverPoint; }
 	void SubtractFeverPoint();
 	void ResetFeverPoint();
 private:
