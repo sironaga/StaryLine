@@ -417,10 +417,21 @@ bool CFighter::OverlapCheck(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 //ダメージを受ける
 void CFighter::Damage(CFighter* pFighter)
 {
-	//相手の攻撃力分体力を減らす
-	m_fHp -= pFighter->GetAtk();
-	//当たった判定をオンにする
-	m_bIsHit = true;
+	//相手の角数が自分と同じだったら
+	if (pFighter->GetCornerCount() == m_nCornerCount)
+	{
+		//相手の攻撃力分体力を減らす
+		m_fHp -= pFighter->GetAtk();
+		//当たった判定をオンにする
+		m_bIsHit = true;
+	}
+	else
+	{
+		//相手の攻撃力分体力を減らす
+		m_fHp -= pFighter->GetAtk() * 0.3f;
+		//当たった判定をオンにする
+		m_bIsHit = true;
+	}
 }
 
 //味方クラスのコンストラクタ
