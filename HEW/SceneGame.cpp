@@ -14,6 +14,7 @@ CPlayer* g_pPlayer;
 CBattle* g_pBattle;
 Field* g_pField;
 CBackGround* g_pBackGround;
+CEffectManager* m_pEffect;
 
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
@@ -76,6 +77,8 @@ void InitSceneGame(int StageNum)
 	g_pSourseGameBGM->Start();
 	g_FeverSound = new CSoundList(BGM_FEVER);
 	g_pSourseFeverBGM = g_FeverSound->GetSound(true);
+
+	m_pEffect = new CEffectManager(TEX_PASS("Effect/Fire.efk"));
 }
 
 //終了処理
@@ -100,11 +103,14 @@ void UninitSceneGame()
 	SAFE_DELETE(g_FeverSound);
 	
 	UnInitCharacterTexture();
+	delete m_pEffect;
+	m_pEffect = nullptr;
 }
 
 //更新処理
 void UpdateSceneGame()
 {
+
 
 	g_pBackGround->Update();
 
@@ -144,6 +150,7 @@ void UpdateSceneGame()
 	{
 		float t;
 		t = g_pFieldVertex->GetFeverPoint();
+
 		if (t == 30.0f)
 		{
 			g_pSourseGameBGM->Stop();
@@ -162,10 +169,11 @@ void UpdateSceneGame()
 	}
 
 	//毎描画開始時スーパースターをセット
-	/*if ((float)SHAPE_DRAW_START *60.0f + g_tTime.GameSTimeSycleEnd == g_tTime.GameTime)
+	if ((float)SHAPE_DRAW_START *60.0f + g_tTime.GameSTimeSycleEnd == g_tTime.GameTime)
 	{
-		g_pFieldVertex->SetSuperStar();
-	}*/
+		m_pEffect->Play({ g_pPlayer->GetPlayerPos().x, g_pPlayer->GetPlayerPos().y, g_pPlayer->GetPlayerPos().z });
+		//g_pFieldVertex->SetSuperStar();
+	}
 
  	g_pPlayer->Update();
 	// 図形を作る時間
@@ -174,23 +182,26 @@ void UpdateSceneGame()
 		(g_tTime.GameTime < (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間更新する
+		m_pEffect->SetPos({ g_pPlayer->GetPlayerPos().x, g_pPlayer->GetPlayerPos().y, g_pPlayer->GetPlayerPos().z });
 		g_pFieldVertex->Update();
 	}
 	else
 	{
 		//描画時間外だと停止
+		m_pEffect->Stop();
 		g_pFieldVertex->SoundStop();
 	}
 
 	// 召喚開始の時間になったら
 	if ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
-	{
+	{	
 		g_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
 	// フィーバーの召喚開始時間になったら
 	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust == g_tTime.GameTime) && Fever)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
+		m_pEffect->Play({ g_pPlayer->GetPlayerPos().x, g_pPlayer->GetPlayerPos().y, g_pPlayer->GetPlayerPos().z });
 		g_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
@@ -278,9 +289,11 @@ void DrawSceneGame()
 			//g_pSourseFeverBGM = nullptr;
 		}
 		//SAFE_DELETE(g_FeverSound);
+		m_pEffect->Stop();
 		g_pSourseGameBGM->Start();
 		Fever = false;
 	}
+	m_pEffect->Draw();
 }
 
 bool GetFeverMode()

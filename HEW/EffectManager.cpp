@@ -68,14 +68,15 @@ void CEffectManager::Play(DirectX::XMFLOAT3 pos)
 
 void CEffectManager::Stop()
 {
-	m_Manager->StopEffect(m_nEffectNum);
-	m_nEffectNum++;
+	m_Manager->StopEffect(m_Handle);
+	m_Handle = 0;
 }
 
 void CEffectManager::AllStop()
 {
 	m_Manager->StopAllEffects();
 	m_effects.clear();
+	m_nEffectNum = 0;
 }
 
 void CEffectManager::SetPos(DirectX::XMFLOAT3 pos)
@@ -84,8 +85,8 @@ void CEffectManager::SetPos(DirectX::XMFLOAT3 pos)
 	Effekseer::Matrix43 baseMat;
 	baseMat.Translation(0.0f,0.0f,0.0f);
 	mat.Translation(pos.x, pos.y, pos.z);
-	m_Manager->SetBaseMatrix(m_nEffectNum,baseMat);
-	m_Manager->SetMatrix(m_nEffectNum, mat);
+	m_Manager->SetBaseMatrix(m_Handle,baseMat);
+	m_Manager->SetMatrix(m_Handle, mat);
 }
 
 int CEffectManager::GetEffectNum()
