@@ -36,7 +36,7 @@ CSceneTitle::CSceneTitle()
 
 	};
 	m_vSelect = CreateVertexBuffer(vtx4, 4);
-	HRESULT hr = LoadTextureFromFile(GetDevice(), "Asset/TitleBackGround/Select.png", &m_tSelect);
+	HRESULT hr = LoadTextureFromFile(GetDevice(), TEX_PASS("TitleBackGround/Select.png"), &m_tSelect);
 	if (FAILED(hr)) MessageBox(NULL, "BackGround ‰æ‘œ", "Error", MB_OK);
 
 	m_pOption = new COption();

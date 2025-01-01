@@ -7,7 +7,7 @@ CFadeBlack::CFadeBlack()
 	: m_pTexture(nullptr) ,m_pPS(nullptr)
 {
 	m_pTexture = new Texture();
-	if (FAILED(m_pTexture->Create("Asset/Fade/Fade.png")))MessageBox(NULL, "Load failed FadeBlack.", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create(TEX_PASS("Fade / Fade.png"))))MessageBox(NULL, "Load failed FadeBlack.", "Error", MB_OK);
  }
 
 CFadeBlack::~CFadeBlack()

@@ -67,11 +67,11 @@ CPlayer::CPlayer()
 		m_pVtxTimer[i] = CreateVertexBuffer(vtxTimer[i], 4);
 	}
 	// 制限時間テクスチャ読み込み
-	HRESULT hr = LoadTextureFromFile(GetDevice(), "Asset/Player/UI_Drawing_Gage.png", &m_pTexTimer[0]);
+	HRESULT hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Player/UI_Drawing_Gage.png"), &m_pTexTimer[0]);
 	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_Gage.png", "Player.cpp", MB_OK);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/UI_Drawing_top.png", &m_pTexTimer[1]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Player/UI_Drawing_top.png"), &m_pTexTimer[1]);
 	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_top.png", "Player.cpp", MB_OK);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Player/UI_Drawing_under.png", &m_pTexTimer[2]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Player/UI_Drawing_under.png"), &m_pTexTimer[2]);
 	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_under.png", "Player.cpp", MB_OK);
 
 	// エフェクト読み込み

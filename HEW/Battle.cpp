@@ -87,16 +87,16 @@ CBattle::CBattle()
 	//数字テクスチャの読み込み
 	HRESULT hr;
 
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_0.png", &m_pLogTex[0]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_1.png", &m_pLogTex[1]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_2.png", &m_pLogTex[2]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_3.png", &m_pLogTex[3]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_4.png", &m_pLogTex[4]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_5.png", &m_pLogTex[5]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_6.png", &m_pLogTex[6]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_7.png", &m_pLogTex[7]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_8.png", &m_pLogTex[8]);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/Numbers/number_9.png", &m_pLogTex[9]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_0.png"), &m_pLogTex[0]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_1.png"), &m_pLogTex[1]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_2.png"), &m_pLogTex[2]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_3.png"), &m_pLogTex[3]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_4.png"), &m_pLogTex[4]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_5.png"), &m_pLogTex[5]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_6.png"), &m_pLogTex[6]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_7.png"), &m_pLogTex[7]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_8.png"), &m_pLogTex[8]);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_9.png"), &m_pLogTex[9]);
 	if (FAILED(hr)) {
 		MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
 	}
