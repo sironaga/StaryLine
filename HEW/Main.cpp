@@ -62,7 +62,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	pDSV = GetDefaultDSV();
 
 	// フェード作成 
-	g_pFade = new CFade();
+	g_pFade = new CFadeBlack();
 	g_pFade->SetFade(1.0f, true);
 
 	// シーン作成 

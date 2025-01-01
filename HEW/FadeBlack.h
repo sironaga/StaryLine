@@ -20,5 +20,4 @@ public:
 
 private:
 	Texture* m_pTexture; // フェード中に表示する画像 
-	Shader* m_pPS;
 };

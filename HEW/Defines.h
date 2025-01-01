@@ -23,6 +23,8 @@ static const float fFPS = static_cast<float>(FPS);
 
 #define	MILLISEC (1.0f / 60.0f)
 
+#define AJUST_MINMAX(value,inmin,inmax) do{if(value <= inmin){value = inmin;}if(value >= inmax){value = inmax;}}while(0)
+
 // 3D‹óŠÔ’è‹`
 #define CMETER(value) (value * 0.01f)
 #define METER(value) (value * 1.0f)
