@@ -9,12 +9,13 @@
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
 // リソースパス
-#define ASSET(path)	"Assets/"path
+#define ASSET(path)	"Assets/" path
 
-#define EFFECT_PASS(efkser) "Asset/Effect/"efkser
+#define EFFECT_PASS(efkser) "Asset/Effect/" efkser
 #define MODEL_PASS(fbx) ("Assets/Model/" fbx)
-#define TEX_PASS(tex) ("Asset/" tex)
-#define SOUND_PASS(sound) ("Asset/" sound)
+#define TEX_PASS(tex) ("Asset/Texture/" tex)
+#define SOUND_PASS(sound) ("Asset/Sound/" sound)
+#define CSV_PASS(csv) ("Asset/Sound/" csv)
 
 #define PI (3.1415f)
 #define TORAD(deg) ((deg / 180.0f) * PI)
