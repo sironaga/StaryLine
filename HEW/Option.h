@@ -120,7 +120,6 @@ private:
 	int m_nValue[TAB_MAX];
 	int m_nTempValue[TAB_MAX];
 
-	float m_fVolume[3];
 	bool m_bOptionMode;
 	bool m_bSetValue;
 
