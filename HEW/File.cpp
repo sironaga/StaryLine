@@ -7,7 +7,7 @@
 #include "File.h"
 
 //=====デファイン=====
-#define FILENAME_ENEMY ("Asset/Data/EnemyData.csv")
+#define FILENAME_ENEMY ("Assets/csv/EnemyData.csv")
 
 std::vector<std::string> split(const std::string text, const char delimiter);
 
@@ -23,6 +23,7 @@ bool InitLoadData(bool WaveSwitch, int* pPattern, int* pEnemyNum)
 	vector<string> vst;
 	if (!ifs)
 	{
+		MessageBox(NULL, "csv", "Error", MB_OK);
 		return false;
 	}
 	//行数を指定

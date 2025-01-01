@@ -5,18 +5,18 @@
 
 #define MAX_SOUND (9)
 
-#define FILENAME_WALKSE (L"Asset/Sound/walk.wav")
-#define FILENAME_SELECTSE (L"Asset/Sound/select.wav")
-#define FILENAME_DECISIONSE (L"Asset/Sound/decision.wav")
-#define FILENAME_CANCELSE (L"Asset/Sound/cancel.wav")
-#define FILENAME_COMPLETESE (L"Asset/Sound/complete.wav")
-#define FILENAME_ARRIVALSE (L"Asset/Sound/star.wav")
-#define FILENAME_ATTACKSE (L"Asset/Sound/Attack.wav") 
+#define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
+#define FILENAME_SELECTSE (L"Assets/Sound/select.wav")
+#define FILENAME_DECISIONSE (L"Assets/Sound/decision.wav")
+#define FILENAME_CANCELSE (L"Assets/Sound/cancel.wav")
+#define FILENAME_COMPLETESE (L"Assets/Sound/complete.wav")
+#define FILENAME_ARRIVALSE (L"Assets/Sound/star.wav")
+#define FILENAME_ATTACKSE (L"Assets/Sound/Attack.wav") 
 
-#define FILENAME_TITLEBGM (L"Asset/Sound/title.wav")
-#define FILENAME_BATTLEBGM (L"Asset/Sound/battle.wav")
+#define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
+#define FILENAME_BATTLEBGM (L"Assets/Sound/battle.wav")
 
-#define FILENAME_FEVERBGM (L"Asset/Sound/fever.wav")
+#define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
 
 float g_volumeBGM = 0;
 float g_volumeSE = 0;

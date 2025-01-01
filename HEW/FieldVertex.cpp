@@ -141,29 +141,29 @@ CFieldVertex::CFieldVertex()
 
 	//’¸“_•`‰æ‰Šú‰»
 	HRESULT hrVertex;
-	hrVertex = m_pTex_FieldVertex->Create("Asset/Star/star.png");
+	hrVertex = m_pTex_FieldVertex->Create(TEX_PASS("Star/star.png"));
 	if (FAILED(hrVertex)) {
 		MessageBox(NULL, "Vertex ‰æ‘œ", "Error", MB_OK);
 	}
-	hrVertex = m_pTex_FieldUseVertex->Create("Asset/Star/star2.png");
+	hrVertex = m_pTex_FieldUseVertex->Create(TEX_PASS("Star/star2.png"));
 	if (FAILED(hrVertex)) {
 		MessageBox(NULL, "UseVertex ‰æ‘œ", "Error", MB_OK);
 	}
 
 	//ü•`‰æ‰Šú‰»
 	HRESULT hrLine;
-	hrLine = m_pTex_FieldLine->Create("Asset/Line/Line.png");
+	hrLine = m_pTex_FieldLine->Create(TEX_PASS("Line/Line.png"));
 	if (FAILED(hrLine)) {
 		MessageBox(NULL, "Field ‰æ‘œ", "Error", MB_OK);
 	}
 
 	//¢Š«ƒƒO‰Šú‰»
 	HRESULT hrSummon_Log;
-	hrSummon_Log = m_pTex_Summon_Log[0]->Create("Asset/Summon_Log/Log_Triangular.png");
+	hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
 	if (FAILED(hrSummon_Log)) {
 		MessageBox(NULL, "Summon_Log_Triangular ‰æ‘œ", "Error", MB_OK);
 	}
-	hrSummon_Log = m_pTex_Summon_Log[1]->Create("Asset/Summon_Log/Log_Square.png");
+	hrSummon_Log = m_pTex_Summon_Log[1]->Create(TEX_PASS("Summon_Log/Log_Square.png"));
 	if (FAILED(hrSummon_Log)) {
 		MessageBox(NULL, "Summon_Log_Square ‰æ‘œ", "Error", MB_OK);
 	}
@@ -174,12 +174,12 @@ CFieldVertex::CFieldVertex()
 	{
 		switch (i)
 		{
-		case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create("Asset/Numbers/number_0.png"); break;
-		case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create("Asset/Numbers/number_1.png"); break;
-		case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create("Asset/Numbers/number_2.png"); break;
-		case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create("Asset/Numbers/number_3.png"); break;
-		case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create("Asset/Numbers/number_4.png"); break;
-		case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create("Asset/Numbers/number_5.png"); break;
+		case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
+		case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
+		case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
+		case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
+		case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
+		case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
 		default:
 			break;
 		}
@@ -194,8 +194,8 @@ CFieldVertex::CFieldVertex()
 	{
 		switch (i)
 		{
-		case 0:hrFeverStar = m_pTex_Fever_Star[0]->Create("Asset/Fever_Star/Gray_Fever_Star.png"); break;
-		case 1:hrFeverStar = m_pTex_Fever_Star[1]->Create("Asset/Fever_Star/Red_Fever_Star.png"); break;
+		case 0:hrFeverStar = m_pTex_Fever_Star[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
+		case 1:hrFeverStar = m_pTex_Fever_Star[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
 		default:
 			break;
 		}

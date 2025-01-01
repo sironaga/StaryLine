@@ -35,11 +35,11 @@ CStageSelect::CStageSelect()
 	g_Select_type.StageSubNumber = STAGE1;
 
 	HRESULT hr;
-	hr = LoadTextureFromFile(GetDevice(), "Asset/StageSelectBackGround/1_STAGE1.png", &m_tStage1_BackGround);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/StageSelectBackGround/1_STAGE2.png", &m_tStage2_BackGround);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/StageSelectBackGround/1_STAGE3.png", &m_tStage3_BackGround);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/StageSelectBackGround/Right_Select.png", &m_tRight_Select);
-	hr = LoadTextureFromFile(GetDevice(), "Asset/StageSelectBackGround/Left_Select.png", &m_tLeft_Select);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("StageSelectBackGround/1_STAGE1.png"), &m_tStage1_BackGround);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("StageSelectBackGround/1_STAGE2.png"), &m_tStage2_BackGround);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("StageSelectBackGround/1_STAGE3.png"), &m_tStage3_BackGround);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("StageSelectBackGround/Right_Select.png"), &m_tRight_Select);
+	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("StageSelectBackGround/Left_Select.png"), &m_tLeft_Select);
 
 	if (FAILED(hr)) {
 		MessageBox(NULL, "BackGround ‰æ‘œ", "Error", MB_OK);

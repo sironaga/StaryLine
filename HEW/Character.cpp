@@ -78,18 +78,18 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	{
 		g_pAllyModel[i] = new Model();
 	}
-	g_pAllyModel[(int)Ally::Ally3]->Load("Assets/Model/Character/Triangle/Triangle.fbx", 0.05f, Model::XFlip);
-	g_pAllyModel[(int)Ally::Ally4]->Load("Assets/Model/Character/Square/Square.fbx", 0.05f, Model::XFlip);
+	g_pAllyModel[(int)Ally::Ally3]->Load(MODEL_PASS("Character/Triangle/Triangle.fbx"), 0.05f, Model::XFlip);
+	g_pAllyModel[(int)Ally::Ally4]->Load(MODEL_PASS("Character/Square/Square.fbx"), 0.05f, Model::XFlip);
 	
 	/*Linie関連のModel読み込み*/
 	//Hpゲージ
 	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage] = new Texture();
 	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top] = new Texture();
-	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage]->Create("Asset/HpGage/UI_HP_Gage_Linie.png");
-	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top]->Create("Asset/HpGage/UI_HP_top_Linie.png");
+	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Linie.png"));
+	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Linie.png"));
 	//モデル
 	g_pLeaderModel[(int)Leader::Linie] = new Model();
-	g_pLeaderModel[(int)Leader::Linie]->Load("Assets/Model/Leader/Linie/Char_Linie.fbx", 1.0f, Model::XFlip);
+	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Char_Linie.fbx"), 1.0f, Model::XFlip);
 
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)
@@ -101,35 +101,35 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		{
 			g_pEnemyModel[i] = new Model();
 		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load("Assets/Model/Character/EnemyAxe/Idiot01.fbx", 0.05f, Model::XFlip);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load("Assets/Model/Character/EnemyBow/Idiot02.fbx", 0.05f, Model::XFlip);
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::XFlip);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::XFlip);
 		
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
 		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage] = new Texture();
 		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top] = new Texture();
-		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage]->Create("Asset/HpGage/UI_HP_Gage_Nugar.png");
-		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top]->Create("Asset/HpGage/UI_HP_top_Nugar.png");
+		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Nugar] = new Model();
-		g_pLeaderModel[(int)Leader::Nugar]->Load("Assets/Model/Leader/Nugar/Char_Boss02_Nugar.fbx", 1.0f, Model::XFlip);
+		g_pLeaderModel[(int)Leader::Nugar]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::XFlip);
 		
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		case 1:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		case 2:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		}
 		break;
@@ -141,35 +141,35 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		{
 			g_pEnemyModel[i] = new Model();
 		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load("Assets/Model/Character/EnemyAxe/Idiot01.fbx", 0.05f, Model::XFlip);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load("Assets/Model/Character/EnemyBow/Idiot02.fbx", 0.05f, Model::XFlip);
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::XFlip);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::XFlip);
 		
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
 		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Gage]  = new Texture();
 		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Top]  = new Texture();
-		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Gage] ->Create("Asset/HpGage/UI_HP_Gage_Nugar.png");
-		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Top]  ->Create("Asset/HpGage/UI_HP_top_Nugar.png");
+		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Gage] ->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Boss2] = new Model();
-		g_pLeaderModel[(int)Leader::Boss2]->Load("Assets/Model/Leader/Nugar/Char_Boss02_Nugar.fbx", 1.0f, Model::XFlip);
+		g_pLeaderModel[(int)Leader::Boss2]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::XFlip);
 		
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		case 1:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		case 2:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		}
 		break;
@@ -181,35 +181,35 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		{
 			g_pEnemyModel[i] = new Model();
 		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load("Assets/Model/Character/EnemyAxe/Idiot01.fbx", 0.05f, Model::XFlip);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load("Assets/Model/Character/EnemyBow/Idiot02.fbx", 0.05f, Model::XFlip);
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::XFlip);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::XFlip);
 		
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
 		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Gage] = new Texture();
 		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Top] = new Texture();
-		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Gage]->Create("Asset/HpGage/UI_HP_Gage_Nugar.png");
-		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Top]->Create("Asset/HpGage/UI_HP_top_Nugar.png");
+		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Boss3] = new Model();
-		g_pLeaderModel[(int)Leader::Boss3]->Load("Assets/Model/Leader/Nugar/Char_Boss02_Nugar.fbx", 1.0f, Model::XFlip);
+		g_pLeaderModel[(int)Leader::Boss3]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::XFlip);
 		
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		case 1:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		case 2:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load("Assets/Model/Boss01_Car.fbx", 1.0f, Model::XFlip);
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::XFlip);
 			break;
 		}
 		break;
@@ -218,7 +218,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	/*サウンドの読み込み*/
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	/*エフェクトの読み込み*/
-	g_pCharacterEffects[(int)CharactersEffect::FighterAttack] = new CEffectManager(TEX_PASS("Effect/Fire.efk"));
+	g_pCharacterEffects[(int)CharactersEffect::FighterAttack] = new CEffectManager(EFFECT_PASS("Fire.efk"));
 }
 
 //事前読み込みで用意したもののポインタ破棄
