@@ -1,5 +1,6 @@
 #include "BackGround.h"
 #include "Defines.h"
+#include "Sprite.h"
 #include <map>
 
 constexpr float BG_POS_Z = 600.0f;
@@ -13,21 +14,22 @@ const char* BGPass[SCENE_MAX] =
 
 CBackGround::CBackGround()
 	: m_pBGSprite(nullptr)
-	, m_tPos{ 0.0f,0.0f,BG_POS_Z }, m_tSize{ SCREEN_WIDTH,SCREEN_WIDTH,0.0f }, m_tRotate{}
+	, m_tPos{ 0.0f,0.0f}, m_tSize{ SCREEN_WIDTH,SCREEN_WIDTH }, m_tRotate{}
 	, m_tPosTex{ 0.0f,0.0f }, m_tSizeTex(1.0f, 1.0f)
 	, m_eCurrentScene(GetScene())
 {
 
+	m_pBGSprite = new Texture();
 	switch (m_eCurrentScene)
 	{
 	case SCENE_TITLE:
-		m_pBGSprite = new SpriteEx(BGPass[SCENE_TITLE]);
+		m_pBGSprite->Create(BGPass[SCENE_TITLE]);
 		break;
 	case STAGE_SELECT:
 		// m_pBGSprite = new SpriteEx(BGPass[STAGE_SELECT]);
 		break;
 	case SCENE_GAME:
-		m_pBGSprite = new SpriteEx(BGPass[SCENE_GAME]);
+		m_pBGSprite->Create(BGPass[SCENE_GAME]);
 		break;
 	case SCENE_RESULT:
 		// m_pBGSprite = new SpriteEx(BGPass[SCENE_RESULT]);
@@ -68,41 +70,26 @@ void CBackGround::Update()
 
 void CBackGround::Draw()
 {
-	switch (m_eCurrentScene)
-	{
-	case SCENE_TITLE: 
-		SetRender2D();
-		m_pBGSprite->SetPositon(GetCameraPos().x, GetCameraPos().y, GetCameraPos().z + 10.0f);
-		m_pBGSprite->SetSize(20.6f, 11.5f, m_tSize.z);
-		m_pBGSprite->SetRotation(DirectX::XMConvertToRadians(60.0f), m_tRotate.y, m_tRotate.z);
-		break;
-	case STAGE_SELECT:
-		SetRender2D();
-		m_pBGSprite->SetPositon(GetCameraPos().x, GetCameraPos().y, GetCameraPos().z);
-		m_pBGSprite->SetSize(16.0f, 9.0f, m_tSize.z);
-		break;
-	case SCENE_GAME: 
-		SetRender3D();
-		m_pBGSprite->SetPositon(m_tPos.x, m_tPos.y, m_tPos.z);
-		m_pBGSprite->SetSize(m_tSize.x, m_tSize.y, m_tSize.z);
-		break;
-	case SCENE_RESULT:
-		SetRender2D();
-		m_pBGSprite->SetPositon(GetCameraPos().x, GetCameraPos().y, GetCameraPos().z);
-		m_pBGSprite->SetSize(16.0f, 9.0f, m_tSize.z);
-		break;
-	case SCENE_DEBUGROOM: SetRender3D();break;
-	case SCENE_MAX: break;
-	default:MessageBox(NULL, "シーン参照エラー", "BackGround.cpp", MB_OK);	break;
-	}
+	SetRender2D();
 
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(m_tRotate.x,m_tRotate.y,m_tRotate.z,0.0f) );
+	DirectX::XMMATRIX mWorld = S * T;
+	mWorld = DirectX::XMMatrixTranspose(mWorld);
+	DirectX::XMStoreFloat4x4(&world, mWorld);
 
-	m_pBGSprite->SetRotation(m_tRotate.x, m_tRotate.y, m_tRotate.z);
-	m_pBGSprite->SetUvPos(m_tPosTex.x, m_tPosTex.y);
-	m_pBGSprite->SetUvSize(m_tSizeTex.x, m_tSizeTex.y);
-	m_pBGSprite->SetView(GetView());
-	m_pBGSprite->SetProjection(GetProj());
-
-	m_pBGSprite->SetTexture();
-	m_pBGSprite->Disp();
+	Sprite::SetSize(size);
+	Sprite::SetOffset({ 0.0f, 0.0f });
+	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	Sprite::SetUVPos(m_tPosTex);
+	Sprite::SetUVScale(m_tSizeTex);
+	Sprite::SetWorld(world);
+	Sprite::SetView(Get2DView());
+	Sprite::SetProjection(Get2DProj());
+	Sprite::SetTexture(m_pBGSprite);
+	Sprite::Draw();
+	Sprite::ReSetSprite();
 }

@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "Option.h"
 #include "Texture.h"
+#include "_StructList.h"
 
 //プロトタイプ宣言
 class CSceneTitle : public CScene
@@ -27,6 +28,6 @@ private:
 	CBackGround* g_pTitleBG;
 	float f_SelectY;
 	COption* m_pOption;
-	POLYGON_BUFFER* m_vSelect;
-	POLYGON_TEXTURE* m_tSelect;
+	Texture* m_pSelect;
+	SpriteParam* m_pParam;
 };

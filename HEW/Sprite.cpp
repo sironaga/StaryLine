@@ -127,6 +127,20 @@ void Sprite::SetColor(DirectX::XMFLOAT4 color)
 {
 	m_data.param[2] = color;
 }
+void Sprite::SetParam(SpriteParam* param)
+{
+	m_data.param[0].x = param->pos.x;
+	m_data.param[0].y = param->pos.y;
+	m_data.param[0].z = param->size.x;
+	m_data.param[0].w = param->size.y;
+	m_data.param[1].x = param->uvPos.x;
+	m_data.param[1].y = param->uvPos.y;
+	m_data.param[1].z = param->uvSize.x;
+	m_data.param[1].w = param->uvSize.y;
+	m_data.matrix[0] = param->world;
+	m_data.matrix[1] = param->view;
+	m_data.matrix[2] = param->proj;
+}
 void Sprite::SetTexture(Texture* tex)
 {
 	m_data.texture = tex;
@@ -231,7 +245,7 @@ void Sprite::ReSetSprite()
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(0.0f, 0.0f, 0.0f);
 	//ÇªÇÍÇºÇÍÇÃçsóÒÇä|ÇØçáÇÌÇπÇƒäiî[
 	DirectX::XMMATRIX mat = S * R * T;
 

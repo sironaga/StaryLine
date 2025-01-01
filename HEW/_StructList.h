@@ -1,5 +1,6 @@
 #pragma once
 /* ç\ë¢ëÃÉäÉXÉg */
+#include <DirectXMath.h>
 
 // === Float_Struct
 struct FLOAT2
@@ -61,4 +62,53 @@ struct Communication_Data
 {
 	Personal_Information_Data PersonalData;
 	Connecting_System_Data ConectionData;
+};
+
+struct SpriteParam
+{
+public:
+	DirectX::XMFLOAT2 pos;
+	DirectX::XMFLOAT2 size;
+	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT2 uvPos;
+	DirectX::XMFLOAT2 uvSize;
+
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMFLOAT4X4 proj;
+
+	SpriteParam()
+	{
+		pos = { 0.0f,0.0f };
+		size = { 1.0f,1.0f };
+		color = { 1.0f,1.0f,1.0f,1.0f };
+		uvPos = { 0.0f,0.0f };
+		uvSize = { 1.0f,1.0f };
+		DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
+			DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+		DirectX::XMStoreFloat4x4(&view, mView);
+		DirectX::XMMATRIX mProj = DirectX::XMMatrixOrthographicOffCenterLH(
+			0.0f, 1920.0f, 1080.0f, 0.0f, 0.1f, 100.0f);
+		mProj = DirectX::XMMatrixTranspose(mProj);
+		DirectX::XMStoreFloat4x4(&proj, mProj);
+		world = {};
+		mWorld = {};
+	}
+
+	DirectX::XMFLOAT4X4 operator()(
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(1920.0f / 2.0f, 1080.0f / 2.0f, 0.0f),
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)),
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f)
+		)
+	{
+		DirectX::XMFLOAT4X4 outWorld;
+		mWorld = S * R * T;
+		mWorld = DirectX::XMMatrixTranspose(mWorld);
+		DirectX::XMStoreFloat4x4(&outWorld, mWorld);
+		return outWorld;
+	}
+private:
+	DirectX::XMMATRIX mWorld;
 };

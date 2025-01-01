@@ -5,10 +5,10 @@
 #include "Controller.h"
 #include "Input.h"
 #include "DirectXTex/TextureLoad.h"
-#include "SpriteDrawer.h"
+#include "Defines.h"
+#include "Sprite.h"
 
-#define SELECT_POSX (-320.0f)
-#define SELECT_MOVE (185.0f)
+#define SELECT_MOVE (90.0f)
 
 enum E_TITLE_TYPE
 {
@@ -20,24 +20,19 @@ enum E_TITLE_TYPE
 
 
 CSceneTitle::CSceneTitle()
-	:f_SelectY(350.0f), m_vSelect(nullptr), m_tSelect(nullptr)
+	:f_SelectY(350.0f), m_pSelect(nullptr)
 {
 	g_Title_type = GAMESTART;
 	g_TitleSound = new CSoundList(BGM_TITLE);
 	g_pSourseTitleBGM = g_TitleSound->GetSound(true);
 	g_pSourseTitleBGM->Start();
 
-	//選択するときの矢印
-	Vertex vtx4[] = {
-	{{-100.0f,-100.0f,0.0f},{0.0f, 0.0f}},
-	{{-100.0f, 100.0f,0.0f},{0.0f, 1.0f}},
-	{{ 100.0f,-100.0f,0.0f},{1.0f, 0.0f}},
-	{{ 100.0f, 100.0f,0.0f},{1.0f, 1.0f}},
-
-	};
-	m_vSelect = CreateVertexBuffer(vtx4, 4);
-	HRESULT hr = LoadTextureFromFile(GetDevice(), TEX_PASS("TitleBackGround/Select.png"), &m_tSelect);
-	if (FAILED(hr)) MessageBox(NULL, "BackGround 画像", "Error", MB_OK);
+	m_pSelect = new Texture();
+	if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
+	m_pParam = new SpriteParam();
+	m_pParam->pos = { -160.0f,-170.0f };
+	m_pParam->size = { 100.0f,100.0f };
+	m_pParam->world = m_pParam->operator()();
 
 	m_pOption = new COption();
 	g_pTitleBG = new CBackGround();
@@ -57,6 +52,9 @@ CSceneTitle::~CSceneTitle()
 	}
 	delete g_pTitleBG;
 	g_pTitleBG = nullptr;
+
+	SAFE_DELETE(m_pSelect);
+	SAFE_DELETE(m_pParam);
 }
 
 void CSceneTitle::Update()
@@ -67,7 +65,7 @@ void CSceneTitle::Update()
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 
-	m_pOption->Update();
+	if(m_pOption->GetOption())m_pOption->Update();
 
 	switch (g_Title_type)
 	{
@@ -75,7 +73,7 @@ void CSceneTitle::Update()
 		if (IsKeyTrigger(VK_DOWN))
 		{
 			g_Title_type = GAMECONTINUE;
-			f_SelectY += SELECT_MOVE;
+			m_pParam->pos.y -= SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
@@ -87,12 +85,12 @@ void CSceneTitle::Update()
 		if (IsKeyTrigger(VK_DOWN))
 		{
 			g_Title_type = GAMEOPTION;
-			f_SelectY += SELECT_MOVE;
+			m_pParam->pos.y -= SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_UP))
 		{
 			g_Title_type = GAMESTART;
-			f_SelectY -= SELECT_MOVE;
+			m_pParam->pos.y += SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
@@ -107,18 +105,18 @@ void CSceneTitle::Update()
 			if (IsKeyTrigger(VK_DOWN))
 			{
 				g_Title_type = GAMEEND;
-				f_SelectY += SELECT_MOVE;
+				m_pParam->pos.y -= SELECT_MOVE;
 			}
 			if (IsKeyTrigger(VK_UP))
 			{
 				g_Title_type = GAMECONTINUE;
-				f_SelectY -= SELECT_MOVE;
+				m_pParam->pos.y += SELECT_MOVE;
 			}
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
 			//オプションへ切り替える処理
-			m_pOption->SetOption();
+			m_pOption->SetOption(true);
 
 		}
 		break;
@@ -127,7 +125,7 @@ void CSceneTitle::Update()
 		if (IsKeyTrigger(VK_UP))
 		{
 			g_Title_type = GAMEOPTION;
-			f_SelectY -= SELECT_MOVE;
+			m_pParam->pos.y += SELECT_MOVE;
 		}
 		if (IsKeyTrigger(VK_RETURN))
 		{
@@ -137,11 +135,11 @@ void CSceneTitle::Update()
 
 	default:break;
 	}
-	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
-	{
+	//if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
+	//{
 
-		SetNext(SCENE_DEBUGROOM);
-	}
+	//	SetNext(SCENE_DEBUGROOM);
+	//}
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
 
 	if (IsKeyTrigger(VK_ESCAPE))SetFullscreenSwap();
@@ -150,10 +148,18 @@ void CSceneTitle::Update()
 void CSceneTitle::Draw()
 {
 	g_pTitleBG->Draw();
-	SetSpritePos(SELECT_POSX, f_SelectY);
-	SetSpriteTexture(m_tSelect);
-	DrawSprite(m_vSelect, sizeof(Vertex));
-	ReSetSprite();
 
-	m_pOption->Draw();
+	Sprite::SetSize(m_pParam->size);
+	Sprite::SetOffset(m_pParam->pos );
+	Sprite::SetColor({m_pParam->color});
+	Sprite::SetUVPos(m_pParam->uvPos);
+	Sprite::SetUVScale({ m_pParam ->uvSize});
+	Sprite::SetWorld(m_pParam->world);
+	Sprite::SetView(m_pParam->view);
+	Sprite::SetProjection(m_pParam->proj);
+	Sprite::SetTexture(m_pSelect);
+	Sprite::Draw();
+	Sprite::ReSetSprite();
+
+	if (m_pOption->GetOption())m_pOption->Draw();
 }
