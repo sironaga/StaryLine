@@ -141,8 +141,6 @@ void CSceneTitle::Update()
 	//	SetNext(SCENE_DEBUGROOM);
 	//}
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
-
-	if (IsKeyTrigger(VK_ESCAPE))SetFullscreenSwap();
 }
 
 void CSceneTitle::Draw()
