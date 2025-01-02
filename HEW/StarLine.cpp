@@ -1,16 +1,14 @@
 #include "StarLine.h"
 #include <cmath>
+#include"Main.h"
 
-#define LINE_DEBUG (false)
+#define LINE_DEBUG (true)
 
 StarLine::StarLine()
 	:Pos{},Scl{},Rot{},world{}
 {
 	m_pModel = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"), false);
 	m_pBox = new Geometory();
-	
-
-
 
 }
 
@@ -30,7 +28,6 @@ StarLine::~StarLine()
 
 void StarLine::SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight)
 {
-	
 	// --- 地点Sの中心座標を計算
 	DirectX::XMFLOAT3 StartCenter =
 	{ 
@@ -38,6 +35,7 @@ void StarLine::SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 Sta
 		(StartPosLeft.y + StartPosRight.y) / 2.0f,
 		(StartPosLeft.z + StartPosRight.z) / 2.0f 
 	};
+
 	// --- 地点Nの中心座標を計算
 	DirectX::XMFLOAT3 NowCenter =
 	{
@@ -45,10 +43,12 @@ void StarLine::SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 Sta
 		(NowPosLeft.y + NowPosRight.y) / 2.0f,
 		(NowPosLeft.z + NowPosRight.z) / 2.0f 
 	};
+
 	// ---地点Sと地点Nの中心座標を計算
 	Pos.x = ((StartCenter.x + NowCenter.x) / 2.0f);
 	Pos.y = ((StartCenter.y + NowCenter.y) / 2.0f);
 	Pos.z = ((StartCenter.z + NowCenter.z) / 2.0f);
+
 	// --- 座標の変換
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		Pos.x,
@@ -56,16 +56,19 @@ void StarLine::SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 Sta
 		Pos.z,
 		0.0f
 	));
+
 	// --- 差分の計算
 	DirectX::XMFLOAT3 delta;
 	delta.x = StartCenter.x - NowCenter.x;
 	delta.y = StartCenter.y - NowCenter.y;
 	delta.z = StartCenter.z - NowCenter.z;
+
 	// --- 差分から角度を計算
 	DirectX::XMFLOAT3 Theta;
 	Theta.x = std::atan2(delta.z, delta.y);
 	Theta.y = std::atan2(delta.x, delta.z);
 	Theta.z = std::atan2(delta.y, delta.x);
+
 	// --- 補正
 	float fRot = 0.0f;
 
@@ -124,18 +127,22 @@ void StarLine::DispLine()
 {
 	if (LINE_DEBUG)
 	{
-		m_pBox->SetView(View);
-		m_pBox->SetProjection(Proj);
+
+		m_pBox->SetView(GetView());
+		m_pBox->SetProjection(GetProj());
 		m_pBox->SetWorld(world);
 		m_pBox->DrawBox();
+
 	}
 	else
 	{
-		m_pModel->SetViewMatrix(View);
-		m_pModel->SetProjectionMatrix(Proj);
-		m_pModel->SetPostion(Pos.x, Pos.y, Pos.z);
+
+		m_pModel->SetViewMatrix(GetView());
+		m_pModel->SetProjectionMatrix(GetProj());
+		m_pModel->SetPostion(0.0f, 0.0f, 0.0f);
 		m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
-		m_pModel->SetScale(Scl.x, 1.0f, 1.0f);
+		m_pModel->SetScale(10.0f, 10.0f, 10.0f);
 		m_pModel->Draw();
+
 	}
 }
