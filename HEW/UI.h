@@ -2,34 +2,19 @@
 #define __UI_H__
 #define _DIRECTX_
 
-#include "Texture.h"
-#include "Sprite.h"
-
+#include "SpriteEx.h"
 
 class CUI
 {
 public:
+
 	CUI();
-	~CUI();
-	void Update();
-	void Draw();
+	virtual ~CUI();
+	virtual void Update() = 0;
+	virtual void Draw() = 0;
 
-	enum UI
-	{
-		CIRCLE,
-		TRIANGLE,
-		SQUARE,
-		CROSS,
-		UP,
-		DOWN,
-		RIGHT,
-		LEFT,
-		MAX_UI
-	};
+protected:
 
-private:
-	Texture* m_pTex;
-	float m_rate;
 };
 
 #endif
