@@ -40,7 +40,7 @@ private:
 	CSoundList* g_FeverSound;
 
 	bool m_bPhase;
-
+	bool m_bEnd;
 };
 
 bool GetFeverMode();

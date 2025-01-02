@@ -32,6 +32,7 @@ bool m_bFever;
 ResultCheck g_Resltcheck;
 
 CSceneGame::CSceneGame(StageType StageNum)
+	:m_bEnd(false)
 {
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
@@ -94,7 +95,11 @@ CSceneGame::~CSceneGame()
 
 void CSceneGame::Update()
 {
-	if (m_pBattle->GetEnd())SetNext(SCENE_TITLE);
+	if (m_pBattle->GetEnd() && !m_bEnd)
+	{
+		SetNext(SCENE_TITLE);
+		m_bEnd = true;
+	}
 
 	m_pBackGround->Update();
 

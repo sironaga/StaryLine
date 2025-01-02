@@ -11,7 +11,6 @@ public:
 	SpriteEx(const char *File);
 	~SpriteEx();
 
-	void TwoDDisp(DirectX::XMFLOAT2 pos, DirectX::XMFLOAT2 size, DirectX::XMFLOAT4 color = {1.0f,1.0f,1.0f,1.0f});
 	void Disp();
 
 	void SetPositon(float X, float Y, float Z);
