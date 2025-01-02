@@ -11,11 +11,60 @@ public:
 	void Update();
 	void Draw();
 
-	void SetOption(bool isOption);
+	/// @brief
+	/// オプション画面を開く
+	/// escボタン・Bボタンで閉じる
+	void SetOption();
+	/// @brief
+	/// オプション画面の状態取得
+	/// @return
+	/// true:オプション画面を開いている
+	/// @return
+	/// false:オプション画面を閉じている
 	bool GetOption();
+
+	/// @brief
+	/// マスターボリュームの音量を取得する
+	/// @return
+	/// 全体音量を0.0f～10.0fまで1.0f刻み
+	float GetMasterVoluem();
+	/// @brief
+	/// BGMの音量を取得する
+	/// @return
+	/// 全体音量を0.0f～10.0fまで1.0f刻み
 	float GetBGMVoluem();
+	/// @brief
+	/// SEの音量を取得する
+	/// @return
+	/// 全体音量を0.0f～10.0fまで1.0f刻み
 	float GetSEVoluem();
+	/// @brief
+	/// フルスクリーンかどうかを取得する
+	/// @return
+	/// 0:ウィンドウモード	1:フルスクリーンモード
+	int GetIsFullScreen();
+	/// @brief
+	/// FPSを取得する
+	/// @return
+	/// 30.0fもしくは60.0f
+	float GetFPS();
+	/// @brief
+	/// 解像度を取得する
+	/// @return
+	/// 解像度が変更出来ることを確認次第改善
+	int GetResolusion();
+	/// @brief
+	/// キーボードでの操作方法を取得する
+	/// @return
+	/// 0:タイプA	1:タイプB
+	int GetKeyboardSetting();
+	/// @brief
+	/// コントローラーでの操作方法を取得する
+	/// @return
+	/// 0:タイプA	1:タイプB
+	int GetControllerSetting();
 private:
+	// ボタンテクスチャの種類
 	enum OPTION_TEXTURE_KIND
 	{
 		// 背景
@@ -91,6 +140,15 @@ private:
 		KINDMAX_OPTION
 	};
 
+	// 大項目の種類
+	enum SECTION_KIND
+	{
+		SEC_SOUND = 0,
+		SEC_SCREEN,
+		SEC_INPUT,
+	};
+
+	// 小項目の種類
 	enum TAB_KIND
 	{
 		MASTER = 0,
@@ -105,35 +163,28 @@ private:
 		TAB_MAX
 	};
 
-	enum SECTION_KIND
-	{
-		SEC_SOUND = 0,
-		SEC_SCREEN,
-		SEC_INPUT,
-	};
+	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
+	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
 
-	Texture* m_pTexture[KINDMAX_OPTION];
-	SpriteParam* m_pParam[KINDMAX_OPTION];
+	int m_nSection;							// 大項目の選択
+	int m_nSelect;							// 小項目の選択
+	int m_nValue[TAB_MAX];					// 各小項目の物量(確定)
+	int m_nTempValue[TAB_MAX];				// 各小項目の物量(推定)
 
-	int m_nSection;
-	int m_nSelect;
-	int m_nValue[TAB_MAX];
-	int m_nTempValue[TAB_MAX];
+	bool m_bOptionMode;						// オプション画面を開いているかどうか
+	bool m_bSetValue;						// 小項目を操作しているかどうか
 
-	bool m_bOptionMode;
-	bool m_bSetValue;
+	void LoadPass();						// テクスチャのパス読み込み
+	void InitParam();						// テクスチャのパラメータ設定
+	void InitValue();						// 初期値設定
+	void InitValue(SECTION_KIND kind);		// 大項目ごとにデフォルトに戻す
 
-	void LoadPass();
-	void InitParam();
-	void InitValue();
-	void InitValue(SECTION_KIND kind);
+	void UpdateSound();						// サウンド設定
+	void UpdateScreen();					// 画面設定
+	void UpdateInput();						// 操作方法設定
+	void SetValue(int kind);				// 各小項目の物量の設定
 
-	void UpdateSound();
-	void UpdateScreen();
-	void UpdateInput();
-	void SetValue(int kind);
-
-	void DrawSound();
-	void DrawScreen();
-	void DrawInput();
+	void DrawSound();						// サウンド設定の描画
+	void DrawScreen();						// 画面設定の描画
+	void DrawInput();						// 操作方法設定の描画
 };

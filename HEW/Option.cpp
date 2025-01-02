@@ -69,7 +69,7 @@ void COption::Update()
 		{
 			m_nSelect = SEC_SOUND;
 			m_nSection = MASTER;
-			SetOption(false);
+			m_bOptionMode = false;
 		}
 		if (IsKeyTrigger(VK_RETURN))m_bSetValue = true;
 	}
@@ -111,9 +111,9 @@ void COption::Draw()
 	Sprite::Draw();
 }
 
-void COption::SetOption(bool isOption)
+void COption::SetOption()
 {
-	m_bOptionMode = isOption;
+	m_bOptionMode = true;
 }
 
 bool COption::GetOption()
@@ -121,14 +121,44 @@ bool COption::GetOption()
 	return m_bOptionMode;
 }
 
+float COption::GetMasterVoluem()
+{
+	return (float)m_nValue[MASTER];
+}
+
 float COption::GetBGMVoluem()
 {
-	return 1.0f;
+	return (float)m_nValue[BGM];
 }
 
 float COption::GetSEVoluem()
 {
-	return 1.0f;
+	return (float)m_nValue[SE];
+}
+
+int COption::GetIsFullScreen()
+{
+	return m_nValue[SCREEN_MODE];
+}
+
+float COption::GetFPS()
+{
+	return 30.0f * (float)(m_nValue[FRAME_RATE] + 1);
+}
+
+int COption::GetResolusion()
+{
+	return 0;
+}
+
+int COption::GetKeyboardSetting()
+{
+	return  m_nValue[KEY_BOARD];
+}
+
+int COption::GetControllerSetting()
+{
+	return  m_nValue[CONTROLLER];
 }
 
 void COption::LoadPass()

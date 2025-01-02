@@ -23,10 +23,6 @@ CSceneTitle::CSceneTitle()
 	:f_SelectY(350.0f), m_pSelect(nullptr)
 {
 	g_Title_type = GAMESTART;
-	g_TitleSound = new CSoundList(BGM_TITLE);
-	g_pSourseTitleBGM = g_TitleSound->GetSound(true);
-	g_pSourseTitleBGM->Start();
-
 	m_pSelect = new Texture();
 	if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
 	m_pParam = new SpriteParam();
@@ -36,6 +32,10 @@ CSceneTitle::CSceneTitle()
 
 	m_pOption = new COption();
 	g_pTitleBG = new CBackGround();
+
+	g_TitleSound = new CSoundList(BGM_TITLE);
+	g_pSourseTitleBGM = g_TitleSound->GetSound(true);
+	g_pSourseTitleBGM->Start();
 }
 
 CSceneTitle::~CSceneTitle()
@@ -116,7 +116,7 @@ void CSceneTitle::Update()
 		if (IsKeyTrigger(VK_RETURN))
 		{
 			//ƒIƒvƒVƒ‡ƒ“‚ÖØ‚è‘Ö‚¦‚éˆ—
-			m_pOption->SetOption(true);
+			m_pOption->SetOption();
 
 		}
 		break;
