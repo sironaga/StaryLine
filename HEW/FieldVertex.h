@@ -55,6 +55,8 @@ private:
 		DirectX::XMFLOAT3 Pos;
 		int type;//0→三角形 1→四角形
 		float time;
+		int MoveType;//動きのタイプ 1→右から左 2→下から上 3→右から左
+		float Alpha;//透明度
 	};
 
 	typedef struct FieldVertex

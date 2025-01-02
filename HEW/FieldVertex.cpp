@@ -17,6 +17,12 @@ Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
 IXAudio2SourceVoice* g_FieldSe;
 CSoundList* g_Fieldsound;
 
+int SubDeleteCount = 0;
+float MoveFlagStartTime = 0.0f;
+float MoveFlagEndTime = 0.0f;
+bool MoveFlagStart = true;
+bool MoveFlagEnd = true;
+
 CFieldVertex::CFieldVertex()
 	:RoadStop(false)
 	, m_tVertex{}
@@ -464,17 +470,17 @@ void CFieldVertex::Draw()
 	//召喚ログ
 	for (int i = 0; i < NowSummonLog; i++)
 	{
-		SummonLog[i].Pos.y = 100.0f - i * 5.0f;
+		
 		DrawSetting(SummonLog[i].Pos, { 25.0f,15.0f,1.0f }, m_pSprite_Summon_Log);
 		// 背景色の設定
-		m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });
 
 		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
 		if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);
 		else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);
 
 		//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-		m_pSprite_Summon_Log->Draw();
+		if(i <= 10)m_pSprite_Summon_Log->Draw();
 	}
 	m_pSprite_Summon_Log->ReSetSprite();
 
@@ -491,7 +497,6 @@ void CFieldVertex::Draw()
 	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
 	m_pSprite_SuperStar_Number->Draw();
 	m_pSprite_SuperStar_Number->ReSetSprite();
-
 	
 	//フィーバースター描画
 	 float Fever_Star_Size = 40.0f;
@@ -534,10 +539,71 @@ void CFieldVertex::Draw()
 void CFieldVertex::LogUpdate()
 {
 	int DeleteCount = 0;
+	if (MoveFlagStartTime > 0.0f)MoveFlagStartTime += 1.0f / 60.0f;
+	if (MoveFlagStartTime > 0.5f)
+	{
+		MoveFlagStartTime = 0.0f;
+		MoveFlagStart = true;
+	}
+	if (MoveFlagEndTime > 0.0f)MoveFlagEndTime += 1.0f / 60.0f;
+	if (MoveFlagEndTime > 0.5f)
+	{
+		MoveFlagEndTime = 0.0f;
+		MoveFlagEnd = true;
+	}
+	int SDC = 0;
 	for (int i = 0; i < NowSummonLog; i++)
 	{
-		SummonLog[i].time -= 1.0f / 60.0f;
-		if (SummonLog[i].time <= 0.0f)DeleteCount = i + 1;
+		if (1/*i <= 10*/)
+		{
+			switch (SummonLog[i].MoveType)
+			{
+			case 1:
+				SummonLog[i].time -= 1.0f / 60.0f;
+				SummonLog[i].Alpha += 1.0f / 60.0f;
+				SummonLog[i].Pos.x -= 40.0f / (60.0f * 1.0f);
+				if (SummonLog[i].Pos.x < 100.0f)SummonLog[i].Pos.x = 100.0f;
+				if (SummonLog[i].time <= 0.0f && MoveFlagStart)
+				{
+					SummonLog[i].MoveType = 2;
+					SummonLog[i].time = 2.0f;
+					MoveFlagStartTime += 1.0f / 60.0f;
+					MoveFlagStart = false;
+				}
+				break;
+			case 2:
+				SummonLog[i].time -= 1.0f / 60.0f;
+				SummonLog[i].Pos.y += 0.5f;
+				if (SummonLog[i].Pos.y > 100.0f - (i - SubDeleteCount) * 5.0f)
+				{
+					SummonLog[i].Pos.y -= 0.5f;
+					/*SummonLog[i].Pos.y = 100.0f - (i - SubDeleteCount) * 5.0f;*/
+				}
+				if (SummonLog[i].time <= 0.0f && SummonLog[i].Pos.y == 100.0f && MoveFlagEnd)
+				{
+					SummonLog[i].MoveType = 3;
+					SummonLog[i].time = 1.0f;
+					MoveFlagEnd = false;
+					MoveFlagEndTime += 1.0f / 60.0f;
+					SubDeleteCount++;
+				}
+				break;
+			case 3:
+				SummonLog[i].time -= 1.0f / 60.0f;
+				SummonLog[i].Pos.x -= 40.0f / (60.0f * 1.0f);
+				//SummonLog[i].Pos.y += 40.0f / (60.0f * 1.0f);
+				SummonLog[i].Alpha -= 1.0f / 60.0f;
+				if (SummonLog[i].time <= 0.0f && SummonLog[i].Alpha <= 0.0f)
+				{
+					DeleteCount = i + 1;
+					SubDeleteCount--;
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 	if (DeleteCount > 0)
 	{
@@ -1097,9 +1163,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
 
 					//召喚ログセット
-					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(100.0f, 100.0f, 10.0f);
-					SummonLog[NowSummonLog].time = 4.0f;
+					//SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 100.0f - 5.0f * NowSummonLog, 10.0f);
+					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 50.0f, 10.0f);
+					SummonLog[NowSummonLog].time = 1.0f;
 					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
+					SummonLog[NowSummonLog].Alpha = 0.0f;
+					SummonLog[NowSummonLog].MoveType = 1;
 					NowSummonLog++;//召喚ログを増やす
 
 					//音を再生
