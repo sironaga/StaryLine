@@ -382,56 +382,56 @@ void CFieldVertex::Draw()
 			});
 		m_pStarLine->DispLine();
 
-		m_pSprite_Line[i]->SetCenterPosAndRotation(
-			{
-				vtx_FieldLine[i][1].pos[0],
-				vtx_FieldLine[i][1].pos[1],
-				0.0f
-			},
-		{
-			vtx_FieldLine[i][3].pos[0],
-			vtx_FieldLine[i][3].pos[1],
-			0.0f
-		},
-			{ vtx_FieldLine[i][0].pos[0],
-				vtx_FieldLine[i][0].pos[1],
-				0.0f
-			},
-		{
-			vtx_FieldLine[i][2].pos[0],
-			vtx_FieldLine[i][2].pos[1],
-			0.0f
-		}
-		);
-		if (i == NowLine && !m_pPlayer->GetCanMove())
-		{
-			m_pSprite_Line[i]->SetCenterPosAndRotation(
-				{
-					vtx_FieldLine[i - 1][1].pos[0],
-					vtx_FieldLine[i - 1][1].pos[1],
-					0.0f
-				},
-				{
-					vtx_FieldLine[i - 1][3].pos[0],
-					vtx_FieldLine[i - 1][3].pos[1],
-					0.0f
-				},
-				{
-					vtx_FieldLine[i - 1][0].pos[0],
-					vtx_FieldLine[i - 1][0].pos[1],
-					0.0f
-				},
-				{
-					vtx_FieldLine[i - 1][2].pos[0],
-					vtx_FieldLine[i - 1][2].pos[1],
-					0.0f
-				});
-		}
-		//背景色の設定
-		m_pSprite_Line[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-		m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
-		m_pSprite_Line[i]->Draw();
+		//m_pSprite_Line[i]->SetCenterPosAndRotation(
+		//	{
+		//		vtx_FieldLine[i][1].pos[0],
+		//		vtx_FieldLine[i][1].pos[1],
+		//		0.0f
+		//	},
+		//{
+		//	vtx_FieldLine[i][3].pos[0],
+		//	vtx_FieldLine[i][3].pos[1],
+		//	0.0f
+		//},
+		//	{ vtx_FieldLine[i][0].pos[0],
+		//		vtx_FieldLine[i][0].pos[1],
+		//		0.0f
+		//	},
+		//{
+		//	vtx_FieldLine[i][2].pos[0],
+		//	vtx_FieldLine[i][2].pos[1],
+		//	0.0f
+		//}
+		//);
+		//if (i == NowLine && !m_pPlayer->GetCanMove())
+		//{
+		//	m_pSprite_Line[i]->SetCenterPosAndRotation(
+		//		{
+		//			vtx_FieldLine[i - 1][1].pos[0],
+		//			vtx_FieldLine[i - 1][1].pos[1],
+		//			0.0f
+		//		},
+		//		{
+		//			vtx_FieldLine[i - 1][3].pos[0],
+		//			vtx_FieldLine[i - 1][3].pos[1],
+		//			0.0f
+		//		},
+		//		{
+		//			vtx_FieldLine[i - 1][0].pos[0],
+		//			vtx_FieldLine[i - 1][0].pos[1],
+		//			0.0f
+		//		},
+		//		{
+		//			vtx_FieldLine[i - 1][2].pos[0],
+		//			vtx_FieldLine[i - 1][2].pos[1],
+		//			0.0f
+		//		});
+		//}
+		////背景色の設定
+		//m_pSprite_Line[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+		//m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
+		//m_pSprite_Line[i]->Draw();
 	}
 
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
