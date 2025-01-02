@@ -256,7 +256,8 @@ void Sprite::ReSetSprite()
 	Sprite::SetUVPos({ 0.0f, 0.0f });
 	Sprite::SetUVScale({ 1.0f, 1.0f });
 	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-
+	Sprite::SetSize({ 1.0f,1.0f });
+	Sprite::SetOffset({ 0.0f,0.0f });
 }
 
 void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight)

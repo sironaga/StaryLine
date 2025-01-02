@@ -109,6 +109,8 @@ void COption::Draw()
 	Sprite::SetParam(m_pParam[TAB_SELECT]);
 	Sprite::SetTexture(m_pTexture[TAB_SELECT]);
 	Sprite::Draw();
+
+	Sprite::ReSetSprite();
 }
 
 void COption::SetOption()
