@@ -360,27 +360,28 @@ void CFieldVertex::Draw()
 
 	for (int i = 0; i <= NowLine; i++)
 	{
-		//////ü‚Ì•`‰æ
-		//m_pStarLine->SetLineInfo(	{
-		//		vtx_FieldLine[i][1].pos[0],
-		//		vtx_FieldLine[i][1].pos[1],
-		//		0.0f
-		//	},
-		//	{
-		//		vtx_FieldLine[i][3].pos[0],
-		//		vtx_FieldLine[i][3].pos[1],
-		//		0.0f
-		//	},
-		//	{ vtx_FieldLine[i][0].pos[0],
-		//		vtx_FieldLine[i][0].pos[1],
-		//		0.0f
-		//	},
-		//	{
-		//		vtx_FieldLine[i][2].pos[0],
-		//		vtx_FieldLine[i][2].pos[1],
-		//		0.0f
-		//	});
-		//m_pStarLine->DispLine();
+		////ü‚Ì•`‰æ
+		m_pStarLine->SetLineInfo(	{
+				vtx_FieldLine[i][1].pos[0],
+				vtx_FieldLine[i][1].pos[1],
+				0.0f
+			},
+			{
+				vtx_FieldLine[i][3].pos[0],
+				vtx_FieldLine[i][3].pos[1],
+				0.0f
+			},
+			{ vtx_FieldLine[i][0].pos[0],
+				vtx_FieldLine[i][0].pos[1],
+				0.0f
+			},
+			{
+				vtx_FieldLine[i][2].pos[0],
+				vtx_FieldLine[i][2].pos[1],
+				0.0f
+			});
+		m_pStarLine->DispLine();
+
 		m_pSprite_Line[i]->SetCenterPosAndRotation(
 			{
 				vtx_FieldLine[i][1].pos[0],
