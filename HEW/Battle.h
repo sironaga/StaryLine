@@ -65,6 +65,8 @@ public:
 private:
 	//戦闘時間
 	int m_nBattleTime;
+	//敵のひとつ前の出現時間
+	int m_nSpawnTime;
 	//初期戦闘したかどうか
 	bool m_bFirstFight;
 	//初期位置のパターン

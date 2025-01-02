@@ -48,6 +48,8 @@
 
 //時間の計算マクロ
 #define Time(Num) Num * 60
+//次に敵が生成される間隔
+#define NEXTSPAWN (2)
 
 
 //数字のテクスチャ保存用ポインタ
@@ -83,6 +85,7 @@ CBattle::CBattle()
 	, m_nFirstPosPattern(0)
 	, m_nStageNum{ 0,0 }
 	, m_bEnd(false)
+	, m_nSpawnTime(0)
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
@@ -454,26 +457,11 @@ void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
 //戦闘時間軸処理
 void CBattle::TimeLapse(void)
 {
-	if (   m_nBattleTime == Time(0*2)
-		|| m_nBattleTime == Time(1*2)
-		|| m_nBattleTime == Time(2*2)
-		|| m_nBattleTime == Time(3*2)
-		|| m_nBattleTime == Time(4*2)
-		|| m_nBattleTime == Time(5*2)
-		|| m_nBattleTime == Time(6*2)
-		|| m_nBattleTime == Time(7*2)
-		|| m_nBattleTime == Time(8*2)
-		|| m_nBattleTime == Time(9*2)
-		|| m_nBattleTime == Time(10*2)
-		|| m_nBattleTime == Time(11*2)
-		|| m_nBattleTime == Time(12*2)
-		|| m_nBattleTime == Time(13*2)
-		|| m_nBattleTime == Time(14*2)
-		|| m_nBattleTime == Time(15*2)
-		)
+	if (m_nBattleTime == Time(m_nSpawnTime))
 	{
 		//敵の生成数を指定
 		m_nCreateEnemyNum = 4;
+		m_nSpawnTime += NEXTSPAWN;
 	}
 }
 
