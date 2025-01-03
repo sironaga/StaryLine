@@ -480,7 +480,7 @@ void CFieldVertex::Draw()
 		else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);
 
 		//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//‰ó‚ê‚½’¸“_
-		if(i <= 10)m_pSprite_Summon_Log->Draw();
+		if(i < 15)m_pSprite_Summon_Log->Draw();
 	}
 	m_pSprite_Summon_Log->ReSetSprite();
 
@@ -540,13 +540,13 @@ void CFieldVertex::LogUpdate()
 {
 	int DeleteCount = 0;
 	if (MoveFlagStartTime > 0.0f)MoveFlagStartTime += 1.0f / 60.0f;
-	if (MoveFlagStartTime > 0.5f)
+	if (MoveFlagStartTime > 0.25f)
 	{
 		MoveFlagStartTime = 0.0f;
 		MoveFlagStart = true;
 	}
 	if (MoveFlagEndTime > 0.0f)MoveFlagEndTime += 1.0f / 60.0f;
-	if (MoveFlagEndTime > 0.5f)
+	if (MoveFlagEndTime > 0.25f)
 	{
 		MoveFlagEndTime = 0.0f;
 		MoveFlagEnd = true;
@@ -554,7 +554,7 @@ void CFieldVertex::LogUpdate()
 	int SDC = 0;
 	for (int i = 0; i < NowSummonLog; i++)
 	{
-		if (1/*i <= 10*/)
+		if (i - SDC < 15)
 		{
 			switch (SummonLog[i].MoveType)
 			{
@@ -567,6 +567,7 @@ void CFieldVertex::LogUpdate()
 				{
 					SummonLog[i].MoveType = 2;
 					SummonLog[i].time = 2.0f;
+					SummonLog[i].Alpha = 1.0f;
 					MoveFlagStartTime += 1.0f / 60.0f;
 					MoveFlagStart = false;
 				}
