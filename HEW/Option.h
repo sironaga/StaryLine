@@ -137,6 +137,8 @@ private:
 		TAB_SE,
 		TAB_WINDOWMODE,
 
+		BACK_SWAP,
+
 		KINDMAX_OPTION
 	};
 

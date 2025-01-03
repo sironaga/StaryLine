@@ -1,6 +1,5 @@
 #pragma once
 #include "Character.h"
-#include "VectorOperator.h"
 
 //ƒpƒ^[ƒ“‚ÌÅ‘å”
 #define MAX_PATTERN (5)

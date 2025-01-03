@@ -132,9 +132,6 @@
     <ClCompile Include="StageSelect.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
-    <ClCompile Include="StartTitle.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
     <ClCompile Include="Battle.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
@@ -149,9 +146,6 @@
     </ClCompile>
     <ClCompile Include="SceneTitle.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Result.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="DebugRoom.cpp">
       <Filter>ソース ファイル\Systems</Filter>
@@ -177,9 +171,6 @@
     <ClCompile Include="LibEffekseer.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
-    <ClCompile Include="SceneTransition.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
     <ClCompile Include="StarLine.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
@@ -193,9 +184,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="FadeBlack.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GameResult.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="NumberUI.cpp">
@@ -287,12 +275,6 @@
     <ClInclude Include="StageSelect.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
-    <ClInclude Include="StartTitle.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorOperator.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
     <ClInclude Include="Definition.h">
       <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
@@ -301,9 +283,6 @@
     </ClInclude>
     <ClInclude Include="SceneTitle.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Result.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
     <ClInclude Include="DebugRoom.h">
       <Filter>ヘッダー ファイル\Systems</Filter>
@@ -326,9 +305,6 @@
     <ClInclude Include="LibEffekseer.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
-    <ClInclude Include="SceneTransition.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
     <ClInclude Include="StarLine.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
@@ -345,9 +321,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="FadeBlack.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GameResult.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="NumberUI.h">

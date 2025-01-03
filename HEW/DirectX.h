@@ -9,8 +9,6 @@
 #include<Windows.h>
 #include<Digitalv.h>
 
-#include "VectorOperator.h"
-
 #pragma comment(lib,"Winmm.lib")
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")

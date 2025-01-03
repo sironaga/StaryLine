@@ -34,7 +34,6 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldVertex.cpp" />
     <ClCompile Include="File.cpp" />
-    <ClCompile Include="GameResult.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputEx.cpp" />
@@ -46,13 +45,11 @@
     <ClCompile Include="NumberUI.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Result.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneDebug.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="SceneResult.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
-    <ClCompile Include="SceneTransition.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -62,7 +59,6 @@
     <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="StarLine.cpp" />
-    <ClCompile Include="StartTitle.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UI.cpp" />
@@ -87,7 +83,6 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldVertex.h" />
     <ClInclude Include="File.h" />
-    <ClInclude Include="GameResult.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputEx.h" />
@@ -100,13 +95,11 @@
     <ClInclude Include="Option.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Result.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneDebug.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneResult.h" />
     <ClInclude Include="SceneTitle.h" />
-    <ClInclude Include="SceneTransition.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sound.h" />
@@ -116,10 +109,8 @@
     <ClInclude Include="SpriteEx.h" />
     <ClInclude Include="StageSelect.h" />
     <ClInclude Include="StarLine.h" />
-    <ClInclude Include="StartTitle.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UI.h" />
-    <ClInclude Include="VectorOperator.h" />
     <ClInclude Include="_StructList.h" />
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,6 @@
 #include<Xinput.h>
 #pragma comment(lib, "xinput.lib")
 #include"_StructList.h"
-#include "VectorOperator.h"
 #include <DirectXMath.h>
 
 #define DEADZONE (13000.0f)

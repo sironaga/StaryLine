@@ -6,7 +6,6 @@
 #include "MeshBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "VectorOperator.h"
 #include "_StructList.h"
 
 class Sprite
