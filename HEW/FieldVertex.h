@@ -21,8 +21,7 @@
 #define VERTEX_POS_Y (95.0f)//頂点の描画位置Y
 #define VERTEX_SPACE_X (15.0f)//頂点間の間隔X
 #define VERTEX_SPACE_Y (15.0f)//頂点間の間隔Y
-#define MAX_LOG (300)
-#define MAX_DRAW_LOG (10)
+#define MAX_LOG (300) //ログの最大数
 
 class CPlayer;
 
@@ -98,7 +97,7 @@ private:
 	Texture* m_pTex_FieldVertex;
 	Texture* m_pTex_FieldUseVertex;
 	Texture* m_pTex_SuperStar_Number[6];
-	Texture* m_pTex_Fever_Star[2];
+	Texture* m_pTex_Fever_Gage[2];
 	Texture* m_pTex_Summon_Log[2];
 	float m_offsetU_Field;
 
@@ -118,7 +117,7 @@ private:
 	Sprite* m_pSprite_Star;//3D描画用スプライトクラスポインター
 	Sprite* m_pSprite_Line[MAX_LINE];//線の描画
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
-	Sprite* m_pSprite_Fever_Star[2];//フィーバースター
+	Sprite* m_pSprite_Fever_Gage[2];//フィーバースター
 	Sprite* m_pSprite_Summon_Log;//召喚ログ
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
