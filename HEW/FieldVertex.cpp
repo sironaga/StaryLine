@@ -1,4 +1,4 @@
-//Character.cpp
+//FieldVertex.cpp
 //編集者：AT12A25 中島聖羅
 #include "FieldVertex.h"
 #include "DirectXTex/TextureLoad.h"
@@ -11,7 +11,21 @@
 #include "Main.h"
 #include "SoundList.h"
 
-#define MAX_FEVER_POINT (30.0f)
+//↓FieldVertexのまだやってない事↓
+//各変数名の修正
+//コンストラクタとupdateのクリーンアップとコメントアウト
+//デストラクタでのメモリ開放とコメントアウト
+//ヘッダーのクリーンアップとコメントアウト
+//グローバル領域のクリーンアップ
+
+#define MAX_FEVER_POINT (30.0f)//フィーバーの上限ポイント
+
+#define MAX_DRAW_LOG (15)//ログの描画数
+#define DRAW_LOG_TIME (0.5f) //ログの終始の表示時間
+#define DRAW_MAIN_LOG_TIME (2.0f) //ログの中間の表示時間
+#define FADE_LOG_TIME (0.25f) //ログが移動する間隔
+#define FADE_LOG_SPEED (0.5f) //ログの終始のスピード
+#define MAIN_LOG_SPEED (1.0f) //ログの中間のスピード
 
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
 IXAudio2SourceVoice* g_FieldSe;
@@ -41,8 +55,8 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pStar_Model{nullptr}
 	, m_pStarLine(nullptr)
-	, m_pTex_Fever_Star{nullptr}
-	, m_pSprite_Fever_Star{nullptr}
+	, m_pTex_Fever_Gage{nullptr}
+	, m_pSprite_Fever_Gage{nullptr}
 	, nFeverPoint(0)
 	, fFeverPoint(0.0f)
 	, Partition(MAX_FEVER_POINT)
@@ -58,14 +72,14 @@ CFieldVertex::CFieldVertex()
 	// スプライト
 	m_pSprite_Star = new Sprite();
 	m_pSprite_SuperStar_Number = new Sprite();
-	m_pSprite_Fever_Star[0] = new Sprite();
-	m_pSprite_Fever_Star[1] = new Sprite();
+	m_pSprite_Fever_Gage[0] = new Sprite();
+	m_pSprite_Fever_Gage[1] = new Sprite();
 	m_pSprite_Summon_Log = new Sprite();
 	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
-	m_pTex_Fever_Star[0] = new Texture();
-	m_pTex_Fever_Star[1] = new Texture();
+	m_pTex_Fever_Gage[0] = new Texture();
+	m_pTex_Fever_Gage[1] = new Texture();
 	m_pTex_Summon_Log[0] = new Texture();
 	m_pTex_Summon_Log[1] = new Texture();
 
@@ -200,8 +214,8 @@ CFieldVertex::CFieldVertex()
 	{
 		switch (i)
 		{
-		case 0:hrFeverStar = m_pTex_Fever_Star[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
-		case 1:hrFeverStar = m_pTex_Fever_Star[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
+		case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
+		case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
 		default:
 			break;
 		}
@@ -209,23 +223,6 @@ CFieldVertex::CFieldVertex()
 			MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
 		}
 	}	
-
-	//Sprite::Vertex vtx_FieldVertex[] = {
-	//	//背景表示の座標
-	//	{{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
-	//	{{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}},
-	//	{{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},
-	//	{{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}},
-	//};
-
-	//for (int i = 0; i < MAX_LINE; i++)
-	//{
-	//	//背景表示の座標
-	//	vtx_FieldLine[i][0] = {{-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}};
-	//	vtx_FieldLine[i][1] = {{-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}};
-	//	vtx_FieldLine[i][2] = {{ 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}};
-	//	vtx_FieldLine[i][3] = {{ 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}};
-	//}
 }
 
 CFieldVertex::~CFieldVertex()
@@ -237,7 +234,6 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_FieldLine);
 	SAFE_DELETE(m_pTex_FieldUseVertex);
 	SAFE_DELETE(m_pTex_FieldVertex);
-
 }
 
 void CFieldVertex::Update()
@@ -356,256 +352,226 @@ void CFieldVertex::Update()
 
 }
 
+////=====FieldVertexの描画処理の関数=====//
 void CFieldVertex::Draw()
 {
-	//SetRender2D();
-	//今のフェーズがDrawの時フィールドの頂点描画
-	SetRender3D();
-	FieldVertex* Vertexp;
-	Vertexp = m_tVertex;
+	SetRender3D();//3D描画準備
 
-	for (int i = 0; i <= NowLine; i++)
+	//-----線の描画-----//
 	{
-		////線の描画
-		m_pStarLine->SetLineInfo(	{
-				vtx_FieldLine[i][1].pos[0],
-				vtx_FieldLine[i][1].pos[1],
-				0.0f
-			},
-			{
-				vtx_FieldLine[i][3].pos[0],
-				vtx_FieldLine[i][3].pos[1],
-				0.0f
-			},
-			{ vtx_FieldLine[i][0].pos[0],
-				vtx_FieldLine[i][0].pos[1],
-				0.0f
-			},
-			{
-				vtx_FieldLine[i][2].pos[0],
-				vtx_FieldLine[i][2].pos[1],
-				0.0f
-			});
-		m_pStarLine->DispLine();
-
-		//m_pSprite_Line[i]->SetCenterPosAndRotation(
-		//	{
-		//		vtx_FieldLine[i][1].pos[0],
-		//		vtx_FieldLine[i][1].pos[1],
-		//		0.0f
-		//	},
-		//{
-		//	vtx_FieldLine[i][3].pos[0],
-		//	vtx_FieldLine[i][3].pos[1],
-		//	0.0f
-		//},
-		//	{ vtx_FieldLine[i][0].pos[0],
-		//		vtx_FieldLine[i][0].pos[1],
-		//		0.0f
-		//	},
-		//{
-		//	vtx_FieldLine[i][2].pos[0],
-		//	vtx_FieldLine[i][2].pos[1],
-		//	0.0f
-		//}
-		//);
-		//if (i == NowLine && !m_pPlayer->GetCanMove())
-		//{
-		//	m_pSprite_Line[i]->SetCenterPosAndRotation(
-		//		{
-		//			vtx_FieldLine[i - 1][1].pos[0],
-		//			vtx_FieldLine[i - 1][1].pos[1],
-		//			0.0f
-		//		},
-		//		{
-		//			vtx_FieldLine[i - 1][3].pos[0],
-		//			vtx_FieldLine[i - 1][3].pos[1],
-		//			0.0f
-		//		},
-		//		{
-		//			vtx_FieldLine[i - 1][0].pos[0],
-		//			vtx_FieldLine[i - 1][0].pos[1],
-		//			0.0f
-		//		},
-		//		{
-		//			vtx_FieldLine[i - 1][2].pos[0],
-		//			vtx_FieldLine[i - 1][2].pos[1],
-		//			0.0f
-		//		});
-		//}
-		////背景色の設定
-		//m_pSprite_Line[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-		////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-		//m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
-		//m_pSprite_Line[i]->Draw();
-	}
-
-	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
-	{
-		if (Vertexp->SuperStar)DrawStarModel(2, i);
-		else
+		for (int i = 0; i <= NowLine; i++)
 		{
-			if (Vertexp->Use)DrawStarModel(1, i);
-			else DrawStarModel(0, i);
+			m_pStarLine->SetLineInfo(//頂点情報格納
+			{
+					vtx_FieldLine[i][1].pos[0],
+					vtx_FieldLine[i][1].pos[1],
+					0.0f
+			},
+		    {
+			        vtx_FieldLine[i][3].pos[0],
+			        vtx_FieldLine[i][3].pos[1],
+			        0.0f
+		    },
+		    {
+			        vtx_FieldLine[i][0].pos[0],
+			        vtx_FieldLine[i][0].pos[1],
+			        0.0f
+		    },
+		    {
+			        vtx_FieldLine[i][2].pos[0],
+			        vtx_FieldLine[i][2].pos[1],
+			        0.0f
+		    });
+			m_pStarLine->DispLine();//線の描画
+
+			//m_pSprite_Line[i]->SetCenterPosAndRotation(
+			//	{
+			//		vtx_FieldLine[i][1].pos[0],
+			//		vtx_FieldLine[i][1].pos[1],
+			//		0.0f
+			//	},
+			//{
+			//	vtx_FieldLine[i][3].pos[0],
+			//	vtx_FieldLine[i][3].pos[1],
+			//	0.0f
+			//},
+			//	{ vtx_FieldLine[i][0].pos[0],
+			//		vtx_FieldLine[i][0].pos[1],
+			//		0.0f
+			//	},
+			//{
+			//	vtx_FieldLine[i][2].pos[0],
+			//	vtx_FieldLine[i][2].pos[1],
+			//	0.0f
+			//}
+			//);
+			//if (i == NowLine && !m_pPlayer->GetCanMove())
+			//{
+			//	m_pSprite_Line[i]->SetCenterPosAndRotation(
+			//		{
+			//			vtx_FieldLine[i - 1][1].pos[0],
+			//			vtx_FieldLine[i - 1][1].pos[1],
+			//			0.0f
+			//		},
+			//		{
+			//			vtx_FieldLine[i - 1][3].pos[0],
+			//			vtx_FieldLine[i - 1][3].pos[1],
+			//			0.0f
+			//		},
+			//		{
+			//			vtx_FieldLine[i - 1][0].pos[0],
+			//			vtx_FieldLine[i - 1][0].pos[1],
+			//			0.0f
+			//		},
+			//		{
+			//			vtx_FieldLine[i - 1][2].pos[0],
+			//			vtx_FieldLine[i - 1][2].pos[1],
+			//			0.0f
+			//		});
+			//}
+			////背景色の設定
+			//m_pSprite_Line[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+			//m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
+			//m_pSprite_Line[i]->Draw();
 		}
-
-		//// スプライトの設定		// 座標の設定						// 大きさの設定
-		//DrawSetting({ Vertexp->Pos.x, Vertexp->Pos.y,10.0f }, { STAR_SIZE,STAR_SIZE,1.0f }, m_pSprite_Star);
-
-		//// 背景色の設定
-		//m_pSprite_Star->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-		////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-		//if (!Vertexp->Use)m_pSprite_Star->SetTexture(m_pTex_FieldVertex);
-		//else m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
-		//if (Vertexp->SuperStar)
-		//{
-		//	m_pSprite_Star->SetTexture(m_pTex_FieldUseVertex);
-		//	m_pSprite_Star->SetColor({ 1.0f,0.2f,0.2f,1.0f });
-		//}
-		////if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-		//m_pSprite_Star->Draw();
 	}
-	SetRender2D();
-	//召喚ログ
-	for (int i = 0; i < NowSummonLog; i++)
+
+	//-----頂点(星)の描画-----//
 	{
-		
-		DrawSetting(SummonLog[i].Pos, { 25.0f,15.0f,1.0f }, m_pSprite_Summon_Log);
-		// 背景色の設定
-		m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });
-
-		//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-		if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);
-		else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);
-
-		//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-		if(i < 15)m_pSprite_Summon_Log->Draw();
+		FieldVertex* Vertexp;//頂点の情報格納ポインター
+		Vertexp = m_tVertex;//先頭の情報格納
+		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+		{
+			if (Vertexp->SuperStar)DrawStarModel(2, i);//ステラの描画(レッド)
+			else
+			{
+				if (Vertexp->Use)DrawStarModel(1, i);//使用中の頂点(星)の描画(ブルー)
+				else DrawStarModel(0, i);//未使用の頂点(星)の描画(オレンジ)
+			}
+		}
 	}
-	m_pSprite_Summon_Log->ReSetSprite();
 
-	//スーパースターの数描画
-	// スプライトの設定		// 座標の設定						// 大きさの設定
-	DrawSetting({ -60.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);
+	SetRender2D();//2D描画準備
 
-	// 背景色の設定
-	m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });
+	//-----召喚ログ-----//
+	{
+		for (int i = 0; i < NowSummonLog; i++)
+		{
+			DrawSetting(SummonLog[i].Pos, { 25.0f,15.0f,1.0f }, m_pSprite_Summon_Log);//座標と大きさの設定
+			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//色と透明度の設定
+			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
+			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//四角形のテクスチャ設定ログ
+			if (i < MAX_DRAW_LOG)m_pSprite_Summon_Log->Draw();//15個のみ描画
+		}
+		m_pSprite_Summon_Log->ReSetSprite();//スプライトのリセット
+	}
 
-	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-	m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);
+	//-----ステラの数描画-----//
+	{
+		DrawSetting({ -60.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
+		m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
+		m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
+		m_pSprite_SuperStar_Number->Draw();//描画
+		m_pSprite_SuperStar_Number->ReSetSprite();//スプライトのリセット
+	}
 
-	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-	m_pSprite_SuperStar_Number->Draw();
-	m_pSprite_SuperStar_Number->ReSetSprite();
-	
-	//フィーバースター描画
-	 float Fever_Star_Size = 40.0f;
-	// スプライトの設定		// 座標の設定						// 大きさの設定
-	DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[0]);
+	//-----フィーバーゲージ描画-----//
+	{
+		//フィーバー背景//
+		float Fever_Gage_Size = 40.0f;
+		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
+		m_pSprite_Fever_Gage[0]->Draw();//描画
+		m_pSprite_Fever_Gage[0]->ReSetSprite();//スプライトのリセット
 
-	// 背景色の設定
-	m_pSprite_Fever_Star[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-	m_pSprite_Fever_Star[0]->SetTexture(m_pTex_Fever_Star[0]);
-
-	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-	m_pSprite_Fever_Star[0]->Draw();
-	m_pSprite_Fever_Star[0]->ReSetSprite();
-
-	//フィーバータイムじゃないときふやす
-	if(!GetFeverMode())fFeverPoint += 0.2f;
-	if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
-	// スプライトの設定		// 座標の設定						// 大きさの設定
-	DrawSetting({ -90.0f, 40.0f + (Fever_Star_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Star_Size,Fever_Star_Size,1.0f }, m_pSprite_Fever_Star[1]);
-
-	m_pSprite_Fever_Star[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });
-	m_pSprite_Fever_Star[1]->SetUVScale({ 1.0f,1.0f});
-	// 背景色の設定
-	m_pSprite_Fever_Star[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-	//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-	m_pSprite_Fever_Star[1]->SetTexture(m_pTex_Fever_Star[1]);
-
-	//if(Vp->Number == BreakVertex)SetSpriteTexture(m_pTex_FieldVertex);//壊れた頂点
-	m_pSprite_Fever_Star[1]->Draw();
-	m_pSprite_Fever_Star[1]->SetUVPos({ 0.0f,0.0f });
-	m_pSprite_Fever_Star[1]->SetUVScale({ 1.0f,1.0f });
-	m_pSprite_Fever_Star[1]->ReSetSprite();
-
+		if (!GetFeverMode())fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
+		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
+		DrawSetting({ -90.0f, 40.0f + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });//UVの座標設定
+		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UVの大きさ設定
+		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[1]->SetTexture(m_pTex_Fever_Gage[1]);//星形のフィーバーゲージのテクスチャ設定
+		m_pSprite_Fever_Gage[1]->Draw();//描画
+		m_pSprite_Fever_Gage[1]->ReSetSprite();//スプライトのリセット
+	}
+	//デバック用ログの表示//
 	m_pBattle->SaveAllyLogDraw();
 }
 
+////=====ログの更新処理の関数=====//
 void CFieldVertex::LogUpdate()
 {
-	int DeleteCount = 0;
+	int DeleteCount = 0;//削除する数を格納する変数
+
+	//スタートログの間隔タイマー処理//
 	if (MoveFlagStartTime > 0.0f)MoveFlagStartTime += 1.0f / 60.0f;
-	if (MoveFlagStartTime > 0.25f)
+	if (MoveFlagStartTime > FADE_LOG_TIME)
 	{
 		MoveFlagStartTime = 0.0f;
 		MoveFlagStart = true;
 	}
+
+	//エンドログの間隔タイマー処理//
 	if (MoveFlagEndTime > 0.0f)MoveFlagEndTime += 1.0f / 60.0f;
-	if (MoveFlagEndTime > 0.25f)
+	if (MoveFlagEndTime > FADE_LOG_TIME)
 	{
 		MoveFlagEndTime = 0.0f;
 		MoveFlagEnd = true;
 	}
-	int SDC = 0;
+
+	int SDC = 0;//３の処理の数を格納する変数
+	for (int i = 0; SummonLog[i].MoveType == 3; i++)SDC++;//３の処理の数をふやす
+
 	for (int i = 0; i < NowSummonLog; i++)
 	{
-		if (i - SDC < 15)
+		if (i - SDC < MAX_DRAW_LOG)
 		{
 			switch (SummonLog[i].MoveType)
 			{
-			case 1:
-				SummonLog[i].time -= 1.0f / 60.0f;
-				SummonLog[i].Alpha += 1.0f / 60.0f;
-				SummonLog[i].Pos.x -= 40.0f / (60.0f * 1.0f);
-				if (SummonLog[i].Pos.x < 100.0f)SummonLog[i].Pos.x = 100.0f;
+			case 1://スタートログの処理
+				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
+				SummonLog[i].Alpha += 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
+				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
+				if (SummonLog[i].Pos.x < 100.0f)SummonLog[i].Pos.x = 100.0f;//値の補正
 				if (SummonLog[i].time <= 0.0f && MoveFlagStart)
 				{
+					//１の処理を抜けて２の処理の初期化
 					SummonLog[i].MoveType = 2;
-					SummonLog[i].time = 2.0f;
+					SummonLog[i].time = DRAW_MAIN_LOG_TIME;
 					SummonLog[i].Alpha = 1.0f;
 					MoveFlagStartTime += 1.0f / 60.0f;
 					MoveFlagStart = false;
 				}
 				break;
-			case 2:
-				SummonLog[i].time -= 1.0f / 60.0f;
-				SummonLog[i].Pos.y += 0.5f;
-				if (SummonLog[i].Pos.y > 100.0f - (i - SubDeleteCount) * 5.0f)
-				{
-					SummonLog[i].Pos.y -= 0.5f;
-					/*SummonLog[i].Pos.y = 100.0f - (i - SubDeleteCount) * 5.0f;*/
-				}
+			case 2://メインログの処理
+				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
+				SummonLog[i].Pos.y += 0.5f;//ログの移動
+				if (SummonLog[i].Pos.y > 100.0f - (i - SDC) * 5.0f)SummonLog[i].Pos.y -= 0.5f;//値の補正
 				if (SummonLog[i].time <= 0.0f && SummonLog[i].Pos.y == 100.0f && MoveFlagEnd)
 				{
+					//２の処理を抜けて３の処理の初期化
 					SummonLog[i].MoveType = 3;
-					SummonLog[i].time = 1.0f;
+					SummonLog[i].time = DRAW_LOG_TIME;
 					MoveFlagEnd = false;
 					MoveFlagEndTime += 1.0f / 60.0f;
-					SubDeleteCount++;
 				}
 				break;
-			case 3:
-				SummonLog[i].time -= 1.0f / 60.0f;
-				SummonLog[i].Pos.x -= 40.0f / (60.0f * 1.0f);
+			case 3://エンドログの処理
+				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
+				SummonLog[i].Alpha -= 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
+				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
 				//SummonLog[i].Pos.y += 40.0f / (60.0f * 1.0f);
-				SummonLog[i].Alpha -= 1.0f / 60.0f;
-				if (SummonLog[i].time <= 0.0f && SummonLog[i].Alpha <= 0.0f)
-				{
-					DeleteCount = i + 1;
-					SubDeleteCount--;
-				}
+				if (SummonLog[i].time <= 0.0f && SummonLog[i].Alpha <= 0.0f)DeleteCount = i + 1;//削除対象をカウント
 				break;
-
 			default:
 				break;
 			}
 		}
 	}
+
+	//削除の数配列を前にずらす
 	if (DeleteCount > 0)
 	{
 		for (int i = 0, j = DeleteCount; j < NowSummonLog; i++, j++)
@@ -616,20 +582,22 @@ void CFieldVertex::LogUpdate()
 	}
 }
 
+////=====引数の頂点番号の座標を取得する関数=====//
 DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
 {
-	return m_tVertex[VertexNumber].Pos;//頂点座標ゲット
+	return m_tVertex[VertexNumber].Pos;//頂点座標を返す
 }
 
+////=====引数でもらった方向が進めるかどうかの情報を渡す関数=====//
 bool CFieldVertex::GetRoadStop(int Direction)
 {
-	CenterVertex* CenterVertexp;
+	CenterVertex* CenterVertexp;//交点の情報を格納するポインター
 	RoadStop = false;//初期化
 
 	//行けない方向を判別
 	switch (Direction)
 	{
-	case 0:
+	case 0://上
 		if (GoalVertex - 5 < 0)RoadStop = true;//頂点の番号が０より小さい時
 		else
 		{
@@ -640,7 +608,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex - 5 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 1:
+	case 1://右上
 		if (GoalVertex - 5 + 1 < 0 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が０より小さい時または今いるとこが右端の時
 		else
 		{
@@ -662,7 +630,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex - 5 + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 2:
+	case 2://右
 		if (GoalVertex + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
 		else
 		{
@@ -674,7 +642,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 3:
+	case 3://右下
 		if (GoalVertex + 5 + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
 		else
 		{
@@ -696,7 +664,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex + 5 + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 4:
+	case 4://下
 		if (GoalVertex + 5 > 24)RoadStop = true;//頂点の番号が24より大きい時
 		else
 		{
@@ -708,7 +676,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex + 5 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 5:
+	case 5://左下
 		if (GoalVertex + 5 - 1 > 24 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが左端の時
 		else
 		{
@@ -730,7 +698,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex + 5 - 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 6:
+	case 6://左
 		if (GoalVertex - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
 		else
 		{
@@ -742,7 +710,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			if (GoalVertex - 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
-	case 7:
+	case 7://左上
 		if (GoalVertex - 5 - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
 		else
 		{
@@ -756,7 +724,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 					break;
 				}
 			}
-			//行きたい方向の頂点と繋がっていたら
+			//行きたい方向の頂点と繋がっていたらtrue
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 - 1].Number)RoadStop = true;
@@ -767,100 +735,93 @@ bool CFieldVertex::GetRoadStop(int Direction)
 	default:
 		break;
 	}
-	return RoadStop;
+
+	return RoadStop;//いけるかいけないかを返す
 }
 
+////=====CBattleクラスのアドレス情報をセットする関数=====//
 void CFieldVertex::SetBattleAddress(CBattle* InAddress)
 {
 	m_pBattle = InAddress;
 }
 
+////=====CPlayerクラスのアドレス情報をセットする関数=====//
 void CFieldVertex::SetPlayerAddress(CPlayer* InAddress)
 {
 	m_pPlayer = InAddress;
 }
 
+////=====FieldVertexの頂点情報などを初期化する関数=====//
 void CFieldVertex::InitFieldVertex()
 {
-
-	//頂点２５個初期化
-	FieldVertex* Vertexp;
-	Vertexp = m_tVertex;
-	for (int j = 0; j < MAX_VERTEX; j++, Vertexp++)
+	//-----頂点２５個初期化-----//
 	{
-		Vertexp->Use = false;
-		Vertexp->Angle[0] = 0.0f;
-		Vertexp->Angle[1] = 180.0f;
-		Vertexp->Angle[2] = 0.0f;
-		for (int k = 0; k < 8; k++)
+		FieldVertex* Vertexp;//頂点の情報を格納するポインター
+		Vertexp = m_tVertex;//先頭のアドレスをセット
+		for (int j = 0; j < MAX_VERTEX; j++, Vertexp++)
 		{
-			Vertexp->Connect[k] = -1;
+			Vertexp->Use = false;
+			Vertexp->Angle[0] = 0.0f;
+			Vertexp->Angle[1] = 180.0f;
+			Vertexp->Angle[2] = 0.0f;
+			for (int k = 0; k < 8; k++)
+			{
+				Vertexp->Connect[k] = -1;
+			}
 		}
 	}
 
-	//センター頂点16個初期化
-	CenterVertex* CenterVertexp;
-	CenterVertexp = m_tCenter_Vertex;
-	for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
+	//-----センター頂点16個初期化-----//
 	{
-		CenterVertexp->Use = false;
+		CenterVertex* CenterVertexp;//交点の情報を格納するポインター
+		CenterVertexp = m_tCenter_Vertex;//先頭のアドレスをセット
+		for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
+		{
+			CenterVertexp->Use = false;
+		}
 	}
 
-	//線の描画情報消す
-	for (int i = 0; i < NowLine; i++)
+	//-----その他必要な初期化処理-----//
 	{
-		//背景表示の座標
-		
+		StartVertex = GoalVertex;//始点を今の地点に初期化
+		NowShapes = 0;//格納した図形の数初期化
+
+		Fill(OrderVertex, -1);//配列-1で初期化
+		Fill(Comparison_Shapes_Vertex_Save, -1);
+		Fill(Shapes_Vertex_Save, -1);
+		Fill(Shapes_Count, -1);
+		Fill(Comparison, -1);
+	
+		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
+		OrderVertexCount = 1;//たどった頂点の数初期化
+		m_tVertex[StartVertex].Use = true;//最初の頂点を使用に
+
+		NowLine = 0;//線の情報を初期化
+
+		SuperStarCount = 0;//ステラのカウントを初期化
 	}
-
-	StartVertex = GoalVertex;//始点を今の地点に初期化
-	NowShapes = 0;//格納した図形の数初期化
-
-	//配列-1で初期化
-	Fill(OrderVertex, -1);
-	Fill(Comparison_Shapes_Vertex_Save, -1);
-	Fill(Shapes_Vertex_Save, -1);
-	Fill(Shapes_Count, -1);
-	Fill(Comparison, -1);
-
-	//たどる順にプレイヤーの最初の位置保存
-	OrderVertex[0] = StartVertex;
-	OrderVertexCount = 1;//たどった頂点の数初期化
-
-	//最初の頂点を使用に
-	m_tVertex[StartVertex].Use = true;
-
-	NowLine = 0;
-
-	SuperStarCount = 0;
 }
 
+////=====ステラの位置を設定する関数=====//
 void CFieldVertex::SetSuperStar()
 {
 	//頂点２５個初期化
-	FieldVertex* Vertexp;
-	Vertexp = m_tVertex;
+	FieldVertex* Vertexp;//頂点の情報格納ポインター
+	Vertexp = m_tVertex;//先頭のアドレスをセット
 	int UseCount = 0;//使ったスーパースターを数える
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
-		
-		//if (Vertexp->SuperStar && Vertexp->SuperStarUse)
-		//{
-		//	UseCount++;//スーパースターを使っていたら使用回数増やす
-		//}
+		//初期化//
 		Vertexp->SuperStar = false;
 		Vertexp->SuperStarUse = false;
 	}
-	//if (UseCount == SuperStarCount)SuperStarCount++;//盤面のスーパースターの数と使った数が同じなら増やす
-	//else SuperStarCount = 1;
-	//if (SuperStarCount > 5)SuperStarCount = 5;//盤面のスーパースターは5を超えない
-	if (SuperStarCount < 5)
+	if (SuperStarCount < 5)//使ったステラが５個以下なら処理
 	{
-
-		for (int i = 0; i < 1/*SuperStarCount*/;)
+		//新しいステラの設定//
+		for (int i = 0; i < 1;)
 		{
-			int Vertex;
-			Vertex = rand() % 25;
+			int Vertex;//ステラの頂点保存用変数
+			Vertex = rand() % 25;//0～24でランダムにセット
 			if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
 			{
 				m_tVertex[Vertex].SuperStar = true;
@@ -868,34 +829,33 @@ void CFieldVertex::SetSuperStar()
 			}
 		}
 	}
-	else
-	{
-		SuperStarCount = SuperStarCount;
-	}
 }
 
-//音を止めるか
+////=====音を止める関数=====//
 void CFieldVertex::SoundStop()
 {
 	g_FieldSe->Stop();
 }
 
+////=====フィーバー中にフィーバーゲージを減らす関数=====//
 void CFieldVertex::SubtractFeverPoint()
 {
-	fFeverPoint -= (30.0f / 60.0f) / 10.0f;
-	if (fFeverPoint < 0.0f)
+	fFeverPoint -= (MAX_FEVER_POINT / 60.0f) / 10.0f;
+	if (fFeverPoint < 0.0f)//値の補正
 	{
 		nFeverPoint = 0;
 		fFeverPoint = 0.0f;
 	}
 }
 
+////=====フィーバーポイントをリセットする関数=====//
 void CFieldVertex::ResetFeverPoint()
 {
 	nFeverPoint = 0;
 	fFeverPoint = 0.0f;
 }
 
+////=====図形判定の再帰処理関数=====//
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 {
 	int NowVertex = 0;//仮頂点保存のどの位置に今格納したのかを保存する
@@ -1166,7 +1126,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					//召喚ログセット
 					//SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 100.0f - 5.0f * NowSummonLog, 10.0f);
 					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 50.0f, 10.0f);
-					SummonLog[NowSummonLog].time = 1.0f;
+					SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
 					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
 					SummonLog[NowSummonLog].Alpha = 0.0f;
 					SummonLog[NowSummonLog].MoveType = 1;
@@ -1240,26 +1200,17 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 	}
 }
 
+////=====描画時の座標と大きさをセットする関数=====//
 void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite)
 {
 	//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
-		InPos.x,
-		InPos.y,
-		InPos.z,
-		0.0f
-	));
-
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
-		0.0f,
-		0.0f,
-		0.0f,
-		0.0f
-	));
-
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(InPos.x,InPos.y,InPos.z,0.0f));
+	//回転行列
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f,0.0f,0.0f,0.0f));
+	//拡大縮小行列
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * R * T;
+
+	DirectX::XMMATRIX mat = S * R * T;//それぞれの行列を掛け合わせて格納
 
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
@@ -1274,15 +1225,22 @@ void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize
 	InSprite->SetProjection(wvp[2]);
 }
 
+////頂点(星)の動きと描画をする関数=====// 
 void CFieldVertex::DrawStarModel(int color, int Vertex)
 {
-		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);
-		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle[0]), TORAD(m_tVertex[Vertex].Angle[1]), TORAD(m_tVertex[Vertex].Angle[2]));
-		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);
-		m_pStar_Model[color]->SetViewMatrix(GetView());
-		m_pStar_Model[color]->SetProjectionMatrix(GetProj());
-		m_pStar_Model[color]->Draw();
-		if (m_tVertex[Vertex].SuperStar)
+	//-----描画関連の処理-----//
+	{
+		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);//座標設定
+		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle[0]), TORAD(m_tVertex[Vertex].Angle[1]), TORAD(m_tVertex[Vertex].Angle[2]));//角度設定
+		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);//大きさ設定
+		m_pStar_Model[color]->SetViewMatrix(GetView());//view情報をセット
+		m_pStar_Model[color]->SetProjectionMatrix(GetProj());//proj情報をセット
+		m_pStar_Model[color]->Draw();//描画
+	}
+		
+	//-----頂点(星)の動き処理-----//
+	{
+		if (m_tVertex[Vertex].SuperStar)//ステラは常に回転
 		{
 			m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f) * 0.75f;
 		}
@@ -1290,12 +1248,12 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 		{
 			if (!(m_tVertex[Vertex].Angle[1] == 180.0f))
 			{
-				m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f);
+				m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f);//１周で止める
 			}
 		}
 		if (m_tVertex[Vertex].Angle[1] > 360.0f)
 		{
-			m_tVertex[Vertex].Angle[1] = 0.0f;
+			m_tVertex[Vertex].Angle[1] = 0.0f;//値の補正
 		}
 		//if (GetFeverMode())
 		//{
@@ -1315,6 +1273,7 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 		//	m_tVertex[Vertex].Angle[0] = 0.0f;
 		//	m_tVertex[Vertex].Angle[2] = 0.0f;
 		//}
+	}
 }
 
 
