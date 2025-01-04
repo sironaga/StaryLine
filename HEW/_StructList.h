@@ -58,6 +58,17 @@ struct Connecting_System_Data
 
 };
 
+/* Result用データ */
+struct ResultGameInfo
+{
+	bool bWin;
+	int nTime;
+	int nHitPoint;
+	int nSpwnCount;
+	int nAverageSpwn;
+	int nDrawCount;
+};
+
 struct Communication_Data
 {
 	Personal_Information_Data PersonalData;
