@@ -7,6 +7,7 @@
 #include "DirectXTex/TextureLoad.h"
 #include "Defines.h"
 #include "Sprite.h"
+#include "ShaderList.h"
 
 #define SELECT_MOVE (90.0f)
 
@@ -36,6 +37,7 @@ CSceneTitle::CSceneTitle()
 	g_TitleSound = new CSoundList(BGM_TITLE);
 	g_pSourseTitleBGM = g_TitleSound->GetSound(true);
 	g_pSourseTitleBGM->Start();
+	
 }
 
 CSceneTitle::~CSceneTitle()
@@ -65,7 +67,7 @@ void CSceneTitle::Update()
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 
-	if(m_pOption->GetOption())m_pOption->Update();
+	if (m_pOption->GetOption())m_pOption->Update();
 
 	switch (g_Title_type)
 	{
@@ -140,6 +142,22 @@ void CSceneTitle::Update()
 
 	//	SetNext(SCENE_DEBUGROOM);
 	//}
+	static bool b = false;
+	if (!m_pOption->GetIsFullScreen() && !b)
+	{
+		
+		SetFullscreenSwap();
+		b ^= true;
+	}
+	else if (m_pOption->GetIsFullScreen() == true && b)
+	{
+		SetFullscreenSwap();
+		b ^= true;
+		//UninitDirectX();
+		//InitDirectX(m_phWnd, 800, 600, true);
+
+	}
+
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
 }
 
@@ -161,3 +179,5 @@ void CSceneTitle::Draw()
 
 	if (m_pOption->GetOption())m_pOption->Draw();
 }
+
+

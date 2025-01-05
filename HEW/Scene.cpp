@@ -61,3 +61,13 @@ void CScene::SetFade(CFade* fade)
 {
 	m_pFade = fade;
 }
+
+void CScene::SethWnd(HWND hWnd)
+{
+	m_phWnd = hWnd;
+}
+
+HWND CScene::GethWnd()
+{
+	return m_phWnd;
+}
