@@ -38,6 +38,15 @@ public:
 	void Draw(void);		
 	//リザルトにいく
 	bool GetEnd();
+
+	/*＝＝＝＝＝リザルトに渡す情報＝＝＝＝＝*/
+	//プレイヤーの体力の残り割合のGet
+	int GetPlayerHpProportion(void) { return (m_pAllyLeader->GetHp() / m_pAllyLeader->GetMaxHp()) * 100; }
+	//勝敗のGet
+	bool GetWin(void) { return m_bWin; }
+	//味方の召喚総数のGet
+	int GetSummonAllyCount(void) { return m_nSummonAllyCount; }
+
 private:
 	//時間軸処理
 	void TimeLapse(void);
@@ -72,7 +81,10 @@ private:
 	int m_nFirstPosPattern;
 	//ゲームが終わったどうか
 	bool m_bEnd;
-
+	//勝敗フラグ
+	bool m_bWin;
+	//味方の召喚総数カウント
+	int m_nSummonAllyCount;
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝リーダー関係＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	//プレイヤー

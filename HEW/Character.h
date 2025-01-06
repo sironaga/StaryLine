@@ -268,6 +268,7 @@ private:
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	float m_fHp;					//体力
+	float m_fMaxHp;					//体力
 
 	Model* m_pModel;
 
@@ -293,7 +294,10 @@ public:
 	//サイズのGet
 	DirectX::XMFLOAT3 GetSize(void) { return m_tSize; }
 
+	//現在HpのGet
 	float GetHp(void) { return m_fHp; }
+	//最大HpのGet
+	float GetMaxHp(void) { return m_fMaxHp; }
 
-	void ChangePlayerMode(void) { m_nStatusMode ^= m_nStatusMode; }//プレイヤーのアニメーションの切り替え
+	//void ChangePlayerMode(void) { m_nStatusMode ^= m_nStatusMode; }//プレイヤーのアニメーションの切り替え
 };
