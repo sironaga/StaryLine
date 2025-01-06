@@ -85,7 +85,9 @@ CBattle::CBattle()
 	, m_nFirstPosPattern(0)
 	, m_nStageNum{ 0,0 }
 	, m_bEnd(false)
+	, m_bWin(false)
 	, m_nSpawnTime(0)
+	, m_nSummonAllyCount(0)
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
@@ -307,7 +309,7 @@ void CBattle::Update(void)
 		if (m_pEnemyLeader == nullptr)
 		{
 			MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
-			//タイトルシーンへ移行
+			m_bWin = true;
 			m_bEnd = true;
 		}
 	}
@@ -318,7 +320,7 @@ void CBattle::Update(void)
 		if (m_pAllyLeader == nullptr)
 		{
 			MessageBox(NULL, "プレイヤーが倒されたため敗北", "勝敗", MB_OK);
-			//タイトルシーンへ移行
+			m_bWin = false;
 			m_bEnd = true;
 		}
 	}
@@ -475,7 +477,8 @@ void CBattle::CreateAlly(void)
 		m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount);
 		//生成数を加算
 		m_nAllyCount++;
-
+		//召喚総数を加算
+		m_nSummonAllyCount++;
 		//生成に使用したため情報を消して後ろの情報を前詰めにする
 		for (int i = 0; i + 1 < MAX_ALLY; i++)
 		{
