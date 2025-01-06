@@ -1,4 +1,5 @@
 #include "SceneResult.h"
+#include"Input.h"
 
 ResultGameInfo CSceneResult::ResultGameData;
 
@@ -44,35 +45,27 @@ CSceneResult::CSceneResult()
 
 	// =====================================================================
 
-	for (int nLoop = 0; nLoop < 2; nLoop++)
-	{
-		m_pStageSelect[nLoop]->SetProjection(Get2DProj());
-		m_pStageSelect[nLoop]->SetView(Get2DView());
-		m_pSelect[nLoop]->SetProjection(Get2DProj());
-		m_pSelect[nLoop]->SetView(Get2DView());
-		m_pNextUI[nLoop]->SetProjection(Get2DProj());
-		m_pNextUI[nLoop]->SetView(Get2DView());
-	}
-	m_pHitPoint		->SetProjection(Get2DProj());
-	m_pHitPoint		->SetView(Get2DView());
-	m_pShadow		->SetProjection(Get2DProj());
-	m_pShadow		->SetView(Get2DView());
-	m_pSummonData	->SetProjection(Get2DProj());
-	m_pSummonData	->SetView(Get2DView());
-	m_pUnderBar		->SetProjection(Get2DProj());
-	m_pUnderBar		->SetView(Get2DView());
-	m_pText			->SetProjection(Get2DProj());
-	m_pText			->SetView(Get2DView());
-	m_pCharacter	->SetProjection(Get2DProj());
-	m_pCharacter	->SetView(Get2DView());
-	m_pLighting		->SetProjection(Get2DProj());
-	m_pLighting		->SetView(Get2DView());
-	m_pLighting		->SetProjection(Get2DProj());
-	m_pLighting		->SetView(Get2DView());
-	m_pTextShadow	->SetProjection(Get2DProj());
-	m_pTextShadow	->SetView(Get2DView());
-	m_pClearTime	->SetProjection(Get2DProj());
-	m_pClearTime	->SetView(Get2DView());
+	m_pClearTime->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pClearTime->SetSize(0.3f, 0.07f, 1.0f);
+	m_pClearTime->SetPositon(1632.0f, 424.0f, 10.0f);
+
+	m_pHitPoint->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pHitPoint->SetSize(0.3f, 0.07f, 1.0f);
+	m_pHitPoint->SetPositon(1632.0f, 500.0f, 10.0f);
+
+
+	m_pSummonData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pSummonData->SetSize(0.3f, 0.14f, 1.0f);
+	m_pSummonData->SetPositon(1632.0f, 613.5f, 10.0f);
+
+	m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pCharacter->SetSize(0.4f, 0.4f, 1.0f);
+	m_pCharacter->SetPositon(940.0f, 600.0f, 10.0f);
+
+	m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pLighting->SetSize(0.6f, 0.7, 1.0f);
+	m_pLighting->SetPositon(940.0f, 550.0f, 10.0f);
+
 
 	nSlect = 0;
 
@@ -148,6 +141,13 @@ CSceneResult::~CSceneResult()
 
 void CSceneResult::Update()
 {
+
+
+
+}
+
+void CSceneResult::Draw()
+{
 	// --- çXêVèàóù
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -180,12 +180,16 @@ void CSceneResult::Update()
 	m_pClearTime->SetView(Get2DView());
 
 
-
-
-}
-
-void CSceneResult::Draw()
-{
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+	m_pHitPoint->SetTexture();
+	m_pHitPoint->Disp();
+	m_pClearTime->SetTexture();
+	m_pClearTime->Disp();
+	m_pSummonData->SetTexture();
+	m_pSummonData->Disp();
 
 
 }

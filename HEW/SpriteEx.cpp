@@ -52,6 +52,10 @@ void SpriteEx::Disp()
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 	wvp[1] = View;
 	wvp[2] = Project;
+	DirectX::XMFLOAT4 C;
+	C.x = C.w = C.y = C.z = 1.0f;
+
+	m_Sprite->SetColor(C);
 	m_Sprite->SetView(wvp[1]);
 	m_Sprite->SetProjection(wvp[2]);
 	m_Sprite->SetWorld(wvp[0]);
