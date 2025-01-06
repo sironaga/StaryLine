@@ -280,3 +280,4 @@ void SetFullscreenSwap()
 	b ^= true;
 	g_pSwapChain->SetFullscreenState(b, NULL);
 }
+

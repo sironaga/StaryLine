@@ -32,8 +32,12 @@ public:
 	// 切り替え先のシーンを設定 
 	void SetNext(int next);
 	void SetNext(int next, StageType stage);
+
+	void SethWnd(HWND hWnd);
+	HWND GethWnd();
 protected:
 	CFade* m_pFade; // フェード処理クラス 
 	int  m_next;  // 切り替え先のシーン 
 	StageType m_tStage;
+	HWND m_phWnd;
 };

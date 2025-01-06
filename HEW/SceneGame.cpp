@@ -97,7 +97,7 @@ void CSceneGame::Update()
 {
 	if (m_pBattle->GetEnd() && !m_bEnd)
 	{
-		SetNext(SCENE_TITLE);
+		SetNext(SCENE_RESULT);
 		m_bEnd = true;
 	}
 

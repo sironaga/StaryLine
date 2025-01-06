@@ -37,7 +37,7 @@ CSoundList* g_mainsound;
 bool IsGame = true;
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
-
+HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
@@ -71,6 +71,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
+	
+	g_pScene->SethWnd(hWnd);
 	
 	return hr;
 }
@@ -108,6 +110,8 @@ void Update()
 	// シーン切り替え判定 
 	if (g_pScene->ChangeScene()) 
 	{
+		g_hWnd = g_pScene->GethWnd();
+
 		g_pSourseTitleSE->FlushSourceBuffers();
 		if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
 		g_pSourseTitleSE->Start();
@@ -133,6 +137,7 @@ void Update()
 		// 次シーンに向けて初期設定 
 		g_pFade->Start(true);   // フェード開始 
 		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
+		g_pScene->SethWnd(g_hWnd);
 	}
 }
 
