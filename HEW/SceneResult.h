@@ -13,18 +13,25 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 	static void InResultData(ResultGameInfo InData);
+
 private:
-	SpriteEx* m_pClearTime;
+	// --- èüîsä÷åWñ≥ÇµÇ…ïœÇÌÇÁÇ»Ç¢Ç‚Ç¬
 	SpriteEx* m_pHitPoint;
+	SpriteEx* m_pSelect[2];
+	SpriteEx* m_pShadow;
+	SpriteEx* m_pStageSelect[2];
 	SpriteEx* m_pSummonData;
+	SpriteEx* m_pUnderBar;
 
-	SpriteEx* m_pNextStage;
-	SpriteEx* m_pSelectStage;
-	SpriteEx* m_pUI;
-
+	// --- ïœÇÌÇÈÇ‚Ç¬
 	SpriteEx* m_pText;
 	SpriteEx* m_pCharacter;
 	SpriteEx* m_pLighting;
+	SpriteEx* m_pTextShadow;
+	SpriteEx* m_pClearTime;
+	SpriteEx* m_pNextUI[2];
+
+	int nSlect; 
 
 
 	static ResultGameInfo ResultGameData;

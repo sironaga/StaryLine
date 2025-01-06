@@ -62,9 +62,9 @@ struct Connecting_System_Data
 struct ResultGameInfo
 {
 	bool bWin;
-	int nTime;
+	int nTime; 
 	int nHitPoint;
-	int nSpwnCount;
+	int nSpawnCount;
 	int nAverageSpwn;
 	int nDrawCount;
 };
