@@ -7,6 +7,7 @@
 #include "SpriteDrawer.h"
 #include "DirectXTex/TextureLoad.h"
 #include "SoundList.h"
+#include "Sprite.h"
 
 // defines
 #define BRUSH_SPEED (0.5f)	// 移動速度
@@ -29,6 +30,9 @@ constexpr float TIMER_BAR_OFFSET_Y = -340.0f;		// タイマーゲージの縦オ
 constexpr float TIMER_OUT_OFFSET_X = -700.0;		// タイマー入れ物の横オフセット
 constexpr float TIMER_OUT_OFFSET_Y = -510.0f;		// タイマー入れ物の縦オフセット
 
+constexpr float ARROW_AJUST_POS =  100.0f;		// 矢印の座標X,Yの補正値
+constexpr float ARROW_SIZE =  100.0f;			// 矢印の座標X,Yの補正値
+
 IXAudio2SourceVoice* g_WalkSe;
 CSoundList* g_PlayerSound;
 
@@ -40,6 +44,7 @@ CPlayer::CPlayer()
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
 	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_bCanMoveCheck(false), m_bDrawing(true)
+	, m_tArrowInfo{}, m_pTexture{}
 
 	// タイマーの初期化処理
 	, m_pVtxTimer{}, m_pTexTimer{}
@@ -74,13 +79,27 @@ CPlayer::CPlayer()
 	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Player/UI_Drawing_under.png"), &m_pTexTimer[2]);
 	if (FAILED(hr))MessageBox(NULL, "Error:UI_Drawing_under.png", "Player.cpp", MB_OK);
 
+	for (int i = 0; i < MAX_SPRITE; i++)
+	{
+		m_pTexture[i] = new Texture();
+		m_pTexture[i]->Create(TEX_PASS("Player/Arrow.png"));
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		m_tArrowInfo[i].param = new SpriteParam();
+
+		m_tArrowInfo[i].param->size = { ARROW_SIZE ,ARROW_SIZE };
+		m_tArrowInfo[i].param->rotate.z = TORAD(i * (360.0f / 8));
+
+		m_tArrowInfo[i].state = NONE_SELECT;
+	}
+
 	// エフェクト読み込み
 	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 
 	g_PlayerSound = new CSoundList(SE_WALK);
 	g_WalkSe = g_PlayerSound->GetSound(true);
-
-
 }
 
 CPlayer::~CPlayer()
@@ -130,8 +149,26 @@ void CPlayer::Update()
 		g_WalkSe->SubmitSourceBuffer(&buffer);
 	}
 
-	
+	//m_tArrowInfo[UP].param->pos			= { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
+	//m_tArrowInfo[UPRIGHT].param->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+	//m_tArrowInfo[RIGHT].param->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y					};
+	//m_tArrowInfo[DOWNRIGHT].param->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	//m_tArrowInfo[DOWN].param->pos		= { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
+	//m_tArrowInfo[DOWNLEFT].param->pos	= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	//m_tArrowInfo[LEFT].param->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y					};
+	//m_tArrowInfo[UPLEFT].param->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
 
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	switch (m_tArrowInfo[i].state)
+	//	{
+	//	case NONE_SELECT:	m_tArrowInfo[i].param->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
+	//	case SELECTED:		m_tArrowInfo[i].param->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
+	//	case CANNOT_SELECT:	m_tArrowInfo[i].param->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
+	//	default:
+	//		break;
+	//	}
+	//}
 }
 
 void CPlayer::Draw()
@@ -164,11 +201,18 @@ void CPlayer::Draw()
 
 	ReSetSprite();											// スプライト設定のリセット
 
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	Sprite::SetParam(m_tArrowInfo[i].param);
+	//	Sprite::SetTexture(m_pTexture[Arrow]);
+	//	Sprite::Draw();
+	//}
+
 	/* プレイヤーの描画 */
+	SetRender3D();											// 3D表現のセット
 	DrawModel();											// プレイヤー(筆)の描画
 
 	/* エフェクトの描画 */
-	SetRender3D();											// 3D表現のセット
 
 }
 
@@ -180,9 +224,17 @@ void CPlayer::UpdateStop()
 	g_WalkSe->FlushSourceBuffers();
 	g_WalkSe->SubmitSourceBuffer(&buffer);
 
+	for (int i = 0; i < 8; i++)
+	{
+		m_tArrowInfo[i].state = NONE_SELECT;
+	}
+
+	// プレイヤーのコントローラー、キーボード入力処理
+	PlayerInput();
+
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
-		m_eDestination = DEFAULT;	// 移動方向を真ん中に初期化
+		//m_eDestination = DEFAULT;	// 移動方向を真ん中に初期化
 		for (int i = 0, Count = 0; i < 8; i++)
 		{
 			// 8方向に行けるかどうかチェック
@@ -192,6 +244,7 @@ void CPlayer::UpdateStop()
 			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
+				m_tArrowInfo[i].state = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
 				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// タイマーを一番下まで落とす
@@ -201,11 +254,11 @@ void CPlayer::UpdateStop()
 		m_bCanMoveCheck = true;					// 移動可能かのチェック終了
 	}
 
+	m_tArrowInfo[m_nDestination].state = SELECTED;
+
 	// プレイヤーの座標を現在の頂点番号の座標と同じにする
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 
-	// プレイヤーのコントローラー、キーボード入力処理
-	PlayerInput();
 
 	// 移動方向が行き止まりではない　かつ　移動方向が今の位置と一緒ではない
 	if (!m_pFieldVtx->GetRoadStop(m_eDestination) && m_nNowVertex != m_nDestination)

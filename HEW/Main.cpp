@@ -224,12 +224,12 @@ DirectX::XMFLOAT4X4 GetProj(bool isTranspose)
 	return g_Camera->GetProjectionMatrix(isTranspose);
 }
 
-DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose)
+DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose, DirectX::XMFLOAT3 rotate)
 {
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(rotate.x, rotate.y, rotate.z, 0.0f));
 	DirectX::XMMATRIX mat = S * R * T;
 	if (isTranspose)mat = DirectX::XMMatrixTranspose(mat);
 	DirectX::XMStoreFloat4x4(&world, mat);
