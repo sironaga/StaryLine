@@ -326,7 +326,7 @@ void COption::InitValue()
 	m_nValue[MASTER]  = 5;
 	m_nValue[BGM] = 5;
 	m_nValue[SE] = 5;
-	m_nValue[SCREEN_MODE] = 0;
+	m_nValue[SCREEN_MODE] = 1;
 	m_nValue[RESOLUSION] = 3;
 	m_nValue[FRAME_RATE] = 1;
 	m_nValue[KEY_BOARD] = 0;
@@ -347,7 +347,7 @@ void COption::InitValue(SECTION_KIND kind)
 		m_nValue[SE] = m_nTempValue[SE] = 5;
 		break;
 	case SEC_SCREEN:
-		m_nValue[SCREEN_MODE] = m_nTempValue[SCREEN_MODE] = 0;
+		m_nValue[SCREEN_MODE] = m_nTempValue[SCREEN_MODE] = 1;
 		m_nValue[RESOLUSION] = m_nTempValue[RESOLUSION] = 3;
 		m_nValue[FRAME_RATE] = m_nTempValue[FRAME_RATE] = 1;
 		break;

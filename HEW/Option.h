@@ -3,6 +3,11 @@
 #include "Texture.h"
 #include "_StructList.h"
 
+/// <summary>
+/// セクションを選択してからタブを選択する二段階式に
+/// それに伴い減ったテクスチャの再設定
+/// </summary>
+
 class COption
 {
 public:

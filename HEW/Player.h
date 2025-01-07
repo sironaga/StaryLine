@@ -6,6 +6,8 @@
 #include "LibEffekseer.h"
 #include "FieldVertex.h"
 #include "EffectManager.h"
+#include "Texture.h"
+#include "_StructList.h"
 
 // defines
 #define START_PLAYER (12)	//プレイヤーの開始位置
@@ -62,6 +64,27 @@ private:
 	bool m_bCanMoveCheck;					// 目的地へ行けるかどうか
 
 	bool m_bDrawing;						// 作図中かどうか
+
+	enum E_PLAYERSPRITE
+	{
+		Arrow = 0,
+		
+		MAX_SPRITE
+	};
+	
+	enum E_ARROW_STATE
+	{
+		NONE_SELECT,
+		SELECTED,
+		CANNOT_SELECT
+	};
+
+	struct ArrowInfo
+	{
+		SpriteParam* param;
+		E_ARROW_STATE state;
+	}m_tArrowInfo[8];
+	Texture* m_pTexture[MAX_SPRITE];
 
 public:
 	/* Getter */

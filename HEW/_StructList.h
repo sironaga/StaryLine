@@ -81,6 +81,7 @@ public:
 	DirectX::XMFLOAT2 pos;
 	DirectX::XMFLOAT2 size;
 	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT3 rotate;
 	DirectX::XMFLOAT2 uvPos;
 	DirectX::XMFLOAT2 uvSize;
 
@@ -92,6 +93,7 @@ public:
 	{
 		pos = { 0.0f,0.0f };
 		size = { 1.0f,1.0f };
+		rotate = { 0.0f,0.0f,0.0f };
 		color = { 1.0f,1.0f,1.0f,1.0f };
 		uvPos = { 0.0f,0.0f };
 		uvSize = { 1.0f,1.0f };
@@ -109,12 +111,15 @@ public:
 	}
 
 	DirectX::XMFLOAT4X4 operator()(
-		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(1920.0f / 2.0f, 1080.0f / 2.0f, 0.0f),
-		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)),
-		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f)
+		DirectX::XMFLOAT3 rotateWorld = { 0.0f,0.0f,0.0f },
+		DirectX::XMFLOAT2 scaleWorld = { 1.0f,1.0f},
+		DirectX::XMFLOAT2 posWorld = { 1920.0f / 2.0f, 1080.0f / 2.0f }
 		)
 	{
 		DirectX::XMFLOAT4X4 outWorld;
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(posWorld.x, posWorld.y, 0.0f);
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scaleWorld.x, scaleWorld.y * -1.0f, 1.0f);
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(rotateWorld.x, rotateWorld.y, rotateWorld.z, 0.0f));
 		mWorld = S * R * T;
 		mWorld = DirectX::XMMatrixTranspose(mWorld);
 		DirectX::XMStoreFloat4x4(&outWorld, mWorld);
