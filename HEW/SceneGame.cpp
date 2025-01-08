@@ -52,7 +52,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	m_pBattle->m_nStageNum = StageNum;
 
 	// タイマー初期化
-	g_tTime = {};
+ 	g_tTime = {};
 
 	m_bPhase = true;
 	m_bFever = false;
