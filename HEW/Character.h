@@ -11,8 +11,8 @@
 #include "EffectManager.h"
 #include "Main.h"
 
-#define MAX_ALLY  (200)	//味方の最大数
-#define MAX_ENEMY (200)	//敵の最大数
+#define MAX_ALLY  (200)	//味方情報の最大数
+//#define MAX_ENEMY (200)	//敵の最大数
 #define NORMAL_SIZE (10)//キャラクターの基本サイズ
 
 class CFieldVertex;
