@@ -147,13 +147,13 @@ void CSceneTitle::Update()
 	//	SetNext(SCENE_DEBUGROOM);
 	//}
 	static bool b = false;
-	if (m_pOption->GetIsFullScreen() && !b)
+	if (!m_pOption->GetIsFullScreen() && !b)
 	{
 		
 		SetFullscreenSwap();
 		b ^= true;
 	}
-	else if (!m_pOption->GetIsFullScreen()  && b)
+	else if (m_pOption->GetIsFullScreen()  && b)
 	{
 		SetFullscreenSwap();
 		b ^= true;
@@ -171,15 +171,15 @@ void CSceneTitle::Update()
 			InitResolusionMain();
 			break;
 		case SCREEN_1600:
-			SetResolusion(1920, 900);
+			SetResolusion(1600, 900);
 			InitResolusionMain();
 			break;
 		case SCREEN_1280:
-			SetResolusion(1920, 720);
+			SetResolusion(1280, 720);
 			InitResolusionMain();
 			break;
 		case SCREEN_800:
-			SetResolusion(1920, 600);
+			SetResolusion(800, 600);
 			InitResolusionMain();
 			break;
 		}

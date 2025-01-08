@@ -9,6 +9,7 @@ COption::COption()
 	, m_pTexture{}, m_pParam{}
 	, m_nValue{}, m_nTempValue{}
 	, m_bOptionMode(false), m_bSetValue(false)
+	, NowResolusion(1)
 {
 	LoadPass();
 	InitParam();
@@ -150,7 +151,7 @@ float COption::GetFPS()
 
 int COption::GetResolusion()
 {
-	return SCREEN_1920;
+	return NowResolusion;
 }
 
 int COption::GetKeyboardSetting()
@@ -845,4 +846,9 @@ void COption::DrawInput()
 		break;
 	}
 	Sprite::Draw();	
+}
+
+void COption::SetResolusion(int wide)
+{
+	NowResolusion = wide;
 }

@@ -192,6 +192,8 @@ private:
 	bool m_bOptionMode;						// オプション画面を開いているかどうか
 	bool m_bSetValue;						// 小項目を操作しているかどうか
 
+	int NowResolusion;						//現在の解像度
+
 	void LoadPass();						// テクスチャのパス読み込み
 	void InitParam();						// テクスチャのパラメータ設定
 	void InitValue();						// 初期値設定
@@ -205,4 +207,6 @@ private:
 	void DrawSound();						// サウンド設定の描画
 	void DrawScreen();						// 画面設定の描画
 	void DrawInput();						// 操作方法設定の描画
+
+	void SetResolusion(int wide);
 };

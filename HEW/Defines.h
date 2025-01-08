@@ -38,6 +38,11 @@ static const char* APP_TITLE = "Starry Line";
 // 画面サイズ
 static const int SCREEN_WIDTH = 1920;
 static const int SCREEN_HEIGHT = 1080;
+static int NOW_SCREEN_WIDTH = 1920;
+static int NOW_SCREEN_HEIGHT = 1080;
+#define SET_SCREEN_RESOLUSION(wide,height) (NOWNOW_SCREEN_WIDTH = wide;NOW_SCREEN_HEIGHT = height;)
+#define WIDE_RATIO(num) (((float)NOW_SCREEN_WIDTH/(float)SCREEN_WIDTH)*num)
+#define HEIGHT_RATIO(num) (((float)NOW_SCREEN_HEIGHT/(float)SCREEN_HEIGHT)*num)
 
 // グリッドサイズ(デバッグ用
 static const int	DEBUG_GRID_NUM = 10;			// グリッド中心から端までの線の本数
