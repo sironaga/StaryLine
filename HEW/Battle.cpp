@@ -5,6 +5,7 @@
 #include "Controller.h"
 #include"SpriteDrawer.h"
 #include "Input.h"
+#include "StageSelect.h"
 
 //プレイヤーのX座標位置
 #define ALLYCORE_POSX (-90)
@@ -48,8 +49,23 @@
 
 //時間の計算マクロ
 #define Time(Num) Num * 60
+
+
 //次に敵が生成される間隔
 #define NEXTSPAWN (2)
+//敵の歩行タイプ雑魚敵の確率
+enum class ENEMY_PROBABILITY
+{
+	Stage1_1 = 50,
+	Stage1_2 = 50,
+	Stage1_3 = 50,
+	Stage2_1 = 50,
+	Stage2_2 = 50,
+	Stage2_3 = 50,
+	Stage3_1 = 50,
+	Stage3_2 = 50,
+	Stage3_3 = 50,
+};
 
 
 //数字のテクスチャ保存用ポインタ
@@ -495,8 +511,48 @@ void CBattle::CreateEnemy(void)
 	//生成予定数分処理する
 	while (m_nCreateEnemyNum)
 	{
+		//ランダムピックした数字を格納する変数
+		int nRandNum = rand() % 100;
+		//敵の角数指定変数
+		int EnemyCornerCount = 0;
+		//歩行タイプの確率を設定
+		int Probability = 0;
+
+		switch (m_nStageNum.StageMainNumber)
+		{
+		case (int)E_SELECT_STAGETYPE::GRASSLAND:
+			switch (m_nStageNum.StageSubNumber)
+			{
+			case (int)E_SELECT_STAGENUMBER::STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage1_1; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage1_2; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage1_3; break;
+			}
+			break;
+		case (int)E_SELECT_STAGETYPE::DESERT:
+			switch (m_nStageNum.StageSubNumber)
+			{
+			case (int)E_SELECT_STAGENUMBER::STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage2_1; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage2_2; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage2_3; break;
+			}
+			break;
+		case (int)E_SELECT_STAGETYPE::SNOWFIELD:
+			switch (m_nStageNum.StageSubNumber)
+			{
+			case (int)E_SELECT_STAGENUMBER::STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage3_1; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage3_2; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage3_3; break;
+			}
+			break;
+		}
+
+		//0 ～ WALKENEMY_PROBABILITY まで
+		if (nRandNum < Probability)EnemyCornerCount = 3;
+		//上以降から99まで
+		else EnemyCornerCount = 4;
+
 		//生成する
-		m_pEnemy[m_nEnemyCount] = new CEnemy(m_tEnemyData[m_nSelectPattern][m_nCreateEnemyNum - 1].nCornerCount);
+		m_pEnemy[m_nEnemyCount] = new CEnemy(EnemyCornerCount);
 		//生成数を加算
 		m_nEnemyCount++;
 		//生成予定数を減らす
