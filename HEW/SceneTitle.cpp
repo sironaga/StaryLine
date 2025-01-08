@@ -74,8 +74,9 @@ CSceneTitle::~CSceneTitle()
 void CSceneTitle::Update()
 {
 	g_pTitleBG->Update();
-
+	g_TitleSound->SetMasterVolume();
 	//‰¹—Ê‚ðÝ’è
+	SetAllMasterVolume(m_pOption->GetMasterVoluem());
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 

@@ -217,6 +217,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 
 	/*サウンドの読み込み*/
 	g_AttackSound = new CSoundList(SE_ATTACK);
+	g_AttackSound->SetMasterVolume();
 	/*エフェクトの読み込み*/
 	g_pCharacterEffects[(int)CharactersEffect::FighterAttack] = new CEffectManager(EFFECT_PASS("Fire.efk"));
 }
@@ -537,6 +538,7 @@ CAlly::~CAlly()
 //味方クラスの更新処理
 void CAlly::Update(void)
 {
+	
 	// 状況に応じて処理を分ける
 	switch (m_tStatus)
 	{
