@@ -8,13 +8,7 @@
 /// それに伴い減ったテクスチャの再設定
 /// </summary>
 
-enum
-{
-	SCREEN_1920,
-	SCREEN_1600,
-	SCREEN_1280,
-	SCREEN_800,
-};
+
 
 class COption
 {
@@ -208,5 +202,5 @@ private:
 	void DrawScreen();						// 画面設定の描画
 	void DrawInput();						// 操作方法設定の描画
 
-	void SetResolusion(int wide);
+	
 };

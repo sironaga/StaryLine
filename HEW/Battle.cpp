@@ -6,6 +6,7 @@
 #include"SpriteDrawer.h"
 #include "Input.h"
 #include "StageSelect.h"
+#include "Defines.h"
 
 //プレイヤーのX座標位置
 #define ALLYCORE_POSX (-90)
@@ -122,10 +123,10 @@ CBattle::CBattle()
 		MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
 	}
 	Vertex vtx[] = {
-		{{-100, -100, 0.0f}, {0.0f, 0.0f}},
-		{{-100,  100, 0.0f}, {0.0f, 1.0f}},
-		{{ 100, -100, 0.0f}, {1.0f, 0.0f}},
-		{{ 100,  100, 0.0f}, {1.0f, 1.0f}},
+		{{-WIDE_RATIO( 100.0f,GetNowWide()), -HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
+		{{-WIDE_RATIO( 100.0f,GetNowWide()),  HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {0.0f, 1.0f}},
+		{{ WIDE_RATIO( 100.0f,GetNowWide()), -HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {1.0f, 0.0f}},
+		{{ WIDE_RATIO( 100.0f,GetNowWide()),  HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {1.0f, 1.0f}},
 	};
 	m_pLogVtx = CreateVertexBuffer(vtx, 4);
 
@@ -1453,7 +1454,7 @@ void CBattle::CreateAllyLogDraw(void)
 		{
 
 			//スプライトの座標の設定
-			SetSpritePos(fPosX[l], fPosY);
+			SetSpritePos(WIDE_RATIO(fPosX[l],GetNowWide()), HEIGHT_RATIO(fPosY,GetNowHeight()));
 
 			//大きさの設定
 			SetSpriteScale(1.0f, 1.0f);
@@ -1529,7 +1530,7 @@ void CBattle::CreateEnemyLogDraw(void)
 		for (int l = 0; l < nDigits; l++)
 		{
 			//スプライトの座標の設定
-			SetSpritePos(fPosX[l], fPosY);
+			SetSpritePos(WIDE_RATIO(fPosX[l], GetNowWide()), HEIGHT_RATIO(fPosY, GetNowHeight()));
 
 			//大きさの設定
 			SetSpriteScale(1.0f, 1.0f);
@@ -1661,7 +1662,7 @@ void CBattle::SaveAllyLogDraw(void)
 			SetRender2D();
 
 			//スプライトの座標の設定
-			SetSpritePos(fPosX[l], fPosY);
+			SetSpritePos(WIDE_RATIO(fPosX[l], GetNowWide()), HEIGHT_RATIO(fPosY, GetNowHeight()));
 
 			//大きさの設定
 			SetSpriteScale(1.0f, 1.0f);

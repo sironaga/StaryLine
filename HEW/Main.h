@@ -36,6 +36,7 @@ struct StageType
 	int StageSubNumber;
 };
 
+
 //プロトタイプ宣言
 void ChangeScene(E_SCENE_TYPE next);	//シーン遷移を行う関数
 void ChangeScene(E_SCENE_TYPE next, StageType StageType);	//シーン遷移を行う関数
@@ -47,6 +48,7 @@ void SetGameEnd();
 void SetRender2D();
 void SetRender3D();
 void InitResolusionMain();
-
-
+void SetNowResolusion(int wide,int height);
+int GetNowWide();
+int GetNowHeight();
 #endif // __MAIN_H__

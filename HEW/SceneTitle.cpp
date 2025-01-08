@@ -15,6 +15,14 @@
 
 #define SELECT_MOVE (90.0f)
 
+enum
+{
+	SCREEN_800,
+	SCREEN_1280,
+	SCREEN_1600,
+	SCREEN_1920,
+};
+
 enum E_TITLE_TYPE
 {
 	GAMESTART = 0,
@@ -147,13 +155,13 @@ void CSceneTitle::Update()
 	//	SetNext(SCENE_DEBUGROOM);
 	//}
 	static bool b = false;
-	if (!m_pOption->GetIsFullScreen() && !b)
+	if (m_pOption->GetIsFullScreen()==0 && !b)
 	{
 		
 		SetFullscreenSwap();
 		b ^= true;
 	}
-	else if (m_pOption->GetIsFullScreen()  && b)
+	else if (m_pOption->GetIsFullScreen()==1  && b)
 	{
 		SetFullscreenSwap();
 		b ^= true;
@@ -164,22 +172,27 @@ void CSceneTitle::Update()
 	Resolusion  = m_pOption->GetResolusion();
 	if (Resolusion != OldResolusion)
 	{
+		
 		switch (Resolusion)
 		{
 		case SCREEN_1920:
-			SetResolusion(1920, 1080);
+			SetNowResolusion(1920, 1080);
+			SetResolusion(1920, 1080,b);
 			InitResolusionMain();
 			break;
 		case SCREEN_1600:
-			SetResolusion(1600, 900);
+			SetNowResolusion(1600, 900);
+			SetResolusion(1600, 900,b);
 			InitResolusionMain();
 			break;
 		case SCREEN_1280:
-			SetResolusion(1280, 720);
+			SetNowResolusion(1280, 720);
+			SetResolusion(1280, 720,b);
 			InitResolusionMain();
 			break;
 		case SCREEN_800:
-			SetResolusion(800, 600);
+			SetNowResolusion(800, 600);
+			SetResolusion(800, 600,b);
 			InitResolusionMain();
 			break;
 		}
@@ -206,10 +219,10 @@ void CSceneTitle::Draw()
 
 	if (m_pOption->GetOption())m_pOption->Draw();
 }
-void CSceneTitle::SetResolusion(float wide, float height)
+void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 {
 	UninitDirectX();
-	InitDirectX(m_phWnd, wide, height, false);
+	InitDirectX(m_phWnd, wide, height, fullscreen);
 
 	Geometory::Init();
 	Sprite::Init();

@@ -47,45 +47,45 @@ CStageSelect::CStageSelect()
 
 
 
-
+	
 	Vertex vtx[] = {
 		//îwåiï\é¶ÇÃç¿ïW
-		{{-LOGO_WIND, -LOGO_HID, 0.0f}, {0.0f, 0.0f}},
-		{{-LOGO_WIND,  LOGO_HID, 0.0f}, {0.0f, 1.0f}},
-		{{ LOGO_WIND, -LOGO_HID, 0.0f}, {1.0f, 0.0f}},
-		{{ LOGO_WIND,  LOGO_HID, 0.0f}, {1.0f, 1.0f}},
+		{{-WIDE_RATIO(LOGO_WIND,GetNowWide()), -HEIGHT_RATIO(LOGO_HID,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
+		{{-WIDE_RATIO(LOGO_WIND,GetNowWide()),  HEIGHT_RATIO(LOGO_HID,GetNowHeight()), 0.0f}, {0.0f, 1.0f}},
+		{{ WIDE_RATIO(LOGO_WIND,GetNowWide()), -HEIGHT_RATIO(LOGO_HID,GetNowHeight()), 0.0f}, {1.0f, 0.0f}},
+		{{ WIDE_RATIO(LOGO_WIND,GetNowWide()),  HEIGHT_RATIO(LOGO_HID,GetNowHeight()), 0.0f}, {1.0f, 1.0f}},
 	};
 
 	Vertex vtx1[] = {
 		//îwåiï\é¶ÇÃç¿ïW
-		{{-ACS1_WID, -ACS1_HID, 0.0f}, {0.0f, 0.0f}},
-		{{-ACS1_WID,  ACS1_HID, 0.0f}, {0.0f, 1.0f}},
-		{{ ACS1_WID, -ACS1_HID, 0.0f}, {1.0f, 0.0f}},
-		{{ ACS1_WID,  ACS1_HID, 0.0f}, {1.0f, 1.0f}},
+		{{-WIDE_RATIO(ACS1_WID,GetNowWide()), -HEIGHT_RATIO(ACS1_HID,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
+		{{-WIDE_RATIO(ACS1_WID,GetNowWide()),  HEIGHT_RATIO(ACS1_HID,GetNowHeight()), 0.0f}, {0.0f, 1.0f}},
+		{{ WIDE_RATIO(ACS1_WID,GetNowWide()), -HEIGHT_RATIO(ACS1_HID,GetNowHeight()), 0.0f}, {1.0f, 0.0f}},
+		{{ WIDE_RATIO(ACS1_WID,GetNowWide()),  HEIGHT_RATIO(ACS1_HID,GetNowHeight()), 0.0f}, {1.0f, 1.0f}},
 	};
 
 	Vertex vtx2[] = {
 		//îwåiï\é¶ÇÃç¿ïW
-		{{-SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {0.0f, 0.0f}},
-		{{-SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {0.0f, 1.0f}},
-		{{ SCREEN_WIDTH, -SCREEN_HEIGHT, 0.0f}, {1.0f, 0.0f}},
-		{{ SCREEN_WIDTH,  SCREEN_HEIGHT, 0.0f}, {1.0f, 1.0f}},
+		{{-WIDE_RATIO(SCREEN_WIDTH,GetNowWide()), -HEIGHT_RATIO(SCREEN_HEIGHT,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
+		{{-WIDE_RATIO(SCREEN_WIDTH,GetNowWide()),  HEIGHT_RATIO(SCREEN_HEIGHT,GetNowHeight()), 0.0f}, {0.0f, 1.0f}},
+		{{ WIDE_RATIO(SCREEN_WIDTH,GetNowWide()), -HEIGHT_RATIO(SCREEN_HEIGHT,GetNowHeight()), 0.0f}, {1.0f, 0.0f}},
+		{{ WIDE_RATIO(SCREEN_WIDTH,GetNowWide()),  HEIGHT_RATIO(SCREEN_HEIGHT,GetNowHeight()), 0.0f}, {1.0f, 1.0f}},
 	};
 
 	Vertex vtx3[] = {
 		//îwåiï\é¶ÇÃç¿ïW
-		{{-E_WID, -E_HID, 0.0f}, {0.0f, 0.0f}},
-		{{-E_WID,  E_HID, 0.0f}, {0.0f, 1.0f}},
-		{{ E_WID, -E_HID, 0.0f}, {1.0f, 0.0f}},
-		{{ E_WID,  E_HID, 0.0f}, {1.0f, 1.0f}},
+		{{-WIDE_RATIO(E_WID,GetNowWide()), -HEIGHT_RATIO(E_HID,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
+		{{-WIDE_RATIO(E_WID,GetNowWide()),  HEIGHT_RATIO(E_HID,GetNowHeight()), 0.0f}, {0.0f, 1.0f}},
+		{{ WIDE_RATIO(E_WID,GetNowWide()), -HEIGHT_RATIO(E_HID,GetNowHeight()), 0.0f}, {1.0f, 0.0f}},
+		{{ WIDE_RATIO(E_WID,GetNowWide()),  HEIGHT_RATIO(E_HID,GetNowHeight()), 0.0f}, {1.0f, 1.0f}},
 	};
 
 	Vertex vtx4[] = {
 		//ëIëÇ∑ÇÈÇ∆Ç´ÇÃñÓàÛ
-		{{-100.0f,-100.0f,0.0f},{0.0f, 0.0f}},
-		{{-100.0f, 100.0f,0.0f},{0.0f, 1.0f}},
-		{{ 100.0f,-100.0f,0.0f},{1.0f, 0.0f}},
-		{{ 100.0f, 100.0f,0.0f},{1.0f, 1.0f}},
+		{{-WIDE_RATIO(100.0f,GetNowWide()),-HEIGHT_RATIO(100.0f,GetNowHeight()),0.0f},{0.0f, 0.0f}},
+		{{-WIDE_RATIO(100.0f,GetNowWide()), HEIGHT_RATIO(100.0f,GetNowHeight()),0.0f},{0.0f, 1.0f}},
+		{{ WIDE_RATIO(100.0f,GetNowWide()),-HEIGHT_RATIO(100.0f,GetNowHeight()),0.0f},{1.0f, 0.0f}},
+		{{ WIDE_RATIO(100.0f,GetNowWide()), HEIGHT_RATIO(100.0f,GetNowHeight()),0.0f},{1.0f, 1.0f}},
 
 	};
 
@@ -135,7 +135,7 @@ void CStageSelect::Draw()
 		DrawSprite(m_vSTAGE1_BackGround, sizeof(Vertex));
 		ReSetSprite();
 
-		SetSpritePos(ARROW_RIGHTX, ARROW_RIGHTY);
+		SetSpritePos(WIDE_RATIO(ARROW_RIGHTX, GetNowWide()), HEIGHT_RATIO(ARROW_RIGHTY, GetNowHeight()));
 		SetSpriteTexture(m_tRight_Select);
 		DrawSprite(m_vRight_Select, sizeof(Vertex));
 		ReSetSprite();
@@ -148,12 +148,12 @@ void CStageSelect::Draw()
 		DrawSprite(m_vSTAGE2_BackGround, sizeof(Vertex));
 		ReSetSprite();
 
-		SetSpritePos(ARROW_RIGHTX, ARROW_RIGHTY);
+		SetSpritePos(WIDE_RATIO(ARROW_RIGHTX,GetNowWide()), HEIGHT_RATIO(ARROW_RIGHTY,GetNowHeight()));
 		SetSpriteTexture(m_tRight_Select);
 		DrawSprite(m_vRight_Select, sizeof(Vertex));
 		ReSetSprite();
 
-		SetSpritePos(ARROW_LEFTX, ARROW_LEFTY);
+		SetSpritePos(WIDE_RATIO(ARROW_LEFTX,GetNowWide()), HEIGHT_RATIO(ARROW_LEFTY, GetNowHeight()));
 		SetSpriteTexture(m_tLeft_Select);
 		DrawSprite(m_vLeft_Select, sizeof(Vertex));
 		ReSetSprite();
@@ -166,7 +166,7 @@ void CStageSelect::Draw()
 		DrawSprite(m_vSTAGE3_BackGround, sizeof(Vertex));
 		ReSetSprite();
 
-		SetSpritePos(ARROW_LEFTX, ARROW_LEFTY);
+		SetSpritePos(WIDE_RATIO(ARROW_LEFTX, GetNowWide()), HEIGHT_RATIO(ARROW_LEFTY,GetNowHeight()));
 		SetSpriteTexture(m_tLeft_Select);
 		DrawSprite(m_vLeft_Select, sizeof(Vertex));
 		ReSetSprite();

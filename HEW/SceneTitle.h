@@ -23,7 +23,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 private:
-	void SetResolusion(float wide,float height);
+	void SetResolusion(float wide,float height,bool fullscreen);
 private:
 	IXAudio2SourceVoice* g_pSourseTitleBGM;
 	CSoundList* g_TitleSound;
