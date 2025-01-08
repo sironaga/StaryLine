@@ -321,5 +321,10 @@ void SetRender3D()
 {
 	SetRenderTargets(1, &pRTV, pDSV);
 }
-
+void InitResolusionMain()
+{
+	pRTV = GetDefaultRTV();
+	pDSV = GetDefaultDSV();
+	g_pFade = new CFadeBlack();
+}
 // EOF

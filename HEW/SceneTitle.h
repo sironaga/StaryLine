@@ -23,6 +23,8 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 private:
+	void SetResolusion(float wide,float height);
+private:
 	IXAudio2SourceVoice* g_pSourseTitleBGM;
 	CSoundList* g_TitleSound;
 	CBackGround* g_pTitleBG;

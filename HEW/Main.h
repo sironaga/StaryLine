@@ -46,7 +46,7 @@ bool IsGaming();
 void SetGameEnd();
 void SetRender2D();
 void SetRender3D();
-
+void InitResolusionMain();
 
 
 #endif // __MAIN_H__
