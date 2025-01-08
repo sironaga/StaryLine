@@ -22,7 +22,7 @@ private:
 	SpriteEx* m_pStageSelect[2];
 	SpriteEx* m_pSummonData;
 	SpriteEx* m_pUnderBar;
-
+	SpriteEx* m_pBack;
 	// --- •Ï‚í‚é‚â‚Â
 	SpriteEx* m_pText;
 	SpriteEx* m_pCharacter;
@@ -30,6 +30,8 @@ private:
 	SpriteEx* m_pTextShadow;
 	SpriteEx* m_pClearTime;
 	SpriteEx* m_pNextUI[2];
+	SpriteEx* m_pStar;
+
 
 	int nSlect; 
 
