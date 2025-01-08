@@ -13,10 +13,10 @@
 
 //↓FieldVertexのまだやってない事↓
 //各変数名の修正
-//コンストラクタとupdateのクリーンアップとコメントアウト
-//デストラクタでのメモリ開放とコメントアウト
-//ヘッダーのクリーンアップとコメントアウト
+//コンストラクタとupdateのクリーンアップ
+//ヘッダーのクリーンアップ
 //グローバル領域のクリーンアップ
+//全体のコメントアウト見直し
 
 #define MAX_FEVER_POINT (30.0f)//フィーバーの上限ポイント
 
@@ -64,6 +64,9 @@ CFieldVertex::CFieldVertex()
 	, m_pTex_Summon_Log{nullptr}
 	, SummonLog{}
 	, NowSummonLog(0)
+	, Ally_Count(0)
+	, m_pTex_Ally_Count(nullptr)
+	, m_pSprite_Ally_Count(nullptr)
 {
 
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
@@ -75,6 +78,12 @@ CFieldVertex::CFieldVertex()
 	m_pSprite_Fever_Gage[0] = new Sprite();
 	m_pSprite_Fever_Gage[1] = new Sprite();
 	m_pSprite_Summon_Log = new Sprite();
+	m_pSprite_Ally_Count = new Sprite();
+	for (int i = 0; i < MAX_LINE; i++)
+	{
+		m_pSprite_Line[i] = new Sprite();
+	}
+	
 	// テクスチャ
 	m_pTex_FieldVertex = new Texture();
 	m_pTex_FieldUseVertex = new Texture();
@@ -82,23 +91,15 @@ CFieldVertex::CFieldVertex()
 	m_pTex_Fever_Gage[1] = new Texture();
 	m_pTex_Summon_Log[0] = new Texture();
 	m_pTex_Summon_Log[1] = new Texture();
-
-	m_pStarLine = new StarLine();
-	
-	// 線の描画用
-	// スプライト
-	for (int i = 0; i < MAX_LINE; i++)
-	{
-		m_pSprite_Line[i] = new Sprite();
-	}
-	// テクスチャ
+	m_pTex_Ally_Count = new Texture();
 	m_pTex_FieldLine = new Texture();
 	for (int i = 0; i < 6; i++)
 	{
 		m_pTex_SuperStar_Number[i] = new Texture();
 	}
-	
-	
+
+	m_pStarLine = new StarLine();
+
 	m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
 	m_pStar_Model[2] = new CModelEx(MODEL_PASS("Board_Star/Red/Board_Star_Red.fbx"));
@@ -231,9 +232,36 @@ CFieldVertex::~CFieldVertex()
 	g_FieldSe = nullptr;
 	delete g_Fieldsound;
 	g_FieldSe = nullptr;
+
 	SAFE_DELETE(m_pTex_FieldLine);
 	SAFE_DELETE(m_pTex_FieldUseVertex);
 	SAFE_DELETE(m_pTex_FieldVertex);
+	SAFE_DELETE(m_pTex_Fever_Gage[0]);
+	SAFE_DELETE(m_pTex_Fever_Gage[1]);
+	SAFE_DELETE(m_pTex_Summon_Log[0]);
+	SAFE_DELETE(m_pTex_Summon_Log[1]);
+	SAFE_DELETE(m_pTex_Ally_Count);
+	for (int i = 0; i < 6; i++)
+	{
+		SAFE_DELETE(m_pTex_SuperStar_Number[i]);
+	}
+
+	SAFE_DELETE(m_pStarLine);
+
+	SAFE_DELETE(m_pSprite_Star);
+	SAFE_DELETE(m_pSprite_SuperStar_Number);
+	SAFE_DELETE(m_pSprite_Fever_Gage[0]);
+	SAFE_DELETE(m_pSprite_Fever_Gage[1]);
+	SAFE_DELETE(m_pSprite_Summon_Log);
+	SAFE_DELETE(m_pSprite_Ally_Count);
+	for (int i = 0; i < MAX_LINE; i++)
+	{
+		SAFE_DELETE(m_pSprite_Line[i]);
+	}
+
+	SAFE_DELETE(m_pStar_Model[0]);
+	SAFE_DELETE(m_pStar_Model[1]);
+	SAFE_DELETE(m_pStar_Model[2]);
 }
 
 void CFieldVertex::Update()
@@ -453,6 +481,14 @@ void CFieldVertex::Draw()
 	}
 
 	SetRender2D();//2D描画準備
+
+	//-----召喚数表示-----//
+	{
+		if (Ally_Count % 10 == 0)
+		{
+			
+		}
+	}
 
 	//-----召喚ログ-----//
 	{
@@ -1122,7 +1158,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
-
+					Ally_Count++;//召喚数増やす
 					//召喚ログセット
 					//SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 100.0f - 5.0f * NowSummonLog, 10.0f);
 					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 50.0f, 10.0f);

@@ -99,6 +99,7 @@ private:
 	Texture* m_pTex_SuperStar_Number[6];
 	Texture* m_pTex_Fever_Gage[2];
 	Texture* m_pTex_Summon_Log[2];
+	Texture* m_pTex_Ally_Count;
 	float m_offsetU_Field;
 
 	Texture* m_pTex_FieldLine;
@@ -119,6 +120,7 @@ private:
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[2];//フィーバースター
 	Sprite* m_pSprite_Summon_Log;//召喚ログ
+	Sprite* m_pSprite_Ally_Count;//召喚数
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
 
@@ -133,4 +135,5 @@ private:
 	int nFeverPoint;//ポイントカウント
 	float fFeverPoint;//ポイントをちょっとづつ増やす用
 	float Partition;//分割数
+	int Ally_Count;//召喚の数
 };
