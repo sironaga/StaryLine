@@ -8,6 +8,10 @@
 #include "Defines.h"
 #include "Sprite.h"
 #include "ShaderList.h"
+#include "SpriteDrawer.h"
+#include "LibEffekseer.h"
+#include "Geometory.h"
+#include "FadeBlack.h"
 
 #define SELECT_MOVE (90.0f)
 
@@ -143,19 +147,42 @@ void CSceneTitle::Update()
 	//	SetNext(SCENE_DEBUGROOM);
 	//}
 	static bool b = false;
-	if (!m_pOption->GetIsFullScreen() && !b)
+	if (m_pOption->GetIsFullScreen() && !b)
 	{
 		
 		SetFullscreenSwap();
 		b ^= true;
 	}
-	else if (m_pOption->GetIsFullScreen() == true && b)
+	else if (!m_pOption->GetIsFullScreen()  && b)
 	{
 		SetFullscreenSwap();
 		b ^= true;
-		//UninitDirectX();
-		//InitDirectX(m_phWnd, 800, 600, true);
-
+	}
+	static int Resolusion=1;
+	static int OldResolusion=1;
+	OldResolusion = Resolusion;
+	Resolusion  = m_pOption->GetResolusion();
+	if (Resolusion != OldResolusion)
+	{
+		switch (Resolusion)
+		{
+		case SCREEN_1920:
+			SetResolusion(1920, 1080);
+			InitResolusionMain();
+			break;
+		case SCREEN_1600:
+			SetResolusion(1920, 900);
+			InitResolusionMain();
+			break;
+		case SCREEN_1280:
+			SetResolusion(1920, 720);
+			InitResolusionMain();
+			break;
+		case SCREEN_800:
+			SetResolusion(1920, 600);
+			InitResolusionMain();
+			break;
+		}
 	}
 
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
@@ -178,6 +205,31 @@ void CSceneTitle::Draw()
 	Sprite::ReSetSprite();
 
 	if (m_pOption->GetOption())m_pOption->Draw();
+}
+void CSceneTitle::SetResolusion(float wide, float height)
+{
+	UninitDirectX();
+	InitDirectX(m_phWnd, wide, height, false);
+
+	Geometory::Init();
+	Sprite::Init();
+	LibEffekseer::Init(GetDevice(), GetContext());
+	InitInput();
+	ShaderList::Init();
+	InitSpriteDrawer(GetDevice(), GetContext(), wide, height);
+
+	if(m_pSelect)delete m_pSelect;
+	m_pSelect = new Texture();
+	if (FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL, "Select.png", "Error", MB_OK);
+
+	m_pOption->InitResolusion();
+
+	if(g_pTitleBG)delete g_pTitleBG;
+	g_pTitleBG = new CBackGround();
+
+	if (m_pFade)delete m_pFade;
+	m_pFade = new CFadeBlack();
+	m_pFade->SetFade(0.5f, true);
 }
 
 

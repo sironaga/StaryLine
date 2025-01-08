@@ -8,6 +8,14 @@
 /// それに伴い減ったテクスチャの再設定
 /// </summary>
 
+enum
+{
+	SCREEN_1920,
+	SCREEN_1600,
+	SCREEN_1280,
+	SCREEN_800,
+};
+
 class COption
 {
 public:
@@ -68,6 +76,9 @@ public:
 	/// @return
 	/// 0:タイプA	1:タイプB
 	int GetControllerSetting();
+	/// @brief
+	// 解像度変更時に必要な初期化の呼び出し
+	void InitResolusion();
 private:
 	// ボタンテクスチャの種類
 	enum OPTION_TEXTURE_KIND

@@ -150,7 +150,7 @@ float COption::GetFPS()
 
 int COption::GetResolusion()
 {
-	return 0;
+	return SCREEN_1920;
 }
 
 int COption::GetKeyboardSetting()
@@ -161,6 +161,17 @@ int COption::GetKeyboardSetting()
 int COption::GetControllerSetting()
 {
 	return  m_nValue[CONTROLLER];
+}
+
+void COption::InitResolusion()
+{
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		delete m_pTexture[i];
+		delete m_pParam[i];
+	}
+	LoadPass();
+	InitParam();
 }
 
 void COption::LoadPass()
