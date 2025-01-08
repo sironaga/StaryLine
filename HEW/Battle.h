@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include <vector>
 
 //パターンの最大数
 #define MAX_PATTERN (5)
@@ -97,7 +98,8 @@ public:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	//味方クラスポインタ
-	CAlly* m_pAlly[MAX_ALLY];
+	//CAlly* m_pAlly[MAX_ALLY];
+	std::vector<CAlly*> m_pAlly;
 
 	//生成予定の味方情報
 	EntityData m_tAllyData[MAX_ALLY];
@@ -119,13 +121,17 @@ public:
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	//敵クラスポインタ
-	CEnemy* m_pEnemy[MAX_ENEMY];
+	//CEnemy* m_pEnemy[MAX_ENEMY];
+	std::vector<CEnemy*> m_pEnemy;
+
 	//生成予定敵情報
-	EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];
+	//EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];
+
 	//生成した敵のカウント
 	int m_nEnemyCount;
 	//保存した敵の情報数
-	int m_nEnemyDateCount[MAX_PATTERN];
+	//int m_nEnemyDateCount[MAX_PATTERN];
+
 	//現在生成している敵の種類別カウント変数
 	int m_nEnemyTypes[2];
 	//生成してほしい数
@@ -134,7 +140,7 @@ public:
 	//敵カウントのGet
 	int GetEnemyCount(void) { return m_nEnemyCount; }
 	//敵要素保存
-	void SaveEnemyData(int InCornerCount, int InPattern);		
+	//void SaveEnemyData(int InCornerCount, int InPattern);		
 private:
 	//敵作成
 	void CreateEnemy(void);

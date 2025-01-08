@@ -99,7 +99,7 @@ void InitSave()
 		for (int l = 0; l < MaxEnemy; l++)
 		{
 			EnemyLoadData(&CornerCount, &size);
-			g_pFileBattle->SaveEnemyData(CornerCount, j);//ÅŒã‚Í“G‚ÌƒTƒCƒY(floatŒ^)
+			//g_pFileBattle->SaveEnemyData(CornerCount, j);//ÅŒã‚Í“G‚ÌƒTƒCƒY(floatŒ^)
 		}
 	}
 }

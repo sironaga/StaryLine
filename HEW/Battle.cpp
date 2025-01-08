@@ -89,7 +89,7 @@ CBattle::CBattle()
 	, m_nAllyTypes{ 0,0 }
 	, m_pEnemy{}
 	, m_nEnemyCount(0)
-	, m_nEnemyDateCount{ 0,0,0,0,0 }
+	//, m_nEnemyDateCount{ 0,0,0,0,0 }
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
 	, m_nCreateEnemyNum(0)
@@ -135,13 +135,13 @@ CBattle::CBattle()
 		m_tAllyData[i].nCornerCount = -1;
 	}
 	//“Gƒf[ƒ^‚Ì‰Šú‰»
-	for (int l = 0; l < MAX_PATTERN; l++)
-	{
-		for (int i = 0; i < MAX_ENEMY; i++)
-		{
-			m_tEnemyData[l][i].nCornerCount = -1;
-		}
-	}
+	//for (int l = 0; l < MAX_PATTERN; l++)
+	//{
+	//	for (int i = 0; i < MAX_ENEMY; i++)
+	//	{
+	//		m_tEnemyData[l][i].nCornerCount = -1;
+	//	}
+	//}
 }
 
 //ƒfƒXƒgƒ‰ƒNƒ^
@@ -154,18 +154,18 @@ CBattle::~CBattle()
 		if (m_pLogTex[i])m_pLogTex[i]->Release();
 	}
 	//–¡•ûƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
-	for (int i = 0; i < MAX_ALLY; i++)
+	for (int i = 0; i < m_pAlly.size(); i++)
 	{
 		if (!m_pAlly[i])continue;
 		delete m_pAlly[i];
 		m_pAlly[i] = nullptr;
 	}
 	//“Gƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
-	for (int l = 0; l < MAX_ENEMY; l++)
+	for (int i = 0; i < m_pEnemy.size(); i++)
 	{
-		if (!m_tEnemyData[l])continue;
-		delete m_pEnemy[l];
-		m_pEnemy[l] = nullptr;
+		if (!m_pEnemy[i])continue;
+		delete m_pEnemy[i];
+		m_pEnemy[i] = nullptr;
 
 	}
 }
@@ -464,13 +464,13 @@ void CBattle::SaveAllyData(int InCornerCount)
 	m_nAllyDateCount++;
 }
 //“G‚Ìî•ñ•Û‘¶ˆ—
-void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
-{
-	//Šp”î•ñ‚Ì•Û‘¶
-	m_tEnemyData[InPattern][m_nEnemyDateCount[InPattern]].nCornerCount = InCornerCount;
-	//•Û‘¶”‚ğ‰ÁZ
-	m_nEnemyDateCount[InPattern]++;
-}
+//void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
+//{
+//	//Šp”î•ñ‚Ì•Û‘¶
+//	m_tEnemyData[InPattern][m_nEnemyDateCount[InPattern]].nCornerCount = InCornerCount;
+//	//•Û‘¶”‚ğ‰ÁZ
+//	m_nEnemyDateCount[InPattern]++;
+//}
 
 //í“¬ŠÔ²ˆ—
 void CBattle::TimeLapse(void)
@@ -490,13 +490,15 @@ void CBattle::CreateAlly(void)
 	while (m_nAllyDateCount)
 	{
 		//¶¬‚·‚é
-		m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount);
+		m_pAlly.push_back(new CAlly(m_tAllyData[0].nCornerCount));
+		//m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount);
+		
 		//¶¬”‚ğ‰ÁZ
 		m_nAllyCount++;
 		//¢Š«‘”‚ğ‰ÁZ
 		m_nSummonAllyCount++;
 		//¶¬‚Ég—p‚µ‚½‚½‚ßî•ñ‚ğÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ğ‘O‹l‚ß‚É‚·‚é
-		for (int i = 0; i + 1 < MAX_ALLY; i++)
+		for (int i = 0; i + 1 < m_pAlly.size(); i++)
 		{
 			m_tAllyData[i] = m_tAllyData[i + 1];
 		}
@@ -552,7 +554,9 @@ void CBattle::CreateEnemy(void)
 		else EnemyCornerCount = 4;
 
 		//¶¬‚·‚é
-		m_pEnemy[m_nEnemyCount] = new CEnemy(EnemyCornerCount);
+		//m_pEnemy[m_nEnemyCount] = new CEnemy(EnemyCornerCount);
+		m_pEnemy.push_back(new CEnemy(EnemyCornerCount));
+
 		//¶¬”‚ğ‰ÁZ
 		m_nEnemyCount++;
 		//¶¬—\’è”‚ğŒ¸‚ç‚·
