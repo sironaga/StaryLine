@@ -66,7 +66,7 @@ void CNumberUI::Draw()
 		m_pNumber[0][l]->SetView(Get2DView());
 		m_pNumber[0][l]->SetProjection(Get2DProj());
 		m_pNumber[0][l]->SetPositon(Pos.X - (SIZE * (nLong / 2)) + SIZE * nLoop, Pos.Y, Pos.Z);
-		m_pNumber[0][l]->SetSize(SIZE, SIZE, SIZE);
+		m_pNumber[0][l]->SetSize(Scale.X, Scale.Y, Scale.Z);
 		m_pNumber[0][l]->Disp();
 	}
 
@@ -101,4 +101,9 @@ void CNumberUI::SetNumber(int number)
 void CNumberUI::SetPos(FLOAT3 pos)
 {
 	Pos = pos;
+}
+
+void CNumberUI::SetScale(FLOAT3 scale)
+{
+	Scale = scale;
 }
