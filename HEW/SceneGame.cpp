@@ -35,6 +35,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	:m_bEnd(false)
 {
 	g_GameSound = new CSoundList(BGM_BATTLE);
+	g_GameSound->SetMasterVolume();
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
 
 	m_pBackGround = new CBackGround();
@@ -64,6 +65,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	if (m_pSourseGameBGM)SetVolumeBGM(m_pSourseGameBGM);
 	m_pSourseGameBGM->Start();
 	g_FeverSound = new CSoundList(BGM_FEVER);
+	g_FeverSound->SetMasterVolume();
 	m_pSourseFeverBGM = g_FeverSound->GetSound(true);
 
 	m_pEffect = new CEffectManager(TEX_PASS("Effect/Fire.efk"));
@@ -95,6 +97,7 @@ CSceneGame::~CSceneGame()
 
 void CSceneGame::Update()
 {
+
 	if (m_pBattle->GetEnd() && !m_bEnd)
 	{
 		SetNext(SCENE_RESULT);

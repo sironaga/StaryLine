@@ -38,9 +38,9 @@ public:
 	XAUDIO2_BUFFER GetBuffer(bool inLoop);
 
 	CSound* m_sound;
-
+	void SetMasterVolume();
 };
-
+void SetAllMasterVolume(float volume);
 void SetAllVolumeBGM(float volume);
 void SetAllVolumeSE(float volume);
 void SetVolumeBGM(IXAudio2SourceVoice* InSouse);

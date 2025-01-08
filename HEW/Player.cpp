@@ -99,6 +99,7 @@ CPlayer::CPlayer()
 	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 
 	g_PlayerSound = new CSoundList(SE_WALK);
+	g_PlayerSound->SetMasterVolume();
 	g_WalkSe = g_PlayerSound->GetSound(true);
 }
 

@@ -70,6 +70,7 @@ CFieldVertex::CFieldVertex()
 {
 
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
+	g_Fieldsound->SetMasterVolume();
 	g_FieldSe = g_Fieldsound->GetSound(false);
 	// 星の描画用
 	// スプライト
