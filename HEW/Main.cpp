@@ -39,6 +39,8 @@ CScene* g_pScene; // シーン
 CFade* g_pFade; // フェード 
 HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
+int g_NowWide = 1920;
+int g_NowHeight = 1080;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -326,5 +328,18 @@ void InitResolusionMain()
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();
+}
+void SetNowResolusion(int wide, int height)
+{
+	g_NowHeight = height;
+	g_NowWide = wide;
+}
+int GetNowWide()
+{
+	return g_NowWide;
+}
+int GetNowHeight()
+{
+	return g_NowHeight;
 }
 // EOF

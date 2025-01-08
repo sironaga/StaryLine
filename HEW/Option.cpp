@@ -151,7 +151,7 @@ float COption::GetFPS()
 
 int COption::GetResolusion()
 {
-	return NowResolusion;
+	return  m_nValue[RESOLUSION];
 }
 
 int COption::GetKeyboardSetting()
@@ -848,7 +848,4 @@ void COption::DrawInput()
 	Sprite::Draw();	
 }
 
-void COption::SetResolusion(int wide)
-{
-	NowResolusion = wide;
-}
+

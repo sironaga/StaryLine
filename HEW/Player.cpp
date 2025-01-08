@@ -56,19 +56,19 @@ CPlayer::CPlayer()
 	// プレイヤー(筆)モデルの読み込み
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
-	vtxTimer[0][0] = { { -TIMER_BAR_HARFSIZE_X , fTimerSize,		0.0f },	{ 0.0f, 0.0f } };
-	vtxTimer[0][1] = { { -TIMER_BAR_HARFSIZE_X , TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f } };
-	vtxTimer[0][2] = { {  TIMER_BAR_HARFSIZE_X	, fTimerSize,		0.0f },	{ 1.0f, 0.0f } };
-	vtxTimer[0][3] = { {  TIMER_BAR_HARFSIZE_X	, TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f } };
+	vtxTimer[0][0] = { { -WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide()) , HEIGHT_RATIO(fTimerSize,		   GetNowHeight()),  0.0f },	{ 0.0f, 0.0f } };
+	vtxTimer[0][1] = { { -WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide()) , HEIGHT_RATIO(TIMER_BAR_HARFSIZE_Y,GetNowHeight()), 0.0f },	{ 0.0f, 1.0f } };
+	vtxTimer[0][2] = { {  WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide())	, HEIGHT_RATIO(fTimerSize,		   GetNowHeight()),  0.0f },	{ 1.0f, 0.0f } };
+	vtxTimer[0][3] = { {  WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide())	, HEIGHT_RATIO(TIMER_BAR_HARFSIZE_Y,GetNowHeight()), 0.0f },	{ 1.0f, 1.0f } };
 	m_pVtxTimer[0] = CreateVertexBuffer(vtxTimer[0], 4);
 
 	// 制限時間頂点情報
 	for (int i = 1; i < 3; i++)
 	{
-		vtxTimer[i][0] = { { -TIMER_OUT_HARFSIZE_X , fTimerSize,		0.0f },	{ 0.0f, 0.0f } };
-		vtxTimer[i][1] = { { -TIMER_OUT_HARFSIZE_X , TIMER_OUT_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f } };
-		vtxTimer[i][2] = { {  TIMER_OUT_HARFSIZE_X	, fTimerSize,		0.0f },	{ 1.0f, 0.0f } };
-		vtxTimer[i][3] = { {  TIMER_OUT_HARFSIZE_X	, TIMER_OUT_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f } };
+		vtxTimer[i][0] = { { -WIDE_RATIO(TIMER_OUT_HARFSIZE_X,GetNowWide()) , HEIGHT_RATIO(fTimerSize          ,GetNowHeight()),0.0f },	{ 0.0f, 0.0f } };
+		vtxTimer[i][1] = { { -WIDE_RATIO(TIMER_OUT_HARFSIZE_X,GetNowWide()) , HEIGHT_RATIO(TIMER_OUT_HARFSIZE_Y,GetNowHeight()),0.0f },	{ 0.0f, 1.0f } };
+		vtxTimer[i][2] = { {  WIDE_RATIO(TIMER_OUT_HARFSIZE_X,GetNowWide())	, HEIGHT_RATIO(fTimerSize          ,GetNowHeight()),0.0f },	{ 1.0f, 0.0f } };
+		vtxTimer[i][3] = { {  WIDE_RATIO(TIMER_OUT_HARFSIZE_X,GetNowWide())	, HEIGHT_RATIO(TIMER_OUT_HARFSIZE_Y,GetNowHeight()),0.0f },	{ 1.0f, 1.0f } };
 		m_pVtxTimer[i] = CreateVertexBuffer(vtxTimer[i], 4);
 	}
 	// 制限時間テクスチャ読み込み
@@ -176,7 +176,7 @@ void CPlayer::Draw()
 	/* タイマーの描画 */
 	SetRender2D();											// 2D表現のセット
 
-	SetSpritePos(TIMER_OUT_OFFSET_X, TIMER_OUT_OFFSET_Y);							// タイマーの座標の設定
+	SetSpritePos(WIDE_RATIO(TIMER_OUT_OFFSET_X,GetNowWide()), HEIGHT_RATIO(TIMER_OUT_OFFSET_Y,GetNowHeight()));							// タイマーの座標の設定
 	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
 	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
 	SetSpriteTexture(m_pTexTimer[2]);							// タイマーのテクスチャの設定
@@ -184,7 +184,7 @@ void CPlayer::Draw()
 
 	ReSetSprite();
 
-	SetSpritePos(TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y);							// タイマーの座標の設定
+	SetSpritePos(WIDE_RATIO(TIMER_BAR_OFFSET_X,GetNowWide()), HEIGHT_RATIO(TIMER_BAR_OFFSET_Y,GetNowHeight()));							// タイマーの座標の設定
 	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
 	if (m_bDrawing)SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
 	else SetSpriteColor(1.0f, 1.0f, 1.0f, 0.3f);			// 作図時間でないときは透明度を上げる
@@ -193,7 +193,7 @@ void CPlayer::Draw()
 
 	ReSetSprite();
 	
-	SetSpritePos(TIMER_OUT_OFFSET_X, TIMER_OUT_OFFSET_Y);							// タイマーの座標の設定
+	SetSpritePos(WIDE_RATIO(TIMER_OUT_OFFSET_X,GetNowWide()), HEIGHT_RATIO(TIMER_OUT_OFFSET_Y,GetNowHeight()));							// タイマーの座標の設定
 	SetSpriteScale(1.0f, 1.0f);								// タイマーの大きさの設定
 	SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);	// タイマーの色の設定
 	SetSpriteTexture(m_pTexTimer[1]);							// タイマーのテクスチャの設定
@@ -430,10 +430,10 @@ void CPlayer::TimeProcess()
 	}
 
 	// 制限時間頂点情報の更新
-	vtxTimer[0][0] = { { -TIMER_BAR_HARFSIZE_X ,	fTimerSize,			0.0f },	{ 0.0f, 0.0f} };
-	vtxTimer[0][1] = { { -TIMER_BAR_HARFSIZE_X ,	TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 0.0f, 1.0f} };
-	vtxTimer[0][2] = { {  TIMER_BAR_HARFSIZE_X	,	fTimerSize,			0.0f },	{ 1.0f, 0.0f} };
-	vtxTimer[0][3] = { {  TIMER_BAR_HARFSIZE_X	,	TIMER_BAR_HARFSIZE_Y,	0.0f },	{ 1.0f, 1.0f} };
+	vtxTimer[0][0] = { { -WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide()) ,	HEIGHT_RATIO(fTimerSize,			GetNowHeight()),0.0f },	{ 0.0f, 0.0f} };
+	vtxTimer[0][1] = { { -WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide()) ,	HEIGHT_RATIO(TIMER_BAR_HARFSIZE_Y,	GetNowHeight()),0.0f },	{ 0.0f, 1.0f} };
+	vtxTimer[0][2] = { {  WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide())	,	HEIGHT_RATIO(fTimerSize,			GetNowHeight()),0.0f },	{ 1.0f, 0.0f} };
+	vtxTimer[0][3] = { {  WIDE_RATIO(TIMER_BAR_HARFSIZE_X,GetNowWide())	,	HEIGHT_RATIO(TIMER_BAR_HARFSIZE_Y,	GetNowHeight()),0.0f },	{ 1.0f, 1.0f} };
 	m_pVtxTimer[0] = CreateVertexBuffer(vtxTimer[0], 4);
 }
 
