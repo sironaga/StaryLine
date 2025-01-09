@@ -65,11 +65,15 @@ private:
 
 	bool m_bDrawing;						// 作図中かどうか
 
-	enum E_PLAYERSPRITE
+	enum E_PLAYER_TEXTURE
 	{
-		Arrow = 0,
+		Arrow_S = 0,
+
+		TimerUnder_S,
+		TimerGauge,
+		TimerUp,
 		
-		MAX_SPRITE
+		MAX_TEXTURE
 	};
 	
 	enum E_ARROW_STATE
@@ -79,12 +83,13 @@ private:
 		CANNOT_SELECT
 	};
 
+
 	struct ArrowInfo
 	{
 		SpriteParam* param;
 		E_ARROW_STATE state;
 	}m_tArrowInfo[8];
-	Texture* m_pTexture[MAX_SPRITE];
+	Texture* m_pTexture[MAX_TEXTURE];
 
 public:
 	/* Getter */
@@ -103,9 +108,7 @@ public:
 private:
 	void TimeProcess();						// タイマーの処理
 private:
-	ID3D11Buffer* m_pVtxTimer[3];				// タイマー描画用頂点情報
-	ID3D11ShaderResourceView* m_pTexTimer[3];	// タイマー描画用テクスチャ
-	Vertex vtxTimer[3][4];						// タイマーの各頂点
+	SpriteParam* m_pTimerParam[3];
 	float fTimerSize;						// 時間によって減らすタイマーのサイズ
 	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
