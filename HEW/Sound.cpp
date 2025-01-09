@@ -216,6 +216,11 @@ IXAudio2SourceVoice* CSound::PlayWaveSound(bool loop)
 	return m_pSourceVoice;
 }
 
+void CSound::SetMasterVolume(float volume)
+{
+	m_pMasteringVoice->SetVolume(volume);
+}
+
 
 
 // ワイド文字列を ANSI 文字列に変換するヘルパー関数

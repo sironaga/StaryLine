@@ -88,8 +88,11 @@ CPlayer::CPlayer()
 	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
-	g_pPlayerSound = new CSoundList(SE_WALK);
-	g_pWalkSe = g_pPlayerSound->GetSound(true);
+
+	g_PlayerSound = new CSoundList(SE_WALK);
+	g_PlayerSound->SetMasterVolume();
+	g_WalkSe = g_PlayerSound->GetSound(true);
+
 }
 
 CPlayer::~CPlayer()

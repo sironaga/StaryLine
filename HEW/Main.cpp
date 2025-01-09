@@ -113,7 +113,7 @@ void Update()
 	if (g_pScene->ChangeScene()) 
 	{
 		g_hWnd = g_pScene->GethWnd();
-
+		g_mainsound->SetMasterVolume();
 		g_pSourseTitleSE->FlushSourceBuffers();
 		if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
 		g_pSourseTitleSE->Start();

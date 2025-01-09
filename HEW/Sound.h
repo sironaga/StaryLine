@@ -36,7 +36,7 @@ public:
 	XAUDIO2_BUFFER GetBuffer(bool inLoop);
 	//スピーカーを作成と音データの作成を両方で
 	IXAudio2SourceVoice* PlayWaveSound(bool loop);
-
+	void SetMasterVolume(float volume);
 private:
 	IXAudio2* m_pXAudio2;
 	IXAudio2MasteringVoice* m_pMasteringVoice;//すべての元になるスピーカー

@@ -18,9 +18,9 @@
 
 #define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
 
-float g_volumeBGM = 0;
-float g_volumeSE = 0;
-
+float g_volumeBGM = 0.5f;
+float g_volumeSE = 0.5f;
+float g_masterSound = 0.5f;
 CSoundList::CSoundList(NAME inName)
 {
 	switch (inName)
@@ -57,7 +57,7 @@ CSoundList::CSoundList(NAME inName)
 	default:
 		break;
 	}
-	
+	m_sound->SetMasterVolume(0.5f);
 }
 
 CSoundList::~CSoundList()
@@ -71,6 +71,7 @@ CSoundList::~CSoundList()
 IXAudio2SourceVoice* CSoundList::GetSound(bool Loop)
 {
 	IXAudio2SourceVoice* m_Source = m_sound->PlayWaveSound(Loop);
+	m_Source->SetVolume(0.5f);
 	return m_Source;
 }
 
@@ -80,15 +81,25 @@ XAUDIO2_BUFFER CSoundList::GetBuffer(bool inLoop)
 	return buffer;
 }
 
+void CSoundList::SetMasterVolume()
+{
+	m_sound->SetMasterVolume(g_masterSound);
+}
 
+
+void SetAllMasterVolume(float volume)
+{
+	volume = volume / 10.0f;
+	g_masterSound = volume;
+}
 void SetAllVolumeBGM(float volume)
 {
-	volume = volume / 100.0f;
+	volume = volume / 10.0f;
 	g_volumeBGM = volume;
 }
 void SetAllVolumeSE(float volume)
 {
-	volume = volume / 100.0f;
+	volume = volume / 10.0f;
 	g_volumeSE = volume;
 }
 
