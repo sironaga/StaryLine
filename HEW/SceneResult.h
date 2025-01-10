@@ -4,6 +4,7 @@
 #include"_StructList.h"
 #include"SpriteEx.h"
 #include"Main.h"
+#include"NumberUI.h"
 
 class CSceneResult : public CScene
 {
@@ -31,6 +32,8 @@ private:
 	SpriteEx* m_pClearTime;
 	SpriteEx* m_pNextUI[2];
 	SpriteEx* m_pStar;
+
+
 
 	int nAnimationTimer;
 	int nAnimationFrame;

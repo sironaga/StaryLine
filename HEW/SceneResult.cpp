@@ -141,8 +141,13 @@ CSceneResult::CSceneResult()
 		m_pLighting->SetPositon(940.0f, 570.0f, 10.0f);
 	}
 
+	// 選択初期化
 	nSlect = 0;
+	// Animationタイマー
 	nAnimationTimer = timeGetTime();
+
+	// 数字の描画
+	m_pNumber = new CNumberUI();
 }
 
 CSceneResult::~CSceneResult()
@@ -254,7 +259,7 @@ void CSceneResult::Update()
 		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
-
+	m_pNumber->SetNumber(timeGetTime());
 }
 
 void CSceneResult::Draw()
@@ -269,6 +274,7 @@ void CSceneResult::Draw()
 		m_pNextUI[nLoop]->SetProjection(Get2DProj());
 		m_pNextUI[nLoop]->SetView(Get2DView());
 	}
+	m_pHitPoint->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pHitPoint->SetProjection(Get2DProj());
 	m_pHitPoint->SetView(Get2DView());
 	m_pShadow->SetProjection(Get2DProj());
@@ -409,7 +415,6 @@ void CSceneResult::Draw()
 		m_pStar->SetTexture();
 		m_pStar->Disp();
 	}
-
 
 }
 
