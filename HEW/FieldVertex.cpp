@@ -67,6 +67,8 @@ CFieldVertex::CFieldVertex()
 	, Ally_Count(0)
 	, m_pTex_Ally_Count(nullptr)
 	, m_pSprite_Ally_Count(nullptr)
+	, DrawCount(0)
+	, bDrawCount(false)
 {
 
 	g_Fieldsound = new CSoundList(SE_COMPLETE);
@@ -265,119 +267,134 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pStar_Model[2]);
 }
 
+////=====更新処理=====//
 void CFieldVertex::Update()
 {
-	FieldVertex* Vertexp;
-	CenterVertex* CenterVertexp;
-	//プレイヤーの位置の情報を取得
-	PlayerPos = m_pPlayer->GetPlayerPos();
-
-	//頂点の壊れる情報取得
-	//BreakVertex = ;
-
-	////頂点を壊す処理
-	//if (BreakVertex != -1)
-	//{
-	//	m_tVertex[BreakVertex].Use = false;//使用して無いにする
-	//	//壊れる頂点とつながっている頂点の壊れる頂点とのコネクト情報を消す
-	//	for (int i = 0; i < 8; i++)
-	//	{
-	//		if (m_tVertex[BreakVertex].Connect[i] == -1)continue;
-	//		for (int j = 0; j < 8; j++)
-	//		{
-	//			if (m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] == BreakVertex)//壊れる頂点がコネクトに入っていたら
-	//			{
-	//				m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] = -1;//初期化
-	//			}
-	//		}
-	//	}
-	//	Fill(m_tVertex[BreakVertex].Connect, -1);//壊れる頂点のコネクト情報消す
-	//	for (int i = 0,j = 0, NowLine = 0; OrderVertex[i] != -1; i++)
-	//	{
-	//		if (OrderVertex[i] == BreakVertex || OrderVertex[i + 1] == BreakVertex)continue;
-	//		vtx_FieldLine[j][0] = vtx_FieldLine[i][0];
-	//		j++;//壊れた頂点を使用してないとき増やす
-	//		NowLine++;
-	//	}
-	//}
-
-	//今のフェーズがDrawの時、繋がっている頂点を各頂点に保存する
-
-	Vertexp = m_tVertex;
-	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+	//-----描画回数カウント-----//
 	{
-		//プレイヤーと頂点の場所が同じで、かつ、最終地点が今の地点でないかつ壊れている頂点でないとき
-		if (PlayerPos.x == Vertexp->Pos.x && PlayerPos.y == Vertexp->Pos.y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
+		if (!bDrawCount)
 		{
-			OrderVertex[OrderVertexCount] = Vertexp->Number;//着いた頂点の番号を保存
-			OrderVertexCount++;//次の場所にカウントアップする
-
-			int ConnectSave[2] = { -1,-1 };//コネクトを保存する位置を保存する
-
-			//前の頂点とつなげる
-			for (int j = 7; j >= 0; j--)//頂点の格納位置を決定する
-			{
-				if (m_tVertex[GoalVertex].Connect[j] == -1)ConnectSave[0] = j;
-				if (Vertexp->Connect[j] == -1)ConnectSave[1] = j;
-			}
-
-			//お互いの頂点をつなげる
-			m_tVertex[GoalVertex].Connect[ConnectSave[0]] = Vertexp->Number;
-			Vertexp->Connect[ConnectSave[1]] = m_tVertex[GoalVertex].Number;
-
-			//交点重複判定
-			CenterVertexp = m_tCenter_Vertex;
-			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
-			{
-				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2.0f == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2.0f == CenterVertexp->Pos.y))
-				{
-					if (!CenterVertexp->Use)CenterVertexp->Use = true;
-				}
-			}
-
-			//コネクト処理が終わったので終点を今の地点に設定
-			GoalVertex = Vertexp->Number;
-
-			//多角形判定
-			if (OrderVertex[3] != -1 && Vertexp->Use)//たどってきた頂点が４つ以上ならかつ今の頂点が過去に使われた時、多角形判定
-			{
-				ShapesCheck(m_tVertex[StartVertex]);//再帰処理(開始頂点のみ)
-			}
-			Vertexp->Use = true;//頂点が追加されたので今の頂点をtureに
-			Vertexp->Angle[1] = 181.0f;
-			NowLine++;//線の数増やす
+			DrawCount++;//描画回数増やす
+			bDrawCount = true;//描画をカウント判定
 		}
 	}
 
-	//描画のための更新処理
-	int PlayerDestination;//プレイヤーの方向保存
-	PlayerDestination = m_pPlayer->GetPlayerDestination();//プレイヤーの方向取得
-	DirectX::XMFLOAT3 PosA[4];//回転後座標格納用
-	DirectX::XMFLOAT3 Size;//線のサイズ
+	//-----頂点や図形判定の更新処理-----//
+	{
+		FieldVertex* Vertexp;
+		CenterVertex* CenterVertexp;
+		//プレイヤーの位置の情報を取得
+		PlayerPos = m_pPlayer->GetPlayerPos();
 
-	Size.x = LINE_SIZE;
-	Size.y = LINE_SIZE;
+		//頂点の壊れる情報取得
+		//BreakVertex = ;
 
-	//線の回転
-	PosA[0].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[0].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[1].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[1].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[2].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[2].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
-	PosA[3].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
-	PosA[3].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		////頂点を壊す処理
+		//if (BreakVertex != -1)
+		//{
+		//	m_tVertex[BreakVertex].Use = false;//使用して無いにする
+		//	//壊れる頂点とつながっている頂点の壊れる頂点とのコネクト情報を消す
+		//	for (int i = 0; i < 8; i++)
+		//	{
+		//		if (m_tVertex[BreakVertex].Connect[i] == -1)continue;
+		//		for (int j = 0; j < 8; j++)
+		//		{
+		//			if (m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] == BreakVertex)//壊れる頂点がコネクトに入っていたら
+		//			{
+		//				m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] = -1;//初期化
+		//			}
+		//		}
+		//	}
+		//	Fill(m_tVertex[BreakVertex].Connect, -1);//壊れる頂点のコネクト情報消す
+		//	for (int i = 0,j = 0, NowLine = 0; OrderVertex[i] != -1; i++)
+		//	{
+		//		if (OrderVertex[i] == BreakVertex || OrderVertex[i + 1] == BreakVertex)continue;
+		//		vtx_FieldLine[j][0] = vtx_FieldLine[i][0];
+		//		j++;//壊れた頂点を使用してないとき増やす
+		//		NowLine++;
+		//	}
+		//}
 
-	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//左上のｘ座標
-	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//左上のｙ座標
-	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//右上のｘ座標
-	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
+		//今のフェーズがDrawの時、繋がっている頂点を各頂点に保存する
 
-	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
-	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
-	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
-	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
+		Vertexp = m_tVertex;
+		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+		{
+			//プレイヤーと頂点の場所が同じで、かつ、最終地点が今の地点でないかつ壊れている頂点でないとき
+			if (PlayerPos.x == Vertexp->Pos.x && PlayerPos.y == Vertexp->Pos.y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
+			{
+				OrderVertex[OrderVertexCount] = Vertexp->Number;//着いた頂点の番号を保存
+				OrderVertexCount++;//次の場所にカウントアップする
+
+				int ConnectSave[2] = { -1,-1 };//コネクトを保存する位置を保存する
+
+				//前の頂点とつなげる
+				for (int j = 7; j >= 0; j--)//頂点の格納位置を決定する
+				{
+					if (m_tVertex[GoalVertex].Connect[j] == -1)ConnectSave[0] = j;
+					if (Vertexp->Connect[j] == -1)ConnectSave[1] = j;
+				}
+
+				//お互いの頂点をつなげる
+				m_tVertex[GoalVertex].Connect[ConnectSave[0]] = Vertexp->Number;
+				Vertexp->Connect[ConnectSave[1]] = m_tVertex[GoalVertex].Number;
+
+				//交点重複判定
+				CenterVertexp = m_tCenter_Vertex;
+				for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
+				{
+					//繋がっている２点の中心がセンター頂点と等しいかどうか
+					if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2.0f == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2.0f == CenterVertexp->Pos.y))
+					{
+						if (!CenterVertexp->Use)CenterVertexp->Use = true;
+					}
+				}
+
+				//コネクト処理が終わったので終点を今の地点に設定
+				GoalVertex = Vertexp->Number;
+
+				//多角形判定
+				if (OrderVertex[3] != -1 && Vertexp->Use)//たどってきた頂点が４つ以上ならかつ今の頂点が過去に使われた時、多角形判定
+				{
+					ShapesCheck(m_tVertex[StartVertex]);//再帰処理(開始頂点のみ)
+				}
+				Vertexp->Use = true;//頂点が追加されたので今の頂点をtureに
+				Vertexp->Angle[1] = 181.0f;
+				NowLine++;//線の数増やす
+			}
+		}
+	}
+
+	//-----線の描画のための更新処理-----
+	{
+		int PlayerDestination;//プレイヤーの方向保存
+		PlayerDestination = m_pPlayer->GetPlayerDestination();//プレイヤーの方向取得
+		DirectX::XMFLOAT3 PosA[4];//回転後座標格納用
+		DirectX::XMFLOAT3 Size;//線のサイズ
+
+		Size.x = LINE_SIZE;//サイズを線のサイズにする
+		Size.y = LINE_SIZE;
+
+		//線の回転//
+		PosA[0].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[0].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		PosA[1].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[1].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		PosA[2].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[2].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+		PosA[3].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
+		PosA[3].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
+
+		vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//左上のｘ座標
+		vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//左上のｙ座標
+		vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//右上のｘ座標
+		vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
+
+		vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
+		vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
+		vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
+		vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
+	}
 
 }
 
@@ -836,6 +853,8 @@ void CFieldVertex::InitFieldVertex()
 		NowLine = 0;//線の情報を初期化
 
 		SuperStarCount = 0;//ステラのカウントを初期化
+
+		bDrawCount = false;//描画カウント判定初期化
 	}
 }
 

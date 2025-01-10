@@ -48,6 +48,7 @@ public:
 	float GetFeverPoint() { return fFeverPoint; }
 	void SubtractFeverPoint();
 	void ResetFeverPoint();
+	int GetDrawCount() { return DrawCount; }
 private:
 	typedef struct Log
 	{
@@ -136,4 +137,6 @@ private:
 	float fFeverPoint;//ポイントをちょっとづつ増やす用
 	float Partition;//分割数
 	int Ally_Count;//召喚の数
+	int DrawCount;//描画回数保存用
+	bool bDrawCount;//描画回数増やしたか判定
 };
