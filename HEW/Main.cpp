@@ -138,6 +138,7 @@ void Update()
 
 		// 次シーンに向けて初期設定 
 		g_pFade->Start(true);   // フェード開始 
+		g_pFade->SetFade(1.0f, true);
 		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
 		g_pScene->SethWnd(g_hWnd);
 	}
