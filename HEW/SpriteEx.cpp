@@ -60,6 +60,7 @@ void SpriteEx::Disp()
 	m_Sprite->SetProjection(wvp[2]);
 	m_Sprite->SetWorld(wvp[0]);
 	m_Sprite->Draw();
+
 }
 
 void SpriteEx::SetPositon(float X, float Y, float Z)
