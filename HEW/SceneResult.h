@@ -32,7 +32,8 @@ private:
 	SpriteEx* m_pNextUI[2];
 	SpriteEx* m_pStar;
 
-
+	int nAnimationTimer;
+	int nAnimationFrame;
 	int nSlect; 
 
 
