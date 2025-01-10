@@ -39,6 +39,7 @@ private:
 	int nAnimationFrame;
 	int nSlect; 
 
+	CNumberUI* m_pNumber;
 
 	static ResultGameInfo ResultGameData;
 };

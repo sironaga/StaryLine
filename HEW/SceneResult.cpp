@@ -12,7 +12,7 @@ CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	//ResultGameData.bWin = 1;
+	ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	
@@ -308,7 +308,7 @@ void CSceneResult::Draw()
 	m_pShadow->SetTexture();
 	m_pShadow->Disp();
 
-	
+
 	if (ResultGameData.bWin)
 	{
 		// Animation計算
@@ -329,7 +329,7 @@ void CSceneResult::Draw()
 
 
 		m_pCharacter->SetUvSize((1.0f / 8.0f), (1.0f / 8.0f));
-		m_pCharacter->SetUvPos(fUvPosX,fUvPosY);
+		m_pCharacter->SetUvPos(fUvPosX, fUvPosY);
 		m_pCharacter->SetTexture();
 		m_pCharacter->Disp();
 		m_pCharacter->SetUvSize(1.0f, 1.0f);
@@ -340,83 +340,84 @@ void CSceneResult::Draw()
 		m_pCharacter->SetTexture();
 		m_pCharacter->Disp();
 	}
-	m_pHitPoint->SetTexture();
-	m_pHitPoint->Disp();
-	m_pClearTime->SetTexture();
-	m_pClearTime->Disp();
-	m_pSummonData->SetTexture();
-	m_pSummonData->Disp();
-	m_pUnderBar->SetTexture();
-	m_pUnderBar->Disp();
-	m_pTextShadow->SetTexture();
-	m_pTextShadow->Disp();
-	m_pText->SetTexture();
-	m_pText->Disp();
-	m_pStageSelect[0]->SetTexture();
-	m_pStageSelect[0]->Disp();
-	m_pNextUI[0]->SetTexture();
-	m_pNextUI[0]->Disp();
-	m_pSelect[nSlect]->SetTexture();
-	m_pSelect[nSlect]->Disp();
+		m_pHitPoint->SetTexture();
+		m_pHitPoint->Disp();
+		m_pClearTime->SetTexture();
+		m_pClearTime->Disp();
+		m_pSummonData->SetTexture();
+		m_pSummonData->Disp();
+		m_pUnderBar->SetTexture();
+		m_pUnderBar->Disp();
+		m_pTextShadow->SetTexture();
+		m_pTextShadow->Disp();
+		m_pText->SetTexture();
+		m_pText->Disp();
+		m_pStageSelect[0]->SetTexture();
+		m_pStageSelect[0]->Disp();
+		m_pNextUI[0]->SetTexture();
+		m_pNextUI[0]->Disp();
+		m_pSelect[nSlect]->SetTexture();
+		m_pSelect[nSlect]->Disp();
 
-	if (ResultGameData.bWin)
-	{
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(200.0f, 140.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
-
-		
-
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(400.0f, 340.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
-
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(1500.0f, 100.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
+		if (ResultGameData.bWin)
+		{
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(200.0f, 140.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
 
 
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(1700.0f, 140.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
 
-	}
-	else
-	{
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(400.0f, 740.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(400.0f, 340.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
 
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(475.0f, 730.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(1500.0f, 100.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
 
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(1350.0f, 730.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
 
-		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
-		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-		m_pStar->SetPositon(1500.0f, 740.0f, 10.0f);
-		m_pStar->SetTexture();
-		m_pStar->Disp();
-	}
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(1700.0f, 140.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
+
+		}
+		else
+		{
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(400.0f, 740.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
+
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(475.0f, 730.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
+
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(1350.0f, 730.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
+
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
+			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+			m_pStar->SetPositon(1500.0f, 740.0f, 10.0f);
+			m_pStar->SetTexture();
+			m_pStar->Disp();
+		}
 
 }
+
 
 void CSceneResult::InResultData(ResultGameInfo InData)
 {
