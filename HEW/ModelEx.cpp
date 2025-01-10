@@ -15,7 +15,7 @@ CModelEx::CModelEx(const char *ModelFile, bool isAnime)
 	if (isAnime)
 	{
 		Model::AnimeNo anime = CModel->AddAnimation(ModelFile);
-		CModel->Play(anime, true);
+		CModel->PlayAnime(anime, true);
 	}
 
 	T = DirectX::XMMatrixTranslation(tX, tY, tZ);
@@ -82,7 +82,7 @@ void CModelEx::Draw()
 			for (int j = 0; j < CModel->GetMesh(i)->bones.size(); ++j)
 			{
 				DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-					CModel->GetMesh(i)->bones[j].invOffset * CModel->GetBone(CModel->GetMesh(i)->bones[j].index)
+					CModel->GetMesh(i)->bones[j].invOffset * CModel->GetBoneMatrix(CModel->GetMesh(i)->bones[j].nodeIndex)
 				));
 				ShaderList::SetBones(bones);
 			}
