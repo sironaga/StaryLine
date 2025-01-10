@@ -9,9 +9,10 @@ ResultGameInfo CSceneResult::ResultGameData;
 
 
 CSceneResult::CSceneResult()
+	:nAnimationFrame(0)
 {
 	// デバッグ
-	ResultGameData.bWin = 1;
+	//ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	
@@ -31,7 +32,7 @@ CSceneResult::CSceneResult()
 	{
 		// --- WinData
 		m_pText			= new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_top.png");
-		m_pCharacter	= new SpriteEx("Assets/Texture/Result/Win/Result_Win_Linie.png");
+		m_pCharacter	= new SpriteEx("Assets/Texture/Result/Win/Result_Linie_Win_Sprite.png");
 		m_pLighting		= new SpriteEx("Assets/Texture/Result/Win/Result_Win_Light.png");
 		m_pTextShadow	= new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_under.png");
 		m_pClearTime	= new SpriteEx("Assets/Texture/Result/Win/Result_Win_Cleartime.png");
@@ -104,9 +105,10 @@ CSceneResult::CSceneResult()
 		m_pTextShadow->SetSize(0.5f, 0.05f, 1.0f);
 		m_pTextShadow->SetPositon(960.0f, 220.0f, 10.0f);
 
+		m_pCharacter->SetUvSize((1.0f / 8.0f), (1.0f / 8.0f));
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pCharacter->SetSize(0.28f, 0.8f, 1.0f);
-		m_pCharacter->SetPositon(940.0f, 420.0f, 10.0f);
+		m_pCharacter->SetSize(0.50f, 0.8f, 1.0f);
+		m_pCharacter->SetPositon(1100.0f, 420.0f, 10.0f);
 
 		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pShadow->SetSize(0.25f, 0.05f, 1.0f);
@@ -140,7 +142,7 @@ CSceneResult::CSceneResult()
 	}
 
 	nSlect = 0;
-
+	nAnimationTimer = timeGetTime();
 }
 
 CSceneResult::~CSceneResult()
@@ -247,6 +249,11 @@ void CSceneResult::Update()
 		}
 	}
 	// ----
+	if (timeGetTime() - nAnimationTimer >= 20.0f)
+	{
+		nAnimationFrame++;
+		nAnimationTimer = timeGetTime();
+	}
 
 }
 
@@ -294,8 +301,39 @@ void CSceneResult::Draw()
 	m_pLighting->Disp();
 	m_pShadow->SetTexture();
 	m_pShadow->Disp();
-	m_pCharacter->SetTexture();
-	m_pCharacter->Disp();
+
+	
+	if (ResultGameData.bWin)
+	{
+		// Animation計算
+		float UvSize;
+		UvSize = (1.0f / 8.0f);
+		int nUvMovePosX, nUvMovePosY;
+		if (nAnimationFrame > 63)
+		{
+			nAnimationFrame = 63;
+		}
+		nUvMovePosX = nAnimationFrame % 8;
+		nUvMovePosY = nAnimationFrame / 8;
+
+		float fUvPosX, fUvPosY;
+
+		fUvPosX = UvSize * (float)nUvMovePosX;
+		fUvPosY = UvSize * (float)nUvMovePosY;
+
+
+		m_pCharacter->SetUvSize((1.0f / 8.0f), (1.0f / 8.0f));
+		m_pCharacter->SetUvPos(fUvPosX,fUvPosY);
+		m_pCharacter->SetTexture();
+		m_pCharacter->Disp();
+		m_pCharacter->SetUvSize(1.0f, 1.0f);
+		m_pCharacter->SetUvPos(0.0f, 0.0f);
+	}
+	else
+	{
+		m_pCharacter->SetTexture();
+		m_pCharacter->Disp();
+	}
 	m_pHitPoint->SetTexture();
 	m_pHitPoint->Disp();
 	m_pClearTime->SetTexture();
