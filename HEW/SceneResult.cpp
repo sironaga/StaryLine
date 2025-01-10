@@ -323,6 +323,7 @@ void CSceneResult::Draw()
 		m_pStar->SetTexture();
 		m_pStar->Disp();
 
+		
 
 		m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pStar->SetSize(0.05f, 0.1f, 1.0f);
