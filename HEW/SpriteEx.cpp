@@ -51,7 +51,7 @@ void SpriteEx::Disp()
 	world = mat;
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 	wvp[1] = View;
-	wvp[2] = Project
+	wvp[2] = Project;
 
 	m_Sprite->SetView(wvp[1]);
 	m_Sprite->SetProjection(wvp[2]);
