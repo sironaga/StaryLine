@@ -89,7 +89,10 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Linie.png"));
 	//モデル
 	g_pLeaderModel[(int)Leader::Linie] = new Model();
-	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Char_Linie.fbx"), 1.0f, Model::XFlip);
+	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"), 1.0f, Model::None);
+	Model::AnimeNo anim = g_pLeaderModel[(int)Leader::Linie]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"));
+	g_pLeaderModel[(int)Leader::Linie]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	g_pLeaderModel[(int)Leader::Linie]->PlayAnime(anim, true);
 
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)

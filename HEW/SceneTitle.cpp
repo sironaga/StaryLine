@@ -150,11 +150,11 @@ void CSceneTitle::Update()
 
 	default:break;
 	}
-	//if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
-	//{
+	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
+	{
 
-	//	SetNext(SCENE_DEBUGROOM);
-	//}
+		SetNext(SCENE_DEBUGROOM);
+	}
 	static bool b = false;
 	if (m_pOption->GetIsFullScreen()==0 && !b)
 	{
