@@ -44,25 +44,27 @@ CPlayer::CPlayer()
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
 	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_bCanMoveCheck(false), m_bDrawing(true)
-	, m_tArrowInfo{}, m_pTexture{}, m_pTimerParam{}
+	, m_tArrowInfo{}, m_pTimerParam{}
+
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
 {
-	static const char* pass[MAX_TEXTURE]
+	static const char* pass[Timer_Max]
 	{
-		TEX_PASS("Player/Arrow.png"),
 		TEX_PASS("Player/UI_Drawing_under.png"),
 		TEX_PASS("Player/UI_Drawing_Gauge.png"),
 		TEX_PASS("Player/UI_Drawing_top.png"),
 	};
 
-	for (int i = 0; i < MAX_TEXTURE; i++)
+	for (int i = 0; i < Timer_Max; i++)
 	{
-		m_pTexture[i] = new Texture();
-		m_pTexture[i]->Create(pass[i]);
+		m_pTimerTex[i] = new Texture();
+		m_pTimerTex[i]->Create(pass[i]);
 	}
 
+	m_pArrowTex = new Texture();
+	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
 	for (int i = 0; i < 3; i++)
 	{
 		m_pTimerParam[i] = new SpriteParam();
@@ -97,10 +99,11 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {	
-	for (int i = 0; i < MAX_TEXTURE; i++)
+	for (int i = 0; i < Timer_Max; i++)
 	{
-		SAFE_DELETE(m_pTexture[i]);
+		SAFE_DELETE(m_pTimerTex[i]);
 	}
+	SAFE_DELETE(m_pArrowTex);
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
 
 	//音の解放
@@ -196,10 +199,10 @@ void CPlayer::Draw()
 	//	Sprite::Draw();
 	//}
 
-	for (int i = TimerUnder_S,param = 0; i <= TimerUp; i++,param++)
+	for (int i = 0; i < Timer_Max; i++)
 	{
-		Sprite::SetParam(m_pTimerParam[param]);
-		Sprite::SetTexture(m_pTexture[i]);
+		Sprite::SetParam(m_pTimerParam[i]);
+		Sprite::SetTexture(m_pTimerTex[i]);
 		Sprite::Draw();
 		Sprite::ReSetSprite();
 	}
