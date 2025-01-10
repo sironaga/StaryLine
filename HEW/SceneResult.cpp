@@ -147,7 +147,7 @@ CSceneResult::CSceneResult()
 	nAnimationTimer = timeGetTime();
 
 	// ”Žš‚Ì•`‰æ
-
+	m_pNumber = new CNumberUI();
 }
 
 CSceneResult::~CSceneResult()
@@ -259,6 +259,7 @@ void CSceneResult::Update()
 		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
+	m_pNumber->SetNumber(timeGetTime());
 
 }
 
@@ -415,7 +416,10 @@ void CSceneResult::Draw()
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 		}
-
+		
+		m_pNumber->SetPos({920.0f,540.0f,0.0f});
+		m_pNumber->SetScale({ 0.1f,0.1f,1.0f });
+		m_pNumber->Draw();
 }
 
 

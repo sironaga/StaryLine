@@ -62,10 +62,11 @@ void CNumberUI::Draw()
 		{
 			l = l / 10;
 		}
+		m_pNumber[0][l]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pNumber[0][l]->SetTexture();
 		m_pNumber[0][l]->SetView(Get2DView());
 		m_pNumber[0][l]->SetProjection(Get2DProj());
-		m_pNumber[0][l]->SetPositon(Pos.X - (Scale.X * (nLong / 2)) + Scale.Y * nLoop, Pos.Y, Pos.Z);
+		m_pNumber[0][l]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
 		m_pNumber[0][l]->SetSize(Scale.X, Scale.Y, Scale.Z);
 		m_pNumber[0][l]->Disp();
 	}

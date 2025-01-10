@@ -68,7 +68,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pFade->SetFade(1.0f, true);
 
 	// シーン作成 
-	g_pScene = new CSceneTitle();
+	g_pScene = new CSceneResult();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 
 	g_mainsound = new CSoundList(SE_DECISION);
