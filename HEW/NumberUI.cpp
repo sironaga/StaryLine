@@ -24,6 +24,7 @@ CNumberUI::CNumberUI()
 	m_pNumber[1][7] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
 	m_pNumber[1][8] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
 	m_pNumber[1][9] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
+	color.X = color.Y = color.Z = fAlpha = 1.0f;
 }
 
 CNumberUI::~CNumberUI()
@@ -62,12 +63,15 @@ void CNumberUI::Draw()
 		{
 			l = l / 10;
 		}
+		m_pNumber[0][l]->Setcolor(color.X, color.Y, color.Z, fAlpha);
+		m_pNumber[0][l]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pNumber[0][l]->SetTexture();
 		m_pNumber[0][l]->SetView(Get2DView());
 		m_pNumber[0][l]->SetProjection(Get2DProj());
-		m_pNumber[0][l]->SetPositon(Pos.X - (SIZE * (nLong / 2)) + SIZE * nLoop, Pos.Y, Pos.Z);
+		m_pNumber[0][l]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
 		m_pNumber[0][l]->SetSize(Scale.X, Scale.Y, Scale.Z);
 		m_pNumber[0][l]->Disp();
+		m_pNumber[0][l]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 }
@@ -106,4 +110,12 @@ void CNumberUI::SetPos(FLOAT3 pos)
 void CNumberUI::SetScale(FLOAT3 scale)
 {
 	Scale = scale;
+}
+
+void CNumberUI::SetColor(float R, float G, float B, float A)
+{
+	color.X = R;
+	color.Y = G;
+	color.Z = B;
+	fAlpha = A;
 }

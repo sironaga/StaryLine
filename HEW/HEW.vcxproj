@@ -42,6 +42,10 @@
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelEx.cpp" />
+    <ClCompile Include="Model_anime.cpp" />
+    <ClCompile Include="Model_check.cpp" />
+    <ClCompile Include="Model_get.cpp" />
+    <ClCompile Include="Model_morph.cpp" />
     <ClCompile Include="NumberUI.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="Player.cpp" />

@@ -65,16 +65,6 @@ private:
 
 	bool m_bDrawing;						// çÏê}íÜÇ©Ç«Ç§Ç©
 
-	enum E_PLAYER_TEXTURE
-	{
-		Arrow_S = 0,
-
-		TimerUnder_S,
-		TimerGauge,
-		TimerUp,
-		
-		MAX_TEXTURE
-	};
 	
 	enum E_ARROW_STATE
 	{
@@ -89,7 +79,17 @@ private:
 		SpriteParam* param;
 		E_ARROW_STATE state;
 	}m_tArrowInfo[8];
-	Texture* m_pTexture[MAX_TEXTURE];
+	Texture* m_pArrowTex;
+
+	enum TimerTex
+	{
+		TimerUnder = 0,
+		TimerGauge,
+		TimerUp,
+
+		Timer_Max
+	};
+	Texture* m_pTimerTex[Timer_Max];
 
 public:
 	/* Getter */
