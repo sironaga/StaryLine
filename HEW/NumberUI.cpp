@@ -119,3 +119,8 @@ void CNumberUI::SetColor(float R, float G, float B, float A)
 	color.Z = B;
 	fAlpha = A;
 }
+
+void CNumberUI::SetLend(int InData)
+{
+	nLong = InData;
+}
