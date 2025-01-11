@@ -183,6 +183,7 @@ void CSceneGame::Update()
 		//•`‰æŠÔŠO‚¾‚Æ’â~
 		m_pEffect->Stop();
 		m_pFieldVertex->SoundStop();
+		m_pPlayer->Reset();
 	}
 
 	// ¢Š«ŠJn‚ÌŠÔ‚É‚È‚Á‚½‚ç

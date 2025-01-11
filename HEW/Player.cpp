@@ -30,7 +30,7 @@ constexpr float TIMER_BAR_OFFSET_Y = -340.0f;		// タイマーゲージの縦オ
 constexpr float TIMER_OUT_OFFSET_X = -700.0;		// タイマー入れ物の横オフセット
 constexpr float TIMER_OUT_OFFSET_Y = -510.0f;		// タイマー入れ物の縦オフセット
 
-constexpr float ARROW_AJUST_POS =  100.0f;		// 矢印の座標X,Yの補正値
+constexpr float ARROW_AJUST_POS =  10.0f;		// 矢印の座標X,Yの補正値
 constexpr float ARROW_SIZE =  100.0f;			// 矢印の座標X,Yの補正値
 
 IXAudio2SourceVoice* g_pWalkSe;
@@ -78,11 +78,7 @@ CPlayer::CPlayer()
 
 	for (int i = 0; i < 8; i++)
 	{
-
-
 		m_pArrowParam[i] = new SpriteParam();
-
-
 		m_eArrowState[i] = NONE_SELECT;
 	}
 	m_pArrowTex = new Texture();
@@ -142,27 +138,7 @@ void CPlayer::Update()
 		g_pWalkSe->SubmitSourceBuffer(&buffer);
 	}
 
-	m_pArrowParam[UP]->pos			= { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
-	m_pArrowParam[UPRIGHT]->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
-	m_pArrowParam[RIGHT]->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y					};
-	m_pArrowParam[DOWNRIGHT]->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[DOWN]->pos		= { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[DOWNLEFT]->pos	= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[LEFT]->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y					};
-	m_pArrowParam[UPLEFT]->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
 
-	for (int i = 0; i < 8; i++)
-	{
-		m_pArrowParam[i]->size = { ARROW_SIZE ,ARROW_SIZE };
-		m_pArrowParam[i]->rotate.z = TORAD(i * (360.0f / 8));
-		switch (m_eArrowState[i])
-		{
-		case NONE_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
-		case SELECTED:		m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
-		case CANNOT_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
-		default:break;
-		}
-	}
 }
 
 void CPlayer::Draw()
@@ -211,8 +187,26 @@ void CPlayer::Draw()
 
 	Sprite::ReSetSprite();
 
+	m_pArrowParam[UP]->pos = { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[UPRIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[RIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y };
+	m_pArrowParam[DOWNRIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[DOWN]->pos = { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[DOWNLEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[LEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y };
+	m_pArrowParam[UPLEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+
 	for (int i = 0; i < 8; i++)
 	{
+		m_pArrowParam[i]->size = { ARROW_SIZE ,ARROW_SIZE };
+		m_pArrowParam[i]->rotate.z = TORAD(i * (360.0f / 8));
+		switch (m_eArrowState[i])
+		{
+		case NONE_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
+		case SELECTED:		m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
+		case CANNOT_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
+		default:break;
+		}
 		Sprite::SetParam(m_pArrowParam[i]);
 		Sprite::SetTexture(m_pArrowTex);
 		Sprite::Draw();
@@ -225,6 +219,11 @@ void CPlayer::Draw()
 
 	/* エフェクトの描画 */
 
+}
+
+void CPlayer::Reset()
+{
+	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 }
 
 void CPlayer::UpdateStop()
