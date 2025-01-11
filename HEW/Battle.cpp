@@ -876,8 +876,8 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			float Z1 = iAllyPos.z;
 			float Z2 = AllyPos.z;
 
-			if (Z1 < 0)Z1 * -1.0f;
-			if (Z2 < 0)Z2 * -1.0f;
+			if (Z1 < 0)Z1 *= -1.0f;
+			if (Z2 < 0)Z2 *= -1.0f;
 
 			if (Z1 <= Z2)continue;
 
@@ -919,8 +919,8 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			float Z1 = iEnemyPos.z;
 			float Z2 = EnemyPos.z;
 
-			if (Z1 < 0)Z1 * -1.0f;
-			if (Z2 < 0)Z2 * -1.0f;
+			if (Z1 < 0)Z1 *= -1.0f;
+			if (Z2 < 0)Z2 *= -1.0f;
 
 			if (Z1 <= Z2)continue;
 
