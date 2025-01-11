@@ -14,6 +14,7 @@ public:
 	void SetPos(FLOAT3);
 	void SetScale(FLOAT3);
 	void SetColor(float R, float G, float B, float A);
+	void SetLend(int InData);
 private:
 	SpriteEx* m_pNumber[2][10];
 	int nNumber;
