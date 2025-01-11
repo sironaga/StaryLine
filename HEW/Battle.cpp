@@ -1140,20 +1140,7 @@ void CBattle::Delete(void)
 		//ステータスがDeleteかどうか
 		if (m_pAlly[i]->GetStatus() == St_Delete)
 		{
-			//解放処理
-			delete m_pAlly[i];
-			m_pAlly[i] = nullptr;
-			//配列前詰め
-			for (int d = i; d < m_nAllyCount; d++)
-			{
-				if (m_pAlly[d] == nullptr)
-				{
-					//一つ後ろの配列を自分に入れる
-					m_pAlly[d] = m_pAlly[d + 1];
-					//一つ後ろをnullptrにする
-					m_pAlly[d + 1] = nullptr;
-				}
-			}
+			m_pAlly.erase(m_pAlly.begin() + i);
 			//今いる生存数を減らす
 			m_nAllyCount--;
 			//前詰めされたのでもう一度同じ場所を処理する
@@ -1167,19 +1154,7 @@ void CBattle::Delete(void)
 		if (m_pEnemy[i]->GetStatus() == St_Delete)		
 		{
 			//解放処理
-			delete m_pEnemy[i];
-			m_pEnemy[i] = nullptr;
-			//配列前詰め
-			for (int d = i; d < m_nEnemyCount; d++)
-			{
-				if (m_pEnemy[d] == nullptr)
-				{
-					//一つ後ろの配列を自分に入れる
-					m_pEnemy[d] = m_pEnemy[d + 1];
-					//一つ後ろをnullptrにする
-					m_pEnemy[d + 1] = nullptr;
-				}
-			}
+			m_pEnemy.erase(m_pEnemy.begin() + i);
 			//今いる生存数を減らす
 			m_nEnemyCount--;
 			//前詰めされたのでもう一度同じ場所を処理する
