@@ -13,6 +13,7 @@ public:
 	void SetNumber(int);
 	void SetPos(FLOAT3);
 	void SetScale(FLOAT3);
+	void SetLen(int nInData);
 private:
 	SpriteEx* m_pNumber[2][10];
 	int nNumber;
