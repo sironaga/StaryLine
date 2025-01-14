@@ -59,7 +59,6 @@ CPlayer::CPlayer()
 		TEX_PASS("Player/UI_Drawing_Gauge.png"),
 		TEX_PASS("Player/UI_Drawing_top.png"),
 	};
-
 	for (int i = 0; i < Timer_Max; i++)
 	{
 		m_pTimerTex[i] = new Texture();
@@ -67,10 +66,11 @@ CPlayer::CPlayer()
 	}
 	for (int i = 0; i < Timer_Max; i++)
 	{
-		m_pTimerParam[i] = new SpriteEx(pass[i]);
+		m_pTimerParam[i] = new SpriteParam();
 	}
 	m_pTimerParam[1]->size = { TIMER_BAR_HARFSIZE_X,TIMER_BAR_HARFSIZE_Y };
 	m_pTimerParam[1]->pos = { -330.0f,170.0f };
+
 
 	for (int i = 0; i < 8; i++)
 	{

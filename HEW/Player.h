@@ -74,12 +74,15 @@ private:
 		SELECTED,
 		CANNOT_SELECT
 	};
-
-
 	E_ARROW_STATE m_eArrowState[8];
 	SpriteParam* m_pArrowParam[8];
 	Texture* m_pArrowTex;
 
+	enum Timer
+	{
+		Timer_Under = 0,
+		Timer_Gauge,
+		Timer_Top,
 
 		Timer_Max
 	};
