@@ -12,7 +12,7 @@ void Update();
 void Draw();
 DirectX::XMFLOAT4X4 GetView(bool isTranspose = true);
 DirectX::XMFLOAT4X4 GetProj(bool isTranspose = true);
-DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose = true, DirectX::XMFLOAT3 rotate = {}, DirectX::XMFLOAT2 pos = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }, DirectX::XMFLOAT2 size = { 1.0f, -1.0f});
+DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose = true, DirectX::XMFLOAT3 rotate = {}, DirectX::XMFLOAT2 pos = { 0.0f,0.0f }, DirectX::XMFLOAT2 size = { 1.0f, 1.0f});
 DirectX::XMFLOAT4X4 Get2DView(bool isTranspose = true);
 DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose = true);
 DirectX::XMFLOAT3 GetCameraPos();

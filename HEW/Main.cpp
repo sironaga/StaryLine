@@ -231,7 +231,7 @@ DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose, DirectX::XMFLOAT3 rotate, Direc
 {
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f + pos.x, SCREEN_HEIGHT / 2.0f + pos.y, 0.0f);
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x,size.y,1.0f);
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, -size.y, 1.0f);
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(rotate.x, rotate.y, rotate.z, 0.0f));
 	DirectX::XMMATRIX mat = S * R * T;
 	if (isTranspose)mat = DirectX::XMMatrixTranspose(mat);
