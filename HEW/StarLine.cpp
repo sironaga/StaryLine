@@ -2,7 +2,7 @@
 #include <cmath>
 #include"Main.h"
 
-#define LINE_DEBUG (false)
+#define LINE_DEBUG (true)
 
 StarLine::StarLine()
 	:Pos{},Scl{},Rot{},world{}, View{},Proj{}
