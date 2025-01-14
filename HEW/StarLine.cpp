@@ -2,7 +2,7 @@
 #include <cmath>
 #include"Main.h"
 
-#define LINE_DEBUG (true)
+#define LINE_DEBUG (false)
 
 StarLine::StarLine()
 	:Pos{},Scl{},Rot{},world{}, View{},Proj{}
@@ -53,7 +53,7 @@ void StarLine::SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 Sta
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
 		Pos.x,
 		Pos.y,
-		Pos.z,
+		10.0f,
 		0.0f
 	));
 
@@ -139,10 +139,10 @@ void StarLine::DispLine()
 
 		m_pModel->SetViewMatrix(GetView());
 		m_pModel->SetProjectionMatrix(GetProj());
-		//m_pModel->SetWorldMatrix(world);
-		m_pModel->SetPostion(10.0f, 10.0f, 10.0f);
-		m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
-		m_pModel->SetScale(10.0f, 10.0f, 10.0f);
+		m_pModel->SetWorldMatrix(world);
+		//m_pModel->SetPostion(10.0f, 10.0f, 10.0f);
+		//m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
+		//m_pModel->SetScale(10.0f, 10.0f, 10.0f);
 		m_pModel->Draw();
 
 	}
