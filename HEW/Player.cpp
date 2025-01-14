@@ -10,7 +10,6 @@
 #include "Sprite.h"
 
 // defines
-#define SIZE_AJUST(value) value / 100.0f
 #define BRUSH_SPEED (0.5f)	// 移動速度
 #define BRUSH_SPEED_FEVER (0.5f)	// フィーバータイム中の移動速度
 
@@ -21,17 +20,20 @@ constexpr float BRUSH_SIZE = 10.0f;				// プレイヤー(筆)のサイズ
 constexpr float BRUSH_ROTATE_X = 140.0f;		// プレイヤー(筆)のX軸回転
 constexpr float BRUSH_ROTATE_Y = -20.0f;		// プレイヤー(筆)のY軸回転
 
-constexpr float TIMER_BAR_HARFSIZE_X = SIZE_AJUST(50.0f);		// タイマーゲージの横ハーフサイズ
-constexpr float TIMER_BAR_HARFSIZE_Y = SIZE_AJUST(410.0f);		// タイマーゲージの縦ハーフサイズ
-constexpr float TIMER_OUT_HARFSIZE_X = SIZE_AJUST(130.0f);		// タイマー入れ物の横ハーフサイズ
-constexpr float TIMER_OUT_HARFSIZE_Y = SIZE_AJUST(600.0f);		// タイマー入れ物の縦ハーフサイズ
+constexpr float TIMER_BARSIZE_X = 50.0f;		// タイマーゲージの横ハーフサイズ
+constexpr float TIMER_BARSIZE_Y = 430.0f;		// タイマーゲージの縦ハーフサイズ
+constexpr float TIMER_OUTSIZE_X = 130.0f;		// タイマー入れ物の横ハーフサイズ
+constexpr float TIMER_OUTSIZE_Y = 600.0f;		// タイマー入れ物の縦ハーフサイズ
 
-constexpr float TIMER_BAR_OFFSET_X = -700.0;		// タイマーゲージの横オフセット
-constexpr float TIMER_BAR_OFFSET_Y = -340.0f;		// タイマーゲージの縦オフセット
-constexpr float TIMER_OUT_OFFSET_X = -700.0;		// タイマー入れ物の横オフセット
-constexpr float TIMER_OUT_OFFSET_Y = -510.0f;		// タイマー入れ物の縦オフセット
+constexpr float TIMER_BAR_OFFSET_X = -350.0;		// タイマーゲージの横オフセット
+constexpr float TIMER_BAR_OFFSET_Y = 160.0f;		// タイマーゲージの縦オフセット
+
+constexpr float DRAW_TIME = 10.0f;				// 作図時間
+constexpr float RECOVER_TIME = 5.0f;			// 回復時間
 
 constexpr float ARROW_AJUST_POS =  10.0f;		// 矢印の座標X,Yの補正値
+constexpr float ARROW_BRUSH_AJUST_X = 0.0f;	
+constexpr float ARROW_BRUSH_AJUST_Y = 50.0f;	
 constexpr float ARROW_SIZE =  100.0f;			// 矢印の座標X,Yの補正値
 
 IXAudio2SourceVoice* g_pWalkSe;
@@ -67,15 +69,29 @@ CPlayer::CPlayer()
 	for (int i = 0; i < Timer_Max; i++)
 	{
 		m_pTimerParam[i] = new SpriteParam();
+		m_pTimerParam[i]->size = { TIMER_OUTSIZE_X,TIMER_OUTSIZE_Y };
+		m_pTimerParam[i]->pos = { TIMER_BAR_OFFSET_X,TIMER_BAR_OFFSET_Y };
+		m_pTimerParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
+		m_pTimerParam[i]->uvPos = { 0.0f,0.0f };
+		m_pTimerParam[i]->uvSize = { 1.0f,1.0f };
+		m_pTimerParam[i]->world = Get2DWorld();
+		m_pTimerParam[i]->view = Get2DView();
+		m_pTimerParam[i]->proj = Get2DProj();
 	}
-	m_pTimerParam[1]->size = { TIMER_BAR_HARFSIZE_X,TIMER_BAR_HARFSIZE_Y };
-	m_pTimerParam[1]->pos = { -330.0f,170.0f };
+	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
 
 
 	for (int i = 0; i < 8; i++)
 	{
 		m_pArrowParam[i] = new SpriteParam();
 		m_eArrowState[i] = NONE_SELECT;
+		m_pArrowParam[i]->pos = { -330.0f,170.0f };
+		m_pArrowParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
+		m_pArrowParam[i]->uvPos = { 0.0f,0.0f };
+		m_pArrowParam[i]->uvSize = { 1.0f,1.0f };
+		m_pArrowParam[i]->world = Get2DWorld(true,DirectX::XMFLOAT3(0.0f,i * (360.0f  / 8),0.0f));
+		m_pArrowParam[i]->view = Get2DView();
+		m_pArrowParam[i]->proj = Get2DProj();
 	}
 	m_pArrowTex = new Texture();
 	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
@@ -108,6 +124,7 @@ CPlayer::~CPlayer()
 
 void CPlayer::Update()
 {
+	m_bDrawing = true;			// 作図中にする
 	// タイマー処理
 	TimeProcess();
 
@@ -171,6 +188,8 @@ void CPlayer::Draw()
 	//	Sprite::Draw();
 	//}
 
+	if(m_bDrawing)m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+	else m_pTimerParam[Timer_Gauge]->color.w = 0.1f;
 	for (int i = 0; i < 3; i++)
 	{
 		Sprite::SetParam(m_pTimerParam[i]);
@@ -180,14 +199,14 @@ void CPlayer::Draw()
 
 	Sprite::ReSetSprite();
 
-	m_pArrowParam[UP]->pos = { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
-	m_pArrowParam[UPRIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
-	m_pArrowParam[RIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y };
-	m_pArrowParam[DOWNRIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[DOWN]->pos = { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[DOWNLEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[LEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y };
-	m_pArrowParam[UPLEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[UP]->pos			= { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[UPRIGHT]->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[RIGHT]->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y };
+	m_pArrowParam[DOWNRIGHT]->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[DOWN]->pos		= { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[DOWNLEFT]->pos	= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[LEFT]->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y };
+	m_pArrowParam[UPLEFT]->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -200,6 +219,7 @@ void CPlayer::Draw()
 		case CANNOT_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
 		default:break;
 		}
+		m_pArrowParam[i]->world = Get2DWorld(true, m_pArrowParam[i]->rotate, m_pArrowParam[i]->pos);
 		Sprite::SetParam(m_pArrowParam[i]);
 		Sprite::SetTexture(m_pArrowTex);
 		Sprite::Draw();
@@ -217,6 +237,10 @@ void CPlayer::Draw()
 void CPlayer::Reset()
 {
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
+	m_pTimerParam[Timer_Gauge]->size.y += TIMER_BARSIZE_Y / (RECOVER_TIME  * 60.0f);	// タイマーを上げ続ける
+	if (m_pTimerParam[Timer_Gauge]->size.y >= TIMER_BARSIZE_Y) m_pTimerParam[Timer_Gauge]->size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する
+
+	m_pTimerParam[Timer_Gauge]->pos = { TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f };
 }
 
 void CPlayer::UpdateStop()
@@ -246,7 +270,7 @@ void CPlayer::UpdateStop()
 				m_eArrowState[i] = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
-				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// タイマーを一番下まで落とす
+				m_pTimerParam[Timer_Gauge]->size.y  = 0.0f;				// タイマーを一番下まで落とす
 				return;							// 関数を抜ける
 			}
 		}
@@ -420,22 +444,15 @@ void CPlayer::TimeProcess()
 	{
 		if (m_bDrawing)	// 作図中のとき
 		{
-			fTimerSize += (TIMER_BAR_HARFSIZE_Y * 2) / (10.0f * 60.0f);	// 時間ごとにタイマーを下げる
-			if (fTimerSize >= TIMER_BAR_HARFSIZE_Y)
+			m_pTimerParam[Timer_Gauge]->size.y -= TIMER_BARSIZE_Y / (DRAW_TIME * 60.0f);	// 時間ごとにタイマーを下げる
+			if (m_pTimerParam[Timer_Gauge]->size.y <= 0.0f)
 			{
-				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// 下がり切ったらその位置で固定する
+				m_pTimerParam[Timer_Gauge]->size.y = 0.0f;	// 下がり切ったらその位置で固定する
 				m_bDrawing = false;				// 作図を終わる
 			}
 		}
-		else // 作図中でないとき
-		{
-			fTimerSize -= 5.0f;	// タイマーを上げ続ける
-			if (fTimerSize <= -TIMER_BAR_HARFSIZE_Y) fTimerSize = -TIMER_BAR_HARFSIZE_Y;	// 上がり切ったらその位置で固定する
-
-		}
+		m_pTimerParam[Timer_Gauge]->pos = { TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f };
 	}
-
-
 }
 
 void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)
