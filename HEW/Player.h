@@ -106,7 +106,6 @@ public:
 private:
 	void TimeProcess();						// タイマーの処理
 private:
-	float fTimerSize;						// 時間によって減らすタイマーのサイズ
 	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
 private:
