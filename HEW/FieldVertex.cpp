@@ -892,6 +892,13 @@ void CFieldVertex::ResetFeverPoint()
 	fFeverPoint = 0.0f;
 }
 
+////=====一番最後の線を表示しない用にする関数=====//
+void CFieldVertex::SetNowLine()
+{
+	NowLine = NowLine - 1;
+	if (NowLine < 0)NowLine = 0;
+}
+
 ////=====図形判定の再帰処理関数=====//
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 {
