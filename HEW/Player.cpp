@@ -31,7 +31,7 @@ constexpr float TIMER_BAR_OFFSET_Y = -340.0f;		// タイマーゲージの縦オ
 constexpr float TIMER_OUT_OFFSET_X = -700.0;		// タイマー入れ物の横オフセット
 constexpr float TIMER_OUT_OFFSET_Y = -510.0f;		// タイマー入れ物の縦オフセット
 
-constexpr float ARROW_AJUST_POS =  100.0f;		// 矢印の座標X,Yの補正値
+constexpr float ARROW_AJUST_POS =  10.0f;		// 矢印の座標X,Yの補正値
 constexpr float ARROW_SIZE =  100.0f;			// 矢印の座標X,Yの補正値
 
 IXAudio2SourceVoice* g_pWalkSe;
@@ -45,8 +45,9 @@ CPlayer::CPlayer()
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
 	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_bCanMoveCheck(false), m_bDrawing(true)
-	, m_tArrowInfo{}, m_pTimerParam{}
-	, m_pArrowTex(nullptr)
+	, m_pTimerParam{}, m_pArrowParam{}
+	, m_pTimerTex{}, m_pArrowTex(nullptr)
+	, m_eArrowState{}
 
 
 	// FieldVertexアドレスの初期化処理
@@ -59,22 +60,25 @@ CPlayer::CPlayer()
 		TEX_PASS("Player/UI_Drawing_top.png"),
 	};
 
-	m_pArrowTex = new Texture();
-	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < Timer_Max; i++)
+	{
+		m_pTimerTex[i] = new Texture();
+		m_pTimerTex[i]->Create(pass[i]);
+	}
+	for (int i = 0; i < Timer_Max; i++)
 	{
 		m_pTimerParam[i] = new SpriteEx(pass[i]);
 	}
+	m_pTimerParam[1]->size = { TIMER_BAR_HARFSIZE_X,TIMER_BAR_HARFSIZE_Y };
+	m_pTimerParam[1]->pos = { -330.0f,170.0f };
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_tArrowInfo[i].param = new SpriteParam();
-
-		m_tArrowInfo[i].param->size = { ARROW_SIZE ,ARROW_SIZE };
-		m_tArrowInfo[i].param->rotate.z = TORAD(i * (360.0f / 8));
-
-		m_tArrowInfo[i].state = NONE_SELECT;
+		m_pArrowParam[i] = new SpriteParam();
+		m_eArrowState[i] = NONE_SELECT;
 	}
+	m_pArrowTex = new Texture();
+	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
 
 	// エフェクト読み込み
 	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
@@ -127,27 +131,6 @@ void CPlayer::Update()
 	}
 
 
-
-	//m_tArrowInfo[UP].param->pos			= { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
-	//m_tArrowInfo[UPRIGHT].param->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
-	//m_tArrowInfo[RIGHT].param->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y					};
-	//m_tArrowInfo[DOWNRIGHT].param->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	//m_tArrowInfo[DOWN].param->pos		= { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
-	//m_tArrowInfo[DOWNLEFT].param->pos	= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	//m_tArrowInfo[LEFT].param->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y					};
-	//m_tArrowInfo[UPLEFT].param->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
-
-	//for (int i = 0; i < 8; i++)
-	//{
-	//	switch (m_tArrowInfo[i].state)
-	//	{
-	//	case NONE_SELECT:	m_tArrowInfo[i].param->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
-	//	case SELECTED:		m_tArrowInfo[i].param->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
-	//	case CANNOT_SELECT:	m_tArrowInfo[i].param->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
-	//	default:
-	//		break;
-	//	}
-	//}
 }
 
 void CPlayer::Draw()
@@ -190,32 +173,50 @@ void CPlayer::Draw()
 
 	for (int i = 0; i < 3; i++)
 	{
-		switch (i)
-		{
-		case 1:
-			m_pTimerParam[i]->SetPositon(-330.0f + SCREEN_CENTER.x, -150.0f + SCREEN_CENTER.y, 0.0f);
-			m_pTimerParam[i]->SetSize(TIMER_BAR_HARFSIZE_X, TIMER_BAR_HARFSIZE_Y, 0.0f);
-			break;
-		default:
-			m_pTimerParam[i]->SetPositon(-330.0f + SCREEN_CENTER.x, -160.0f + SCREEN_CENTER.y, 0.0f);
-			m_pTimerParam[i]->SetSize(TIMER_OUT_HARFSIZE_X, TIMER_OUT_HARFSIZE_Y, 0.0f);
-			break;
-		
-		}
-		m_pTimerParam[i]->SetUvPos(0.0f, 0.0f);
-		m_pTimerParam[i]->SetUvSize(1.0f, 1.0f);
-		m_pTimerParam[i]->SetView(Get2DView());
-		m_pTimerParam[i]->SetProjection(Get2DProj());
-		m_pTimerParam[i]->SetTexture();
-		m_pTimerParam[i]->Disp();
+		Sprite::SetParam(m_pTimerParam[i]);
+		Sprite::SetTexture(m_pTimerTex[i]);
+		Sprite::Draw();
 	}
 
+	Sprite::ReSetSprite();
+
+	m_pArrowParam[UP]->pos = { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[UPRIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+	m_pArrowParam[RIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y };
+	m_pArrowParam[DOWNRIGHT]->pos = { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[DOWN]->pos = { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[DOWNLEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
+	m_pArrowParam[LEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y };
+	m_pArrowParam[UPLEFT]->pos = { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+
+	for (int i = 0; i < 8; i++)
+	{
+		m_pArrowParam[i]->size = { ARROW_SIZE ,ARROW_SIZE };
+		m_pArrowParam[i]->rotate.z = TORAD(i * (360.0f / 8));
+		switch (m_eArrowState[i])
+		{
+		case NONE_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
+		case SELECTED:		m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
+		case CANNOT_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
+		default:break;
+		}
+		Sprite::SetParam(m_pArrowParam[i]);
+		Sprite::SetTexture(m_pArrowTex);
+		Sprite::Draw();
+	}
+
+	Sprite::ReSetSprite();
 	/* プレイヤーの描画 */
 	SetRender3D();											// 3D表現のセット
 	DrawModel();											// プレイヤー(筆)の描画
 
 	/* エフェクトの描画 */
 
+}
+
+void CPlayer::Reset()
+{
+	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 }
 
 void CPlayer::UpdateStop()
@@ -226,17 +227,15 @@ void CPlayer::UpdateStop()
 	g_pWalkSe->FlushSourceBuffers();
 	g_pWalkSe->SubmitSourceBuffer(&buffer);
 
-	for (int i = 0; i < 8; i++)
-	{
-		m_tArrowInfo[i].state = NONE_SELECT;
-	}
-
+	// プレイヤーのコントローラー、キーボード入力処理
+	PlayerInput();
 
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
 		//m_eDestination = DEFAULT;	// 移動方向を真ん中に初期化
 		for (int i = 0, Count = 0; i < 8; i++)
 		{
+			m_eArrowState[i] = NONE_SELECT;
 			// 8方向に行けるかどうかチェック
 			// 行けない方向がある場合、その度にカウントを増やす
 			if (m_pFieldVtx->GetRoadStop(i)) Count++;
@@ -244,7 +243,7 @@ void CPlayer::UpdateStop()
 			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
-				m_tArrowInfo[i].state = CANNOT_SELECT;
+				m_eArrowState[i] = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
 				fTimerSize = TIMER_BAR_HARFSIZE_Y;	// タイマーを一番下まで落とす
@@ -256,7 +255,6 @@ void CPlayer::UpdateStop()
 	// プレイヤーのコントローラー、キーボード入力処理
 	PlayerInput();
 
-	m_tArrowInfo[m_nDestination].state = SELECTED;
 
 	// プレイヤーの座標を現在の頂点番号の座標と同じにする
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
@@ -381,7 +379,10 @@ void CPlayer::PlayerInput()
 	switch (KeyData)
 	{
 	case D_above: m_eDestination = UP;				break; 
-	case D_upper_right:m_eDestination = UPRIGHT;	break; 
+	case D_upper_right:
+		m_eDestination = UPRIGHT;
+		m_pTimerTex[0]->GetWidth();
+		break; 
 	case D_upper_left: m_eDestination = UPLEFT;		break; 
 	case D_right: m_eDestination = RIGHT;			break; 
 	case D_left:m_eDestination = LEFT;				break;
@@ -390,7 +391,6 @@ void CPlayer::PlayerInput()
 	case D_under_left: m_eDestination = DOWNLEFT;	break;
 	case D_no:break;
 	}
-
 
 	// 目的地ごとに目的地の頂点を設定
 	switch (m_eDestination)
@@ -406,6 +406,10 @@ void CPlayer::PlayerInput()
 	case CPlayer::DEFAULT:m_nDestination = m_nNowVertex;		break;
 	default:break;
 	}
+
+	if (m_eDestination < 0 || m_eDestination > 7)return;
+	int no = m_eDestination;
+	m_eArrowState[no] = SELECTED;
 }
 
 void CPlayer::TimeProcess()

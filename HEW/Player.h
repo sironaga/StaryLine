@@ -21,6 +21,7 @@ public:
 	~CPlayer();		// デストラクタ
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
+	void Reset();
 
 	/*＝＝＝＝＝＝＝＝＝＝内部処理＝＝＝＝＝＝＝＝＝＝*/
 	/*＝＝＝＝＝＝＝＝＝ プレイヤー ＝＝＝＝＝＝＝＝＝*/
@@ -75,13 +76,15 @@ private:
 	};
 
 
-	struct ArrowInfo
-	{
-		SpriteParam* param;
-		E_ARROW_STATE state;
-	}m_tArrowInfo[8];
+	E_ARROW_STATE m_eArrowState[8];
+	SpriteParam* m_pArrowParam[8];
 	Texture* m_pArrowTex;
 
+
+		Timer_Max
+	};
+	SpriteParam* m_pTimerParam[Timer_Max];
+	Texture* m_pTimerTex[Timer_Max];
 
 public:
 	/* Getter */
@@ -100,15 +103,6 @@ public:
 private:
 	void TimeProcess();						// タイマーの処理
 private:
-	enum TimerTex
-	{
-		TimerUnder = 0,
-		TimerGauge,
-		TimerUp,
-
-		Timer_Max
-	};
-	SpriteEx* m_pTimerParam[3];
 	float fTimerSize;						// 時間によって減らすタイマーのサイズ
 	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/

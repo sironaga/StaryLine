@@ -4,6 +4,7 @@
 #include"_StructList.h"
 #include"SpriteEx.h"
 #include"Main.h"
+#include"NumberUI.h"
 
 class CSceneResult : public CScene
 {
@@ -22,7 +23,7 @@ private:
 	SpriteEx* m_pStageSelect[2];
 	SpriteEx* m_pSummonData;
 	SpriteEx* m_pUnderBar;
-
+	SpriteEx* m_pBack;
 	// --- •Ï‚í‚é‚â‚Â
 	SpriteEx* m_pText;
 	SpriteEx* m_pCharacter;
@@ -30,9 +31,15 @@ private:
 	SpriteEx* m_pTextShadow;
 	SpriteEx* m_pClearTime;
 	SpriteEx* m_pNextUI[2];
+	SpriteEx* m_pStar;
 
+
+
+	int nAnimationTimer;
+	int nAnimationFrame;
 	int nSlect; 
 
+	CNumberUI* m_pNumber;
 
 	static ResultGameInfo ResultGameData;
 };
