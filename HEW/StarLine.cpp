@@ -2,12 +2,12 @@
 #include <cmath>
 #include"Main.h"
 
-#define LINE_DEBUG (true)
+#define LINE_DEBUG (false)
 
 StarLine::StarLine()
-	:Pos{},Scl{},Rot{},world{}
+	:Pos{},Scl{},Rot{},world{}, View{},Proj{}
 {
-	m_pModel = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"), false);
+	m_pModel = new CModelEx(MODEL_PASS("Board_Line/Board_Line.fbx"), false);
 	m_pBox = new Geometory();
 
 }
@@ -139,7 +139,8 @@ void StarLine::DispLine()
 
 		m_pModel->SetViewMatrix(GetView());
 		m_pModel->SetProjectionMatrix(GetProj());
-		m_pModel->SetPostion(0.0f, 0.0f, 0.0f);
+		//m_pModel->SetWorldMatrix(world);
+		m_pModel->SetPostion(10.0f, 10.0f, 10.0f);
 		m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
 		m_pModel->SetScale(10.0f, 10.0f, 10.0f);
 		m_pModel->Draw();

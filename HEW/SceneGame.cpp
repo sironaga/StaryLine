@@ -199,12 +199,10 @@ void CSceneGame::Update()
 		m_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
-	// 経過時間が召喚開始の時間からクールタイム開始の時間になるまで
-	// キャラクターを召喚する時間
-	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime) &&	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)以上 かつ
-		(g_tTime.GameTime < (float)COOLTIME_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust))			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	// 描画時間終了時間または描画時間+フィーバーの終了時間
+	if (g_tTime.GameTime == (float)COOLTIME_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
-		m_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
+		m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
 	}
 
 	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
@@ -212,6 +210,7 @@ void CSceneGame::Update()
 	{
 		m_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
 	}
+	m_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
 	// ゲーム中は経過時間を記録し続ける
 	g_tTime.GameTime++;
 }

@@ -48,6 +48,7 @@ public:
 	float GetFeverPoint() { return fFeverPoint; }
 	void SubtractFeverPoint();
 	void ResetFeverPoint();
+	void SetNowLine();
 private:
 	typedef struct Log
 	{
