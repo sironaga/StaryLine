@@ -259,7 +259,7 @@ void CSceneResult::Update()
 		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
-	m_pNumber->SetNumber(timeGetTime());
+	m_pNumber->SetNumber(1);
 
 }
 
