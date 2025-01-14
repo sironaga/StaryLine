@@ -164,7 +164,7 @@ bool Model::CheckMeshFreeze(const void* ptr)
 
 		// ƒm[ƒh“à‚ð’Tõ
 		if (!FuncFreezeCheck(meshName, pScene->mRootNode)) {
-			SetErrorMessage("no mesh freeze. [" + meshName + "]");
+			//SetErrorMessage("no mesh freeze. [" + meshName + "]");
 			result = false;
 		}
 	}

@@ -10,6 +10,7 @@
 #include "Sprite.h"
 
 // defines
+#define SIZE_AJUST(value) value / 100.0f
 #define BRUSH_SPEED (0.5f)	// 移動速度
 #define BRUSH_SPEED_FEVER (0.5f)	// フィーバータイム中の移動速度
 
@@ -20,10 +21,10 @@ constexpr float BRUSH_SIZE = 10.0f;				// プレイヤー(筆)のサイズ
 constexpr float BRUSH_ROTATE_X = 140.0f;		// プレイヤー(筆)のX軸回転
 constexpr float BRUSH_ROTATE_Y = -20.0f;		// プレイヤー(筆)のY軸回転
 
-constexpr float TIMER_BAR_HARFSIZE_X = 50.0f;		// タイマーゲージの横ハーフサイズ
-constexpr float TIMER_BAR_HARFSIZE_Y = 410.0f;		// タイマーゲージの縦ハーフサイズ
-constexpr float TIMER_OUT_HARFSIZE_X = 130.0f;		// タイマー入れ物の横ハーフサイズ
-constexpr float TIMER_OUT_HARFSIZE_Y = 600.0f;		// タイマー入れ物の縦ハーフサイズ
+constexpr float TIMER_BAR_HARFSIZE_X = SIZE_AJUST(50.0f);		// タイマーゲージの横ハーフサイズ
+constexpr float TIMER_BAR_HARFSIZE_Y = SIZE_AJUST(410.0f);		// タイマーゲージの縦ハーフサイズ
+constexpr float TIMER_OUT_HARFSIZE_X = SIZE_AJUST(130.0f);		// タイマー入れ物の横ハーフサイズ
+constexpr float TIMER_OUT_HARFSIZE_Y = SIZE_AJUST(600.0f);		// タイマー入れ物の縦ハーフサイズ
 
 constexpr float TIMER_BAR_OFFSET_X = -700.0;		// タイマーゲージの横オフセット
 constexpr float TIMER_BAR_OFFSET_Y = -340.0f;		// タイマーゲージの縦オフセット
@@ -45,37 +46,26 @@ CPlayer::CPlayer()
 	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_bCanMoveCheck(false), m_bDrawing(true)
 	, m_tArrowInfo{}, m_pTimerParam{}
+	, m_pArrowTex(nullptr)
 
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
 {
-	static const char* pass[Timer_Max]
+	const char* pass[Timer_Max]
 	{
 		TEX_PASS("Player/UI_Drawing_under.png"),
 		TEX_PASS("Player/UI_Drawing_Gauge.png"),
 		TEX_PASS("Player/UI_Drawing_top.png"),
 	};
 
-	for (int i = 0; i < Timer_Max; i++)
-	{
-		m_pTimerTex[i] = new Texture();
-		m_pTimerTex[i]->Create(pass[i]);
-	}
-
 	m_pArrowTex = new Texture();
 	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
 	for (int i = 0; i < 3; i++)
 	{
-		m_pTimerParam[i] = new SpriteParam();
-		m_pTimerParam[i]->pos = {-330.0f,160.0f};
-		m_pTimerParam[i]->size = { TIMER_OUT_HARFSIZE_X,TIMER_OUT_HARFSIZE_Y };
-		m_pTimerParam[i]->world = Get2DWorld();
-		m_pTimerParam[i]->view = Get2DView();
-		m_pTimerParam[i]->proj = Get2DProj();
+		m_pTimerParam[i] = new SpriteEx(pass[i]);
 	}
-	m_pTimerParam[1]->size = { TIMER_BAR_HARFSIZE_X,TIMER_BAR_HARFSIZE_Y };
-	m_pTimerParam[1]->pos = { -330.0f,170.0f };
+
 	for (int i = 0; i < 8; i++)
 	{
 		m_tArrowInfo[i].param = new SpriteParam();
@@ -99,10 +89,6 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {	
-	for (int i = 0; i < Timer_Max; i++)
-	{
-		SAFE_DELETE(m_pTimerTex[i]);
-	}
 	SAFE_DELETE(m_pArrowTex);
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
 
@@ -139,6 +125,8 @@ void CPlayer::Update()
 		g_pWalkSe->FlushSourceBuffers();
 		g_pWalkSe->SubmitSourceBuffer(&buffer);
 	}
+
+
 
 	//m_tArrowInfo[UP].param->pos			= { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
 	//m_tArrowInfo[UPRIGHT].param->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
@@ -192,19 +180,34 @@ void CPlayer::Draw()
 
 	//ReSetSprite();											// スプライト設定のリセット
 
+
 	//for (int i = 0; i < 8; i++)
 	//{
 	//	Sprite::SetParam(m_tArrowInfo[i].param);
-	//	Sprite::SetTexture(m_pTexture[Arrow]);
+	//	Sprite::SetTexture(m_pArrowTex);
 	//	Sprite::Draw();
 	//}
 
-	for (int i = 0; i < Timer_Max; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		Sprite::SetParam(m_pTimerParam[i]);
-		Sprite::SetTexture(m_pTimerTex[i]);
-		Sprite::Draw();
-		Sprite::ReSetSprite();
+		switch (i)
+		{
+		case 1:
+			m_pTimerParam[i]->SetPositon(-330.0f + SCREEN_CENTER.x, -150.0f + SCREEN_CENTER.y, 0.0f);
+			m_pTimerParam[i]->SetSize(TIMER_BAR_HARFSIZE_X, TIMER_BAR_HARFSIZE_Y, 0.0f);
+			break;
+		default:
+			m_pTimerParam[i]->SetPositon(-330.0f + SCREEN_CENTER.x, -160.0f + SCREEN_CENTER.y, 0.0f);
+			m_pTimerParam[i]->SetSize(TIMER_OUT_HARFSIZE_X, TIMER_OUT_HARFSIZE_Y, 0.0f);
+			break;
+		
+		}
+		m_pTimerParam[i]->SetUvPos(0.0f, 0.0f);
+		m_pTimerParam[i]->SetUvSize(1.0f, 1.0f);
+		m_pTimerParam[i]->SetView(Get2DView());
+		m_pTimerParam[i]->SetProjection(Get2DProj());
+		m_pTimerParam[i]->SetTexture();
+		m_pTimerParam[i]->Disp();
 	}
 
 	/* プレイヤーの描画 */
@@ -228,8 +231,6 @@ void CPlayer::UpdateStop()
 		m_tArrowInfo[i].state = NONE_SELECT;
 	}
 
-	// プレイヤーのコントローラー、キーボード入力処理
-	PlayerInput();
 
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
@@ -252,6 +253,8 @@ void CPlayer::UpdateStop()
 		}
 		m_bCanMoveCheck = true;					// 移動可能かのチェック終了
 	}
+	// プレイヤーのコントローラー、キーボード入力処理
+	PlayerInput();
 
 	m_tArrowInfo[m_nDestination].state = SELECTED;
 
