@@ -34,9 +34,10 @@ enum class Enemy
 enum class Leader
 {
 	Linie,
+	Quracker = 1,
 	Nugar = 1,
-	Boss2 = 1,
-	Boss3 = 1,
+	Kannele = 1,
+	Boldow = 2,
 	MAX,
 };
 
@@ -97,8 +98,8 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)
 	{
-	case 0://草原
-
+	case 0://砂漠
+		
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
 		{
@@ -107,6 +108,45 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
 		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
 		
+		/*ボスたちのModel読み込み*/
+		//Hpゲージ
+		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage]  = new Texture();
+		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  = new Texture();
+		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage] ->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
+		//モデル
+		g_pLeaderModel[(int)Leader::Quracker] = new Model();
+		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		
+		switch (StageType.StageSubNumber)
+		{
+		case 0:
+			//ボスの車(初期段階)
+			g_pBosCar = new Model();
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			break;
+		case 1:
+			//ボスの車(中間段階)
+			g_pBosCar = new Model();
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			break;
+		case 2:
+			//ボスの車(最終段階)
+			g_pBosCar = new Model();
+			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			break;
+		}
+		break;
+	case 1://草原
+
+		/*敵キャラクターのModel読み込み*/
+		for (int i = 0; i < (int)Enemy::MAX; i++)
+		{
+			g_pEnemyModel[i] = new Model();
+		}
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
+
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
 		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage] = new Texture();
@@ -116,7 +156,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		//モデル
 		g_pLeaderModel[(int)Leader::Nugar] = new Model();
 		g_pLeaderModel[(int)Leader::Nugar]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
-		
+
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
@@ -136,47 +176,6 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 			break;
 		}
 		break;
-
-	case 1://砂漠
-		
-		/*敵キャラクターのModel読み込み*/
-		for (int i = 0; i < (int)Enemy::MAX; i++)
-		{
-			g_pEnemyModel[i] = new Model();
-		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
-		
-		/*ボスたちのModel読み込み*/
-		//Hpゲージ
-		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Gage]  = new Texture();
-		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Top]  = new Texture();
-		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Gage] ->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
-		g_pHpGageTex[(int)Leader::Boss2][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
-		//モデル
-		g_pLeaderModel[(int)Leader::Boss2] = new Model();
-		g_pLeaderModel[(int)Leader::Boss2]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
-		
-		switch (StageType.StageSubNumber)
-		{
-		case 0:
-			//ボスの車(初期段階)
-			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
-			break;
-		case 1:
-			//ボスの車(中間段階)
-			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
-			break;
-		case 2:
-			//ボスの車(最終段階)
-			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
-			break;
-		}
-		break;
-
 	case 2://雪原
 		
 		/*敵キャラクターのModel読み込み*/
@@ -189,13 +188,15 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
-		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Gage] = new Texture();
-		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Top] = new Texture();
-		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
-		g_pHpGageTex[(int)Leader::Boss3][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
+		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage] = new Texture();
+		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top] = new Texture();
+		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
-		g_pLeaderModel[(int)Leader::Boss3] = new Model();
-		g_pLeaderModel[(int)Leader::Boss3]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Kannele] = new Model();
+		g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Boldow] = new Model();
+		g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
 		
 		switch (StageType.StageSubNumber)
 		{
@@ -245,6 +246,12 @@ void UnInitCharacterTexture()
 			delete g_pEnemyModel[i];
 			g_pEnemyModel[i] = nullptr;
 		}
+	}
+	//リーダーたちのモデルの破棄
+	for (int i = 0; i < (int)Leader::MAX; i++)
+	{
+		delete g_pLeaderModel[i];
+		g_pLeaderModel[i] = nullptr;
 	}
 	//キャラクターのエフェクトの破棄
 	for (int i= 0; i < (int)CharactersEffect::MAX; i++)
@@ -997,7 +1004,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber)
 		m_nAnimationY = 8;
 		break;
 	case 1://ボス
-		m_pModel = g_pLeaderModel[(int)Leader::Nugar];
+		m_pModel = g_pLeaderModel[1];
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
 		m_nAnimationFrame = 1;
 		m_nAnimationX = 1;
