@@ -77,6 +77,7 @@ private:
 	E_ARROW_STATE m_eArrowState[8];
 	SpriteParam* m_pArrowParam[8];
 	Texture* m_pArrowTex;
+	DirectX::XMFLOAT2  m_tArrowCenterPos;
 
 	enum Timer
 	{
