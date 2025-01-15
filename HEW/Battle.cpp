@@ -51,9 +51,19 @@
 //éûä‘ÇÃåvéZÉ}ÉNÉç
 #define Time(Num) Num * 60
 
-
 //éüÇ…ìGÇ™ê∂ê¨Ç≥ÇÍÇÈä‘äu
-#define NEXTSPAWN (2)
+enum class NEXTSPAWN
+{
+	Stage1_1 = 5,
+	Stage1_2 = 5,
+	Stage1_3 = 5,
+	Stage2_1 = 5,
+	Stage2_2 = 5,
+	Stage2_3 = 5,
+	Stage3_1 = 5,
+	Stage3_2 = 5,
+	Stage3_3 = 5,
+};
 //àÍìxÇ…èoÇƒÇ≠ÇÈìGÇÃêî
 enum class ENEMY_SPAWNNUM
 {
@@ -498,29 +508,55 @@ void CBattle::TimeLapse(void)
 		case (int)E_SELECT_STAGETYPE::GRASSLAND:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_1; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_2; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_3; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE1:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_1; 
+				m_nSpawnTime += (int)NEXTSPAWN::Stage1_1; 
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_2; 
+				m_nSpawnTime += (int)NEXTSPAWN::Stage1_2;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_3;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage1_3;
+				break;
 			}
 			break;
 		case (int)E_SELECT_STAGETYPE::DESERT:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_1; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_2; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_3; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE1:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_1;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage2_1;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_2;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage2_2;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_3;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage2_3;
+				break;
 			}
 			break;
 		case (int)E_SELECT_STAGETYPE::SNOWFIELD:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_1; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_2; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_3; break;
+			case (int)E_SELECT_STAGENUMBER::STAGE1:
+				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_1;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage3_1;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:
+				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_2;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage3_2;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:
+				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_3;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage3_3;
+				break;
 			}
 			break;
 		}
-		m_nSpawnTime += NEXTSPAWN;
 	}
 }
 
