@@ -250,7 +250,7 @@ void CSceneResult::Update()
 			// Next
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
 			{
-				
+				SetNext(SCENE_GAME, StageLevel);
 			}
 
 		}
@@ -259,7 +259,7 @@ void CSceneResult::Update()
 			// Retry
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
 			{
-
+				SetNext(SCENE_GAME, StageLevel);
 			}
 		}
 	}
@@ -436,4 +436,9 @@ void CSceneResult::Draw()
 void CSceneResult::InResultData(ResultGameInfo InData)
 {
 	ResultGameData = InData;
+}
+
+void CSceneResult::InStageLevel(StageLevel  nInLevel)
+{
+	nStageLevel = nInLevel;
 }

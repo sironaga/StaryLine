@@ -14,6 +14,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 	static void InResultData(ResultGameInfo InData);
+	static void InStageLevel(StageLevel InLevel);
 
 private:
 	// --- Ÿ”sŠÖŒW–³‚µ‚É•Ï‚í‚ç‚È‚¢‚â‚Â
@@ -41,5 +42,6 @@ private:
 
 	CNumberUI* m_pNumber;
 
+	static StageType StageLevel; 
 	static ResultGameInfo ResultGameData;
 };

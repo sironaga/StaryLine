@@ -7,6 +7,7 @@
 #include "SpriteDrawer.h"
 #include "InputEx.h"
 #include "SoundList.h"
+#include"SceneResult.h"
 
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
@@ -121,7 +122,11 @@ void CStageSelect::Update()
 		if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type.StageSubNumber = STAGE2; }
 	default: break;
 	}
-	if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) { SetNext(SCENE_GAME, g_Select_type); }//シーン移行
+	if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) 
+	{
+		CSceneResult::InStageLevel(g_Select_type);
+		SetNext(SCENE_GAME, g_Select_type); 
+	}//シーン移行
 }
 
 void CStageSelect::Draw()
