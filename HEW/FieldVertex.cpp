@@ -115,6 +115,7 @@ CFieldVertex::CFieldVertex()
 	Fill(Shapes_Vertex_Save, -1);
 	Fill(Shapes_Count, -1);
 	Fill(Comparison, -1);
+	Fill(vtx_FieldLine, 0.0f);
 
 	// 頂点２５個座標情報初期化
 	FieldVertex* Vertexp;
@@ -227,6 +228,7 @@ CFieldVertex::CFieldVertex()
 	}	
 }
 
+////=====FieldVertexのデストラクタ=====//
 CFieldVertex::~CFieldVertex()
 {
 	g_FieldSe->Stop();
@@ -828,6 +830,7 @@ void CFieldVertex::InitFieldVertex()
 		Fill(Shapes_Vertex_Save, -1);
 		Fill(Shapes_Count, -1);
 		Fill(Comparison, -1);
+		Fill(vtx_FieldLine, 0.0f);
 	
 		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
 		OrderVertexCount = 1;//たどった頂点の数初期化
