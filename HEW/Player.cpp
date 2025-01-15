@@ -31,9 +31,9 @@ constexpr float TIMER_BAR_OFFSET_Y = 160.0f;		// タイマーゲージの縦オ�
 constexpr float DRAW_TIME = 10.0f;				// 作図時間
 constexpr float RECOVER_TIME = 5.0f;			// 回復時間
 
-constexpr float ARROW_AJUST_POS =  10.0f;		// 矢印の座標X,Yの補正値
+constexpr float ARROW_AJUST_POS =  100.0f;		// 矢印の座標X,Yの補正値
 constexpr float ARROW_BRUSH_AJUST_X = 0.0f;	
-constexpr float ARROW_BRUSH_AJUST_Y = 50.0f;	
+constexpr float ARROW_BRUSH_AJUST_Y = -100.0f;	
 constexpr float ARROW_SIZE =  100.0f;			// 矢印の座標X,Yの補正値
 
 IXAudio2SourceVoice* g_pWalkSe;
@@ -50,7 +50,7 @@ CPlayer::CPlayer()
 	, m_pTimerParam{}, m_pArrowParam{}
 	, m_pTimerTex{}, m_pArrowTex(nullptr)
 	, m_eArrowState{}
-
+	, m_tArrowCenterPos{}
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
@@ -85,8 +85,10 @@ CPlayer::CPlayer()
 	{
 		m_pArrowParam[i] = new SpriteParam();
 		m_eArrowState[i] = NONE_SELECT;
-		m_pArrowParam[i]->pos = { -330.0f,170.0f };
+		m_pArrowParam[i]->pos = { 0.0f,0.0f };
 		m_pArrowParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
+		float deg = i * (360.0f / 8);
+		m_pArrowParam[i]->rotate.z = DirectX::XMConvertToRadians(deg);
 		m_pArrowParam[i]->uvPos = { 0.0f,0.0f };
 		m_pArrowParam[i]->uvSize = { 1.0f,1.0f };
 		m_pArrowParam[i]->world = Get2DWorld(true,DirectX::XMFLOAT3(0.0f,i * (360.0f  / 8),0.0f));
@@ -195,23 +197,44 @@ void CPlayer::Draw()
 		Sprite::SetParam(m_pTimerParam[i]);
 		Sprite::SetTexture(m_pTimerTex[i]);
 		Sprite::Draw();
+		Sprite::ReSetSprite();
 	}
 
-	Sprite::ReSetSprite();
+	switch (m_nNowVertex % 5)
+	{
+	case 0:m_tArrowCenterPos.x = -200.0f; break;
+	case 1:m_tArrowCenterPos.x = -100.0f;break;
+	case 2:m_tArrowCenterPos.x = 0.0f;break;
+	case 3:m_tArrowCenterPos.x = 100.0f;break;
+	case 4:m_tArrowCenterPos.x = 200.0f;break;
+	default:
+		break;
+	}
+	switch (m_nNowVertex / 5)
+	{
+	case 0:m_tArrowCenterPos.y = 900.0f;  break;
+	case 1:m_tArrowCenterPos.y = 800.0f; break;
+	case 2:m_tArrowCenterPos.y = 700.0f; break;
+	case 3:m_tArrowCenterPos.y = 600.0f; break;
+	case 4:m_tArrowCenterPos.y = 500.0f; break;
+	default:
+		break;
+	}
 
-	m_pArrowParam[UP]->pos			= { m_tBrushPos.x,						m_tBrushPos.y + ARROW_AJUST_POS };
-	m_pArrowParam[UPRIGHT]->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
-	m_pArrowParam[RIGHT]->pos		= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y };
-	m_pArrowParam[DOWNRIGHT]->pos	= { m_tBrushPos.x + ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[DOWN]->pos		= { m_tBrushPos.x,						m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[DOWNLEFT]->pos	= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y - ARROW_AJUST_POS };
-	m_pArrowParam[LEFT]->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y };
-	m_pArrowParam[UPLEFT]->pos		= { m_tBrushPos.x - ARROW_AJUST_POS,	m_tBrushPos.y + ARROW_AJUST_POS };
+
+	m_pArrowParam[UP]->world = Get2DWorld(true,			 m_pArrowParam[UP]->rotate,			{ m_tBrushPos.x						, -m_tBrushPos.y - ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[UPRIGHT]->world = Get2DWorld(true,	 m_pArrowParam[UPRIGHT]->rotate,	{ m_tBrushPos.x + ARROW_AJUST_POS	, -m_tBrushPos.y - ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[RIGHT]->world = Get2DWorld(true,		 m_pArrowParam[RIGHT]->rotate,		{ m_tBrushPos.x + ARROW_AJUST_POS	, -m_tBrushPos.y					+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[DOWNRIGHT]->world = Get2DWorld(true,	 m_pArrowParam[DOWNRIGHT]->rotate,	{ m_tBrushPos.x + ARROW_AJUST_POS	, -m_tBrushPos.y + ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[DOWN]->world = Get2DWorld(true,		 m_pArrowParam[DOWN]->rotate,		{ m_tBrushPos.x						, -m_tBrushPos.y + ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[DOWNLEFT]->world = Get2DWorld(true,	 m_pArrowParam[DOWNLEFT]->rotate,	{ m_tBrushPos.x - ARROW_AJUST_POS	, -m_tBrushPos.y + ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[LEFT]->world = Get2DWorld(true,		 m_pArrowParam[LEFT]->rotate,		{ m_tBrushPos.x - ARROW_AJUST_POS	, -m_tBrushPos.y					+ ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam[UPLEFT]->world = Get2DWorld(true,		 m_pArrowParam[UPLEFT]->rotate,		{ m_tBrushPos.x - ARROW_AJUST_POS	, -m_tBrushPos.y - ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
 
 	for (int i = 0; i < 8; i++)
 	{
 		m_pArrowParam[i]->size = { ARROW_SIZE ,ARROW_SIZE };
-		m_pArrowParam[i]->rotate.z = TORAD(i * (360.0f / 8));
+
 		switch (m_eArrowState[i])
 		{
 		case NONE_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
@@ -219,13 +242,13 @@ void CPlayer::Draw()
 		case CANNOT_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
 		default:break;
 		}
-		m_pArrowParam[i]->world = Get2DWorld(true, m_pArrowParam[i]->rotate, m_pArrowParam[i]->pos);
+		//m_pArrowParam[i]->world = Get2DWorld(true, m_pArrowParam[i]->rotate, { m_tBrushPos.x,-m_tBrushPos.y });
 		Sprite::SetParam(m_pArrowParam[i]);
 		Sprite::SetTexture(m_pArrowTex);
 		Sprite::Draw();
+		Sprite::ReSetSprite();
 	}
 
-	Sprite::ReSetSprite();
 	/* プレイヤーの描画 */
 	SetRender3D();											// 3D表現のセット
 	DrawModel();											// プレイヤー(筆)の描画
@@ -254,12 +277,16 @@ void CPlayer::UpdateStop()
 	// プレイヤーのコントローラー、キーボード入力処理
 	PlayerInput();
 
+	for (int i = 0; i < 8; i++)
+	{
+		m_eArrowState[i] = NONE_SELECT;
+	}
+
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
 		//m_eDestination = DEFAULT;	// 移動方向を真ん中に初期化
 		for (int i = 0, Count = 0; i < 8; i++)
 		{
-			m_eArrowState[i] = NONE_SELECT;
 			// 8方向に行けるかどうかチェック
 			// 行けない方向がある場合、その度にカウントを増やす
 			if (m_pFieldVtx->GetRoadStop(i)) Count++;
@@ -433,7 +460,7 @@ void CPlayer::PlayerInput()
 
 	if (m_eDestination < 0 || m_eDestination > 7)return;
 	int no = m_eDestination;
-	m_eArrowState[no] = SELECTED;
+	if(m_eArrowState[no] != CANNOT_SELECT)m_eArrowState[no] = SELECTED;
 }
 
 void CPlayer::TimeProcess()
