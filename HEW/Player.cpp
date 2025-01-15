@@ -126,7 +126,10 @@ CPlayer::~CPlayer()
 
 void CPlayer::Update()
 {
-	m_bDrawing = true;			// 作図中にする
+	if (GetTimeStart())//Timeが動いているとき
+	{
+		m_bDrawing = true;			// 作図中にする
+	}
 	// タイマー処理
 	TimeProcess();
 
@@ -469,7 +472,7 @@ void CPlayer::TimeProcess()
 	if (GetFeverMode())m_bDrawing = true;
 	else
 	{
-		if (m_bDrawing)	// 作図中のとき
+ 		if (m_bDrawing && GetTimeStart())	// 作図中のとき
 		{
 			m_pTimerParam[Timer_Gauge]->size.y -= TIMER_BARSIZE_Y / (DRAW_TIME * 60.0f);	// 時間ごとにタイマーを下げる
 			if (m_pTimerParam[Timer_Gauge]->size.y <= 0.0f)
