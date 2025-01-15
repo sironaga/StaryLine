@@ -5,7 +5,7 @@
 
 
 ResultGameInfo CSceneResult::ResultGameData;
-
+StageType CSceneResult::StageLevel;
 
 
 CSceneResult::CSceneResult()
@@ -247,6 +247,10 @@ void CSceneResult::Update()
 		// retry or Next
 		if (ResultGameData.bWin)
 		{
+			
+
+
+
 			// Next
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
 			{
@@ -438,7 +442,7 @@ void CSceneResult::InResultData(ResultGameInfo InData)
 	ResultGameData = InData;
 }
 
-void CSceneResult::InStageLevel(StageLevel  nInLevel)
+void CSceneResult::InStageLevel(StageType  nInLevel)
 {
-	nStageLevel = nInLevel;
+	StageLevel = nInLevel;
 }

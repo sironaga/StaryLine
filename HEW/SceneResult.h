@@ -14,7 +14,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 	static void InResultData(ResultGameInfo InData);
-	static void InStageLevel(StageLevel InLevel);
+	static void InStageLevel(StageType InLevel);
 
 private:
 	// --- Ÿ”sŠÖŒW–³‚µ‚É•Ï‚í‚ç‚È‚¢‚â‚Â
