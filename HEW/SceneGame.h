@@ -25,6 +25,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 
+
 	void SetResult(bool InWin);
 private:
 
@@ -41,6 +42,8 @@ private:
 
 	bool m_bPhase;
 	bool m_bEnd;
+	
 };
 
 bool GetFeverMode();
+bool GetTimeStart();

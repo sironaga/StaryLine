@@ -1,5 +1,6 @@
 #include "SceneGame.h"
 #include "File.h"
+#include "Input.h"
 
 
 // 行き止まりが発生しない時のサイクル
@@ -28,6 +29,7 @@ struct ResultCheck
 };
 
 bool m_bFever;
+bool TimeStart;
 
 ResultCheck g_Resltcheck;
 
@@ -57,6 +59,9 @@ CSceneGame::CSceneGame(StageType StageNum)
 
 	m_bPhase = true;
 	m_bFever = false;
+
+	TimeStart = false;
+	g_tTime.GameTime = -1.0f;
 
 	InitSave();
 
@@ -113,8 +118,16 @@ void CSceneGame::Update()
 	//g_tTime.GameSTime = g_tTime.GameTime / 60;	// 秒数(STime)に変換する
 
 	m_pField->Update();		// フィールドは常に更新する
-
-
+	InitInput();
+	if (!TimeStart && (g_tTime.GameTime == -1.0f) && IsKeyPress(VK_SPACE))
+	{
+		TimeStart = true;
+	}
+	// ゲーム中(移動をしてから)は経過時間を記録し続ける
+	if (TimeStart)
+	{
+		g_tTime.GameTime++;
+	}
 
 	// 移動が詰んだ時
 	if (!m_pPlayer->GetCanMove() && m_bPhase)
@@ -123,14 +136,14 @@ void CSceneGame::Update()
 		// フェーズごとの補正値(STimePheseAjust)に代入する
 		if (!m_bFever)
 		{
-			if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime) && ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime) <= 600.0f)
+			if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameTime) && ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameTime) <= 600.0f)
 			{
-				g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameTime;
+				g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameTime;
 			}
 		}
 		else
 		{
-			g_tTime.GameSTimeFeverAjust = g_tTime.GameTime - ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust);
+			g_tTime.GameSTimeFeverAjust = g_tTime.GameTime - ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust);
 			m_pFieldVertex->ResetFeverPoint();
 		}
 		m_bPhase = false;
@@ -139,7 +152,7 @@ void CSceneGame::Update()
 	}
 
 	// 召喚開始の時間になったらフィーバーかチェック
-	if ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		float t;
 		t = m_pFieldVertex->GetFeverPoint();
@@ -162,7 +175,7 @@ void CSceneGame::Update()
 	}
 
 	//毎描画開始時スーパースターをセット
-	if ((float)SHAPE_DRAW_START * 60.0f + g_tTime.GameSTimeSycleEnd == g_tTime.GameTime)
+	if ((float)SHAPE_DRAW_START * 60.0f /* + g_tTime.GameSTimeSycleEnd */ == g_tTime.GameTime)
 	{
 		m_pEffect->Play({ m_pPlayer->GetPlayerPos().x, m_pPlayer->GetPlayerPos().y, m_pPlayer->GetPlayerPos().z });
 		//m_pFieldVertex->SetSuperStar();
@@ -170,8 +183,8 @@ void CSceneGame::Update()
 
 	// 図形を作る時間
 	// 経過時間が作図開始の時間から召喚開始の時間になるまで
-	if (((float)SHAPE_DRAW_START * 60.0f + g_tTime.GameSTimeSycleEnd <= g_tTime.GameTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
-		(g_tTime.GameTime < (float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
+	if (((float)SHAPE_DRAW_START * 60.0f /*+ g_tTime.GameSTimeSycleEnd*/ <= g_tTime.GameTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
+		(g_tTime.GameTime < (float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
 	{
 		// プレイヤーと作図処理は図形を作っている間更新する
 		m_pPlayer->Update();
@@ -187,20 +200,20 @@ void CSceneGame::Update()
 	}
 
 	// 召喚開始の時間になったら
-	if ((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust == g_tTime.GameTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		m_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
 	// フィーバーの召喚開始時間になったら
-	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust == g_tTime.GameTime) && m_bFever)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if (((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust == g_tTime.GameTime) && m_bFever)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		m_pEffect->Play({ m_pPlayer->GetPlayerPos().x, m_pPlayer->GetPlayerPos().y, m_pPlayer->GetPlayerPos().z });
 		m_pBattle->CreateAlly();	// キャラクターのデータを生成する
 	}
 
 	// 描画時間終了時間または描画時間+フィーバーの終了時間
-	if (g_tTime.GameTime == (float)COOLTIME_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+	if (g_tTime.GameTime == (float)COOLTIME_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 	{
 		m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
 	}
@@ -211,8 +224,7 @@ void CSceneGame::Update()
 		m_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
 	}
 	m_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
-	// ゲーム中は経過時間を記録し続ける
-	g_tTime.GameTime++;
+	
 }
 
 void CSceneGame::Draw()
@@ -239,7 +251,7 @@ void CSceneGame::Draw()
 	//	m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 	//}
 	//キャラクターを召喚する時間
-	if (((float)SHAPE_SUMMON_START * 60.0f + g_tTime.GameSTimeSycleEnd - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+	if (((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
 		m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 	}
@@ -251,14 +263,17 @@ void CSceneGame::Draw()
 	}
 
 	// 一つのサイクルが終わった時
-	if (g_tTime.GameTime == (float)SHAPE_DRAW_RESTART * 60.0f + g_tTime.GameSTimeSycleEnd
+	if (g_tTime.GameTime == (float)SHAPE_DRAW_RESTART * 60.0f + /*g_tTime.GameSTimeSycleEnd*/
 		- g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		// 次のサイクルに向けて各処理を行う
 		// 時間の初期化処理
 		g_tTime.GameSTimeFeverAjust = 0.0f;
 		g_tTime.GameSTimePheseAjust = 0.0f;				// 移動に詰んだ時の補正値を初期化
-		g_tTime.GameSTimeSycleEnd = g_tTime.GameTime;	// 前回のサイクルが終了した時間を更新
+		//g_tTime.GameSTimeSycleEnd = g_tTime.GameTime;	// 前回のサイクルが終了した時間を更新
+
+		g_tTime.GameTime = -1.0f;
+		TimeStart = false;
 
 		// 各要素の初期化処理
 		m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
@@ -289,6 +304,11 @@ void CSceneGame::Draw()
 bool GetFeverMode()
 {
 	return m_bFever;
+}
+
+bool GetTimeStart()
+{
+	return TimeStart;
 }
 
 void CSceneGame::SetResult(bool InWin)
