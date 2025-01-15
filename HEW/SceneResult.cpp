@@ -237,7 +237,10 @@ void CSceneResult::Update()
 	if (nSlect == 0)
 	{
 		// StageSelect
-
+		if(WithGetKeyTriger(XINPUT_GAMEPAD_A,VK_RETURN))
+		{
+			SetNext(STAGE_SELECT);
+		}
 	}
 	else
 	{
@@ -245,12 +248,19 @@ void CSceneResult::Update()
 		if (ResultGameData.bWin)
 		{
 			// Next
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
+			{
+				
+			}
 
 		}
 		else
 		{
 			// Retry
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
+			{
 
+			}
 		}
 	}
 	// ----
