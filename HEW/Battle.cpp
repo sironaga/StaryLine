@@ -717,7 +717,7 @@ void CBattle::Move(int i, Entity Entity)
 						else
 						{
 							//XŽ²‚ðˆÚ“®‚³‚¹‚é
-m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+							m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
 						}
 					}
 				}
