@@ -39,6 +39,12 @@ private:
 	int nAnimationTimer;
 	int nAnimationFrame;
 	int nSlect; 
+	float CScle;
+	float nCount;
+	float CPosY;
+	float StarPosY;
+	float LogoAngle;
+
 
 	CNumberUI* m_pNumber;
 

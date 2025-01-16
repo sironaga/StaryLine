@@ -12,7 +12,7 @@ CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	//ResultGameData.bWin = 1;
+	ResultGameData.bWin = 0;
 
 	// --- テクスチャの読み込み
 	
@@ -143,6 +143,12 @@ CSceneResult::CSceneResult()
 
 	// 選択初期化
 	nSlect = 0;
+
+	CPosY = 200.0f;
+	CScle = 0;
+	nCount = 0;
+	StarPosY = 1000.0f;
+	LogoAngle = 0.0f;
 	// Animationタイマー
 	nAnimationTimer = timeGetTime();
 
@@ -351,11 +357,49 @@ void CSceneResult::Draw()
 		m_pCharacter->Disp();
 		m_pCharacter->SetUvSize(1.0f, 1.0f);
 		m_pCharacter->SetUvPos(0.0f, 0.0f);
+		m_pText->SetTexture();
+		m_pText->Disp();
 	}
 	else
 	{
+	
+	
+		CPosY-= 20;
+		
+		if (CPosY <= 0)
+		{
+			CPosY = 0;
+
+			if (nCount < 3)
+			{
+				nCount += 0.1f;
+			}
+			else
+			{
+				StarPosY -= 10.0f;
+				if (StarPosY < 0.0f)
+				{
+					StarPosY = 0.0f;
+				}
+				if (LogoAngle < 10.0f)
+				{
+					LogoAngle++;
+				}
+			}
+		}
+		CScle = sinf(nCount);
+		CScle = CScle / 20.0f;
+
+		m_pCharacter->SetSize(0.4f, 0.4f - CScle, 1.0f);
+		m_pCharacter->SetPositon(940.0f, 620.0f - CPosY, 10.0f);
 		m_pCharacter->SetTexture();
 		m_pCharacter->Disp();
+		float Angle;
+		Angle = 180.0f + (float)LogoAngle;
+		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(Angle));
+		m_pText->SetTexture();
+		m_pText->Disp();
+
 	}
 		m_pHitPoint->SetTexture();
 		m_pHitPoint->Disp();
@@ -367,8 +411,6 @@ void CSceneResult::Draw()
 		m_pUnderBar->Disp();
 		m_pTextShadow->SetTexture();
 		m_pTextShadow->Disp();
-		m_pText->SetTexture();
-		m_pText->Disp();
 		m_pStageSelect[0]->SetTexture();
 		m_pStageSelect[0]->Disp();
 		m_pNextUI[0]->SetTexture();
@@ -410,32 +452,28 @@ void CSceneResult::Draw()
 		{
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(400.0f, 740.0f, 10.0f);
+			m_pStar->SetPositon(400.0f, 740.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(475.0f, 730.0f, 10.0f);
+			m_pStar->SetPositon(475.0f, 730.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1350.0f, 730.0f, 10.0f);
+			m_pStar->SetPositon(1350.0f, 730.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1500.0f, 740.0f, 10.0f);
+			m_pStar->SetPositon(1500.0f, 740.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 		}
-		
-		m_pNumber->SetPos({920.0f,540.0f,0.0f});
-		m_pNumber->SetScale({ 0.1f,0.1f,1.0f });
-		m_pNumber->Draw();
 }
 
 
