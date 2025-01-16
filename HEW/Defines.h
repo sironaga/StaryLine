@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <DirectXMath.h>
 
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
@@ -38,6 +39,7 @@ static const char* APP_TITLE = "Starry Line";
 // 画面サイズ
 static const int SCREEN_WIDTH = 1920;
 static const int SCREEN_HEIGHT = 1080;
+static const DirectX::XMFLOAT2 SCREEN_CENTER = { 960.0f,540.0f };
 
 //元の画面のサイズとの比率を算出
 #define WIDE_RATIO(num,width) ((( float)width/(float)SCREEN_WIDTH)*(float)num)

@@ -51,20 +51,43 @@
 //時間の計算マクロ
 #define Time(Num) Num * 60
 
-
 //次に敵が生成される間隔
-#define NEXTSPAWN (2)
+enum class NEXTSPAWN
+{
+	Stage1_1 = 5,
+	Stage1_2 = 5,
+	Stage1_3 = 5,
+	Stage2_1 = 5,
+	Stage2_2 = 5,
+	Stage2_3 = 5,
+	Stage3_1 = 5,
+	Stage3_2 = 5,
+	Stage3_3 = 5,
+};
+//一度に出てくる敵の数
+enum class ENEMY_SPAWNNUM
+{
+	Stage1_1 = 8,
+	Stage1_2 = 10,
+	Stage1_3 = 12,
+	Stage2_1 = 10,
+	Stage2_2 = 12,
+	Stage2_3 = 14,
+	Stage3_1 = 15,
+	Stage3_2 = 17,
+	Stage3_3 = 20,
+};
 //敵の歩行タイプ雑魚敵の確率
 enum class ENEMY_PROBABILITY
 {
-	Stage1_1 = 50,
-	Stage1_2 = 50,
-	Stage1_3 = 50,
-	Stage2_1 = 50,
-	Stage2_2 = 50,
-	Stage2_3 = 50,
-	Stage3_1 = 50,
-	Stage3_2 = 50,
+	Stage1_1 = 100,
+	Stage1_2 = 100,
+	Stage1_3 = 100,
+	Stage2_1 = 80,
+	Stage2_2 = 70,
+	Stage2_3 = 60,
+	Stage3_1 = 70,
+	Stage3_2 = 30,
 	Stage3_3 = 50,
 };
 
@@ -479,8 +502,61 @@ void CBattle::TimeLapse(void)
 	if (m_nBattleTime == Time(m_nSpawnTime))
 	{
 		//敵の生成数を指定
-		m_nCreateEnemyNum = 4;
-		m_nSpawnTime += NEXTSPAWN;
+		//m_nCreateEnemyNum = 4;
+		switch (m_nStageNum.StageMainNumber)
+		{
+		case (int)E_SELECT_STAGETYPE::GRASSLAND:
+			switch (m_nStageNum.StageSubNumber)
+			{
+			case (int)E_SELECT_STAGENUMBER::STAGE1:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_1; 
+				m_nSpawnTime += (int)NEXTSPAWN::Stage1_1; 
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_2; 
+				m_nSpawnTime += (int)NEXTSPAWN::Stage1_2;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_3;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage1_3;
+				break;
+			}
+			break;
+		case (int)E_SELECT_STAGETYPE::DESERT:
+			switch (m_nStageNum.StageSubNumber)
+			{
+			case (int)E_SELECT_STAGENUMBER::STAGE1:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_1;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage2_1;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_2;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage2_2;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:
+				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_3;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage2_3;
+				break;
+			}
+			break;
+		case (int)E_SELECT_STAGETYPE::SNOWFIELD:
+			switch (m_nStageNum.StageSubNumber)
+			{
+			case (int)E_SELECT_STAGENUMBER::STAGE1:
+				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_1;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage3_1;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE2:
+				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_2;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage3_2;
+				break;
+			case (int)E_SELECT_STAGENUMBER::STAGE3:
+				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_3;
+				m_nSpawnTime += (int)NEXTSPAWN::Stage3_3;
+				break;
+			}
+			break;
+		}
 	}
 }
 
@@ -717,7 +793,7 @@ void CBattle::Move(int i, Entity Entity)
 						else
 						{
 							//X軸を移動させる
-m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+							m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
 						}
 					}
 				}
@@ -876,8 +952,8 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			float Z1 = iAllyPos.z;
 			float Z2 = AllyPos.z;
 
-			if (Z1 < 0)Z1 * -1.0f;
-			if (Z2 < 0)Z2 * -1.0f;
+			if (Z1 < 0)Z1 *= -1.0f;
+			if (Z2 < 0)Z2 *= -1.0f;
 
 			if (Z1 <= Z2)continue;
 
@@ -919,8 +995,8 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			float Z1 = iEnemyPos.z;
 			float Z2 = EnemyPos.z;
 
-			if (Z1 < 0)Z1 * -1.0f;
-			if (Z2 < 0)Z2 * -1.0f;
+			if (Z1 < 0)Z1 *= -1.0f;
+			if (Z2 < 0)Z2 *= -1.0f;
 
 			if (Z1 <= Z2)continue;
 
@@ -1140,20 +1216,7 @@ void CBattle::Delete(void)
 		//ステータスがDeleteかどうか
 		if (m_pAlly[i]->GetStatus() == St_Delete)
 		{
-			//解放処理
-			delete m_pAlly[i];
-			m_pAlly[i] = nullptr;
-			//配列前詰め
-			for (int d = i; d < m_nAllyCount; d++)
-			{
-				if (m_pAlly[d] == nullptr)
-				{
-					//一つ後ろの配列を自分に入れる
-					m_pAlly[d] = m_pAlly[d + 1];
-					//一つ後ろをnullptrにする
-					m_pAlly[d + 1] = nullptr;
-				}
-			}
+			m_pAlly.erase(m_pAlly.begin() + i);
 			//今いる生存数を減らす
 			m_nAllyCount--;
 			//前詰めされたのでもう一度同じ場所を処理する
@@ -1167,19 +1230,7 @@ void CBattle::Delete(void)
 		if (m_pEnemy[i]->GetStatus() == St_Delete)		
 		{
 			//解放処理
-			delete m_pEnemy[i];
-			m_pEnemy[i] = nullptr;
-			//配列前詰め
-			for (int d = i; d < m_nEnemyCount; d++)
-			{
-				if (m_pEnemy[d] == nullptr)
-				{
-					//一つ後ろの配列を自分に入れる
-					m_pEnemy[d] = m_pEnemy[d + 1];
-					//一つ後ろをnullptrにする
-					m_pEnemy[d + 1] = nullptr;
-				}
-			}
+			m_pEnemy.erase(m_pEnemy.begin() + i);
 			//今いる生存数を減らす
 			m_nEnemyCount--;
 			//前詰めされたのでもう一度同じ場所を処理する

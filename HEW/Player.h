@@ -8,6 +8,7 @@
 #include "EffectManager.h"
 #include "Texture.h"
 #include "_StructList.h"
+#include "SpriteEx.h"
 
 // defines
 #define START_PLAYER (12)	//プレイヤーの開始位置
@@ -20,6 +21,7 @@ public:
 	~CPlayer();		// デストラクタ
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
+	void Reset();
 
 	/*＝＝＝＝＝＝＝＝＝＝内部処理＝＝＝＝＝＝＝＝＝＝*/
 	/*＝＝＝＝＝＝＝＝＝ プレイヤー ＝＝＝＝＝＝＝＝＝*/
@@ -65,16 +67,6 @@ private:
 
 	bool m_bDrawing;						// 作図中かどうか
 
-	enum E_PLAYER_TEXTURE
-	{
-		Arrow_S = 0,
-
-		TimerUnder_S,
-		TimerGauge,
-		TimerUp,
-		
-		MAX_TEXTURE
-	};
 	
 	enum E_ARROW_STATE
 	{
@@ -82,14 +74,21 @@ private:
 		SELECTED,
 		CANNOT_SELECT
 	};
+	E_ARROW_STATE m_eArrowState[8];
+	SpriteParam* m_pArrowParam[8];
+	Texture* m_pArrowTex;
+	DirectX::XMFLOAT2  m_tArrowCenterPos;
 
-
-	struct ArrowInfo
+	enum Timer
 	{
-		SpriteParam* param;
-		E_ARROW_STATE state;
-	}m_tArrowInfo[8];
-	Texture* m_pTexture[MAX_TEXTURE];
+		Timer_Under = 0,
+		Timer_Gauge,
+		Timer_Top,
+
+		Timer_Max
+	};
+	SpriteParam* m_pTimerParam[Timer_Max];
+	Texture* m_pTimerTex[Timer_Max];
 
 public:
 	/* Getter */
@@ -108,8 +107,6 @@ public:
 private:
 	void TimeProcess();						// タイマーの処理
 private:
-	SpriteParam* m_pTimerParam[3];
-	float fTimerSize;						// 時間によって減らすタイマーのサイズ
 	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
 private:

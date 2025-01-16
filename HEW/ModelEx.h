@@ -15,6 +15,7 @@ public:
 	void SetScale(float X, float Y, float Z);
 	void SetPostion(float X, float Y, float Z);
 	void SetRotation(float X, float Y, float Z);
+	void SetWorldMatrix(DirectX::XMFLOAT4X4 InWorld);
 private:
 	DirectX::XMMATRIX T;
 	DirectX::XMMATRIX S;

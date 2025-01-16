@@ -4,6 +4,7 @@
 #include"_StructList.h"
 #include"SpriteEx.h"
 #include"Main.h"
+#include"NumberUI.h"
 
 class CSceneResult : public CScene
 {
@@ -13,6 +14,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 	static void InResultData(ResultGameInfo InData);
+	static void InStageLevel(StageType InLevel);
 
 private:
 	// --- èüîsä÷åWñ≥ÇµÇ…ïœÇÌÇÁÇ»Ç¢Ç‚Ç¬
@@ -22,7 +24,7 @@ private:
 	SpriteEx* m_pStageSelect[2];
 	SpriteEx* m_pSummonData;
 	SpriteEx* m_pUnderBar;
-
+	SpriteEx* m_pBack;
 	// --- ïœÇÌÇÈÇ‚Ç¬
 	SpriteEx* m_pText;
 	SpriteEx* m_pCharacter;
@@ -30,9 +32,16 @@ private:
 	SpriteEx* m_pTextShadow;
 	SpriteEx* m_pClearTime;
 	SpriteEx* m_pNextUI[2];
+	SpriteEx* m_pStar;
 
+
+
+	int nAnimationTimer;
+	int nAnimationFrame;
 	int nSlect; 
 
+	CNumberUI* m_pNumber;
 
+	static StageType StageLevel; 
 	static ResultGameInfo ResultGameData;
 };

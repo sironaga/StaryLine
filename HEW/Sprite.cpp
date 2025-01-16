@@ -137,6 +137,7 @@ void Sprite::SetParam(SpriteParam* param)
 	m_data.param[1].y = param->uvPos.y;
 	m_data.param[1].z = param->uvSize.x;
 	m_data.param[1].w = param->uvSize.y;
+	m_data.param[2] = param->color;
 	m_data.matrix[0] = param->world;
 	m_data.matrix[1] = param->view;
 	m_data.matrix[2] = param->proj;

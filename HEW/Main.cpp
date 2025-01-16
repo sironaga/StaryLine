@@ -138,6 +138,7 @@ void Update()
 
 		// 次シーンに向けて初期設定 
 		g_pFade->Start(true);   // フェード開始 
+		g_pFade->SetFade(1.0f, true);
 		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
 		g_pScene->SethWnd(g_hWnd);
 	}
@@ -226,11 +227,11 @@ DirectX::XMFLOAT4X4 GetProj(bool isTranspose)
 	return g_Camera->GetProjectionMatrix(isTranspose);
 }
 
-DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose, DirectX::XMFLOAT3 rotate)
+DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose, DirectX::XMFLOAT3 rotate, DirectX::XMFLOAT2 pos, DirectX::XMFLOAT2 size)
 {
 	DirectX::XMFLOAT4X4 world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f + pos.x, SCREEN_HEIGHT / 2.0f + pos.y, 0.0f);
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, -size.y, 1.0f);
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(rotate.x, rotate.y, rotate.z, 0.0f));
 	DirectX::XMMATRIX mat = S * R * T;
 	if (isTranspose)mat = DirectX::XMMatrixTranspose(mat);

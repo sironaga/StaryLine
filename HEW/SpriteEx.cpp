@@ -52,10 +52,12 @@ void SpriteEx::Disp()
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 	wvp[1] = View;
 	wvp[2] = Project;
+
 	m_Sprite->SetView(wvp[1]);
 	m_Sprite->SetProjection(wvp[2]);
 	m_Sprite->SetWorld(wvp[0]);
 	m_Sprite->Draw();
+
 }
 
 void SpriteEx::SetPositon(float X, float Y, float Z)
@@ -102,6 +104,17 @@ void SpriteEx::SetUvPos(float X, float Y)
 void SpriteEx::SetTexture()
 {
 	m_Sprite->SetTexture(m_Texture);
+}
+
+void SpriteEx::Setcolor(float R, float G, float B, float A)
+{
+	DirectX::XMFLOAT4 C;
+	C.x = R;
+	C.w = A;
+	C.y = G;
+	C.z = B;
+
+	m_Sprite->SetColor(C);
 }
 
 void SpriteEx::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos)
