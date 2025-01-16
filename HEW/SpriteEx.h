@@ -19,7 +19,9 @@ public:
 	void SetUvSize(float X, float Y);
 	void SetUvPos(float X, float Y);
 	void SetTexture();
+
 	void Setcolor(float R, float G, float B, float A);
+
 	void SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos);
 
 	void SetView(DirectX::XMFLOAT4X4 InView);

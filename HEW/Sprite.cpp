@@ -259,6 +259,7 @@ void Sprite::ReSetSprite()
 	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 	Sprite::SetSize({ 1.0f,1.0f });
 	Sprite::SetOffset({ 0.0f,0.0f });
+	Sprite::SetTexture(nullptr);
 }
 
 void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight)
