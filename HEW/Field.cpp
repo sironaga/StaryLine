@@ -12,7 +12,7 @@ Field::Field(StageType StageNum)
 		switch (StageNum.StageMainNumber)
 		{
 		case (int)EStageType::STAGE_GRASSLAND:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_.fbx"), 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		case (int)EStageType::STAGE_DESERT:
 			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);

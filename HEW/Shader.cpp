@@ -84,7 +84,7 @@ void Shader::SetTexture(UINT slot, Texture* tex)
 	case Vertex:	GetContext()->VSSetShaderResources(slot, 1, &pTex); break;
 	case Pixel:		GetContext()->PSSetShaderResources(slot, 1, &pTex); break;
 	}
-}
+ }
 
 HRESULT Shader::Make(void* pData, UINT size)
 {
