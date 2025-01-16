@@ -12,7 +12,7 @@ CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	ResultGameData.bWin = 1;
+	//ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	
@@ -148,6 +148,8 @@ CSceneResult::CSceneResult()
 
 	// 数字の描画
 	m_pNumber = new CNumberUI();
+	m_pNumber->SetColor(1.5f, 0.7f, 0.7f, 1.0f);
+	m_pNumber->SetLend(2);
 }
 
 CSceneResult::~CSceneResult()
@@ -247,7 +249,7 @@ void CSceneResult::Update()
 		// retry or Next
 		if (ResultGameData.bWin)
 		{
-			
+			// --- 
 
 
 
