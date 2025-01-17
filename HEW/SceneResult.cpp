@@ -4,7 +4,7 @@
 #include"InputEx.h"
 #include"Controller.h"
 #include"InputEx.h"
-
+#include"Easing.h"
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
@@ -52,7 +52,6 @@ CSceneResult::CSceneResult()
 		m_pNextUI[1]	= new SpriteEx("Assets/Texture/Result/Lose/Result_Retry_Push.png");
 		m_pStar			= new SpriteEx("Assets/Texture/Star/star2.png");
 	}
-
 	// =====================================================================
 	
 	// --- デフォルト
@@ -148,7 +147,9 @@ CSceneResult::CSceneResult()
 	nCount = 0;
 	StarPosY = 1000.0f;
 	LogoAngle = 0.0f;
-	fStarAngle = 90.0f;
+	fTime = 0.0f;
+	fStarAngle = 120.0f;
+	fCTime = 0.0f;
 	// Animationタイマー
 	nAnimationTimer = timeGetTime();
 	// 数字の描画
@@ -367,9 +368,11 @@ void CSceneResult::Draw()
 	else
 	{
 	
-	
+		fCTime += 0.1f;
 		CPosY-= 20;
-		
+		StarPosY = InEasing(0.0f, 730.0f, 5, 1.0f) - 10.0f;
+
+		StarPosY -= InEasing(fCTime,0.0f,50.0f,1.0f);
 		if (CPosY <= 0)
 		{
 			CPosY = 0;
@@ -380,13 +383,16 @@ void CSceneResult::Draw()
 			}
 			else
 			{
-				StarPosY -= 10.0f;
+				fTime += 0.1f;
+				StarPosY = InEasing(fTime, 730.0f, 5, 1.0f) ;
+				StarPosY -= 100.0f;
 				fStarAngle -= 1.0f;
-			
-				if (StarPosY < 0.0f)
+				if (StarPosY >= 720.0f)
 				{
-					StarPosY = 0.0f;
+					StarPosY = 740.0f;
 				}
+
+
 
 				if (fStarAngle < 0.0f)
 				{
@@ -473,26 +479,26 @@ void CSceneResult::Draw()
 			float dAngle;
 			dAngle = 225.0f + fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(400.0f, 740.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(300.0f, StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 			dAngle = 180.0f - fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(475.0f, 730.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(475.0f, StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 			dAngle = 180.0f + fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1350.0f, 730.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(1350.0f,  StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 			dAngle = 225.0f - fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1500.0f, 740.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(1600.0f, StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 		}

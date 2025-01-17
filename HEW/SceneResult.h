@@ -45,6 +45,8 @@ private:
 	float CPosY;
 	float StarPosY;
 	float LogoAngle;
+	float fTime;
+	float fCTime;
 
 
 	CNumberUI* m_pNumber;
