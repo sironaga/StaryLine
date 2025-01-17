@@ -35,15 +35,18 @@ private:
 	SpriteEx* m_pStar;
 
 
-
+	// --- ïœêî
 	int nAnimationTimer;
 	int nAnimationFrame;
 	int nSlect; 
 	float CScle;
 	float nCount;
+	float fStarAngle;
 	float CPosY;
 	float StarPosY;
 	float LogoAngle;
+	float fTime;
+	float fCTime;
 
 
 	CNumberUI* m_pNumber;

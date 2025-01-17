@@ -28,6 +28,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DebugRoom.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FadeBlack.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FadeBlack.h" />
