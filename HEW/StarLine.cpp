@@ -8,6 +8,7 @@ StarLine::StarLine()
 	:Pos{},Scl{},Rot{},world{}, View{},Proj{}
 {
 	m_pModel[0] = new CModelEx(MODEL_PASS("Board_Line/Board_Line.fbx"), false);
+	m_pModel[1] = new CModelEx(MODEL_PASS("NULL"), false);
 	m_pBox = new Geometory();
 	nNumber = 0;
 }
