@@ -221,6 +221,7 @@ void CPlayer::Draw()
 
 void CPlayer::Reset()
 {
+	m_bDrawing = false;	// 作図中を解除
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 	m_pTimerParam[Timer_Gauge]->size.y += TIMER_BARSIZE_Y / (RECOVER_TIME  * 60.0f);	// タイマーを上げ続ける
 	if (m_pTimerParam[Timer_Gauge]->size.y >= TIMER_BARSIZE_Y) m_pTimerParam[Timer_Gauge]->size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する

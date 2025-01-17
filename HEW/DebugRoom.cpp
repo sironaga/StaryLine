@@ -162,4 +162,7 @@ void CDebugRoom::DrawModel(Model* model, param InParam , bool isAnim)
 		//ƒ‚ƒfƒ‹‚Ì•`‰æ
 		model->Draw(i);
 	}
+#ifdef _DEBUG
+	model->DrawBone();
+#endif
 }
