@@ -149,13 +149,14 @@ void CStageSelect::Update()
 		}
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 		{
-			if (g_Select_type.StageMainNumber = GRASSLANDBACK)
-			{					   
+			switch (g_Select_type.StageMainNumber)
+			{
+			case(GRASSLANDBACK):
 				g_Select_type.StageMainNumber = GRASSLAND;
-			}					   
-			if (g_Select_type.StageMainNumber = DESERTBACK)
-			{					   
+				break;
+			case(DESERTBACK):
 				g_Select_type.StageMainNumber = DESERT;
+				break;
 			}
 			MainStage ^= true; 
 		}
@@ -191,13 +192,14 @@ void CStageSelect::Update()
 		}
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 		{
-			if (g_Select_type.StageSubNumber = STAGE1BACK)
+			switch (g_Select_type.StageSubNumber)
 			{
+			case(STAGE1BACK):
 				g_Select_type.StageSubNumber = STAGE1;
-			}
-			if (g_Select_type.StageSubNumber = STAGE2BACK)
-			{
+				break;
+			case(STAGE2BACK):
 				g_Select_type.StageSubNumber = STAGE2;
+				break;
 			}
 			CSceneResult::InStageLevel(g_Select_type);
 			SetNext(SCENE_GAME, g_Select_type);
