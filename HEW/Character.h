@@ -64,6 +64,8 @@ public:
 	enum class FighterEffect
 	{
 		Attack,
+		Move,
+		Death,
 		MAX,
 	};
 protected:
@@ -82,6 +84,13 @@ protected:
 		float Width;	//幅
 		float Height;	//高さ
 	};
+	//エフェクト関係
+	//struct EffectInfo
+	//{
+	//	CEffectManager* m_pEffect; //エフェクト関係
+	//	float m_fEffectTimer;
+	//	bool m_bEffectPlay;//攻撃エフェクトのPlayを実行したかどうか
+	//};
 
 	/*関数*/
 protected:
@@ -131,9 +140,7 @@ protected:
 	DirectX::XMFLOAT3 m_tDestinationPos;//目的地
 
 	CHpUI* m_pHpGage;	//体力ゲージ
-	CEffectManager* m_pEffect[(int)FighterEffect::MAX]; //エフェクト関係
-	float m_fEffectTimer;
-	bool m_bAttackEffectPlay;//エフェクトのPlayを実行したかどうか
+
 protected:
 	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
 	float m_fTimeSound;
@@ -141,12 +148,17 @@ protected:
 
 	Model* m_pModel;
 
+	//EffectInfo m_tEffect[(int)FighterEffect::MAX];
+
 	/*変数のSet&Get*/
 public:
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
 	//ステータスのget
 	Status GetStatus(void) { return m_tStatus; }
+
+	//死亡エフェクトの再生
+	//void PlayDeathEffect(void);
 
 	//索敵当たり判定のGet
 	Collision GetSearchCollision(void) { return m_tSearchCollision; }
@@ -250,7 +262,7 @@ private:
 class CLeader
 {
 public:
-	CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber);
+	CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber,bool SubModelCreate = false);
 	~CLeader();
 
 	void Update(void);	//更新処理
@@ -265,21 +277,19 @@ private:
 
 private:
 	Status m_tStatus;				//ステータス状態
+	Model* m_pModel;
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
+
+	Model* m_pSubModel;
+	DirectX::XMFLOAT3 m_tSubPos;		//位置座標
+	DirectX::XMFLOAT3 m_tSubSize;		//サイズ
+
 	float m_fHp;					//体力
-	float m_fMaxHp;					//体力
+	float m_fMaxHp;					//最大体力
 
-	Model* m_pModel;
 
-	/*アニメーション関係*/
-	DirectX::XMFLOAT2 m_tUVPos;
-	DirectX::XMFLOAT2 m_tUVScale;
-	int m_nAnimationFrame;
-	int m_nAnimationX;
-	int m_nAnimationY;
-
-	int m_nStatusMode;
+	//int m_nStatusMode;
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
 public:

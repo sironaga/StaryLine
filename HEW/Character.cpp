@@ -51,7 +51,10 @@ enum class HpTexture
 //Characterのエフェクトの列挙型
 enum class CharactersEffect
 {
-	FighterAttack,
+	SwordAtk,
+	BowAtk,
+	Move,
+	Death,
 	MAX,
 };
 
@@ -98,7 +101,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)
 	{
-	case 0://砂漠
+	case 0://草原
 		
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
@@ -116,7 +119,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Quracker] = new Model();
-		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::None);
 		
 		switch (StageType.StageSubNumber)
 		{
@@ -137,7 +140,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 			break;
 		}
 		break;
-	case 1://草原
+	case 1://砂漠
 
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
@@ -223,7 +226,12 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	g_AttackSound->SetMasterVolume();
 	/*エフェクトの読み込み*/
-	g_pCharacterEffects[(int)CharactersEffect::FighterAttack] = new CEffectManager(EFFECT_PASS("Fire.efk"));
+	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("SwordAtk.efkefc"));
+	//g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("fire.efk"));
+	g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager(EFFECT_PASS("Yumi.efkefc"));
+	g_pCharacterEffects[(int)CharactersEffect::Move] = new CEffectManager(EFFECT_PASS("MoveChara.efkefc"));
+	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("Death.efkefc"));
+	//g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("fire.efk"));
 }
 
 //事前読み込みで用意したもののポインタ破棄
@@ -299,7 +307,6 @@ CFighter::CFighter(int InCornerCount)
 	, m_fAtkAnimationMaxTime(0.0f)
 	, m_bIsHit(false)
 	, m_pHpGage{}
-	, m_pEffect{}
 	, m_nTargetNumber(-1)
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
@@ -307,8 +314,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_pSourceAttack(nullptr)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
-	, m_bAttackEffectPlay(false)
-	, m_fEffectTimer(0.0f)
+	//, m_tEffect{}
 	, m_pModel(nullptr)
 {
 	//サウンドの設定
@@ -325,13 +331,13 @@ CFighter::~CFighter()
 	m_pHpGage = nullptr;
 
 	//エフェクトの破棄
-	for (int i = 0; i < (int)CharactersEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-		{
-			m_pEffect[i] = nullptr;
-		}
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//	{
+	//		m_tEffect[i].m_pEffect = nullptr;
+	//	}
+	//}
 
 	//サウンドの破棄
 	if (m_pSourceAttack)
@@ -517,6 +523,12 @@ void CFighter::Damage(CFighter* pFighter)
 	}
 }
 
+//void CFighter::PlayDeathEffect(void)
+//{
+//	m_tEffect[(int)FighterEffect::Death].m_pEffect->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
+//	m_tEffect[(int)FighterEffect::Death].m_bEffectPlay = true;
+//}
+
 //味方クラスのコンストラクタ
 CAlly::CAlly(int InCornerCount)
 	:CFighter(InCornerCount)
@@ -525,18 +537,24 @@ CAlly::CAlly(int InCornerCount)
 	SettingStatus();
 	//Hpのポインタの作成
 	m_pHpGage = new CHpUI(m_fHp,CHpUI::Ally);
-	//角数ごとに同期するモデルポインタを変更
+	//角数ごとに同期するポインタを変更
 	switch (m_nCornerCount)
 	{
 	case 3:
+		//モデル
 		m_pModel = g_pAllyModel[(int)Ally::Ally3];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::SwordAtk];
 		break;
 	case 4:
+		//モデル
 		m_pModel = g_pAllyModel[(int)Ally::Ally4];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::BowAtk];
 		break;
 	}
-	//攻撃エフェクトのポインタ同期
-	m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::FighterAttack];
+	//m_tEffect[(int)FighterEffect::Move].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Move];
+	//m_tEffect[(int)FighterEffect::Death].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Death];
 }
 
 //味方クラスのデストラクタ
@@ -561,11 +579,11 @@ void CAlly::Update(void)
 	}
 
 	//エフェクトの更新
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if(m_pEffect[i])
-		m_pEffect[i]->Update();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if(m_tEffect[i].m_pEffect)
+	//	m_tEffect[i].m_pEffect->Update();
+	//}
 }
 
 void CAlly::Draw(void)
@@ -614,11 +632,11 @@ void CAlly::Draw(void)
 	}
 
 	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-		m_pEffect[i]->Draw();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//	m_tEffect[i].m_pEffect->Draw();
+	//}
 }
 //生成更新処理
 void CAlly::CreateUpdate(void)
@@ -648,11 +666,11 @@ void CAlly::BattleUpdate(void)
 			if (m_fAtkAnimationMaxTime <= m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 		//攻撃エフェクト
-		if (!m_bAttackEffectPlay)
-		{
-			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
-			m_bAttackEffectPlay = true;
-		}
+		//if (!m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay)
+		//{
+		//	m_tEffect[(int)FighterEffect::Attack].m_pEffect->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 5000);
+		//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = true;
+		//}
 		//攻撃音
 		if (!m_bTimeSoundStart)
 		{
@@ -663,16 +681,27 @@ void CAlly::BattleUpdate(void)
 			m_bTimeSoundStart = true;
 		}
 	}
-	//攻撃エフェクトの再生時間
-	if (m_bAttackEffectPlay)
-	{
-		m_fEffectTimer++;
-	}
-	if (m_fEffectTimer > 60.0f)
-	{
-		m_fTimeSound = 0.0f;
-		m_bAttackEffectPlay = false;
-	}
+	//エフェクトの再生時間
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_bEffectPlay)
+	//	{
+	//		m_tEffect[i].m_fEffectTimer++;
+	//	}
+	//}
+	//if (m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer > 5000.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Attack].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = false;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Move].m_fEffectTimer > 60.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Move].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Move].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Move].m_bEffectPlay = false;
+	//}
+	
 	//攻撃音の再生時間
 	if (m_bTimeSoundStart)
 	{
@@ -699,8 +728,24 @@ void CAlly::DeathUpdate(void)
 {
 	//死亡アニメーション
 	
+	//死亡エフェクトの再生時間
+	//if (m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer++;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Death].m_fEffectTimer > 60.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Death].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Death].m_bEffectPlay = false;
+	//}
+
+
 	//死亡アニメーションが終わったら
-	SetStatus(St_Delete);
+	//if (!m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+		SetStatus(St_Delete);
+	//}
 }
 
 //初期ステータス決め
@@ -777,14 +822,21 @@ CEnemy::CEnemy(int InCornerCount)
 	switch (m_nCornerCount)
 	{
 	case 3:
+		//モデル
 		m_pModel = g_pEnemyModel[(int)Enemy::Enemy1];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::SwordAtk];
 		break;
 	case 4:
+		//モデル
 		m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::BowAtk];
 		break;
 	}
-	//攻撃エフェクトのポインタ同期
-	m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::FighterAttack];
+	//m_tEffect[(int)FighterEffect::Move].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Move];
+	//m_tEffect[(int)FighterEffect::Death].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Death];
+
 }
 
 CEnemy::~CEnemy()
@@ -807,11 +859,11 @@ void CEnemy::Update(void)
 	}
 
 	//エフェクトの更新
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-			m_pEffect[i]->Update();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//		m_tEffect[i].m_pEffect->Update();
+	//}
 }
 
 void CEnemy::Draw(void)
@@ -859,11 +911,11 @@ void CEnemy::Draw(void)
 		}
 	}
 	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-			m_pEffect[i]->Draw();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//		m_tEffect[i].m_pEffect->Draw();
+	//}
 }
 
 void CEnemy::CreateUpdate(void)
@@ -888,11 +940,11 @@ void CEnemy::BattleUpdate(void)
 			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 		//攻撃エフェクト
-		if (!m_bAttackEffectPlay)
-		{
-			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
-			m_bAttackEffectPlay = true;
-		}
+		//if (!m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay)
+		//{
+		//	m_tEffect[(int)FighterEffect::Attack].m_pEffect->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 5000.0f);
+		//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = true;
+		//}
 		//攻撃音
 		if (!m_bTimeSoundStart)
 		{
@@ -903,16 +955,26 @@ void CEnemy::BattleUpdate(void)
 			m_bTimeSoundStart = true;
 		}
 	}
-	//攻撃エフェクトの再生時間
-	if (m_bAttackEffectPlay)
-	{
-		m_fEffectTimer++;
-	}
-	if (m_fEffectTimer > 60.0f)
-	{
-		m_fTimeSound = 0.0f;
-		m_bAttackEffectPlay = false;
-	}
+	//エフェクトの再生時間
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_bEffectPlay)
+	//	{
+	//		m_tEffect[i].m_fEffectTimer++;
+	//	}
+	//}
+	//if (m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer > 5000.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Attack].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = false;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Move].m_fEffectTimer > 60.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Move].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Move].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Move].m_bEffectPlay = false;
+	//}
 	//攻撃音の再生時間
 	if(m_bTimeSoundStart)
 	{
@@ -938,10 +1000,24 @@ void CEnemy::BattleUpdate(void)
 void CEnemy::DeathUpdate(void)
 {
 	//死亡アニメーション
-	
+
+	//死亡エフェクト
+	//if (m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer++;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Death].m_fEffectTimer > 60.0f)
+	//{
+	//	m_tEffect[(int)FighterEffect::Death].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Death].m_bEffectPlay = false;
+	//}
+
 	//死亡アニメーションが終わったら
-	SetStatus(St_Delete);
-	
+	//if (!m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+		SetStatus(St_Delete);
+	//}
 }
 
 void CEnemy::SettingStatus(void)
@@ -981,46 +1057,69 @@ void CEnemy::SettingStatus(void)
 	}
 }
 
-CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber)
+CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, bool SubModelCreate)
 	:m_tStatus(St_Create)
-	,m_tPos(FirstPos)
+	, m_pModel(nullptr)
+	, m_tPos()
+	, m_tSize()
+	, m_pSubModel(nullptr)
+	, m_tSubPos()
+	, m_tSubSize()
 	, m_fHp(300.0f)
 	, m_fMaxHp(m_fHp)
-	,m_nTextureNumber(InTextureNumber)
+	, m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
-	, m_nAnimationFrame(0)
 {
-	m_tSize.x = InSize;
-	m_tSize.y = InSize;
-	m_tSize.z = InSize;
-
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
 		m_pModel = g_pLeaderModel[(int)Leader::Linie];
-		m_pHpGage = new CHpUI(m_fHp,CHpUI::Player);
-		m_nAnimationFrame = 1;
-		m_nAnimationX = 8;
-		m_nAnimationY = 8;
+		m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
 		break;
 	case 1://ボス
 		m_pModel = g_pLeaderModel[1];
+		if (SubModelCreate)
+		{
+			m_pSubModel = g_pLeaderModel[2];
+		}
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
-		m_nAnimationFrame = 1;
-		m_nAnimationX = 1;
-		m_nAnimationY = 1;
 		break;
+
 	}
-
-	m_tUVPos = { 0.0f,0.0f };
-	m_tUVScale = { 1.0f / m_nAnimationX,1.0f / m_nAnimationY };
-
+	//メインモデルのサイズと位置
+	if (m_pModel)
+	{
+		m_tPos.x = FirstPos.x;
+		m_tPos.y = FirstPos.y;
+		m_tPos.z = FirstPos.z;
+		m_tSize.x = InSize;
+		m_tSize.y = InSize;
+		m_tSize.z = InSize;
+	}
+	if (m_pSubModel)
+	{
+		m_tSubPos.x = FirstPos.x + 5.0f;
+		m_tSubPos.y = FirstPos.y;
+		m_tSubPos.z = FirstPos.z;
+		m_tSubSize.x = InSize;
+		m_tSubSize.y = InSize;
+		m_tSubSize.z = InSize;
+	}
 }
-
 CLeader::~CLeader()
 {
 	delete m_pHpGage;
 	m_pHpGage = nullptr;
+	if (m_pModel)
+	{
+		delete m_pModel;
+		m_pModel = nullptr;
+	}
+	if (m_pSubModel)
+	{
+		delete m_pSubModel;
+		m_pSubModel = nullptr;
+	}
 }
 
 void CLeader::Update(void)
@@ -1128,14 +1227,24 @@ void CLeader::Draw()
 		}
 		if (m_pModel)
 		{
+			//SetRender3D();
+			//DirectX::XMFLOAT4X4 wvp[3];
+			//DirectX::XMMATRIX world;
+			//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
+			////拡大縮小行列(Scaling)
+			//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+			////回転行列(Rotation)
+			//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			////それぞれの行列を掛け合わせて格納
+			//DirectX::XMMATRIX mat = S * R * T;
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
 			//回転行列(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(180.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 			//それぞれの行列を掛け合わせて格納
 			DirectX::XMMATRIX mat = S * R * T;
 
@@ -1163,6 +1272,46 @@ void CLeader::Draw()
 
 				if (m_pModel) {
 					m_pModel->Draw(i);
+				}
+			}
+		}
+		if (m_pSubModel)
+		{
+			SetRender3D();
+			DirectX::XMFLOAT4X4 wvp[3];
+			DirectX::XMMATRIX world;
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
+			//拡大縮小行列(Scaling)
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+			//回転行列(Rotation)
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			//それぞれの行列を掛け合わせて格納
+			DirectX::XMMATRIX mat = S * R * T;
+
+			world = mat;
+
+			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+			wvp[1] = GetView();
+			wvp[2] = GetProj();
+
+			Geometory::SetView(wvp[1]);
+			Geometory::SetProjection(wvp[2]);
+
+			ShaderList::SetWVP(wvp);
+
+			m_pSubModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pSubModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+			for (int i = 0; i < m_pSubModel->GetMeshNum(); ++i)
+			{
+				Model::Material material = *m_pSubModel->GetMaterial(m_pSubModel->GetMesh(i)->materialID);
+				material.ambient.x = 0.85f; // x (r) 
+				material.ambient.y = 0.85f; // y (g) 
+				material.ambient.z = 0.85f; // z (b) 
+				ShaderList::SetMaterial(material);
+
+				if (m_pSubModel) {
+					m_pSubModel->Draw(i);
 				}
 			}
 		}

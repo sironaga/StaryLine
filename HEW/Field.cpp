@@ -12,17 +12,17 @@ Field::Field(StageType StageNum)
 		switch (StageNum.StageMainNumber)
 		{
 		case (int)EStageType::STAGE_GRASSLAND:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*”{—¦w’è */, Model::XFlip/*”½“]İ’è*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_.fbx"), 1.0f/*å€ç‡æŒ‡å®š */, Model::None/*åè»¢è¨­å®š*/))MessageBox(NULL, "Ground", "Error", MB_OK);aster
 			break;
 		case (int)EStageType::STAGE_DESERT:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*”{—¦w’è */, Model::XFlip/*”½“]İ’è*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*å€ç‡æŒ‡å®š */, Model::None/*åè»¢è¨­å®š*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		case (int)EStageType::STAGE_SNOWFIELD:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_.fbx"), 1.0f/*”{—¦w’è */, Model::XFlip/*”½“]İ’è*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_.fbx"), 1.0f/*å€ç‡æŒ‡å®š */, Model::None/*åè»¢è¨­å®š*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		}
 
-		m_Pos = DirectX::XMFLOAT3(-60.0f, -12.0f, 40.0f);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
 		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
 		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 }
@@ -45,15 +45,15 @@ void Field::Draw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	//s—ñ(Scaling)
+	//è¡Œåˆ—(Scaling)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_Pos.x, m_Pos.y, m_Pos.z, 0.0f));
-	//Šg‘åk¬s—ñ(Scaling)
+	//æ‹¡å¤§ç¸®å°è¡Œåˆ—(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
-	//‰ñ“]s—ñ(Rotation)
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_Angle.x);//X²‰ñ“]s—ñ;
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_Angle.y);//Y²‰ñ“]s—ñ;
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle.z);//Z²‰ñ“]s—ñ;
-	//‚»‚ê‚¼‚ê‚Ìs—ñ‚ğŠ|‚¯‡‚í‚¹‚ÄŠi”[
+	//å›è»¢è¡Œåˆ—(Rotation)
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_Angle.x);//Xè»¸å›è»¢è¡Œåˆ—;
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_Angle.y);//Yè»¸å›è»¢è¡Œåˆ—;
+	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle.z);//Zè»¸å›è»¢è¡Œåˆ—;
+	//ãã‚Œãã‚Œã®è¡Œåˆ—ã‚’æ›ã‘åˆã‚ã›ã¦æ ¼ç´
 	DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T;
 
 	world = mat;
@@ -92,57 +92,57 @@ void Field::Draw()
 //	pModel = InModel;
 //	for (int i = 0; i < MaxModel; i++, pModel++)
 //	{
-//		if (!m_Use)continue;//g—p‚µ‚Ä‚¢‚éƒ‚ƒfƒ‹‚Ì‚İˆ—
+//		if (!m_Use)continue;//ä½¿ç”¨ã—ã¦ã„ã‚‹ãƒ¢ãƒ‡ãƒ«ã®ã¿å‡¦ç†
 //
-//		//’¸“_ƒVƒF[ƒ_[‚É“n‚·•ÏŠ·s—ñ‚ğì¬
+//		//é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã«æ¸¡ã™å¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 //		DirectX::XMFLOAT4X4 wvp[3];
 //		DirectX::XMMATRIX world, view, proj;
 //
-//		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z); //ˆÚ“®s—ñ;   // “V–Ê‚ªƒOƒŠƒbƒh‚æ‚è‚à‰º‚É—ˆ‚é‚æ‚¤‚ÉˆÚ“® 
-//		DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_Angle.x);//X²‰ñ“]s—ñ;
-//		DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_Angle.y);//Y²‰ñ“]s—ñ;
-//		DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle.z);//Z²‰ñ“]s—ñ;
-//		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);//Šg‘åk¬s—ñ; // ’n–Ê‚Æ‚È‚é‚æ‚¤‚ÉA‘OŒã¶‰E‚ÉL‚­Aã‰º‚É‹·‚­‚·‚é
-//		DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T; // ‚»‚ê‚¼‚ê‚Ìs—ñ‚ğŠ|‚¯‡‚í‚¹‚ÄŠi”[(Šî–{“I‚É‚±‚Ì‡”Ô‚ÅŠ|‚¯‚é)
+//		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_Pos.x, m_Pos.y, m_Pos.z); //ç§»å‹•è¡Œåˆ—;   // å¤©é¢ãŒã‚°ãƒªãƒƒãƒ‰ã‚ˆã‚Šã‚‚ä¸‹ã«æ¥ã‚‹ã‚ˆã†ã«ç§»å‹• 
+//		DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_Angle.x);//Xè»¸å›è»¢è¡Œåˆ—;
+//		DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_Angle.y);//Yè»¸å›è»¢è¡Œåˆ—;
+//		DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle.z);//Zè»¸å›è»¢è¡Œåˆ—;
+//		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);//æ‹¡å¤§ç¸®å°è¡Œåˆ—; // åœ°é¢ã¨ãªã‚‹ã‚ˆã†ã«ã€å‰å¾Œå·¦å³ã«åºƒãã€ä¸Šä¸‹ã«ç‹­ãã™ã‚‹
+//		DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T; // ãã‚Œãã‚Œã®è¡Œåˆ—ã‚’æ›ã‘åˆã‚ã›ã¦æ ¼ç´(åŸºæœ¬çš„ã«ã“ã®é †ç•ªã§æ›ã‘ã‚‹)
 //
 //		world = mat;
 //
-//		// ŒvZ—p‚Ìƒf[ƒ^‚©‚ç“Ç‚İæ‚è—p‚Ìƒf[ƒ^‚É•ÏŠ·
+//		// è¨ˆç®—ç”¨ã®ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰èª­ã¿å–ã‚Šç”¨ã®ãƒ‡ãƒ¼ã‚¿ã«å¤‰æ›
 //		DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 //		//DirectX::XMStoreFloat4x4(&wvp[1], DirectX::XMMatrixTranspose(view));
 //		//DirectX::XMStoreFloat4x4(&wvp[2], DirectX::XMMatrixTranspose(proj));
 //
-//		wvp[1] = GetView();// C³‚µ‚Ä‚­‚¾‚³‚¢
-//		wvp[2] = GetProj();// C³‚µ‚Ä‚­‚¾‚³‚¢
+//		wvp[1] = GetView();// ä¿®æ­£ã—ã¦ãã ã•ã„
+//		wvp[2] = GetProj();// ä¿®æ­£ã—ã¦ãã ã•ã„
 //
 //		Geometory::SetView(wvp[1]);
 //		Geometory::SetProjection(wvp[2]);
 //
-//		// ƒVƒF[ƒ_[‚Ö•ÏŠ·s—ñ‚ğİ’è
-//		ShaderList::SetWVP(wvp); // ˆø”‚É‚ÍXMFLOAT4X4Œ^‚ÌA—v‘f”‚R‚Ì”z—ñ‚ÌƒAƒhƒŒƒX‚ğ“n‚·‚±‚Æ
+//		// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+//		ShaderList::SetWVP(wvp); // å¼•æ•°ã«ã¯XMFLOAT4X4å‹ã®ã€è¦ç´ æ•°ï¼“ã®é…åˆ—ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æ¸¡ã™ã“ã¨
 //
-//		//ƒ‰ƒCƒg•ÏX
-//		ShaderList::SetLight(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, -5.0f, 0.0f));//‰Û‘è‚Ì
+//		//ãƒ©ã‚¤ãƒˆå¤‰æ›´
+//		ShaderList::SetLight(DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, -5.0f, 0.0f));//èª²é¡Œã®æ™‚
 //		
-//		// ƒ‚ƒfƒ‹‚Ég—p‚·‚é’¸“_ƒVƒF[ƒ_[AƒsƒNƒZƒ‹ƒVƒF[ƒ_[‚ğİ’è
+//		// ãƒ¢ãƒ‡ãƒ«ã«ä½¿ç”¨ã™ã‚‹é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã€ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¨­å®š
 //		m_pModel[m_Model]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
 //		m_pModel[m_Model]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 //
-//		// •¡”‚ÌƒƒbƒVƒ…‚Å\¬‚³‚ê‚Ä‚¢‚éê‡A‚ ‚é•”•ª‚Í‹à‘®“I‚È•\Œ»A‚ ‚é•”•ª‚Í”ñ‹à‘®“I‚È•\Œ»‚Æ
-//		//  •ª‚¯‚éê‡‚ª‚ ‚éB‘O‰ñ‚Ì•\¦‚Í“¯‚¶ƒ}ƒeƒŠƒAƒ‹‚ÅˆêŠ‡•\¦‚µ‚Ä‚¢‚½‚½‚ßAƒƒbƒVƒ…‚²‚Æ‚Éƒ}ƒeƒŠƒAƒ‹‚ğ
-//		//  Ø‚è‘Ö‚¦‚éB
+//		// è¤‡æ•°ã®ãƒ¡ãƒƒã‚·ãƒ¥ã§æ§‹æˆã•ã‚Œã¦ã„ã‚‹å ´åˆã€ã‚ã‚‹éƒ¨åˆ†ã¯é‡‘å±çš„ãªè¡¨ç¾ã€ã‚ã‚‹éƒ¨åˆ†ã¯éé‡‘å±çš„ãªè¡¨ç¾ã¨
+//		//  åˆ†ã‘ã‚‹å ´åˆãŒã‚ã‚‹ã€‚å‰å›ã®è¡¨ç¤ºã¯åŒã˜ãƒãƒ†ãƒªã‚¢ãƒ«ã§ä¸€æ‹¬è¡¨ç¤ºã—ã¦ã„ãŸãŸã‚ã€ãƒ¡ãƒƒã‚·ãƒ¥ã”ã¨ã«ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’
+//		//  åˆ‡ã‚Šæ›¿ãˆã‚‹ã€‚
 //		for (int j = 0; j < m_pModel[m_Model]->GetMeshNum(); j++) 
 //		{
-//			//  ƒƒbƒVƒ…‚ÉŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éƒ}ƒeƒŠƒAƒ‹‚ğæ“¾
+//			//  ãƒ¡ãƒƒã‚·ãƒ¥ã«å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’å–å¾—
 //			Model::Material material = *m_pModel[m_Model]->GetMaterial(m_pModel[m_Model]->GetMesh(i)->materialID);
 //
 //			material.ambient.x = 0.85f; // x (r) 
 //			material.ambient.y = 0.85f; // y (g) 
 //			material.ambient.z = 0.85f; // z (b) 
 //
-//			//  ƒVƒF[ƒ_[‚Öƒ}ƒeƒŠƒAƒ‹‚ğİ’è
+//			//  ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’è¨­å®š
 //			ShaderList::SetMaterial(material);
-//			//  ƒ‚ƒfƒ‹‚Ì•`‰æ
+//			//  ãƒ¢ãƒ‡ãƒ«ã®æç”»
 //			m_pModel[m_Model]->Draw(j);
 //		}
 //	}
@@ -150,5 +150,5 @@ void Field::Draw()
 //
 //void Field::FieldModelUpdate(FieldModel* InModel, int MaxModel)
 //{
-//	//ƒtƒB[ƒ‹ƒh‚ÌXV
+//	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®æ›´æ–°
 //}
