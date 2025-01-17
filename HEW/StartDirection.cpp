@@ -6,13 +6,13 @@ CStartDirection::CStartDirection()
 	:m_tPos({ 0.0f, 0.0f, 0.0f })
 	, m_tPosTex({ 0.0f, 0.0f})
 	, m_tRotate({ 0.0f, 0.0f, 0.0f })
-	, m_tSize({ 1.0f,1.0f, 1.0f })
+	, m_tSize({ 0.3f,0.07f, 1.0f })
 	, m_tSizeTex({ 1.0f,1.0f })
 	,m_timer(0.0f)
 ,m_NowDraw(false)
 {
 	//m_StartNumberUI = new CNumberUI();
-	m_StratSprite = new SpriteEx(TEX_PASS("Fever_Star/Red_Fever_Star.png"));
+	m_StratSprite = new SpriteEx(TEX_PASS("Start/Battle_Start.png"));
 }
 
 CStartDirection::~CStartDirection()
