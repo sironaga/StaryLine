@@ -7,17 +7,23 @@
 StarLine::StarLine()
 	:Pos{},Scl{},Rot{},world{}, View{},Proj{}
 {
-	m_pModel = new CModelEx(MODEL_PASS("Board_Line/Board_Line.fbx"), false);
+	m_pModel[0] = new CModelEx(MODEL_PASS("Board_Line/Board_Line.fbx"), false);
+	m_pModel[1] = new CModelEx(MODEL_PASS("NULL"), false);
 	m_pBox = new Geometory();
-
+	nNumber = 0;
 }
 
 StarLine::~StarLine()
 {
-	if (m_pModel)
+	if (m_pModel[0])
 	{
-		delete m_pModel;
-		m_pModel = nullptr;
+		delete m_pModel[0];
+		m_pModel[0] = nullptr;
+	}
+	if (m_pModel[1])
+	{
+		delete m_pModel[1];
+		m_pModel[1] = nullptr;
 	}
 	if (m_pBox)
 	{
@@ -137,13 +143,18 @@ void StarLine::DispLine()
 	else
 	{
 
-		m_pModel->SetViewMatrix(GetView());
-		m_pModel->SetProjectionMatrix(GetProj());
-		m_pModel->SetWorldMatrix(world);
+		m_pModel[nNumber]->SetViewMatrix(GetView());
+		m_pModel[nNumber]->SetProjectionMatrix(GetProj());
+		m_pModel[nNumber]->SetWorldMatrix(world);
 		//m_pModel->SetPostion(10.0f, 10.0f, 10.0f);
 		//m_pModel->SetRotation(0.0f, Rot.y, 0.0f);
 		//m_pModel->SetScale(10.0f, 10.0f, 10.0f);
-		m_pModel->Draw();
+		m_pModel[nNumber]->Draw();
 
 	}
+}
+
+void StarLine::SetLineMode(int nInMode)
+{
+	nNumber = nInMode;
 }

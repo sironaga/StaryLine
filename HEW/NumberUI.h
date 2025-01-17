@@ -15,10 +15,12 @@ public:
 	void SetScale(FLOAT3);
 	void SetColor(float R, float G, float B, float A);
 	void SetLend(int InData);
+	void SetNumberColor(int InColor);
 private:
-	SpriteEx* m_pNumber[2][10];
+	SpriteEx* m_pNumber[2][10][10];
 	int nNumber;
 	int nLong;
+	int nColor;
 	FLOAT3 Pos;
 	FLOAT3 Scale;
 	FLOAT3 color;

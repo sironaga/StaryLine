@@ -26,6 +26,7 @@
 #include "SceneGame.h"
 #include "SceneResult.h"
 #include "SceneDebug.h"
+#include "StartDirection.h"
 
 //--- グローバル変数
 CStageSelect* g_pSceneSelect;
@@ -37,6 +38,7 @@ CSoundList* g_mainsound;
 bool IsGame = true;
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
+CStartDirection* g_pDirection;
 HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
 int g_NowWide = 1920;
@@ -49,7 +51,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// DirectX初期化
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
-
+	
 	// 他機能初期化
 	g_Camera = new CameraDebug();
 	Geometory::Init();
@@ -63,6 +65,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 
+	//ゲームスタート演出作成
+	g_pDirection = new CStartDirection();
+
 	// フェード作成 
 	g_pFade = new CFadeBlack();
 	g_pFade->SetFade(1.0f, true);
@@ -70,6 +75,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// シーン作成 
 	g_pScene = new CSceneTitle();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
+	g_pScene->SetGameDirection(g_pDirection);
 
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
@@ -83,7 +89,7 @@ void Uninit()
 {
 	SAFE_DELETE(g_pScene);
 	SAFE_DELETE(g_pFade);
-
+	SAFE_DELETE(g_pDirection);
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
@@ -131,7 +137,7 @@ void Update()
 		{
 		case SCENE_TITLE:g_pScene = new CSceneTitle(); break; // TITLE 
 		case STAGE_SELECT: g_pScene = new CStageSelect(); break;
-		case SCENE_GAME:g_pScene = new CSceneGame(stage); break; // GAME 
+		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(2.0f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
@@ -141,6 +147,8 @@ void Update()
 		g_pFade->SetFade(1.0f, true);
 		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
 		g_pScene->SethWnd(g_hWnd);
+		
+		g_pScene->SetGameDirection(g_pDirection);
 	}
 }
 
@@ -329,6 +337,7 @@ void InitResolusionMain()
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();
+	g_pDirection = new CStartDirection();
 }
 void SetNowResolusion(int wide, int height)
 {
