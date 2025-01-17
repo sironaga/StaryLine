@@ -2,6 +2,7 @@
 
 #include "Fade.h"
 #include "Main.h"
+#include "StartDirection.h"
 
 class CScene 
 {
@@ -33,11 +34,16 @@ public:
 	void SetNext(int next);
 	void SetNext(int next, StageType stage);
 
+	//ウィンドウの情報を設定
 	void SethWnd(HWND hWnd);
 	HWND GethWnd();
+
+	//ゲームスタート演出
+	void SetGameDirection(CStartDirection* Direction);
 protected:
 	CFade* m_pFade; // フェード処理クラス 
 	int  m_next;  // 切り替え先のシーン 
 	StageType m_tStage;
-	HWND m_phWnd;
+	HWND m_phWnd;//ウィンドウ情報
+	CStartDirection* m_GameDirection;
 };

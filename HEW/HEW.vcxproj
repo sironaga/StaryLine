@@ -63,6 +63,7 @@
     <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="StarLine.cpp" />
+    <ClCompile Include="StartDirection.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UI.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="SpriteEx.h" />
     <ClInclude Include="StageSelect.h" />
     <ClInclude Include="StarLine.h" />
+    <ClInclude Include="StartDirection.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="_StructList.h" />
