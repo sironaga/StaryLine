@@ -265,8 +265,9 @@ void CBattle::Update(void)
 							}
 						}
 					}
-						//移動処理
-						Move(i, Ally);
+					//移動処理
+					//if (!m_pAlly[i]->m_bIsAttack)
+					Move(i, Ally);
 				}
 			}
 		}
@@ -328,7 +329,8 @@ void CBattle::Update(void)
 
 				}
 					//移動処理
-					Move(i, Enemy);
+				//if (!m_pEnemy[i]->m_bIsAttack)
+				Move(i, Enemy);
 			}
 		}
 	}
@@ -348,18 +350,12 @@ void CBattle::Update(void)
 		//敵のリーダーがnullptrになっていたら
 		if (m_pEnemyLeader == nullptr)
 		{
-			MessageBox(NULL, "ボスを倒したためステージクリア！！", "勝敗", MB_OK);
 			m_bWin = true;
 			m_bEnd = true;
 		}
-	}
-	//シーンがゲームだったら
-	if (GetScene() == SCENE_GAME)
-	{
-		//敵のリーダーがnullptrになっていたら
+		//味方のリーダーがnullptrになっていたら
 		if (m_pAllyLeader == nullptr)
 		{
-			MessageBox(NULL, "プレイヤーが倒されたため敗北", "勝敗", MB_OK);
 			m_bWin = false;
 			m_bEnd = true;
 		}
@@ -955,15 +951,24 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			if (Z1 < 0)Z1 *= -1.0f;
 			if (Z2 < 0)Z2 *= -1.0f;
 
-			if (Z1 <= Z2)continue;
+			if (Z1 >= Z2)continue;
 
 			//重なっているか確認
 			if (m_pAlly[i]->OverlapCheck(AllyPos, AllySize))
 			{
-				//補正移動先を目的地に移動
-				m_pAlly[i]->SetDestinationPos({ -AllyPos.x,AllyPos.y,-AllyPos.z });
-				//移動フラグを立てる
-				m_pAlly[i]->SetMoveFlag(true);
+				//目的地先の座標格納
+				DirectX::XMFLOAT3 DestinationPos;
+				DestinationPos.x = iAllyPos.x + ((iAllyPos.x - AllyPos.x) * 10);
+				DestinationPos.y = iAllyPos.y;
+				DestinationPos.z = iAllyPos.z + ((iAllyPos.z - AllyPos.z) * 10);
+
+				m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, DestinationPos).x);
+				m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, DestinationPos).z);
+
+				////補正移動先を目的地に移動
+				//m_pAlly[i]->SetDestinationPos(DestinationPos);
+				////移動フラグを立てる
+				//m_pAlly[i]->SetMoveFlag(true);
 
 				return false;
 			}
@@ -998,15 +1003,24 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			if (Z1 < 0)Z1 *= -1.0f;
 			if (Z2 < 0)Z2 *= -1.0f;
 
-			if (Z1 <= Z2)continue;
+			if (Z1 >= Z2)continue;
 
 			//重なっているか確認
 			if (m_pEnemy[i]->OverlapCheck(EnemyPos, EnemySize))
 			{
-				//補正移動先を目的地に移動
-				m_pEnemy[i]->SetDestinationPos({ -EnemyPos.x,EnemyPos.y,-EnemyPos.z });
-				//移動フラグを立てる
-				m_pEnemy[i]->SetMoveFlag(true);
+				//目的地先の座標格納
+				DirectX::XMFLOAT3 DestinationPos;
+				DestinationPos.x = iEnemyPos.x + ((iEnemyPos.x - EnemyPos.x)* 10);
+				DestinationPos.y = iEnemyPos.y;
+				DestinationPos.z = iEnemyPos.z + ((iEnemyPos.z - EnemyPos.z)* 10);
+
+				m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
+				m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
+
+				////補正移動先を目的地に移動
+				//m_pEnemy[i]->SetDestinationPos(DestinationPos);
+				////移動フラグを立てる
+				//m_pEnemy[i]->SetMoveFlag(true);
 
 				return false;
 			}
@@ -1160,6 +1174,7 @@ void CBattle::Alive(void)
 			{
 				//ステータスを死亡状態にする
 				m_pAlly[l]->SetStatus(St_Death);
+				//m_pAlly[l]->PlayDeathEffect();
 			}
 		}
 	}
@@ -1174,6 +1189,7 @@ void CBattle::Alive(void)
 			{
 				//ステータスを死亡状態にする
 				m_pEnemy[l]->SetStatus(St_Death);
+				//m_pEnemy[l]->PlayDeathEffect();
 			}
 		}
 	}
@@ -1439,7 +1455,18 @@ void CBattle::CreateLeader(void)
 		//Z座標を設定
 		BossFirstPos.z = ENEMYBOSSCORE_POSZ;
 		//敵のリーダーを生成
-		m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1);
+		switch (m_nStageNum.StageMainNumber)
+		{
+		case 0://草原(クラッカー)
+			m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1, false);
+			break;
+		case 1://砂漠(ヌガー)
+			m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1, false);
+			break;
+		case 2://雪原(カヌレ＆ボルドー)
+			m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1, true);
+			break;
+		}
 	}
 }
 

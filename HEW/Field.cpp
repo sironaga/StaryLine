@@ -12,17 +12,17 @@ Field::Field(StageType StageNum)
 		switch (StageNum.StageMainNumber)
 		{
 		case (int)EStageType::STAGE_GRASSLAND:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_.fbx"), 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_.fbx"), 1.0f/*î{ó¶éwíË */, Model::None/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		case (int)EStageType::STAGE_DESERT:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f/*î{ó¶éwíË */, Model::None/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		case (int)EStageType::STAGE_SNOWFIELD:
-			if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_.fbx"), 1.0f/*î{ó¶éwíË */, Model::XFlip/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
+			if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_.fbx"), 1.0f/*î{ó¶éwíË */, Model::None/*îΩì]ê›íË*/))MessageBox(NULL, "Ground", "Error", MB_OK);
 			break;
 		}
 
-		m_Pos = DirectX::XMFLOAT3(-60.0f, -12.0f, 40.0f);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
 		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
 		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 }
