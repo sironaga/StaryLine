@@ -132,11 +132,16 @@ void CStageSelect::Update()
 			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE2; }
 		default: break;
 		}
-	}
-	if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) 
-	{
-		CSceneResult::InStageLevel(g_Select_type);
-		SetNext(SCENE_GAME, g_Select_type); 
+	
+		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+		{
+			CSceneResult::InStageLevel(g_Select_type);
+			SetNext(SCENE_GAME, g_Select_type);
+		}
+		if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+		{
+			MainStage ^= true;
+		}
 	}//ÉVÅ[Éìà⁄çs
 }
 
