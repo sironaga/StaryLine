@@ -41,6 +41,7 @@ private:
 	int nSlect; 
 	float CScle;
 	float nCount;
+	float fStarAngle;
 	float CPosY;
 	float StarPosY;
 	float LogoAngle;

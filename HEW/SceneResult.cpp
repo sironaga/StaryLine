@@ -1,5 +1,6 @@
 #include "SceneResult.h"
 #include"Input.h"
+#include"InputEx.h"
 #include"Controller.h"
 #include"InputEx.h"
 
@@ -143,15 +144,14 @@ CSceneResult::CSceneResult()
 
 	// 選択初期化
 	nSlect = 0;
-
 	CPosY = 200.0f;
 	CScle = 0;
 	nCount = 0;
 	StarPosY = 1000.0f;
 	LogoAngle = 0.0f;
+	fStarAngle = 90.0f;
 	// Animationタイマー
 	nAnimationTimer = timeGetTime();
-
 	// 数字の描画
 	m_pNumber = new CNumberUI();
 	m_pNumber->SetColor(1.5f, 0.7f, 0.7f, 1.0f);
@@ -229,12 +229,12 @@ CSceneResult::~CSceneResult()
 void CSceneResult::Update()
 {
 	// -- 入力処理
-	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT))
+	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyPress('A'))
 	{
 		nSlect = 0;
 		// SE
 	}
-	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))
+	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyPress('D'))
 	{
 		nSlect = 1;
 		// SE
@@ -258,10 +258,15 @@ void CSceneResult::Update()
 			// --- 
 
 
-
 			// Next
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
 			{
+				StageLevel.StageSubNumber++;
+				if (StageLevel.StageSubNumber > 3)
+				{
+					StageLevel.StageSubNumber = 1;
+					StageLevel.StageMainNumber++;
+				}
 				SetNext(SCENE_GAME, StageLevel);
 			}
 
@@ -269,7 +274,7 @@ void CSceneResult::Update()
 		else
 		{
 			// Retry
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) )
 			{
 				SetNext(SCENE_GAME, StageLevel);
 			}
@@ -357,6 +362,7 @@ void CSceneResult::Draw()
 		m_pCharacter->Disp();
 		m_pCharacter->SetUvSize(1.0f, 1.0f);
 		m_pCharacter->SetUvPos(0.0f, 0.0f);
+
 		m_pText->SetTexture();
 		m_pText->Disp();
 	}
@@ -377,15 +383,27 @@ void CSceneResult::Draw()
 			else
 			{
 				StarPosY -= 10.0f;
+				fStarAngle -= 1.0f;
+			
 				if (StarPosY < 0.0f)
 				{
 					StarPosY = 0.0f;
 				}
+
+				if (fStarAngle < 0.0f)
+				{
+					fStarAngle = 0.0f;
+				}
+
 				if (LogoAngle < 10.0f)
 				{
 					LogoAngle++;
 				}
 			}
+		}
+		else
+		{
+			nAnimationFrame = 0;
 		}
 		CScle = sinf(nCount);
 		CScle = CScle / 20.0f;
@@ -394,9 +412,12 @@ void CSceneResult::Draw()
 		m_pCharacter->SetPositon(940.0f, 620.0f - CPosY, 10.0f);
 		m_pCharacter->SetTexture();
 		m_pCharacter->Disp();
+
 		float Angle;
 		Angle = 180.0f + (float)LogoAngle;
+
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(Angle));
+		m_pText->SetPositon(960.0f, 150.0f, 10.0f);
 		m_pText->SetTexture();
 		m_pText->Disp();
 
@@ -450,25 +471,27 @@ void CSceneResult::Draw()
 		}
 		else
 		{
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
+			float dAngle;
+			dAngle = 225.0f + fStarAngle;
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 			m_pStar->SetPositon(400.0f, 740.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
-
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			dAngle = 180.0f - fStarAngle;
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 			m_pStar->SetPositon(475.0f, 730.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
-
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			dAngle = 180.0f + fStarAngle;
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 			m_pStar->SetPositon(1350.0f, 730.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
-
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(225.0f));
+			dAngle = 225.0f - fStarAngle;
+			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
 			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 			m_pStar->SetPositon(1500.0f, 740.0f - StarPosY, 10.0f);
 			m_pStar->SetTexture();
