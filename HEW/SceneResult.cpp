@@ -1,23 +1,22 @@
+// --- Include
 #include "SceneResult.h"
 #include"Input.h"
 #include"InputEx.h"
 #include"Controller.h"
 #include"InputEx.h"
 
-
+// --- Global
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
-
 
 CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	ResultGameData.bWin = 0;
+	//ResultGameData.bWin = 0;
 
 	// --- テクスチャの読み込み
-	
-	// --- Default
+	// -- Default
 	m_pHitPoint			= new SpriteEx("Assets/Texture/Result/Result_Helth.png");
 	m_pStageSelect[0]	= new SpriteEx("Assets/Texture/Result/Result_Stageselect.png");
 	m_pStageSelect[1]	= new SpriteEx("Assets/Texture/Result/Result_Stageselect_Push.png");
@@ -28,7 +27,7 @@ CSceneResult::CSceneResult()
 	m_pUnderBar			= new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
 	m_pBack				= new SpriteEx("Assets/Texture/Result/B.png");
 
-
+	// -- 分岐読み込み
 	if (ResultGameData.bWin)
 	{
 		// --- WinData
@@ -228,7 +227,7 @@ CSceneResult::~CSceneResult()
 
 void CSceneResult::Update()
 {
-	// -- 入力処理
+	// --- 入力処理
 	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyPress('A'))
 	{
 		nSlect = 0;
@@ -281,17 +280,12 @@ void CSceneResult::Update()
 		}
 	}
 	// ----
+	// --- AnimationProcess
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
 		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
-	m_pNumber->SetNumber(1);
-
-}
-
-void CSceneResult::Draw()
-{
 	// --- 更新処理
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -327,8 +321,12 @@ void CSceneResult::Draw()
 	m_pBack->SetView(Get2DView());
 	m_pStar->SetProjection(Get2DProj());
 	m_pStar->SetView(Get2DView());
-	// -- 描画
 
+}
+
+void CSceneResult::Draw()
+{
+	// -- 描画
 	m_pBack->SetTexture();
 	m_pBack->Disp();
 	m_pLighting->SetTexture();
@@ -336,7 +334,7 @@ void CSceneResult::Draw()
 	m_pShadow->SetTexture();
 	m_pShadow->Disp();
 
-
+	// --　分岐によるアニメーション処理
 	if (ResultGameData.bWin)
 	{
 		// Animation計算
@@ -422,6 +420,7 @@ void CSceneResult::Draw()
 		m_pText->Disp();
 
 	}
+
 		m_pHitPoint->SetTexture();
 		m_pHitPoint->Disp();
 		m_pClearTime->SetTexture();
@@ -438,7 +437,7 @@ void CSceneResult::Draw()
 		m_pNextUI[0]->Disp();
 		m_pSelect[nSlect]->SetTexture();
 		m_pSelect[nSlect]->Disp();
-
+		// 分岐による星描画処理
 		if (ResultGameData.bWin)
 		{
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));

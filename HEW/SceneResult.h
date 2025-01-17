@@ -35,7 +35,7 @@ private:
 	SpriteEx* m_pStar;
 
 
-
+	// --- •Ï”
 	int nAnimationTimer;
 	int nAnimationFrame;
 	int nSlect; 
