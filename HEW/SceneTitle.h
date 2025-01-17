@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "Option.h"
 #include "Texture.h"
+#include "SpriteEx.h"
 #include "_StructList.h"
 
 //プロトタイプ宣言
@@ -32,4 +33,15 @@ private:
 	COption* m_pOption;
 	Texture* m_pSelect;
 	SpriteParam* m_pParam;
+
+private:
+	SpriteEx* m_pTitleLogo;
+	SpriteEx* m_pTitleFrame;
+	SpriteEx* m_pTitleUnderbar;
+	SpriteEx* m_pTitleStart[2];
+	SpriteEx* m_pTitleContinued[2];
+	SpriteEx* m_pTitleOption[2];
+	SpriteEx* m_pTitleEnd[2];
+	DirectX::XMFLOAT2 m_SelectPos;
+	bool m_bSelected;
 };

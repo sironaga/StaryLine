@@ -137,6 +137,7 @@ void Sprite::SetParam(SpriteParam* param)
 	m_data.param[1].y = param->uvPos.y;
 	m_data.param[1].z = param->uvSize.x;
 	m_data.param[1].w = param->uvSize.y;
+	m_data.param[2] = param->color;
 	m_data.matrix[0] = param->world;
 	m_data.matrix[1] = param->view;
 	m_data.matrix[2] = param->proj;
@@ -258,6 +259,7 @@ void Sprite::ReSetSprite()
 	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 	Sprite::SetSize({ 1.0f,1.0f });
 	Sprite::SetOffset({ 0.0f,0.0f });
+	Sprite::SetTexture(nullptr);
 }
 
 void Sprite::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight)

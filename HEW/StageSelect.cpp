@@ -7,6 +7,7 @@
 #include "SpriteDrawer.h"
 #include "InputEx.h"
 #include "SoundList.h"
+#include"SceneResult.h"
 
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
@@ -126,13 +127,16 @@ void CStageSelect::Update()
 			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) { SetNext(SCENE_GAME, g_Select_type); }//シーン移行
 			break;
 
-		case(STAGE3):
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE2; }
-			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) { SetNext(SCENE_GAME, g_Select_type); }//シーン移行
-		default: break;
-		}
-		if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A)) { MainStage ^= true; }
+	case(STAGE3):
+		//if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE1; }
+		if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))		{ g_Select_type.StageSubNumber = STAGE2; }
+	default: break;
 	}
+	if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B)) 
+	{
+		CSceneResult::InStageLevel(g_Select_type);
+		SetNext(SCENE_GAME, g_Select_type); 
+	}//シーン移行
 }
 
 void CStageSelect::Draw()

@@ -13,7 +13,9 @@
 #include "Geometory.h"
 #include "FadeBlack.h"
 
-#define SELECT_MOVE (90.0f)
+#define SELECT_MOVE (80.0f)
+#define CENTER_POS_X SCREEN_WIDTH / 2.0f
+#define CENTER_POS_Y SCREEN_HEIGHT / 2.0f
 
 enum
 {
@@ -33,15 +35,50 @@ enum E_TITLE_TYPE
 
 
 CSceneTitle::CSceneTitle()
-	:f_SelectY(350.0f), m_pSelect(nullptr)
+	:f_SelectY(350.0f), m_pSelect(nullptr), m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 {
 	g_Title_type = GAMESTART;
 	m_pSelect = new Texture();
+	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
 	if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
-	m_pParam = new SpriteParam();
-	m_pParam->pos = { -160.0f,-170.0f };
-	m_pParam->size = { 100.0f,100.0f };
-	m_pParam->world = m_pParam->operator()();
+	//テクスチャの読み込み
+	/*tex = new Texture();
+	tex->Create("Assets/Texture/Title/Title_Logo.png");*/
+	m_pTitleLogo		 = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
+	m_pTitleFrame		 = new SpriteEx("Assets/Texture/Title/Title_Selected.png");
+	m_pTitleUnderbar	 = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
+	m_pTitleStart[0]	 = new SpriteEx("Assets/Texture/Title/Title_First.png");
+	m_pTitleStart[1]	 = new SpriteEx("Assets/Texture/Title/Title_Start_Push.png");
+	m_pTitleContinued[0] = new SpriteEx("Assets/Texture/Title/Title_Continued.png");
+	m_pTitleContinued[1] = new SpriteEx("Assets/Texture/Title/Title_Continue_push.png");
+	m_pTitleOption[0]	 = new SpriteEx("Assets/Texture/Title/Title_Option.png");
+	m_pTitleOption[1]	 = new SpriteEx("Assets/Texture/Title/Title_Option_push.png");
+	m_pTitleEnd[0]		 = new SpriteEx("Assets/Texture/Title/Title_Finish.png");
+	m_pTitleEnd[1]		 = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
+
+	for (int nLoop = 0; nLoop < 2; nLoop++)
+	{
+		m_pTitleStart[nLoop]->SetProjection(Get2DProj());
+		m_pTitleStart[nLoop]->SetView(Get2DView());
+		m_pTitleContinued[nLoop]->SetProjection(Get2DProj());
+		m_pTitleContinued[nLoop]->SetView(Get2DView());
+		m_pTitleOption[nLoop]->SetProjection(Get2DProj());
+		m_pTitleOption[nLoop]->SetView(Get2DView());
+		m_pTitleEnd[nLoop]->SetProjection(Get2DProj());
+		m_pTitleEnd[nLoop]->SetView(Get2DView());
+	}
+	m_pTitleLogo->SetProjection(Get2DProj());
+	m_pTitleLogo->SetView(Get2DView());
+	m_pTitleFrame->SetProjection(Get2DProj());
+	m_pTitleFrame->SetView(Get2DView());
+	m_pTitleUnderbar->SetProjection(Get2DProj());
+	m_pTitleUnderbar->SetView(Get2DView());
+
+
+	//m_pParam = new SpriteParam();
+	//m_pParam->pos = { -160.0f,-170.0f };
+	//m_pParam->size = { 100.0f,100.0f };
+	//m_pParam->world = m_pParam->operator()();
 
 	m_pOption = new COption();
 	g_pTitleBG = new CBackGround();
@@ -67,8 +104,48 @@ CSceneTitle::~CSceneTitle()
 	delete g_pTitleBG;
 	g_pTitleBG = nullptr;
 
+	for (int nLoop = 0; nLoop < 2; nLoop++)
+	{
+		if (m_pTitleStart[nLoop])
+		{
+			delete m_pTitleStart[nLoop];
+			m_pTitleStart[nLoop] = nullptr;
+		}
+		if (m_pTitleContinued[nLoop])
+		{
+			delete m_pTitleContinued[nLoop];
+			m_pTitleContinued[nLoop] = nullptr;
+		}
+		if (m_pTitleOption[nLoop])
+		{
+			delete m_pTitleOption[nLoop];
+			m_pTitleOption[nLoop] = nullptr;
+		}
+		if (m_pTitleEnd[nLoop])
+		{
+			delete m_pTitleEnd[nLoop];
+			m_pTitleEnd[nLoop] = nullptr;
+		}
+	}
+	if (m_pTitleLogo)
+	{
+		delete m_pTitleLogo;
+		m_pTitleLogo = nullptr;
+	}
+	if (m_pTitleFrame)
+	{
+		delete m_pTitleFrame;
+		m_pTitleFrame = nullptr;
+	}
+	if (m_pTitleUnderbar)
+	{
+		delete m_pTitleUnderbar;
+		m_pTitleLogo = nullptr;
+	}
+
+
 	SAFE_DELETE(m_pSelect);
-	SAFE_DELETE(m_pParam);
+	//SAFE_DELETE(m_pParam);
 }
 
 void CSceneTitle::Update()
@@ -80,75 +157,85 @@ void CSceneTitle::Update()
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 
-	if (m_pOption->GetOption())m_pOption->Update();
-
-	switch (g_Title_type)
+	if (m_pOption->GetOption())
 	{
-	case(GAMESTART):
-		if (IsKeyTrigger(VK_DOWN))
-		{
-			g_Title_type = GAMECONTINUE;
-			m_pParam->pos.y -= SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			SetNext(STAGE_SELECT);
-		}
-		break;
+		m_bSelected = false;
+		m_pOption->Update();
+	}
 
-	case(GAMECONTINUE):
-		if (IsKeyTrigger(VK_DOWN))
+	if (!m_bSelected)
+	{
+		switch (g_Title_type)
 		{
-			g_Title_type = GAMEOPTION;
-			m_pParam->pos.y -= SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_UP))
-		{
-			g_Title_type = GAMESTART;
-			m_pParam->pos.y += SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			//コンティニューシーンへ切り替える処理
-
-		}
-		break;
-
-	case(GAMEOPTION):
-		if (!m_pOption->GetOption())
-		{
+		case(GAMESTART):
 			if (IsKeyTrigger(VK_DOWN))
 			{
-				g_Title_type = GAMEEND;
-				m_pParam->pos.y -= SELECT_MOVE;
+				g_Title_type = GAMECONTINUE;
+				m_SelectPos.y += SELECT_MOVE;
+			}
+			if (IsKeyTrigger(VK_RETURN))
+			{
+				m_bSelected = true;
+				SetNext(STAGE_SELECT);
+			}
+			break;
+
+		case(GAMECONTINUE):
+			if (IsKeyTrigger(VK_DOWN))
+			{
+				g_Title_type = GAMEOPTION;
+				m_SelectPos.y += SELECT_MOVE;
 			}
 			if (IsKeyTrigger(VK_UP))
 			{
-				g_Title_type = GAMECONTINUE;
-				m_pParam->pos.y += SELECT_MOVE;
+				g_Title_type = GAMESTART;
+				m_SelectPos.y -= SELECT_MOVE;
 			}
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			//オプションへ切り替える処理
-			m_pOption->SetOption();
+			if (IsKeyTrigger(VK_RETURN))
+			{
+				//コンティニューシーンへ切り替える処理
+				m_bSelected = true;
+			}
+			break;
 
-		}
-		break;
+		case(GAMEOPTION):
+			if (!m_pOption->GetOption())
+			{
+				if (IsKeyTrigger(VK_DOWN))
+				{
+					g_Title_type = GAMEEND;
+					m_SelectPos.y += SELECT_MOVE;
+				}
+				if (IsKeyTrigger(VK_UP))
+				{
+					g_Title_type = GAMECONTINUE;
+					m_SelectPos.y -= SELECT_MOVE;
+				}
+			}
+			if (IsKeyTrigger(VK_RETURN))
+			{
+				m_bSelected = true;
+				//オプションへ切り替える処理
+				m_pOption->SetOption();
 
-	case(GAMEEND):
-		if (IsKeyTrigger(VK_UP))
-		{
-			g_Title_type = GAMEOPTION;
-			m_pParam->pos.y += SELECT_MOVE;
-		}
-		if (IsKeyTrigger(VK_RETURN))
-		{
-			SetGameEnd();
-		}
-		break;
+			}
+			break;
 
-	default:break;
+		case(GAMEEND):
+			if (IsKeyTrigger(VK_UP))
+			{
+				g_Title_type = GAMEOPTION;
+				m_SelectPos.y -= SELECT_MOVE;
+			}
+			if (IsKeyTrigger(VK_RETURN))
+			{
+				m_bSelected = true;
+				SetGameEnd();
+			}
+			break;
+
+		default:break;
+		}
 	}
 	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
 	{
@@ -204,19 +291,133 @@ void CSceneTitle::Update()
 
 void CSceneTitle::Draw()
 {
+	for (int nLoop = 0; nLoop < 2; nLoop++)
+	{
+		m_pTitleStart[nLoop]->SetProjection(Get2DProj());
+		m_pTitleStart[nLoop]->SetView(Get2DView());
+		m_pTitleContinued[nLoop]->SetProjection(Get2DProj());
+		m_pTitleContinued[nLoop]->SetView(Get2DView());
+		m_pTitleOption[nLoop]->SetProjection(Get2DProj());
+		m_pTitleOption[nLoop]->SetView(Get2DView());
+		m_pTitleEnd[nLoop]->SetProjection(Get2DProj());
+		m_pTitleEnd[nLoop]->SetView(Get2DView());
+	}
+
+	m_pTitleLogo->SetProjection(Get2DProj());
+	m_pTitleLogo->SetView(Get2DView());
+	m_pTitleFrame->SetProjection(Get2DProj());
+	m_pTitleFrame->SetView(Get2DView());
+	m_pTitleUnderbar->SetProjection(Get2DProj());
+	m_pTitleUnderbar->SetView(Get2DView());
+
+
 	g_pTitleBG->Draw();
 
-	Sprite::SetSize(m_pParam->size);
-	Sprite::SetOffset(m_pParam->pos );
-	Sprite::SetColor({m_pParam->color});
-	Sprite::SetUVPos(m_pParam->uvPos);
-	Sprite::SetUVScale({ m_pParam ->uvSize});
-	Sprite::SetWorld(m_pParam->world);
-	Sprite::SetView(m_pParam->view);
-	Sprite::SetProjection(m_pParam->proj);
-	Sprite::SetTexture(m_pSelect);
-	Sprite::Draw();
-	Sprite::ReSetSprite();
+	m_pTitleLogo->SetTexture();
+	m_pTitleLogo->SetProjection(Get2DProj());
+	m_pTitleLogo->SetView(Get2DView());
+	m_pTitleLogo->SetPositon(CENTER_POS_X + 500, CENTER_POS_Y - 250, 0.0f);
+	m_pTitleLogo->SetSize(840.0f, -560.0f, 0.0f);	
+	m_pTitleLogo->Disp();
+
+	m_pTitleUnderbar->SetTexture();
+	m_pTitleUnderbar->SetProjection(Get2DProj());
+	m_pTitleUnderbar->SetView(Get2DView());
+	m_pTitleUnderbar->SetPositon(CENTER_POS_X, CENTER_POS_Y + 510, 0.0f);
+	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
+	m_pTitleUnderbar->Disp();
+
+	m_pTitleStart[0]->SetTexture();
+	m_pTitleStart[0]->SetProjection(Get2DProj());
+	m_pTitleStart[0]->SetView(Get2DView());
+	m_pTitleStart[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 130, 0.0f);
+	m_pTitleStart[0]->SetSize(450.0f, -60.0f, 0.0f);
+	m_pTitleStart[0]->Disp();
+
+	m_pTitleContinued[0]->SetTexture();
+	m_pTitleContinued[0]->SetProjection(Get2DProj());
+	m_pTitleContinued[0]->SetView(Get2DView());
+	m_pTitleContinued[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 210, 0.0f);
+	m_pTitleContinued[0]->SetSize(450.0f, -60.0f, 0.0f);
+	m_pTitleContinued[0]->Disp();
+
+	m_pTitleOption[0]->SetTexture();
+	m_pTitleOption[0]->SetProjection(Get2DProj());
+	m_pTitleOption[0]->SetView(Get2DView());
+	m_pTitleOption[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 290, 0.0f);
+	m_pTitleOption[0]->SetSize(450.0f, -60.0f, 0.0f);
+	m_pTitleOption[0]->Disp();
+
+	m_pTitleEnd[0]->SetTexture();
+	m_pTitleEnd[0]->SetProjection(Get2DProj());
+	m_pTitleEnd[0]->SetView(Get2DView());
+	m_pTitleEnd[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 370, 0.0f);
+	m_pTitleEnd[0]->SetSize(450.0f, -60.0f, 0.0f);
+	m_pTitleEnd[0]->Disp();
+	
+	if(m_bSelected)
+	{
+		switch (g_Title_type)
+		{
+		case GAMESTART:
+			m_pTitleStart[1]->SetTexture();
+			m_pTitleStart[1]->SetProjection(Get2DProj());
+			m_pTitleStart[1]->SetView(Get2DView());
+			m_pTitleStart[1]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 130, 0.0f);
+			m_pTitleStart[1]->SetSize(450.0f, -60.0f, 0.0f);
+			m_pTitleStart[1]->Disp();
+			break;
+
+		case GAMECONTINUE:
+			m_pTitleContinued[1]->SetTexture();
+			m_pTitleContinued[1]->SetProjection(Get2DProj());
+			m_pTitleContinued[1]->SetView(Get2DView());
+			m_pTitleContinued[1]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 210, 0.0f);
+			m_pTitleContinued[1]->SetSize(450.0f, -60.0f, 0.0f);
+			m_pTitleContinued[1]->Disp();
+			break;
+
+		case GAMEOPTION:
+			m_pTitleOption[1]->SetTexture();
+			m_pTitleOption[1]->SetProjection(Get2DProj());
+			m_pTitleOption[1]->SetView(Get2DView());
+			m_pTitleOption[1]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 290, 0.0f);
+			m_pTitleOption[1]->SetSize(450.0f, -60.0f, 0.0f);
+			m_pTitleOption[1]->Disp();
+			break;
+
+		case GAMEEND:
+			m_pTitleEnd[1]->SetTexture();
+			m_pTitleEnd[1]->SetProjection(Get2DProj());
+			m_pTitleEnd[1]->SetView(Get2DView());
+			m_pTitleEnd[1]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 370, 0.0f);
+			m_pTitleEnd[1]->SetSize(450.0f, -60.0f, 0.0f);
+			m_pTitleEnd[1]->Disp();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	m_pTitleFrame->SetTexture();
+	m_pTitleFrame->SetProjection(Get2DProj());
+	m_pTitleFrame->SetView(Get2DView());
+	m_pTitleFrame->SetPositon(CENTER_POS_X + m_SelectPos.x, CENTER_POS_Y + m_SelectPos.y, 0.0f);
+	m_pTitleFrame->SetSize(470.0f, -80, 0.0f);
+	m_pTitleFrame->Disp();
+
+	//Sprite::SetSize(m_pParam->size);
+	//Sprite::SetOffset(m_pParam->pos );
+	//Sprite::SetColor({m_pParam->color});
+	//Sprite::SetUVPos(m_pParam->uvPos);
+	//Sprite::SetUVScale({ m_pParam ->uvSize});
+	//Sprite::SetWorld(m_pParam->world);
+	//Sprite::SetView(m_pParam->view);
+	//Sprite::SetProjection(m_pParam->proj);
+	//Sprite::SetTexture(m_pSelect);
+	//Sprite::Draw();
+	//Sprite::ReSetSprite();
 
 	if (m_pOption->GetOption())m_pOption->Draw();
 }
@@ -236,7 +437,50 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pSelect = new Texture();
 	if (FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL, "Select.png", "Error", MB_OK);
 
+	SAFE_DELETE(m_pTitleLogo);
+	m_pTitleLogo = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
+	SAFE_DELETE(m_pTitleFrame);
+	m_pTitleFrame = new SpriteEx("Assets/Texture/Title/Title_Selected.png");
+	SAFE_DELETE(m_pTitleUnderbar);
+	m_pTitleUnderbar = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
+	SAFE_DELETE(m_pTitleStart[0]);
+	m_pTitleStart[0] = new SpriteEx("Assets/Texture/Title/Title_First.png");
+	SAFE_DELETE(m_pTitleStart[1]);
+	m_pTitleStart[1] = new SpriteEx("Assets/Texture/Title/Title_Start_Push.png");
+	SAFE_DELETE(m_pTitleContinued[0]);
+	m_pTitleContinued[0] = new SpriteEx("Assets/Texture/Title/Title_Continued.png");
+	SAFE_DELETE(m_pTitleContinued[1]);
+	m_pTitleContinued[1] = new SpriteEx("Assets/Texture/Title/Title_Continue_push.png");
+	SAFE_DELETE(m_pTitleOption[0]);
+	m_pTitleOption[0] = new SpriteEx("Assets/Texture/Title/Title_Option.png");
+	SAFE_DELETE(m_pTitleOption[1]);
+	m_pTitleOption[1] = new SpriteEx("Assets/Texture/Title/Title_Option_push.png");
+	SAFE_DELETE(m_pTitleEnd[0]);
+	m_pTitleEnd[0] = new SpriteEx("Assets/Texture/Title/Title_Finish.png");
+	SAFE_DELETE(m_pTitleEnd[1]);
+	m_pTitleEnd[1] = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
+
+	for (int nLoop = 0; nLoop < 2; nLoop++)
+	{
+		m_pTitleStart[nLoop]->SetProjection(Get2DProj());
+		m_pTitleStart[nLoop]->SetView(Get2DView());
+		m_pTitleContinued[nLoop]->SetProjection(Get2DProj());
+		m_pTitleContinued[nLoop]->SetView(Get2DView());
+		m_pTitleOption[nLoop]->SetProjection(Get2DProj());
+		m_pTitleOption[nLoop]->SetView(Get2DView());
+		m_pTitleEnd[nLoop]->SetProjection(Get2DProj());
+		m_pTitleEnd[nLoop]->SetView(Get2DView());
+	}
+	m_pTitleLogo->SetProjection(Get2DProj());
+	m_pTitleLogo->SetView(Get2DView());
+	m_pTitleFrame->SetProjection(Get2DProj());
+	m_pTitleFrame->SetView(Get2DView());
+	m_pTitleUnderbar->SetProjection(Get2DProj());
+	m_pTitleUnderbar->SetView(Get2DView());
+
+
 	m_pOption->InitResolusion();
+
 
 	if(g_pTitleBG)delete g_pTitleBG;
 	g_pTitleBG = new CBackGround();

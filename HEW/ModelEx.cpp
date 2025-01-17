@@ -132,3 +132,8 @@ void CModelEx::SetRotation(float X, float Y, float Z)
 	world = mat;
 	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 }
+
+void CModelEx::SetWorldMatrix(DirectX::XMFLOAT4X4 InWorld)
+{
+	wvp[0] = InWorld;
+}

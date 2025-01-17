@@ -14,6 +14,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 	static void InResultData(ResultGameInfo InData);
+	static void InStageLevel(StageType InLevel);
 
 private:
 	// --- èüîsä÷åWñ≥ÇµÇ…ïœÇÌÇÁÇ»Ç¢Ç‚Ç¬
@@ -38,8 +39,16 @@ private:
 	int nAnimationTimer;
 	int nAnimationFrame;
 	int nSlect; 
+	float CScle;
+	float nCount;
+	float fStarAngle;
+	float CPosY;
+	float StarPosY;
+	float LogoAngle;
+
 
 	CNumberUI* m_pNumber;
 
+	static StageType StageLevel; 
 	static ResultGameInfo ResultGameData;
 };

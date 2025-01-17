@@ -8,6 +8,7 @@
 #include "EffectManager.h"
 #include "Texture.h"
 #include "_StructList.h"
+#include "SpriteEx.h"
 
 // defines
 #define START_PLAYER (12)	//プレイヤーの開始位置
@@ -73,17 +74,16 @@ private:
 		SELECTED,
 		CANNOT_SELECT
 	};
-
-
 	E_ARROW_STATE m_eArrowState[8];
 	SpriteParam* m_pArrowParam[8];
 	Texture* m_pArrowTex;
+	DirectX::XMFLOAT2  m_tArrowCenterPos;
 
-	enum TimerTex
+	enum Timer
 	{
-		TimerUnder = 0,
-		TimerGauge,
-		TimerUp,
+		Timer_Under = 0,
+		Timer_Gauge,
+		Timer_Top,
 
 		Timer_Max
 	};
@@ -107,7 +107,6 @@ public:
 private:
 	void TimeProcess();						// タイマーの処理
 private:
-	float fTimerSize;						// 時間によって減らすタイマーのサイズ
 	
 	/*＝＝＝＝＝＝＝＝＝エフェクト＝＝＝＝＝＝＝＝＝*/
 private:
