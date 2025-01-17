@@ -3,28 +3,40 @@
 
 CNumberUI::CNumberUI()
 {
-	m_pNumber[0][0] = new SpriteEx("Assets/Texture/Number/Num_0.png");
-	m_pNumber[0][1] = new SpriteEx("Assets/Texture/Number/Num_1.png");
-	m_pNumber[0][2] = new SpriteEx("Assets/Texture/Number/Num_2.png");
-	m_pNumber[0][3] = new SpriteEx("Assets/Texture/Number/Num_3.png");
-	m_pNumber[0][4] = new SpriteEx("Assets/Texture/Number/Num_4.png");
-	m_pNumber[0][5] = new SpriteEx("Assets/Texture/Number/Num_5.png");
-	m_pNumber[0][6] = new SpriteEx("Assets/Texture/Number/Num_6.png");
-	m_pNumber[0][7] = new SpriteEx("Assets/Texture/Number/Num_7.png");
-	m_pNumber[0][8] = new SpriteEx("Assets/Texture/Number/Num_8.png");
-	m_pNumber[0][9] = new SpriteEx("Assets/Texture/Number/Num_9.png");
+	m_pNumber[0][0][0] = new SpriteEx("Assets/Texture/Number/Num_0.png");
+	m_pNumber[0][1][0] = new SpriteEx("Assets/Texture/Number/Num_1.png");
+	m_pNumber[0][2][0] = new SpriteEx("Assets/Texture/Number/Num_2.png");
+	m_pNumber[0][3][0] = new SpriteEx("Assets/Texture/Number/Num_3.png");
+	m_pNumber[0][4][0] = new SpriteEx("Assets/Texture/Number/Num_4.png");
+	m_pNumber[0][5][0] = new SpriteEx("Assets/Texture/Number/Num_5.png");
+	m_pNumber[0][6][0] = new SpriteEx("Assets/Texture/Number/Num_6.png");
+	m_pNumber[0][7][0] = new SpriteEx("Assets/Texture/Number/Num_7.png");
+	m_pNumber[0][8][0] = new SpriteEx("Assets/Texture/Number/Num_8.png");
+	m_pNumber[0][9][0] = new SpriteEx("Assets/Texture/Number/Num_9.png");
 
-	m_pNumber[1][0] = new SpriteEx("Assets/Texture/Number/Num_0_Bold.png");
-	m_pNumber[1][1] = new SpriteEx("Assets/Texture/Number/Num_1_Bold.png");
-	m_pNumber[1][2] = new SpriteEx("Assets/Texture/Number/Num_2_Bold.png");
-	m_pNumber[1][3] = new SpriteEx("Assets/Texture/Number/Num_3_Bold.png");
-	m_pNumber[1][4] = new SpriteEx("Assets/Texture/Number/Num_4_Bold.png");
-	m_pNumber[1][5] = new SpriteEx("Assets/Texture/Number/Num_5_Bold.png");
-	m_pNumber[1][6] = new SpriteEx("Assets/Texture/Number/Num_6_Bold.png");
-	m_pNumber[1][7] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
-	m_pNumber[1][8] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
-	m_pNumber[1][9] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
-	color.X = color.Y = color.Z = fAlpha = 1.0f;
+	m_pNumber[1][0][0] = new SpriteEx("Assets/Texture/Number/Num_0_Bold.png");
+	m_pNumber[1][1][0] = new SpriteEx("Assets/Texture/Number/Num_1_Bold.png");
+	m_pNumber[1][2][0] = new SpriteEx("Assets/Texture/Number/Num_2_Bold.png");
+	m_pNumber[1][3][0] = new SpriteEx("Assets/Texture/Number/Num_3_Bold.png");
+	m_pNumber[1][4][0] = new SpriteEx("Assets/Texture/Number/Num_4_Bold.png");
+	m_pNumber[1][5][0] = new SpriteEx("Assets/Texture/Number/Num_5_Bold.png");
+	m_pNumber[1][6][0] = new SpriteEx("Assets/Texture/Number/Num_6_Bold.png");
+	m_pNumber[1][7][0] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
+	m_pNumber[1][8][0] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
+	m_pNumber[1][9][0] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
+
+	m_pNumber[0][0][1] = new SpriteEx("Assets/Texture/Number/White/Num_0.png");
+	m_pNumber[0][1][1] = new SpriteEx("Assets/Texture/Number/White/Num_1.png");
+	m_pNumber[0][2][1] = new SpriteEx("Assets/Texture/Number/White/Num_2.png");
+	m_pNumber[0][3][1] = new SpriteEx("Assets/Texture/Number/White/Num_3.png");
+	m_pNumber[0][4][1] = new SpriteEx("Assets/Texture/Number/White/Num_4.png");
+	m_pNumber[0][5][1] = new SpriteEx("Assets/Texture/Number/White/Num_5.png");
+	m_pNumber[0][6][1] = new SpriteEx("Assets/Texture/Number/White/Num_6.png");
+	m_pNumber[0][7][1] = new SpriteEx("Assets/Texture/Number/White/Num_7.png");
+	m_pNumber[0][8][1] = new SpriteEx("Assets/Texture/Number/White/Num_8.png");
+	m_pNumber[0][9][1] = new SpriteEx("Assets/Texture/Number/White/Num_9.png");
+
+	color.X = color.Y = color.Z = fAlpha = 1.0f;			 
 }
 
 CNumberUI::~CNumberUI()
@@ -33,10 +45,13 @@ CNumberUI::~CNumberUI()
 	{
 		for (int nLoopX = 0; nLoopX < 10; nLoopX++)
 		{
-			if (m_pNumber[nLoopY][nLoopX])
-			{
-				delete m_pNumber[nLoopY][nLoopX];
-				m_pNumber[nLoopY][nLoopX] = nullptr;
+			for(int nLoopZ = 0; nLoopZ < 10; nLoopZ++)
+			{ 
+				if (m_pNumber[nLoopY][nLoopX][nLoopZ])
+				{
+					delete m_pNumber[nLoopY][nLoopX][nLoopZ];
+					m_pNumber[nLoopY][nLoopX][nLoopZ] = nullptr;
+				}
 			}
 		}
 	}
@@ -63,15 +78,15 @@ void CNumberUI::Draw()
 		{
 			l = l / 10;
 		}
-		m_pNumber[0][l]->Setcolor(color.X, color.Y, color.Z, fAlpha);
-		m_pNumber[0][l]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pNumber[0][l]->SetTexture();
-		m_pNumber[0][l]->SetView(Get2DView());
-		m_pNumber[0][l]->SetProjection(Get2DProj());
-		m_pNumber[0][l]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
-		m_pNumber[0][l]->SetSize(Scale.X, Scale.Y, Scale.Z);
-		m_pNumber[0][l]->Disp();
-		m_pNumber[0][l]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+		m_pNumber[0][l][0]->Setcolor(color.X, color.Y, color.Z, fAlpha);
+		m_pNumber[0][l][0]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pNumber[0][l][0]->SetTexture();
+		m_pNumber[0][l][0]->SetView(Get2DView());
+		m_pNumber[0][l][0]->SetProjection(Get2DProj());
+		m_pNumber[0][l][0]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
+		m_pNumber[0][l][0]->SetSize(Scale.X, Scale.Y, Scale.Z);
+		m_pNumber[0][l][0]->Disp();
+		m_pNumber[0][l][0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 }
