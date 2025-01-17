@@ -3,38 +3,38 @@
 
 CNumberUI::CNumberUI()
 {
-	m_pNumber[0][0][0] = new SpriteEx("Assets/Texture/Number/Num_0.png");
-	m_pNumber[0][1][0] = new SpriteEx("Assets/Texture/Number/Num_1.png");
-	m_pNumber[0][2][0] = new SpriteEx("Assets/Texture/Number/Num_2.png");
-	m_pNumber[0][3][0] = new SpriteEx("Assets/Texture/Number/Num_3.png");
-	m_pNumber[0][4][0] = new SpriteEx("Assets/Texture/Number/Num_4.png");
-	m_pNumber[0][5][0] = new SpriteEx("Assets/Texture/Number/Num_5.png");
-	m_pNumber[0][6][0] = new SpriteEx("Assets/Texture/Number/Num_6.png");
-	m_pNumber[0][7][0] = new SpriteEx("Assets/Texture/Number/Num_7.png");
-	m_pNumber[0][8][0] = new SpriteEx("Assets/Texture/Number/Num_8.png");
-	m_pNumber[0][9][0] = new SpriteEx("Assets/Texture/Number/Num_9.png");
-
-	m_pNumber[1][0][0] = new SpriteEx("Assets/Texture/Number/Num_0_Bold.png");
-	m_pNumber[1][1][0] = new SpriteEx("Assets/Texture/Number/Num_1_Bold.png");
-	m_pNumber[1][2][0] = new SpriteEx("Assets/Texture/Number/Num_2_Bold.png");
-	m_pNumber[1][3][0] = new SpriteEx("Assets/Texture/Number/Num_3_Bold.png");
-	m_pNumber[1][4][0] = new SpriteEx("Assets/Texture/Number/Num_4_Bold.png");
-	m_pNumber[1][5][0] = new SpriteEx("Assets/Texture/Number/Num_5_Bold.png");
-	m_pNumber[1][6][0] = new SpriteEx("Assets/Texture/Number/Num_6_Bold.png");
-	m_pNumber[1][7][0] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
-	m_pNumber[1][8][0] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
-	m_pNumber[1][9][0] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
-
-	m_pNumber[0][0][1] = new SpriteEx("Assets/Texture/Number/White/Num_0.png");
-	m_pNumber[0][1][1] = new SpriteEx("Assets/Texture/Number/White/Num_1.png");
-	m_pNumber[0][2][1] = new SpriteEx("Assets/Texture/Number/White/Num_2.png");
-	m_pNumber[0][3][1] = new SpriteEx("Assets/Texture/Number/White/Num_3.png");
-	m_pNumber[0][4][1] = new SpriteEx("Assets/Texture/Number/White/Num_4.png");
-	m_pNumber[0][5][1] = new SpriteEx("Assets/Texture/Number/White/Num_5.png");
-	m_pNumber[0][6][1] = new SpriteEx("Assets/Texture/Number/White/Num_6.png");
-	m_pNumber[0][7][1] = new SpriteEx("Assets/Texture/Number/White/Num_7.png");
-	m_pNumber[0][8][1] = new SpriteEx("Assets/Texture/Number/White/Num_8.png");
-	m_pNumber[0][9][1] = new SpriteEx("Assets/Texture/Number/White/Num_9.png");
+	m_pNumber[0][0][nColor] = new SpriteEx("Assets/Texture/Number/Num_0.png");
+	m_pNumber[0][1][nColor] = new SpriteEx("Assets/Texture/Number/Num_1.png");
+	m_pNumber[0][2][nColor] = new SpriteEx("Assets/Texture/Number/Num_2.png");
+	m_pNumber[0][3][nColor] = new SpriteEx("Assets/Texture/Number/Num_3.png");
+	m_pNumber[0][4][nColor] = new SpriteEx("Assets/Texture/Number/Num_4.png");
+	m_pNumber[0][5][nColor] = new SpriteEx("Assets/Texture/Number/Num_5.png");
+	m_pNumber[0][6][nColor] = new SpriteEx("Assets/Texture/Number/Num_6.png");
+	m_pNumber[0][7][nColor] = new SpriteEx("Assets/Texture/Number/Num_7.png");
+	m_pNumber[0][8][nColor] = new SpriteEx("Assets/Texture/Number/Num_8.png");
+	m_pNumber[0][9][nColor] = new SpriteEx("Assets/Texture/Number/Num_9.png");
+	
+	m_pNumber[1][0][nColor] = new SpriteEx("Assets/Texture/Number/Num_0_Bold.png");
+	m_pNumber[1][1][nColor] = new SpriteEx("Assets/Texture/Number/Num_1_Bold.png");
+	m_pNumber[1][2][nColor] = new SpriteEx("Assets/Texture/Number/Num_2_Bold.png");
+	m_pNumber[1][3][nColor] = new SpriteEx("Assets/Texture/Number/Num_3_Bold.png");
+	m_pNumber[1][4][nColor] = new SpriteEx("Assets/Texture/Number/Num_4_Bold.png");
+	m_pNumber[1][5][nColor] = new SpriteEx("Assets/Texture/Number/Num_5_Bold.png");
+	m_pNumber[1][6][nColor] = new SpriteEx("Assets/Texture/Number/Num_6_Bold.png");
+	m_pNumber[1][7][nColor] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
+	m_pNumber[1][8][nColor] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
+	m_pNumber[1][9][nColor] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
+					
+	m_pNumber[0][0][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_0.png");
+	m_pNumber[0][1][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_1.png");
+	m_pNumber[0][2][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_2.png");
+	m_pNumber[0][3][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_3.png");
+	m_pNumber[0][4][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_4.png");
+	m_pNumber[0][5][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_5.png");
+	m_pNumber[0][6][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_6.png");
+	m_pNumber[0][7][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_7.png");
+	m_pNumber[0][8][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_8.png");
+	m_pNumber[0][9][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_9.png");
 
 	color.X = color.Y = color.Z = fAlpha = 1.0f;			 
 }
@@ -78,15 +78,15 @@ void CNumberUI::Draw()
 		{
 			l = l / 10;
 		}
-		m_pNumber[0][l][0]->Setcolor(color.X, color.Y, color.Z, fAlpha);
-		m_pNumber[0][l][0]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pNumber[0][l][0]->SetTexture();
-		m_pNumber[0][l][0]->SetView(Get2DView());
-		m_pNumber[0][l][0]->SetProjection(Get2DProj());
-		m_pNumber[0][l][0]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
-		m_pNumber[0][l][0]->SetSize(Scale.X, Scale.Y, Scale.Z);
-		m_pNumber[0][l][0]->Disp();
-		m_pNumber[0][l][0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+		m_pNumber[0][l][nColor]->Setcolor(color.X, color.Y, color.Z, fAlpha);
+		m_pNumber[0][l][nColor]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pNumber[0][l][nColor]->SetTexture();
+		m_pNumber[0][l][nColor]->SetView(Get2DView());
+		m_pNumber[0][l][nColor]->SetProjection(Get2DProj());
+		m_pNumber[0][l][nColor]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
+		m_pNumber[0][l][nColor]->SetSize(Scale.X, Scale.Y, Scale.Z);
+		m_pNumber[0][l][nColor]->Disp();
+		m_pNumber[0][l][nColor]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 }
@@ -138,4 +138,9 @@ void CNumberUI::SetColor(float R, float G, float B, float A)
 void CNumberUI::SetLend(int InData)
 {
 	nLong = InData;
+}
+
+void CNumberUI::SetNumberColor(int InColor)
+{
+	nColor = InColor;
 }
