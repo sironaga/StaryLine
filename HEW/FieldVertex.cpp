@@ -20,6 +20,8 @@
 
 #define MAX_FEVER_POINT (30.0f)//フィーバーゲージの上限ポイント
 
+#define SUMMON_LOG_SIZE_X (25.0f)//ログのXサイズ
+#define SUMMON_LOG_SIZE_Y (15.0f)//ログのYサイズ
 #define MAX_DRAW_LOG (15)//ログの描画数
 #define DRAW_LOG_TIME (0.5f) //ログの終始の表示時間
 #define DRAW_MAIN_LOG_TIME (2.0f) //ログの中間の表示時間
@@ -86,6 +88,8 @@ CFieldVertex::CFieldVertex()
 		m_pSprite_SuperStar_Number = new Sprite();
 		m_pSprite_Fever_Gage[0] = new Sprite();
 		m_pSprite_Fever_Gage[1] = new Sprite();
+		m_pSprite_Fever_Gage[2] = new Sprite();
+		m_pSprite_Fever_Gage[3] = new Sprite();
 		m_pSprite_Summon_Log = new Sprite();
 		m_pSprite_Ally_Count = new Sprite();
 	}
@@ -94,6 +98,8 @@ CFieldVertex::CFieldVertex()
 	{
 		m_pTex_Fever_Gage[0] = new Texture();
 		m_pTex_Fever_Gage[1] = new Texture();
+		m_pTex_Fever_Gage[2] = new Texture();
+		m_pTex_Fever_Gage[3] = new Texture();
 		m_pTex_Summon_Log[0] = new Texture();
 		m_pTex_Summon_Log[1] = new Texture();
 		m_pTex_Ally_Count = new Texture();
@@ -199,12 +205,14 @@ CFieldVertex::CFieldVertex()
 
 	//スーパースター初期化
 	HRESULT hrFeverStar;
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		switch (i)
 		{
 		case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
 		case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
+		case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/UI11.png")); break;
+		case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/UI10.png")); break;
 		default:
 			break;
 		}
@@ -224,6 +232,8 @@ CFieldVertex::~CFieldVertex()
 
 	SAFE_DELETE(m_pTex_Fever_Gage[0]);
 	SAFE_DELETE(m_pTex_Fever_Gage[1]);
+	SAFE_DELETE(m_pTex_Fever_Gage[2]);
+	SAFE_DELETE(m_pTex_Fever_Gage[3]);
 	SAFE_DELETE(m_pTex_Summon_Log[0]);
 	SAFE_DELETE(m_pTex_Summon_Log[1]);
 	SAFE_DELETE(m_pTex_Ally_Count);
@@ -237,6 +247,8 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pSprite_SuperStar_Number);
 	SAFE_DELETE(m_pSprite_Fever_Gage[0]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[1]);
+	SAFE_DELETE(m_pSprite_Fever_Gage[2]);
+	SAFE_DELETE(m_pSprite_Fever_Gage[3]);
 	SAFE_DELETE(m_pSprite_Summon_Log);
 	SAFE_DELETE(m_pSprite_Ally_Count);
 
@@ -474,7 +486,7 @@ void CFieldVertex::Draw()
 	{
 		for (int i = 0; i < NowSummonLog; i++)
 		{
-			DrawSetting(SummonLog[i].Pos, { 25.0f,15.0f,1.0f }, m_pSprite_Summon_Log);//座標と大きさの設定
+			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, m_pSprite_Summon_Log);//座標と大きさの設定
 			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//色と透明度の設定
 			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
 			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//四角形のテクスチャ設定ログ
@@ -496,6 +508,12 @@ void CFieldVertex::Draw()
 	{
 		//フィーバー背景//
 		float Fever_Gage_Size = 40.0f;
+		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
+		m_pSprite_Fever_Gage[2]->Draw();//描画
+		m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
+
 		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
@@ -511,6 +529,12 @@ void CFieldVertex::Draw()
 		m_pSprite_Fever_Gage[1]->SetTexture(m_pTex_Fever_Gage[1]);//星形のフィーバーゲージのテクスチャ設定
 		m_pSprite_Fever_Gage[1]->Draw();//描画
 		m_pSprite_Fever_Gage[1]->ReSetSprite();//スプライトのリセット
+
+		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//星形の背景のテクスチャ設定
+		m_pSprite_Fever_Gage[3]->Draw();//描画
+		m_pSprite_Fever_Gage[3]->ReSetSprite();//スプライトのリセット
 	}
 	//デバック用ログの表示//
 	m_pBattle->SaveAllyLogDraw();
