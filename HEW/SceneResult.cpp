@@ -158,7 +158,6 @@ CSceneResult::CSceneResult()
 	m_pNumber->SetPos({ 920.0f, 540.0f ,0.0f});
 	m_pNumber->SetNumber(999);
 	m_pNumber->SetScale({ 0.1f,0.2f,1.0f });
-	
 }
 
 CSceneResult::~CSceneResult()
@@ -507,7 +506,6 @@ void CSceneResult::Draw()
 		}
 		m_pNumber->Draw();
 }
-
 
 void CSceneResult::InResultData(ResultGameInfo InData)
 {

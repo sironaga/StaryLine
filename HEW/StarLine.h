@@ -12,9 +12,10 @@ public:
 	~StarLine();
 	void SetLineInfo(DirectX::XMFLOAT3 StartPosLeft, DirectX::XMFLOAT3 StartPosRight, DirectX::XMFLOAT3 NowPosLeft, DirectX::XMFLOAT3 NowPosRight);
 	void DispLine();
-
+	void SetLineMode(int nInMode);
 
 private:
+	int nNumber;
 	DirectX::XMFLOAT3 Pos; // --- position
 	DirectX::XMFLOAT3 Scl; // --- Scale
 	DirectX::XMFLOAT3 Rot; // --- Rotation
@@ -24,6 +25,7 @@ private:
 	DirectX::XMFLOAT4X4 Proj;
 private:
 	Geometory* m_pBox;
-	CModelEx *m_pModel;
+	CModelEx *m_pModel[2];
+
 };
 
