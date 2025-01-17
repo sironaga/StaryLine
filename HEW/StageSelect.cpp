@@ -34,7 +34,7 @@ CStageSelect::CStageSelect()
 	, MainStage(true)
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
-	g_Select_type.StageSubNumber = STAGE1;
+	g_Select_type.StageSubNumber = STAGE1; 
 	m_pGrassLand         = new SpriteEx("Assets/Texture/StageSelectBackGround/Grass_Map.png");
 	m_pDesert            = new SpriteEx("Assets/Texture/StageSelectBackGround/Desert_Map.png");
 	m_pSnowField         = new SpriteEx("Assets/Texture/StageSelectBackGround/Snow_Map.png");
