@@ -508,17 +508,21 @@ void CFieldVertex::Draw()
 	{
 		//フィーバー背景//
 		float Fever_Gage_Size = 40.0f;
-		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
-		m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
-		m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
-		m_pSprite_Fever_Gage[2]->Draw();//描画
-		m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
+		if (GetFeverMode())//フィーバータイムの時、後の背景出現
+		{
+			DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
+			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
+			m_pSprite_Fever_Gage[2]->Draw();//描画
+			m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
+		}
 
 		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[0]->Draw();//描画
 		m_pSprite_Fever_Gage[0]->ReSetSprite();//スプライトのリセット
+
 
 		if (!GetFeverMode())fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
 		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
