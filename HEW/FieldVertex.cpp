@@ -18,7 +18,7 @@
 //グローバル領域のクリーンアップ
 //全体のコメントアウト見直し
 
-#define MAX_FEVER_POINT (30.0f)//フィーバーの上限ポイント
+#define MAX_FEVER_POINT (30.0f)//フィーバーゲージの上限ポイント
 
 #define MAX_DRAW_LOG (15)//ログの描画数
 #define DRAW_LOG_TIME (0.5f) //ログの終始の表示時間
@@ -27,9 +27,9 @@
 #define FADE_LOG_SPEED (0.5f) //ログの終始のスピード
 #define MAIN_LOG_SPEED (1.0f) //ログの中間のスピード
 
-Sprite::Vertex vtx_FieldLine[MAX_LINE][4];
-IXAudio2SourceVoice* g_FieldSe;
-CSoundList* g_Fieldsound;
+Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//線の四頂点座標保存用
+IXAudio2SourceVoice* g_FieldSe;//FieldVertexのサウンド音量
+CSoundList* g_Fieldsound;//FieldVertexのサウンドポインター
 
 int SubDeleteCount = 0;
 float MoveFlagStartTime = 0.0f;
@@ -38,65 +38,69 @@ bool MoveFlagStart = true;
 bool MoveFlagEnd = true;
 
 CFieldVertex::CFieldVertex()
-	:RoadStop(false)
-	, m_tVertex{}
+	: m_tVertex{}
 	, m_tCenter_Vertex{}
-	, m_pTex_FieldVertex(nullptr)
-	, m_pTex_FieldUseVertex(nullptr)
-	, m_offsetU_Field(0.0f)
-	, m_pTex_FieldLine{ nullptr }
-	, NowLine(0)
-	, DrawLinePos{}
+	, SummonLog{}
+	, NowSummonLog(0)
+	, OrderVertex{}
+	, OrderVertexCount(0)
+	, StartVertex()
+	, GoalVertex()
+	, NowShapes(0)
+	, Shapes_Count{}
+	, Comparison_Shapes_Vertex_Save{}
+	, Shapes_Vertex_Save{}
+	, Comparison{}
 	, BreakVertex(-1)
-	, m_pVtx_FieldLine{nullptr}
-	, m_pSprite_Line{nullptr}
 	, SuperStarCount(0)
-	, m_pTex_SuperStar_Number{nullptr}
-	, m_pSprite_SuperStar_Number(nullptr)
-	, m_pStar_Model{nullptr}
-	, m_pStarLine(nullptr)
-	, m_pTex_Fever_Gage{nullptr}
-	, m_pSprite_Fever_Gage{nullptr}
 	, nFeverPoint(0)
 	, fFeverPoint(0.0f)
 	, Partition(MAX_FEVER_POINT)
-	, m_pSprite_Summon_Log(nullptr)
-	, m_pTex_Summon_Log{nullptr}
-	, SummonLog{}
-	, NowSummonLog(0)
 	, Ally_Count(0)
+	, NowLine(0)
+	, PlayerPos{}
+	, RoadStop(false)
+	, m_pBattle(nullptr)
+    , m_pPlayer(nullptr)
+	, m_pTex_SuperStar_Number{ nullptr }
+	, m_pTex_Fever_Gage{ nullptr }
+	, m_pTex_Summon_Log{ nullptr }
 	, m_pTex_Ally_Count(nullptr)
+	, m_pSprite_SuperStar_Number(nullptr)
+	, m_pSprite_Fever_Gage{ nullptr }
+	, m_pSprite_Summon_Log(nullptr)
 	, m_pSprite_Ally_Count(nullptr)
+	, m_pEffect(nullptr)
+	, m_pStar_Model{ nullptr }
+	, m_pStarLine(nullptr)
 {
-
-	g_Fieldsound = new CSoundList(SE_COMPLETE);
-	g_Fieldsound->SetMasterVolume();
-	g_FieldSe = g_Fieldsound->GetSound(false);
-	// 星の描画用
-	// スプライト
-	m_pSprite_Star = new Sprite();
-	m_pSprite_SuperStar_Number = new Sprite();
-	m_pSprite_Fever_Gage[0] = new Sprite();
-	m_pSprite_Fever_Gage[1] = new Sprite();
-	m_pSprite_Summon_Log = new Sprite();
-	m_pSprite_Ally_Count = new Sprite();
-	for (int i = 0; i < MAX_LINE; i++)
+	//-----サウンドの初期化-----//
 	{
-		m_pSprite_Line[i] = new Sprite();
+		g_Fieldsound = new CSoundList(SE_COMPLETE);//サウンドのメモリ確保
+		g_Fieldsound->SetMasterVolume();//
+		g_FieldSe = g_Fieldsound->GetSound(false);//
+	}
+
+	//-----スプライトのメモリ確保-----//
+	{
+		m_pSprite_SuperStar_Number = new Sprite();
+		m_pSprite_Fever_Gage[0] = new Sprite();
+		m_pSprite_Fever_Gage[1] = new Sprite();
+		m_pSprite_Summon_Log = new Sprite();
+		m_pSprite_Ally_Count = new Sprite();
 	}
 	
-	// テクスチャ
-	m_pTex_FieldVertex = new Texture();
-	m_pTex_FieldUseVertex = new Texture();
-	m_pTex_Fever_Gage[0] = new Texture();
-	m_pTex_Fever_Gage[1] = new Texture();
-	m_pTex_Summon_Log[0] = new Texture();
-	m_pTex_Summon_Log[1] = new Texture();
-	m_pTex_Ally_Count = new Texture();
-	m_pTex_FieldLine = new Texture();
-	for (int i = 0; i < 6; i++)
+	//-----テクスチャのメモリ確保-----//
 	{
-		m_pTex_SuperStar_Number[i] = new Texture();
+		m_pTex_Fever_Gage[0] = new Texture();
+		m_pTex_Fever_Gage[1] = new Texture();
+		m_pTex_Summon_Log[0] = new Texture();
+		m_pTex_Summon_Log[1] = new Texture();
+		m_pTex_Ally_Count = new Texture();
+		for (int i = 0; i < 6; i++)
+		{
+			m_pTex_SuperStar_Number[i] = new Texture();
+		}
 	}
 
 	m_pStarLine = new StarLine();
@@ -162,24 +166,6 @@ CFieldVertex::CFieldVertex()
 
 	SetSuperStar();
 
-	//頂点描画初期化
-	HRESULT hrVertex;
-	hrVertex = m_pTex_FieldVertex->Create(TEX_PASS("Star/star.png"));
-	if (FAILED(hrVertex)) {
-		MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
-	}
-	hrVertex = m_pTex_FieldUseVertex->Create(TEX_PASS("Star/star2.png"));
-	if (FAILED(hrVertex)) {
-		MessageBox(NULL, "UseVertex 画像", "Error", MB_OK);
-	}
-
-	//線描画初期化
-	HRESULT hrLine;
-	hrLine = m_pTex_FieldLine->Create(TEX_PASS("Line/Line.png"));
-	if (FAILED(hrLine)) {
-		MessageBox(NULL, "Field 画像", "Error", MB_OK);
-	}
-
 	//召喚ログ初期化
 	HRESULT hrSummon_Log;
 	hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
@@ -236,9 +222,6 @@ CFieldVertex::~CFieldVertex()
 	delete g_Fieldsound;
 	g_FieldSe = nullptr;
 
-	SAFE_DELETE(m_pTex_FieldLine);
-	SAFE_DELETE(m_pTex_FieldUseVertex);
-	SAFE_DELETE(m_pTex_FieldVertex);
 	SAFE_DELETE(m_pTex_Fever_Gage[0]);
 	SAFE_DELETE(m_pTex_Fever_Gage[1]);
 	SAFE_DELETE(m_pTex_Summon_Log[0]);
@@ -251,16 +234,11 @@ CFieldVertex::~CFieldVertex()
 
 	SAFE_DELETE(m_pStarLine);
 
-	SAFE_DELETE(m_pSprite_Star);
 	SAFE_DELETE(m_pSprite_SuperStar_Number);
 	SAFE_DELETE(m_pSprite_Fever_Gage[0]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[1]);
 	SAFE_DELETE(m_pSprite_Summon_Log);
 	SAFE_DELETE(m_pSprite_Ally_Count);
-	for (int i = 0; i < MAX_LINE; i++)
-	{
-		SAFE_DELETE(m_pSprite_Line[i]);
-	}
 
 	SAFE_DELETE(m_pStar_Model[0]);
 	SAFE_DELETE(m_pStar_Model[1]);
@@ -380,7 +358,6 @@ void CFieldVertex::Update()
 	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
-
 }
 
 ////=====FieldVertexの描画処理の関数=====//
@@ -621,7 +598,7 @@ void CFieldVertex::LogUpdate()
 	}
 }
 
-////=====引数の頂点番号の座標を取得する関数=====//
+////=====引数の頂点番号の座標を返す関数=====//
 DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
 {
 	return m_tVertex[VertexNumber].Pos;//頂点座標を返す
@@ -1114,8 +1091,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				if (!BadShapes)
 				{
 					Shapes_Count[NowShapes] = Count;
-					//図形の面積
-					Shapes_Size = 0;
 					float InVertex = 0;//中の頂点
 					float OutVertex = 0;//辺上の頂点
 					int l = 0;
@@ -1167,7 +1142,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (UpVertex && DownVertex && LeftVertex && RightVertex)InVertex++;//全方向に使っている頂点があれば囲まれているので内側の頂点
 						}
 					}
-					Shapes_Size = InVertex + OutVertex / 2.0f - 1.0f;
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
 					Ally_Count++;//召喚数増やす
 					//召喚ログセット
