@@ -40,7 +40,7 @@ IXAudio2SourceVoice* g_pWalkSe;
 CSoundList* g_pPlayerSound;
 
 CPlayer::CPlayer()
-	// プレイヤー(筆)の初期化処理
+// プレイヤー(筆)の初期化処理
 	: m_pModel(nullptr)
 	, m_tBrushPos{}, m_fBrushSize(BRUSH_SIZE), m_tBrushRotate{ DirectX::XMConvertToRadians(BRUSH_ROTATE_X), DirectX::XMConvertToRadians(BRUSH_ROTATE_Y), 0.0f }
 	, m_fBrushSpeed(BRUSH_SPEED), m_fAddSpeed(BRUSH_SPEED)
@@ -80,33 +80,25 @@ CPlayer::CPlayer()
 	}
 	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
 
+	m_pArrowParam = new SpriteParam();
+	m_eArrowState = NONE_SELECT;
+	m_pArrowParam->pos = { 0.0f,0.0f };
+	m_pArrowParam->color = { 1.0f,1.0f,1.0f,1.0f };
+	m_pArrowParam->uvPos = { 0.0f,0.0f };
+	m_pArrowParam->uvSize = { 1.0f,1.0f };
+	m_pArrowParam->world = Get2DWorld();
+	m_pArrowParam->view = Get2DView();
+	m_pArrowParam->proj = Get2DProj();
 
-	for (int i = 0; i < 8; i++)
-	{
-		m_pArrowParam[i] = new SpriteParam();
-		m_eArrowState[i] = NONE_SELECT;
-		m_pArrowParam[i]->pos = { 0.0f,0.0f };
-		m_pArrowParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
-		float deg = i * (360.0f / 8);
-		m_pArrowParam[i]->rotate.z = DirectX::XMConvertToRadians(deg);
-		m_pArrowParam[i]->uvPos = { 0.0f,0.0f };
-		m_pArrowParam[i]->uvSize = { 1.0f,1.0f };
-		m_pArrowParam[i]->world = Get2DWorld(true,DirectX::XMFLOAT3(0.0f,i * (360.0f  / 8),0.0f));
-		m_pArrowParam[i]->view = Get2DView();
-		m_pArrowParam[i]->proj = Get2DProj();
-	}
 	m_pArrowTex = new Texture();
 	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
 
-	// エフェクト読み込み
-	//m_Effect = LibEffekseer::Create(TEX_PASS("Effect/Fire.efk"));
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
 
 	g_pPlayerSound = new CSoundList(SE_WALK);
 	g_pPlayerSound->SetMasterVolume();
 	g_pWalkSe = g_pPlayerSound->GetSound(true);
-
 }
 
 CPlayer::~CPlayer()
@@ -193,7 +185,7 @@ void CPlayer::Draw()
 	//	Sprite::Draw();
 	//}
 
-	if(m_bDrawing)m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+	if (m_bDrawing)m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
 	else m_pTimerParam[Timer_Gauge]->color.w = 0.1f;
 	for (int i = 0; i < 3; i++)
 	{
@@ -203,54 +195,21 @@ void CPlayer::Draw()
 		Sprite::ReSetSprite();
 	}
 
-	switch (m_nNowVertex % 5)
+	float deg = m_eDestination * (360.0f / 8.0f);
+	m_pArrowParam->rotate.z = DirectX::XMConvertToRadians(deg);
+	m_pArrowParam->world = Get2DWorld(true, m_pArrowParam->rotate, { m_tBrushPos.x	, -m_tBrushPos.y - ARROW_AJUST_POS + ARROW_BRUSH_AJUST_Y });
+	m_pArrowParam->size = { ARROW_SIZE ,ARROW_SIZE };
+	switch (m_eArrowState)
 	{
-	case 0:m_tArrowCenterPos.x = -200.0f; break;
-	case 1:m_tArrowCenterPos.x = -100.0f;break;
-	case 2:m_tArrowCenterPos.x = 0.0f;break;
-	case 3:m_tArrowCenterPos.x = 100.0f;break;
-	case 4:m_tArrowCenterPos.x = 200.0f;break;
-	default:
-		break;
+	case SELECTED:		m_pArrowParam->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
+	case CANNOT_SELECT:	m_pArrowParam->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
+	default:break;
 	}
-	switch (m_nNowVertex / 5)
-	{
-	case 0:m_tArrowCenterPos.y = 900.0f;  break;
-	case 1:m_tArrowCenterPos.y = 800.0f; break;
-	case 2:m_tArrowCenterPos.y = 700.0f; break;
-	case 3:m_tArrowCenterPos.y = 600.0f; break;
-	case 4:m_tArrowCenterPos.y = 500.0f; break;
-	default:
-		break;
-	}
+	Sprite::SetParam(m_pArrowParam);
+	Sprite::SetTexture(m_pArrowTex);
+	if(m_eArrowState != NONE_SELECT && m_ePlayerState != MOVE)Sprite::Draw();
+	Sprite::ReSetSprite();
 
-
-	m_pArrowParam[UP]->world = Get2DWorld(true,			 m_pArrowParam[UP]->rotate,			{ m_tBrushPos.x						, -m_tBrushPos.y - ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[UPRIGHT]->world = Get2DWorld(true,	 m_pArrowParam[UPRIGHT]->rotate,	{ m_tBrushPos.x + ARROW_AJUST_POS	, -m_tBrushPos.y - ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[RIGHT]->world = Get2DWorld(true,		 m_pArrowParam[RIGHT]->rotate,		{ m_tBrushPos.x + ARROW_AJUST_POS	, -m_tBrushPos.y					+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[DOWNRIGHT]->world = Get2DWorld(true,	 m_pArrowParam[DOWNRIGHT]->rotate,	{ m_tBrushPos.x + ARROW_AJUST_POS	, -m_tBrushPos.y + ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[DOWN]->world = Get2DWorld(true,		 m_pArrowParam[DOWN]->rotate,		{ m_tBrushPos.x						, -m_tBrushPos.y + ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[DOWNLEFT]->world = Get2DWorld(true,	 m_pArrowParam[DOWNLEFT]->rotate,	{ m_tBrushPos.x - ARROW_AJUST_POS	, -m_tBrushPos.y + ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[LEFT]->world = Get2DWorld(true,		 m_pArrowParam[LEFT]->rotate,		{ m_tBrushPos.x - ARROW_AJUST_POS	, -m_tBrushPos.y					+ ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam[UPLEFT]->world = Get2DWorld(true,		 m_pArrowParam[UPLEFT]->rotate,		{ m_tBrushPos.x - ARROW_AJUST_POS	, -m_tBrushPos.y - ARROW_AJUST_POS	+ ARROW_BRUSH_AJUST_Y });
-
-	for (int i = 0; i < 8; i++)
-	{
-		m_pArrowParam[i]->size = { ARROW_SIZE ,ARROW_SIZE };
-
-		switch (m_eArrowState[i])
-		{
-		case NONE_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
-		case SELECTED:		m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
-		case CANNOT_SELECT:	m_pArrowParam[i]->color = { 1.0f, 1.0f, 1.0f, 0.0f }; break;
-		default:break;
-		}
-		//m_pArrowParam[i]->world = Get2DWorld(true, m_pArrowParam[i]->rotate, { m_tBrushPos.x,-m_tBrushPos.y });
-		Sprite::SetParam(m_pArrowParam[i]);
-		Sprite::SetTexture(m_pArrowTex);
-		Sprite::Draw();
-		Sprite::ReSetSprite();
-	}
 
 	/* プレイヤーの描画 */
 	SetRender3D();											// 3D表現のセット
@@ -278,12 +237,9 @@ void CPlayer::UpdateStop()
 	g_pWalkSe->SubmitSourceBuffer(&buffer);
 
 	// プレイヤーのコントローラー、キーボード入力処理
-	PlayerInput();
+	m_eArrowState = NONE_SELECT;
 
-	for (int i = 0; i < 8; i++)
-	{
-		m_eArrowState[i] = NONE_SELECT;
-	}
+	PlayerInput();
 
 	if (!m_bCanMoveCheck)	// 移動可能か未チェック
 	{
@@ -297,7 +253,7 @@ void CPlayer::UpdateStop()
 			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
-				m_eArrowState[i] = CANNOT_SELECT;
+				m_eArrowState = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
 				m_pTimerParam[Timer_Gauge]->size.y  = 0.0f;				// タイマーを一番下まで落とす
@@ -307,7 +263,7 @@ void CPlayer::UpdateStop()
 		m_bCanMoveCheck = true;					// 移動可能かのチェック終了
 	}
 	// プレイヤーのコントローラー、キーボード入力処理
-	PlayerInput();
+	//PlayerInput();
 
 
 	// プレイヤーの座標を現在の頂点番号の座標と同じにする
@@ -419,17 +375,19 @@ void CPlayer::PlayerInput()
 	if (tControllerMove.y <= DEADZONE && tControllerMove.y >= -DEADZONE) tControllerMove.y = 0.0f;
 
 	/* 目的地の更新 */
-	if ((tControllerMove.x > 0.0f		&& tControllerMove.y > 0.0f) ) m_eDestination = UPRIGHT;
-	else if ((tControllerMove.x >  0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWNRIGHT;
-	else if ((tControllerMove.x <  0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWNLEFT;
-	else if ((tControllerMove.x <  0.0f && tControllerMove.y > 0.0f) ) m_eDestination = UPLEFT;
-	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f) )m_eDestination = UP;
-	else if ((tControllerMove.x >  0.0f && tControllerMove.y == 0.0f)) m_eDestination = RIGHT;
-	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f) ) m_eDestination = DOWN;
-	else if ((tControllerMove.x <  0.0f && tControllerMove.y == 0.0f)) m_eDestination = LEFT;
+	if ((tControllerMove.x > 0.0f && tControllerMove.y > 0.0f)) m_eDestination = UPRIGHT;
+	else if ((tControllerMove.x > 0.0f && tControllerMove.y < 0.0f)) m_eDestination = DOWNRIGHT;
+	else if ((tControllerMove.x < 0.0f && tControllerMove.y < 0.0f)) m_eDestination = DOWNLEFT;
+	else if ((tControllerMove.x < 0.0f && tControllerMove.y > 0.0f)) m_eDestination = UPLEFT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f))m_eDestination = UP;
+	else if ((tControllerMove.x > 0.0f && tControllerMove.y == 0.0f)) m_eDestination = RIGHT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f)) m_eDestination = DOWN;
+	else if ((tControllerMove.x < 0.0f && tControllerMove.y == 0.0f)) m_eDestination = LEFT;
+	else m_eDestination = DEFAULT;
 
 	// キー入力情報の取得
 	DIRECTION KeyData = WASDKeyBorad();
+
 	switch (KeyData)
 	{
 	case D_above: m_eDestination = UP;				break; 
@@ -443,7 +401,7 @@ void CPlayer::PlayerInput()
 	case D_under: m_eDestination = DOWN;			break;
 	case D_under_right:m_eDestination = DOWNRIGHT;	break;
 	case D_under_left: m_eDestination = DOWNLEFT;	break;
-	case D_no:break;
+	case D_no:m_eDestination = DEFAULT; break;
 	}
 
 	// 目的地ごとに目的地の頂点を設定
@@ -463,7 +421,8 @@ void CPlayer::PlayerInput()
 
 	if (m_eDestination < 0 || m_eDestination > 7)return;
 	int no = m_eDestination;
-	if(m_eArrowState[no] != CANNOT_SELECT)m_eArrowState[no] = SELECTED;
+	if(!m_pFieldVtx->GetRoadStop(no))m_eArrowState = SELECTED;
+	else m_eArrowState = CANNOT_SELECT;
 }
 
 void CPlayer::TimeProcess()

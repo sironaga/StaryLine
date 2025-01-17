@@ -74,8 +74,8 @@ private:
 		SELECTED,
 		CANNOT_SELECT
 	};
-	E_ARROW_STATE m_eArrowState[8];
-	SpriteParam* m_pArrowParam[8];
+	E_ARROW_STATE m_eArrowState;
+	SpriteParam* m_pArrowParam;
 	Texture* m_pArrowTex;
 	DirectX::XMFLOAT2  m_tArrowCenterPos;
 
