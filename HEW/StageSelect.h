@@ -51,6 +51,7 @@ private:
 	float f_SelectX;
 	float f_SelectY;
 	bool MainStage;
+	bool m_bEnd;
 
 	int nSlect;
 };

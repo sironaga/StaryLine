@@ -32,6 +32,7 @@ CStageSelect::CStageSelect()
 	, f_SelectX(350)
 	, f_SelectY(350)
 	, MainStage(true)
+	, m_bEnd(false)
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = STAGE1; 
@@ -125,90 +126,95 @@ CStageSelect::~CStageSelect()
 
 void CStageSelect::Update()
 {
-	if (MainStage)
+	if (!m_bEnd)
 	{
-		switch (g_Select_type.StageMainNumber)
-		{
-		case(GRASSLAND):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; }
-			break;
-		case(GRASSLANDBACK):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; }
-			break;
-		case(DESERT):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; }
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLANDBACK; }
-			break;
-		case(DESERTBACK):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; }
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLANDBACK; }
-			break;
-		case(SNOWFIELD):
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = DESERTBACK; }
-			break;
-		}
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+		if (MainStage)
 		{
 			switch (g_Select_type.StageMainNumber)
 			{
+			case(GRASSLAND):
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; }
+				break;
 			case(GRASSLANDBACK):
-				g_Select_type.StageMainNumber = GRASSLAND;
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; }
+				break;
+			case(DESERT):
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; }
+				if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLANDBACK; }
 				break;
 			case(DESERTBACK):
-				g_Select_type.StageMainNumber = DESERT;
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; }
+				if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLANDBACK; }
+				break;
+			case(SNOWFIELD):
+				if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = DESERTBACK; }
 				break;
 			}
-			MainStage ^= true; 
+			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+			{
+				switch (g_Select_type.StageMainNumber)
+				{
+				case(GRASSLANDBACK):
+					g_Select_type.StageMainNumber = GRASSLAND;
+					break;
+				case(DESERTBACK):
+					g_Select_type.StageMainNumber = DESERT;
+					break;
+				}
+				MainStage ^= true;
+			}
+			if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			{
+				SetNext(SCENE_TITLE, g_Select_type);
+				m_bEnd = true;
+			}
 		}
-		if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
-		{
-			SetNext(SCENE_TITLE, g_Select_type);
-		}
-	}
-	else
-	{
-		switch (g_Select_type.StageSubNumber)
-		{
-		case(STAGE1):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE2; }
-			break;
-
-		case(STAGE2):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE3; }
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE1BACK; }
-			break;
-
-		case(STAGE3):
-			//if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE1; }
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE2BACK; }
-		     break;
-		case(STAGE1BACK):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE2; }
-			break;
-		case(STAGE2BACK):
-			if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE3; }
-			if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE1BACK; }
-		default:break;
-		}
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+		else
 		{
 			switch (g_Select_type.StageSubNumber)
 			{
+			case(STAGE1):
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE2; }
+				break;
+
+			case(STAGE2):
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE3; }
+				if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE1BACK; }
+				break;
+
+			case(STAGE3):
+				//if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE1; }
+				if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE2BACK; }
+				break;
 			case(STAGE1BACK):
-				g_Select_type.StageSubNumber = STAGE1;
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE2; }
 				break;
 			case(STAGE2BACK):
-				g_Select_type.StageSubNumber = STAGE2;
-				break;
+				if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE3; }
+				if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageSubNumber = STAGE1BACK; }
+			default:break;
 			}
-			CSceneResult::InStageLevel(g_Select_type);
-			SetNext(SCENE_GAME, g_Select_type);
-		}
-		if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
-		{
-			MainStage ^= true;
-		}
-	}//シーン移行
+			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+			{
+				switch (g_Select_type.StageSubNumber)
+				{
+				case(STAGE1BACK):
+					g_Select_type.StageSubNumber = STAGE1;
+					break;
+				case(STAGE2BACK):
+					g_Select_type.StageSubNumber = STAGE2;
+					break;
+				}
+				CSceneResult::InStageLevel(g_Select_type);
+				SetNext(SCENE_GAME, g_Select_type);
+				m_bEnd = true;
+			}
+			if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			{
+				MainStage ^= true;
+			}
+		}//シーン移行
+	}
 }
 
 void CStageSelect::Draw()
