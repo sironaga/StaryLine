@@ -54,28 +54,28 @@
 //次に敵が生成される間隔
 enum class NEXTSPAWN
 {
-	Stage1_1 = 5,
-	Stage1_2 = 5,
-	Stage1_3 = 5,
-	Stage2_1 = 5,
-	Stage2_2 = 5,
-	Stage2_3 = 5,
-	Stage3_1 = 5,
-	Stage3_2 = 5,
-	Stage3_3 = 5,
+	Stage1_1 = 10,
+	Stage1_2 = 10,
+	Stage1_3 = 10,
+	Stage2_1 = 10,
+	Stage2_2 = 10,
+	Stage2_3 = 10,
+	Stage3_1 = 10,
+	Stage3_2 = 10,
+	Stage3_3 = 10,
 };
 //一度に出てくる敵の数
 enum class ENEMY_SPAWNNUM
 {
-	Stage1_1 = 8,
-	Stage1_2 = 10,
-	Stage1_3 = 12,
-	Stage2_1 = 10,
-	Stage2_2 = 12,
-	Stage2_3 = 14,
-	Stage3_1 = 15,
-	Stage3_2 = 17,
-	Stage3_3 = 20,
+	Stage1_1 = 3,
+	Stage1_2 = 6,
+	Stage1_3 = 8,
+	Stage2_1 = 6,
+	Stage2_2 = 8,
+	Stage2_3 = 10,
+	Stage3_1 = 8,
+	Stage3_2 = 10,
+	Stage3_3 = 12,
 };
 //敵の歩行タイプ雑魚敵の確率
 enum class ENEMY_PROBABILITY
@@ -177,6 +177,7 @@ CBattle::~CBattle()
 	{
 		if (m_pLogTex[i])m_pLogTex[i]->Release();
 	}
+
 	//味方ポインタの解放
 	for (int i = 0; i < m_pAlly.size(); i++)
 	{
@@ -190,7 +191,18 @@ CBattle::~CBattle()
 		if (!m_pEnemy[i])continue;
 		delete m_pEnemy[i];
 		m_pEnemy[i] = nullptr;
-
+	}
+	//味方リーダーポインタの解放
+	if (m_pAllyLeader)
+	{
+		delete m_pAllyLeader;
+		m_pAllyLeader = nullptr;
+	}
+	//敵リーダーポインタの解放
+	if (m_pEnemyLeader)
+	{
+		delete m_pEnemyLeader;
+		m_pEnemyLeader = nullptr;
 	}
 }
 
@@ -958,17 +970,17 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			{
 				//目的地先の座標格納
 				DirectX::XMFLOAT3 DestinationPos;
-				DestinationPos.x = iAllyPos.x + ((iAllyPos.x - AllyPos.x) * 10);
+				DestinationPos.x = iAllyPos.x + ((iAllyPos.x - AllyPos.x));
 				DestinationPos.y = iAllyPos.y;
-				DestinationPos.z = iAllyPos.z + ((iAllyPos.z - AllyPos.z) * 10);
+				DestinationPos.z = iAllyPos.z + ((iAllyPos.z - AllyPos.z));
 
-				m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, DestinationPos).x);
-				m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, DestinationPos).z);
+				//m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, DestinationPos).x);
+				//m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, DestinationPos).z);
 
-				////補正移動先を目的地に移動
-				//m_pAlly[i]->SetDestinationPos(DestinationPos);
-				////移動フラグを立てる
-				//m_pAlly[i]->SetMoveFlag(true);
+				//補正移動先を目的地に移動
+				m_pAlly[i]->SetDestinationPos(DestinationPos);
+				//移動フラグを立てる
+				m_pAlly[i]->SetMoveFlag(true);
 
 				return false;
 			}
@@ -1010,17 +1022,17 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			{
 				//目的地先の座標格納
 				DirectX::XMFLOAT3 DestinationPos;
-				DestinationPos.x = iEnemyPos.x + ((iEnemyPos.x - EnemyPos.x)* 10);
+				DestinationPos.x = iEnemyPos.x + ((iEnemyPos.x - EnemyPos.x));
 				DestinationPos.y = iEnemyPos.y;
-				DestinationPos.z = iEnemyPos.z + ((iEnemyPos.z - EnemyPos.z)* 10);
+				DestinationPos.z = iEnemyPos.z + ((iEnemyPos.z - EnemyPos.z));
 
-				m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
-				m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
+				//m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
+				//m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
 
-				////補正移動先を目的地に移動
-				//m_pEnemy[i]->SetDestinationPos(DestinationPos);
-				////移動フラグを立てる
-				//m_pEnemy[i]->SetMoveFlag(true);
+				//補正移動先を目的地に移動
+				m_pEnemy[i]->SetDestinationPos(DestinationPos);
+				//移動フラグを立てる
+				m_pEnemy[i]->SetMoveFlag(true);
 
 				return false;
 			}
@@ -1260,6 +1272,7 @@ void CBattle::Delete(void)
 		if (m_pEnemyLeader->GetStatus() == St_Delete)
 		{
 			//解放処理
+			delete m_pEnemyLeader;
 			m_pEnemyLeader = nullptr;
 		}
 	}
@@ -1270,6 +1283,7 @@ void CBattle::Delete(void)
 		if (m_pAllyLeader->GetStatus() == St_Delete)
 		{
 			//解放処理
+			delete m_pAllyLeader;
 			m_pAllyLeader = nullptr;
 		}
 	}
