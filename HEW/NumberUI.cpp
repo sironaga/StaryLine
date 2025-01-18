@@ -2,6 +2,10 @@
 #include "Main.h"
 
 CNumberUI::CNumberUI()
+	:m_pNumber{}
+	,nNumber(),nLong(),nColor(0)
+	,Pos(),Scale(),Color()
+	,fAlpha()
 {
 	m_pNumber[0][0][nColor] = new SpriteEx("Assets/Texture/Number/Num_0.png");
 	m_pNumber[0][1][nColor] = new SpriteEx("Assets/Texture/Number/Num_1.png");
@@ -36,7 +40,12 @@ CNumberUI::CNumberUI()
 	m_pNumber[0][8][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_8.png");
 	m_pNumber[0][9][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_9.png");
 
-	color.X = color.Y = color.Z = fAlpha = 1.0f;			 
+	Color.X = Color.Y = Color.Z = fAlpha = 1.0f;	
+
+	if (nColor > 1)
+	{
+		MessageBox(NULL, "nColorƒGƒ‰[", "NumberUI.cpp", MB_OK);
+	}
 }
 
 CNumberUI::~CNumberUI()
@@ -78,7 +87,7 @@ void CNumberUI::Draw()
 		{
 			l = l / 10;
 		}
-		m_pNumber[0][l][nColor]->Setcolor(color.X, color.Y, color.Z, fAlpha);
+		m_pNumber[0][l][nColor]->Setcolor(Color.X, Color.Y, Color.Z, fAlpha);
 		m_pNumber[0][l][nColor]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pNumber[0][l][nColor]->SetTexture();
 		m_pNumber[0][l][nColor]->SetView(Get2DView());
@@ -129,9 +138,9 @@ void CNumberUI::SetScale(FLOAT3 scale)
 
 void CNumberUI::SetColor(float R, float G, float B, float A)
 {
-	color.X = R;
-	color.Y = G;
-	color.Z = B;
+	Color.X = R;
+	Color.Y = G;
+	Color.Z = B;
 	fAlpha = A;
 }
 

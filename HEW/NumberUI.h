@@ -23,7 +23,7 @@ private:
 	int nColor;
 	FLOAT3 Pos;
 	FLOAT3 Scale;
-	FLOAT3 color;
+	FLOAT3 Color;
 	float fAlpha;
 
 };
