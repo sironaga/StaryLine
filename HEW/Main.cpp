@@ -352,4 +352,169 @@ int GetNowHeight()
 {
 	return g_NowHeight;
 }
+void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color, DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize)
+{
+	if (IsKeyPress(VK_LEFT))	pos->x++;
+	if (IsKeyPress(VK_RIGHT))	pos->x--;
+	if (IsKeyPress(VK_UP))		pos->y++;
+	if (IsKeyPress(VK_DOWN))	pos->y--;
+	if (IsKeyPress(VK_SPACE))	pos->z++;
+	if (IsKeyPress(VK_SHIFT))	pos->z--;
+
+	if (IsKeyPress('J'))		size->x++;
+	if (IsKeyPress('L'))		size->x--;
+	if (IsKeyPress('I'))		size->y++;
+	if (IsKeyPress('K'))		size->y--;
+	if (IsKeyPress('U'))		size->z++;
+	if (IsKeyPress('O'))		size->z--;
+	if (IsKeyPress('Z'))
+	{
+		size->x++;
+		size->y++;
+		size->z++;
+	}
+	if (IsKeyPress('X'))
+	{
+		size->x--;
+		size->y--;
+		size->z--;
+	}
+
+	if (IsKeyPress('A'))		rotate->x += DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('D'))		rotate->x -= DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('W'))		rotate->y += DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('S'))		rotate->y -= DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('Q'))		rotate->z += DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('E'))		rotate->z -= DirectX::XMConvertToRadians(5.0f);
+
+	if (IsKeyPress('1') && IsKeyPress(VK_SHIFT))		color->x -= 5;
+	else if (IsKeyPress('1'))		color->x += 5;
+	if (IsKeyPress('2') && IsKeyPress(VK_SHIFT))		color->y -= 5;
+	else if (IsKeyPress('2'))		color->y += 5;
+	if (IsKeyPress('3') && IsKeyPress(VK_SHIFT))		color->z -= 5;
+	else if (IsKeyPress('3'))		color->z += 5;
+	if (IsKeyPress('4') && IsKeyPress(VK_SHIFT))		color->w -= 5;
+	else if (IsKeyPress('4'))		color->w += 5;
+
+	if (IsKeyPress('6') && IsKeyPress(VK_SHIFT))		uvPos->x -= 0.05;
+	else if (IsKeyPress('6'))		uvPos->x += 0.05;
+	if (IsKeyPress('7') && IsKeyPress(VK_SHIFT))		uvPos->y -= 0.05;
+	else if (IsKeyPress('7'))		uvPos->y += 0.05;
+	if (IsKeyPress('8') && IsKeyPress(VK_SHIFT))		uvSize->x -= 0.05;
+	else if (IsKeyPress('8'))		uvSize->x += 0.05;
+	if (IsKeyPress('9') && IsKeyPress(VK_SHIFT))		uvSize->y -= 0.05;
+	else if (IsKeyPress('9'))		uvSize->y += 0.05;
+
+	static int a = 0;
+
+	if (IsKeyPress('0'))
+	{
+		a++;
+		if (a >= 120)
+		{
+			pos->x = 0.0f;
+			pos->y = 0.0f;
+			pos->z = 0.0f;
+			size->x = 1.0f;
+			size->y = 1.0f;
+			size->z = 1.0f;
+			rotate->x = 0.0f;
+			rotate->y = 0.0f;
+			rotate->z = 0.0f;
+			color->x = 1.0f;
+			color->y = 1.0f;
+			color->z = 1.0f;
+			color->w = 1.0f;
+			uvPos->x = 0.0f;
+			uvPos->y = 0.0f;
+			uvSize->x = 1.0f;
+			uvSize->y = 1.0f;
+			a = 0;
+		}
+	}
+	else a = 0;
+}
+
+void SpriteDebug(ObjectParam* param)
+{
+	if (IsKeyPress(VK_LEFT))	param->pos.x++;
+	if (IsKeyPress(VK_RIGHT))	param->pos.x--;
+	if (IsKeyPress(VK_UP))		param->pos.y++;
+	if (IsKeyPress(VK_DOWN))	param->pos.y--;
+	if (IsKeyPress(VK_SPACE))	param->pos.z++;
+	if (IsKeyPress(VK_SHIFT))	param->pos.z--;
+
+	if (IsKeyPress('J'))		param->size.x++;
+	if (IsKeyPress('L'))		param->size.x--;
+	if (IsKeyPress('I'))		param->size.y++;
+	if (IsKeyPress('K'))		param->size.y--;
+	if (IsKeyPress('U'))		param->size.z++;
+	if (IsKeyPress('O'))		param->size.z--;
+	if (IsKeyPress('Z'))
+	{
+		param->size.x++;
+		param->size.y++;
+		param->size.z++;
+	}
+	if (IsKeyPress('X'))
+	{
+		param->size.x--;
+		param->size.y--;
+		param->size.z--;
+	}
+
+	if (IsKeyPress('A'))		param->rotate.x += DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('D'))		param->rotate.x -= DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('W'))		param->rotate.y += DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('S'))		param->rotate.y -= DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('Q'))		param->rotate.z += DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('E'))		param->rotate.z -= DirectX::XMConvertToRadians(5.0f);
+
+	if (IsKeyPress('1') && IsKeyPress(VK_SHIFT))		param->color.x -= 5;
+	else if (IsKeyPress('1'))							param->color.x += 5;
+	if (IsKeyPress('2') && IsKeyPress(VK_SHIFT))		param->color.y -= 5;
+	else if (IsKeyPress('2'))							param->color.y += 5;
+	if (IsKeyPress('3') && IsKeyPress(VK_SHIFT))		param->color.z -= 5;
+	else if (IsKeyPress('3'))							param->color.z += 5;
+	if (IsKeyPress('4') && IsKeyPress(VK_SHIFT))		param->color.w -= 5;
+	else if (IsKeyPress('4'))							param->color.w += 5;
+
+	if (IsKeyPress('6') && IsKeyPress(VK_SHIFT))		param->uvPos.x -= 0.05;
+	else if (IsKeyPress('6'))							param->uvPos.x += 0.05;
+	if (IsKeyPress('7') && IsKeyPress(VK_SHIFT))		param->uvPos.y -= 0.05;
+	else if (IsKeyPress('7'))							param->uvPos.y += 0.05;
+	if (IsKeyPress('8') && IsKeyPress(VK_SHIFT))		param->uvSize.x -= 0.05;
+	else if (IsKeyPress('8'))							param->uvSize.x += 0.05;
+	if (IsKeyPress('9') && IsKeyPress(VK_SHIFT))		param->uvSize.y -= 0.05;
+	else if (IsKeyPress('9'))							param->uvSize.y += 0.05;
+
+	static int a = 0;
+
+	if (IsKeyPress('0'))
+	{
+		a++;
+		if (a >= 120)
+		{
+			param->pos.x = 0.0f;
+			param->pos.y = 0.0f;
+			param->pos.z = 0.0f;
+			param->size.x = 1.0f;
+			param->size.y = 1.0f;
+			param->size.z = 1.0f;
+			param->rotate.x = 0.0f;
+			param->rotate.y = 0.0f;
+			param->rotate.z = 0.0f;
+			param->color.x = 1.0f;
+			param->color.y = 1.0f;
+			param->color.z = 1.0f;
+			param->color.w = 1.0f;
+			param->uvPos.x = 0.0f;
+			param->uvPos.y = 0.0f;
+			param->uvSize.x = 1.0f;
+			param->uvSize.y = 1.0f;
+			a = 0;
+		}
+	}
+	else a = 0;
+}
 // EOF

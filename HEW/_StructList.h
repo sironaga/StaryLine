@@ -75,6 +75,16 @@ struct Communication_Data
 	Connecting_System_Data ConectionData;
 };
 
+struct ObjectParam
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 size;
+	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT3 rotate;
+	DirectX::XMFLOAT2 uvPos;
+	DirectX::XMFLOAT2 uvSize;
+};
+
 struct SpriteParam
 {
 public:
