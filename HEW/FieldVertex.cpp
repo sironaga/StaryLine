@@ -19,9 +19,11 @@
 //全体のコメントアウト見直し
 
 #define MAX_FEVER_POINT (30.0f)//フィーバーゲージの上限ポイント
+#define FEVER_GAGE_POS_X (-83.0f)//フィーバーゲージのX座標
+#define FEVER_GAGE_POS_Y (65.0f)//フィーバーゲージのY座標
 
-#define SUMMON_LOG_SIZE_X (25.0f)//ログのXサイズ
-#define SUMMON_LOG_SIZE_Y (15.0f)//ログのYサイズ
+#define SUMMON_LOG_SIZE_X (40.0f)//ログのXサイズ
+#define SUMMON_LOG_SIZE_Y (10.0f)//ログのYサイズ
 #define MAX_DRAW_LOG (15)//ログの描画数
 #define DRAW_LOG_TIME (0.5f) //ログの終始の表示時間
 #define DRAW_MAIN_LOG_TIME (2.0f) //ログの中間の表示時間
@@ -497,7 +499,7 @@ void CFieldVertex::Draw()
 
 	//-----ステラの数描画-----//
 	{
-		DrawSetting({ -60.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
+		DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
 		m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
 		m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
 		m_pSprite_SuperStar_Number->Draw();//描画
@@ -507,17 +509,17 @@ void CFieldVertex::Draw()
 	//-----フィーバーゲージ描画-----//
 	{
 		//フィーバー背景//
-		float Fever_Gage_Size = 40.0f;
+		float Fever_Gage_Size = 50.0f;
 		if (GetFeverMode())//フィーバータイムの時、後の背景出現
 		{
-			DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
+			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
 			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
 			m_pSprite_Fever_Gage[2]->Draw();//描画
 			m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
 		}
 
-		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[0]->Draw();//描画
@@ -526,7 +528,7 @@ void CFieldVertex::Draw()
 
 		if (!GetFeverMode())fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
 		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
-		DrawSetting({ -90.0f, 40.0f + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });//UVの座標設定
 		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UVの大きさ設定
 		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
@@ -534,7 +536,7 @@ void CFieldVertex::Draw()
 		m_pSprite_Fever_Gage[1]->Draw();//描画
 		m_pSprite_Fever_Gage[1]->ReSetSprite();//スプライトのリセット
 
-		DrawSetting({ -90.0f, 80.0f,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[3]->Draw();//描画
@@ -578,7 +580,7 @@ void CFieldVertex::LogUpdate()
 				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
 				SummonLog[i].Alpha += 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
 				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
-				if (SummonLog[i].Pos.x < 100.0f)SummonLog[i].Pos.x = 100.0f;//値の補正
+				if (SummonLog[i].Pos.x < 97.0f)SummonLog[i].Pos.x = 97.0f;//値の補正
 				if (SummonLog[i].time <= 0.0f && MoveFlagStart)
 				{
 					//１の処理を抜けて２の処理の初期化
@@ -1174,7 +1176,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					Ally_Count++;//召喚数増やす
 					//召喚ログセット
 					//SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 100.0f - 5.0f * NowSummonLog, 10.0f);
-					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 50.0f, 10.0f);
+					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
 					SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
 					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
 					SummonLog[NowSummonLog].Alpha = 0.0f;

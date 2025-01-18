@@ -99,6 +99,7 @@ CPlayer::CPlayer()
 	g_pPlayerSound = new CSoundList(SE_WALK);
 	g_pPlayerSound->SetMasterVolume();
 	g_pWalkSe = g_pPlayerSound->GetSound(true);
+	m_bool = false;
 }
 
 CPlayer::~CPlayer()
@@ -254,6 +255,7 @@ void CPlayer::UpdateStop()
 			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
+				m_bool = true;
 				m_eArrowState = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
@@ -426,6 +428,11 @@ void CPlayer::PlayerInput()
 	else m_eArrowState = CANNOT_SELECT;
 }
 
+void CPlayer::SetMoveStop()
+{
+	m_bool = false;
+}
+
 void CPlayer::TimeProcess()
 {
 	//タイマースタート
@@ -455,4 +462,5 @@ void CPlayer::SetPlayerStop()
 	m_ePlayerState = STOP;		// プレイヤーの動きを止める
 	m_bCanMoveCheck = false;	// 移動可能かのチェック再開
 	m_bDrawing = true;			// 作図中にする
+	m_bool = false;
 }

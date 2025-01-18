@@ -41,7 +41,7 @@ public:
 
 	DirectX::XMFLOAT3 GetVertexPos(int);//引数の頂点番号の座標を返す関数
 	bool GetRoadStop(int);//引数でもらった方向が進めるかどうかの情報を渡す関数
-	float GetFeverPoint() { return fFeverPoint; }//フィーバーポイントを取得する関数
+	float GetFeverPoint() { return nFeverPoint; }//フィーバーポイントを取得する関数
 
 	void SetBattleAddress(CBattle*);//CBattleクラスのアドレス情報をセットする関数
 	void SetPlayerAddress(CPlayer*);//CPlayerクラスのアドレス情報をセットする関数

@@ -132,8 +132,13 @@ void CSceneGame::Update()
 		g_tTime.GameTime++;
 	}
 
+	if (((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GameSTimePheseAjust <= g_tTime.GameTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+	{
+		g_tTime.GameTime++;
+	}
+
 	// 移動が詰んだ時
-	if (!m_pPlayer->GetCanMove() && m_bPhase)
+	if (m_pPlayer->GetMoveStop() && m_bPhase && (g_tTime.GameTime != -1.0f))
 	{
 		// 召喚開始の時間(本来の値 + 前回のサイクルが終了した時間)と現在時間(経過時間)の差を求めて
 		// フェーズごとの補正値(STimePheseAjust)に代入する
@@ -148,6 +153,7 @@ void CSceneGame::Update()
 		{
 			g_tTime.GameSTimeFeverAjust = g_tTime.GameTime - ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust);
 			m_pFieldVertex->ResetFeverPoint();
+			m_pPlayer->SetMoveStop();
 		}
 		m_bPhase = false;
 
@@ -174,6 +180,7 @@ void CSceneGame::Update()
 			g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
 			m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
 			//m_pPlayer->SetPlayerStop();			// プレイヤーの状態をSTOPに変える
+			m_pPlayer->SetMoveStop();
 		}
 	}
 
@@ -260,6 +267,7 @@ void CSceneGame::Draw()
 	if (((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
 		m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
+		if(!m_bFever)TimeStart = false;
 	}
 
 	//１回目のCOOLTIMEが始まったらそれ以降処理

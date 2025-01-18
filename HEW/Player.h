@@ -66,6 +66,7 @@ private:
 	bool m_bCanMoveCheck;					// 目的地へ行けるかどうか
 
 	bool m_bDrawing;						// 作図中かどうか
+	bool m_bool;
 
 	
 	enum E_ARROW_STATE
@@ -99,9 +100,12 @@ public:
 	// 描画中か取得
 	const bool GetCanMove() { return m_bDrawing; }
 
+	bool GetMoveStop() { return m_bool; }
+
 	/* Setter */
 	// 再作図開始のための設定
-	void SetPlayerStop();	
+	void SetPlayerStop();
+	void SetMoveStop();
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:
