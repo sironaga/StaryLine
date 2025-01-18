@@ -29,10 +29,7 @@ private:
 	IXAudio2SourceVoice* g_pSourseTitleBGM;
 	CSoundList* g_TitleSound;
 	CBackGround* g_pTitleBG;
-	float f_SelectY;
 	COption* m_pOption;
-	Texture* m_pSelect;
-	SpriteParam* m_pParam;
 
 private:
 	SpriteEx* m_pTitleLogo;
