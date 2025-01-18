@@ -17,14 +17,12 @@ public:
 	//åªç›ÇÃDrawèÛë‘
 	bool GetDraw();
 private:
-	FLOAT3 m_tPos;
-	FLOAT3 m_tSize;
-	FLOAT3 m_tRotate;
+	FLOAT3 m_tPos[7];
+	FLOAT3 m_tSize[7];
 	FLOAT2 m_tPosTex;
 	FLOAT2 m_tSizeTex;
 	float m_timer;
 	bool m_NowDraw;
-	CNumberUI* m_StartNumberUI;
-	SpriteEx* m_StratSprite;
+	SpriteEx* m_StratSprite[7];
 };
 
