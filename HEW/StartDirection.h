@@ -23,6 +23,7 @@ private:
 	FLOAT2 m_tSizeTex;
 	float m_timer;
 	bool m_NowDraw;
+	bool m_startDraw;
 	SpriteEx* m_StratSprite[7];
 };
 
