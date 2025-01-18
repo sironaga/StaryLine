@@ -12,19 +12,25 @@ Field::Field(StageType StageNum)
 	switch (StageNum.StageMainNumber)
 	{
 	case (int)EStageType::STAGE_GRASSLAND:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage1_Meadow.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 		break;
 	case (int)EStageType::STAGE_DESERT:
 		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 		break;
 	case (int)EStageType::STAGE_SNOWFIELD:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage3_SnowField.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, 5.0f, 130.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(5), TORAD(180), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 		break;
 	}
 
-	m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
-	m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
-	m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 }
 
 Field::~Field()
@@ -45,15 +51,15 @@ void Field::Draw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	//行列(Scaling)
+	//行�E(Scaling)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_Pos.x, m_Pos.y, m_Pos.z, 0.0f));
-	//拡大縮小行列(Scaling)
+	//拡大縮小行�E(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);
-	//回転行列(Rotation)
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_Angle.x);//X軸回転行列;
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_Angle.y);//Y軸回転行列;
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle.z);//Z軸回転行列;
-	//それぞれの行列を掛け合わせて格納
+	//回転行�E(Rotation)
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_Angle.x);//X軸回転行�E;
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_Angle.y);//Y軸回転行�E;
+	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle.z);//Z軸回転行�E;
+	//それぞれの行�Eを掛け合わせて格紁E
 	DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T;
 
 	world = mat;

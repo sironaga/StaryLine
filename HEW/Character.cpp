@@ -4,6 +4,7 @@
 #include "Main.h"
 #include "Geometory.h"
 #include "ShaderList.h"
+#include "Input.h"
 
 //キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((m_tSize.x *(Num / 2)) + (m_tSize.x))
@@ -13,6 +14,9 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.x * (Num / 2)) + (m_tSize.x))
 //キャラクターの縦の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.y * (Num / 2)) + (m_tSize.y))
+
+//モデル表示でバック用変数
+float Y = 0.0f;
 
 //味方キャラクターの列挙型
 enum class Ally
@@ -70,7 +74,7 @@ Model* g_pBosCar;
 //Hpのテクスチャ
 Texture* g_pHpGageTex[2][2];
 //キャラクターのエフェクト
-CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
+//CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
 //攻撃音
 CSoundList* g_AttackSound;
 
@@ -197,9 +201,9 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Kannele] = new Model();
-		g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Kannele/Char_Boss03_Kannele.fbx"), 1.0f, Model::None);
 		g_pLeaderModel[(int)Leader::Boldow] = new Model();
-		g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Boldow/Char_Boss03_Boldow.fbx"), 1.0f, Model::None);
 		
 		switch (StageType.StageSubNumber)
 		{
@@ -226,17 +230,23 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	g_AttackSound->SetMasterVolume();
 	/*エフェクトの読み込み*/
-	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("SwordAtk.efkefc"));
-	//g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("fire.efk"));
-	g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager(EFFECT_PASS("Yumi.efkefc"));
-	g_pCharacterEffects[(int)CharactersEffect::Move] = new CEffectManager(EFFECT_PASS("MoveChara.efkefc"));
-	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("Death.efkefc"));
-	//g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("fire.efk"));
+	//g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("SwordAtk.efkefc"));
+	////g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("fire.efk"));
+	//g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager(EFFECT_PASS("Yumi.efkefc"));
+	//g_pCharacterEffects[(int)CharactersEffect::Move] = new CEffectManager(EFFECT_PASS("MoveChara.efkefc"));
+	//g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("Death.efkefc"));
+	////g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("fire.efk"));
 }
 
 //事前読み込みで用意したもののポインタ破棄
 void UnInitCharacterTexture()
 {
+	//車モデルの破棄
+	if (g_pBosCar)
+	{
+		delete 	g_pBosCar;
+		g_pBosCar = nullptr;
+	}
 	//味方モデルの破棄
 	for (int i = 0; i < (int)Ally::MAX; i++)
 	{
@@ -262,11 +272,11 @@ void UnInitCharacterTexture()
 		g_pLeaderModel[i] = nullptr;
 	}
 	//キャラクターのエフェクトの破棄
-	for (int i= 0; i < (int)CharactersEffect::MAX; i++)
-	{
-		delete g_pCharacterEffects[i];
-		g_pCharacterEffects[i] = nullptr;
-	}
+	//for (int i= 0; i < (int)CharactersEffect::MAX; i++)
+	//{
+	//	delete g_pCharacterEffects[i];
+	//	g_pCharacterEffects[i] = nullptr;
+	//}
 
 	//Hpテクスチャの破棄
 	delete g_pHpGageTex[0][0];
@@ -281,13 +291,6 @@ void UnInitCharacterTexture()
 	//サウンドの破棄
 	delete g_AttackSound;
 	g_AttackSound = nullptr;
-
-	//エフェクトの破棄
-	for (int i = 0; i < (int)CharactersEffect::MAX; i++)
-	{
-		delete g_pCharacterEffects[i];
-		g_pCharacterEffects[i] = nullptr;
-	}
 }
 
 //キャラクターの基底クラスのコンストラクタ
@@ -316,6 +319,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_bTimeSoundStart(false)
 	//, m_tEffect{}
 	, m_pModel(nullptr)
+	, m_tDestinationPos()
 {
 	//サウンドの設定
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
@@ -327,17 +331,11 @@ CFighter::CFighter(int InCornerCount)
 CFighter::~CFighter()
 {
 	//Hpポインタの破棄
-	delete m_pHpGage;
-	m_pHpGage = nullptr;
-
-	//エフェクトの破棄
-	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	//{
-	//	if (m_tEffect[i].m_pEffect)
-	//	{
-	//		m_tEffect[i].m_pEffect = nullptr;
-	//	}
-	//}
+	if (m_pHpGage)
+	{
+		delete m_pHpGage;
+		m_pHpGage = nullptr;
+	}
 
 	//サウンドの破棄
 	if (m_pSourceAttack)
@@ -353,6 +351,15 @@ CFighter::~CFighter()
 	{
 		m_pModel = nullptr;
 	}
+
+	//エフェクトの破棄
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//	{
+	//		m_tEffect[i].m_pEffect = nullptr;
+	//	}
+	//}
 }
 
 //攻撃の当たり判定チェック
@@ -1098,7 +1105,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	}
 	if (m_pSubModel)
 	{
-		m_tSubPos.x = FirstPos.x + 5.0f;
+		m_tSubPos.x = FirstPos.x + 10.0f;
 		m_tSubPos.y = FirstPos.y;
 		m_tSubPos.z = FirstPos.z;
 		m_tSubSize.x = InSize;
@@ -1108,8 +1115,11 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 }
 CLeader::~CLeader()
 {
-	delete m_pHpGage;
-	m_pHpGage = nullptr;
+	if (m_pHpGage)
+	{
+		delete m_pHpGage;
+		m_pHpGage = nullptr;
+	}
 	if (m_pModel)
 	{
 		delete m_pModel;
@@ -1227,24 +1237,14 @@ void CLeader::Draw()
 		}
 		if (m_pModel)
 		{
-			//SetRender3D();
-			//DirectX::XMFLOAT4X4 wvp[3];
-			//DirectX::XMMATRIX world;
-			//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
-			////拡大縮小行列(Scaling)
-			//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
-			////回転行列(Rotation)
-			//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
-			////それぞれの行列を掛け合わせて格納
-			//DirectX::XMMATRIX mat = S * R * T;
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(180.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 			//それぞれの行列を掛け合わせて格納
 			DirectX::XMMATRIX mat = S * R * T;
 
@@ -1280,9 +1280,9 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x - 2.0f, m_tSubPos.y + 15.0f, m_tSubPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
 			//回転行列(Rotation)
 			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 			//それぞれの行列を掛け合わせて格納
@@ -1325,7 +1325,9 @@ void CLeader::Draw()
 	////拡大縮小行列(Scaling)
 	//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
 	////回転行列(Rotation)
-	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(180.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	//if (IsKeyPress('K'))Y -= 1.0f;
+	//if (IsKeyPress('L'))Y += 1.0f;
+	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(Y), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	////それぞれの行列を掛け合わせて格納
 	//DirectX::XMMATRIX mat = S * R * T;
 }
@@ -1371,6 +1373,7 @@ CHpUI::CHpUI(float FullHp, HpUINumber Number)
 	,m_tUIPos()
 	,m_tUIScale()
 	,m_tNumber(Number)
+	,m_fAnchorPoint()
 {
 	m_pSprite = new Sprite();
 
@@ -1397,6 +1400,11 @@ CHpUI::CHpUI(float FullHp, HpUINumber Number)
 
 CHpUI::~CHpUI()
 {
+	if (m_pSprite)
+	{
+		delete m_pSprite;
+		m_pSprite = nullptr;
+	}
 }
 
 void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
