@@ -14,7 +14,6 @@ CScene::~CScene()
 
 void CScene::RootUpdate()
 {
-	m_GameDirection->Update();
 	Update();
 	if (m_pFade) m_pFade->Update();
 }
@@ -22,7 +21,6 @@ void CScene::RootUpdate()
 void CScene::RootDraw()
 {
 	Draw();
-	m_GameDirection->Draw();
 	if (m_pFade) m_pFade->Draw();
 
 }

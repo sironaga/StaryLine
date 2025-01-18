@@ -150,6 +150,7 @@ void Update()
 		
 		g_pScene->SetGameDirection(g_pDirection);
 	}
+	g_pDirection->Update();
 }
 
 void Draw()
@@ -221,7 +222,7 @@ void Draw()
 
 	g_pScene->RootDraw();
 	LibEffekseer::Draw();
-
+	g_pDirection->Draw();
 	EndDrawDirectX();
 }
 // --- View情報のゲッター　XMFLOAT4*4
