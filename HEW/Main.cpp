@@ -137,7 +137,7 @@ void Update()
 		{
 		case SCENE_TITLE:g_pScene = new CSceneTitle(); break; // TITLE 
 		case STAGE_SELECT: g_pScene = new CStageSelect(); break;
-		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(2.0f); break; // GAME 
+		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(6.0f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
