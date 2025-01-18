@@ -118,11 +118,8 @@ void Update()
 	// シーン切り替え判定 
 	if (g_pScene->ChangeScene()) 
 	{
-		g_hWnd = g_pScene->GethWnd();
-		g_mainsound->SetMasterVolume();
-		g_pSourseTitleSE->FlushSourceBuffers();
-		if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
-		g_pSourseTitleSE->Start();
+		
+		
 		StageType stage = {};
 		// 次のシーンの情報を取得 
 		int scene = g_pScene->NextScene();
@@ -136,7 +133,17 @@ void Update()
 		switch (scene)
 		{
 		case SCENE_TITLE:g_pScene = new CSceneTitle(); break; // TITLE 
-		case STAGE_SELECT: g_pScene = new CStageSelect(); break;
+		case STAGE_SELECT: 
+			g_pScene = new CStageSelect(); 
+			g_hWnd = g_pScene->GethWnd();
+			g_mainsound->SetMasterVolume();
+			g_pSourseTitleSE->FlushSourceBuffers();
+			XAUDIO2_BUFFER buffer;
+			buffer = g_mainsound->GetBuffer(false);
+			g_pSourseTitleSE->SubmitSourceBuffer(&buffer);
+			if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
+			g_pSourseTitleSE->Start();
+			break;
 		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(6.0f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
@@ -339,6 +346,9 @@ void InitResolusionMain()
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();
 	g_pDirection = new CStartDirection();
+	SAFE_DELETE(g_mainsound);
+	g_mainsound = new CSoundList(SE_DECISION);
+	g_pSourseTitleSE = g_mainsound->GetSound(false);
 }
 void SetNowResolusion(int wide, int height)
 {
