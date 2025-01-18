@@ -35,12 +35,11 @@ enum E_TITLE_TYPE
 
 
 CSceneTitle::CSceneTitle()
-	:f_SelectY(350.0f), m_pSelect(nullptr), m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
+	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 {
 	g_Title_type = GAMESTART;
-	m_pSelect = new Texture();
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
-	if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
+	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
 	//テクスチャの読み込み
 	/*tex = new Texture();
 	tex->Create("Assets/Texture/Title/Title_Logo.png");*/
@@ -142,10 +141,6 @@ CSceneTitle::~CSceneTitle()
 		delete m_pTitleUnderbar;
 		m_pTitleLogo = nullptr;
 	}
-
-
-	SAFE_DELETE(m_pSelect);
-	//SAFE_DELETE(m_pParam);
 }
 
 void CSceneTitle::Update()
@@ -432,10 +427,6 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	InitInput();
 	ShaderList::Init();
 	InitSpriteDrawer(GetDevice(), GetContext(), wide, height);
-
-	if(m_pSelect)delete m_pSelect;
-	m_pSelect = new Texture();
-	if (FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL, "Select.png", "Error", MB_OK);
 
 	SAFE_DELETE(m_pTitleLogo);
 	m_pTitleLogo = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
