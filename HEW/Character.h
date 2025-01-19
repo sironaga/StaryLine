@@ -43,7 +43,7 @@ public:
 	CHpUI(float FullHp, HpUINumber Number);
 	~CHpUI();
 	void Update(float InHp, DirectX::XMFLOAT3 InPos,float InSizeY);
-	void Draw(void);
+	void Draw(int nCornerCount = 0);
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 private:
@@ -265,14 +265,14 @@ public:
 	CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber,bool SubModelCreate = false);
 	~CLeader();
 
-	void Update(void);	//更新処理
+	void Update(bool IsStart = false,bool IsEnd = false);	//更新処理
 	void Draw(void);	//描画処理
 	void HpDraw(void);	//Hpの描画処理
 
 	void Damage(CFighter* pFighter);
 private:
 	void CreateUpdate(void);
-	void BattleUpdate(void);
+	void BattleUpdate(bool IsStart = false, bool IsEnd = false);
 	void DeathUpdate(void);
 
 private:
