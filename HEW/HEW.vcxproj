@@ -30,6 +30,7 @@
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="EffectManager_sp.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FadeBlack.cpp" />
     <ClCompile Include="Field.cpp" />
@@ -85,6 +86,7 @@
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="EffectManager_sp.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FadeBlack.h" />
     <ClInclude Include="Field.h" />
