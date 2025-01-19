@@ -33,6 +33,7 @@ CStageSelect::CStageSelect()
 	, f_SelectY(350)
 	, MainStage(true)
 	, m_bEnd(false)
+	, m_pModel(nullptr)
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = STAGE1; 
@@ -55,6 +56,8 @@ CStageSelect::CStageSelect()
 	m_pSnowFieldStage[2] = new SpriteEx("Assets/Texture/StageSelectBackGround/1_STAGE3.png");
     m_pRight_Select      = new SpriteEx("Assets/Texture/StageSelectBackGround/Right_Select.png");
     m_pLeft_Select       = new SpriteEx("Assets/Texture/StageSelectBackGround/Left_Select.png");
+
+	m_pModel = new CModelEx(MODEL_PASS("StageSelect/SelectStage_Stage02_Desert.fbx"));
 
 	nSlect = 0;
 
@@ -219,7 +222,17 @@ void CStageSelect::Update()
 
 void CStageSelect::Draw()
 {
-	if (MainStage)
+	// ƒ‚ƒfƒ‹•`‰æ
+	SetRender3D();
+	m_pModel->SetPostion(0.0f,0.0f,0.0f);
+	m_pModel->SetRotation(0.0f, 0.0f, 0.0f);
+	m_pModel->SetScale(1.0f, 1.0f, 1.0f);
+	m_pModel->SetViewMatrix(GetView());
+	m_pModel->SetProjectionMatrix(GetProj());
+	m_pModel->Draw();
+
+	SetRender2D();
+	/*if (MainStage)
 	{
 		switch (g_Select_type.StageMainNumber)
 		{
@@ -333,7 +346,7 @@ void CStageSelect::Draw()
 			m_pGrassLandStageBack[1]->Disp();
 			break;
 		}
-	}
+	}*/
 }
 
 //int CStageSelect::GetStageNum()
