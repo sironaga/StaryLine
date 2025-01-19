@@ -267,7 +267,7 @@ public:
 	~CLeader();
 
 	void Update(bool IsStart = false,bool IsEnd = false);	//XVˆ—
-	void Draw(void);	//•`‰æˆ—
+	void Draw(int StageNum = 0);	//•`‰æˆ—
 	void HpDraw(void);	//Hp‚Ì•`‰æˆ—
 
 	void Damage(CFighter* pFighter);
