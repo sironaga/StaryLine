@@ -50,8 +50,19 @@ private:
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
 
-	CModelEx* m_pModel;
-	ObjectParam m_ModelParam;
+	enum StageKind
+	{
+		GrassField = 0,
+		DesertField,
+		SnowField,
+		WorldField,
+
+		StageKindMax
+	};
+
+	CModelEx* m_pModel[StageKindMax];
+	ObjectParam m_ModelParam[StageKindMax];
+	ObjectParam m_ModelSubParam[StageKindMax];
 	CBackGround* m_pBackGround;
 
 	float f_Rotation;
