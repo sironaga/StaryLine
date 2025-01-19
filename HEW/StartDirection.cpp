@@ -3,18 +3,13 @@
 #include "Defines.h"
 #include "Easing.h"
 //460
-float  g_CountTimer=0;
-float  g_OldCountTimer = 0;
+
 CStartDirection::CStartDirection()
-	: m_tPosTex({ 0.0f, 0.0f })
-	, m_tSizeTex({ 1.0f,1.0f })
-	, m_timer(0.0f)
+	:  m_timer(0.0f)
 	, m_NowDraw(false)
 	, m_startDraw(false)
 {
-	//m_StartNumberUI = new CNumberUI();
-	m_tPos[0] = { 960.0f, 540.0f, 0.0f };
-	m_tSize[0] = { 0.3f,0.07f, 0.0f };
+	//テクスチャーの読み込み
 	m_StratSprite[0] = new SpriteEx(TEX_PASS("Start/Battle_Start.png"));
 	m_StratSprite[1] = new SpriteEx(TEX_PASS("Start/Battle_Start_B.png"));
 	m_StratSprite[2] = new SpriteEx(TEX_PASS("Start/Battle_Start_A.png"));
@@ -23,6 +18,9 @@ CStartDirection::CStartDirection()
 	m_StratSprite[5] = new SpriteEx(TEX_PASS("Start/Battle_Start_L.png"));
 	m_StratSprite[6] = new SpriteEx(TEX_PASS("Start/Battle_Start_E.png"));
 
+	//サイズとポジションの初期化
+	m_tPos[0] = { 960.0f, 540.0f, 0.0f };
+	m_tSize[0] = { 0.3f,0.07f, 0.0f };
 	m_tPos[1] = { 720.0f, -50.0f, 0.0f };
 	m_tPos[2] = { 820.0f, -50.0f, 0.0f };
 	m_tPos[3] = { 920.0f, -50.0f, 0.0f };
@@ -35,6 +33,14 @@ CStartDirection::CStartDirection()
 	m_tSize[4] = { 0.065f,0.065f, 1.0f };
 	m_tSize[5] = { 0.065f,0.065f, 1.0f };
 	m_tSize[6] = { 0.065f,0.065f, 1.0f };
+	//出現時間の初期化
+	for (int i = 0; i < 7; i++)
+	{
+		m_CountTimer[i] = 0.0f;
+		
+	}
+	m_OldCountTimer[0]=0.0f;
+	m_OldCountTimer[1] = 0.0f;
 }
 
 CStartDirection::~CStartDirection()
@@ -49,40 +55,99 @@ CStartDirection::~CStartDirection()
 
 void CStartDirection::Update()
 {
-	static int i = 1;
-	if (m_timer > 0.0f) {  // 毎フレーム判定 
+	// 毎フレーム判定 
+	if (m_timer > 0.0f) {  
 		m_timer -= 1.0f / 60.0f;
-		if (g_CountTimer > 0)
+		if (m_CountTimer[6] > 0)
 		{
-			g_CountTimer -= 1.0f / 60.0f;
-			if (g_CountTimer < 0.0f)
+			//B
+			if (m_CountTimer[1] >= 0)
 			{
-				if (i < 6)
+				m_CountTimer[1] -= 1.0f / 60.0f;
+				//A
+				if (m_CountTimer[1] < (m_OldCountTimer[0]/3.0f)*2.0f)
 				{
-				g_CountTimer = g_OldCountTimer;
-					i += 1;
+					m_CountTimer[2] -= 1.0f / 60.0f;
+					//T
+					if (m_CountTimer[2] < (m_OldCountTimer[0] / 3.0f) * 2.0f)
+					{
+						m_CountTimer[3] -= 1.0f / 60.0f;
+						//T
+						if (m_CountTimer[3] < (m_OldCountTimer[0] / 3.0f) * 2.0f)
+						{
+							m_CountTimer[4] -= 1.0f / 60.0f;
+							//L
+							if (m_CountTimer[4] < (m_OldCountTimer[0] / 3.0f) * 2.0f)
+							{
+								m_CountTimer[5] -= 1.0f / 60.0f;
+								//E
+								if (m_CountTimer[5] < (m_OldCountTimer[0] / 3.0f) * 2.0f)
+								{
+									m_CountTimer[6] -= 1.0f / 60.0f;
+
+									if (m_CountTimer[6] < 0.0f)
+									{
+										m_CountTimer[6] = 0.0f;
+										if(!m_startDraw) m_startDraw = true;
+									}
+								}
+								if (m_CountTimer[5] < 0.0f)
+								{
+									m_CountTimer[5] = 0.0f;
+								}
+							}
+							if (m_CountTimer[4] < 0.0f)
+							{
+								m_CountTimer[4] = 0.0f;
+							}
+						}
+						if (m_CountTimer[3] < 0.0f)
+						{
+							m_CountTimer[3] = 0.0f;
+						}
+					}
+					if (m_CountTimer[2] < 0.0f)
+					{
+						m_CountTimer[2] = 0.0f;
+					}
 				}
-				else if(!m_startDraw )
+				if (m_CountTimer[1] < 0.0f)
 				{
-					i += 1;
-					g_CountTimer = g_OldCountTimer;
-					m_startDraw = true;
+					m_CountTimer[1] = 0.0f;
 				}
 			}
+			
+		}
+
+		//ポジションの更新
+		for (int i = 1; i < 7; i++)
+		{
+			m_tPos[i].Y = OutEasing(m_CountTimer[i], 0.0f, -670.0f, 1.0f) + 470.0f;
 		}
 		if (m_startDraw)
 		{
-			m_tSize[0].X = OutEasing(g_CountTimer, 0.0f, -0.3f, 1.0f)-(1.0f-0.3f);
-			m_tSize[0].Y = OutEasing(g_CountTimer, 0.0f, -0.07f, 1.0f) - (1.0f - 0.07f);
+			if (m_CountTimer[0] > 0.0f)
+			{
+				m_CountTimer[0] -= 1.0f / 60.0f;
+				if (m_CountTimer[0] < 0.0f)
+				{
+					m_CountTimer[0] = 0.0f;
+				}
+			}
+			if (m_CountTimer[0] < m_OldCountTimer[1] * (3.0f / 4.0f))
+			{
+				m_tSize[0].X = OutEasing(m_CountTimer[0], 0.0f, -0.3f, 1.0f) - (1.0f - 0.3f);
+				m_tSize[0].Y = OutEasing(m_CountTimer[0], 0.0f, -0.07f, 1.0f) - (1.0f - 0.07f);
+			}
+			else
+			{
+
+			}
+			
 		}
 		if (m_timer < 0.0f)
 		{
 			m_timer = 0.0f;
-			i = 1;
-		}
-		if (i < 7)
-		{
-			m_tPos[i].Y = OutEasing(g_CountTimer, 0.0f, -600.0f, 1.0f) + 470.0f;
 		}
 		
 		//m_StartNumberUI->Update();
@@ -98,12 +163,7 @@ void CStartDirection::Draw()
 {
 	if (m_NowDraw)
 	{
-		//SetRender2D();
-		/*m_StartNumberUI->SetNumber((int)m_timer);
-		m_StartNumberUI->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-		m_StartNumberUI->SetPos(m_tPos);
-		m_StartNumberUI->SetScale(m_tSize);
-		m_StartNumberUI->Draw();*/
+		//BATTLE
 		for (int i = 1; i < 7; i++)
 		{
 			m_StratSprite[i]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -115,7 +175,8 @@ void CStartDirection::Draw()
 			m_StratSprite[i]->SetSize(m_tSize[i].X, m_tSize[i].Y, m_tSize[i].Z);
 			m_StratSprite[i]->Disp();
 		}
-		if (m_startDraw)
+		//START
+		if (m_startDraw&& m_CountTimer[0] < m_OldCountTimer[1] * (3.0f / 4.0f))
 		{
 			m_StratSprite[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_StratSprite[0]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
@@ -131,9 +192,15 @@ void CStartDirection::Draw()
 
 void CStartDirection::SetTimer(float InTime)
 {
-	m_timer = InTime;
-	g_CountTimer = InTime/8.0f;
-	g_OldCountTimer = InTime / 8.0f;
+	m_timer = InTime; 
+	m_CountTimer[0] = (InTime * 0.2f)*(3.0f / 4.0f);
+	m_OldCountTimer[1] = (InTime * 0.2f) * (3.0f / 4.0f);
+	for (int i = 1; i < 7; i++)
+	{
+		m_CountTimer[i] = (InTime * 0.6f) * 0.375f;
+		
+	}
+	m_OldCountTimer[0] = (InTime * 0.6f) * 0.375f;
 	m_NowDraw = true;
 	m_startDraw = false;
 	m_tPos[1] = { 720.0f, -50.0f, 0.0f };
