@@ -484,8 +484,8 @@ void CBattle::Draw(void)
 	{
 		m_pEnemyLeader->HpDraw();
 	}
-	CreateEnemyLogDraw();
-	CreateAllyLogDraw();
+	//CreateEnemyLogDraw();
+	//CreateAllyLogDraw();
 }
 
 bool CBattle::GetEnd()

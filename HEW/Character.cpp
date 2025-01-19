@@ -1251,7 +1251,7 @@ void CLeader::Draw(int StageNum)
 			switch (StageNum)
 			{
 			case 0:
-				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 11.0f, m_tPos.y - 10.0f, m_tPos.z, 0.0f));
+				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 20.0f, m_tPos.y - 10.0f, m_tPos.z, 0.0f));
 				//ägëÂèkè¨çsóÒ(Scaling)
 				S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
 				//âÒì]çsóÒ(Rotation)
