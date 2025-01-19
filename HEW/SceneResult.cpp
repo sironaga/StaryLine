@@ -154,9 +154,8 @@ CSceneResult::CSceneResult()
 	nAnimationTimer = timeGetTime();
 	// ”Žš‚Ì•`‰æ
 	m_pNumber = new CNumberUI();
-	//m_pNumber->SetColor(1.5f, 0.7f, 0.7f, 1.0f);
+
 	m_pNumber->SetPos({ 920.0f, 540.0f ,0.0f});
-	m_pNumber->SetNumber(999);
 	m_pNumber->SetScale({ 0.1f,0.2f,1.0f });
 }
 
