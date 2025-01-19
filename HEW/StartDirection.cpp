@@ -19,20 +19,20 @@ CStartDirection::CStartDirection()
 	m_StratSprite[6] = new SpriteEx(TEX_PASS("Start/Battle_Start_E.png"));
 
 	//サイズとポジションの初期化
-	m_tPos[0] = { 960.0f, 540.0f, 0.0f };
-	m_tSize[0] = { 0.3f,0.07f, 0.0f };
+	m_tPos[0] = { 960.0f, 550.0f, 0.0f };
+	m_tSize[0] = { 0.3f,0.09f, 0.0f };
 	m_tPos[1] = { 720.0f, -50.0f, 0.0f };
 	m_tPos[2] = { 820.0f, -50.0f, 0.0f };
-	m_tPos[3] = { 920.0f, -50.0f, 0.0f };
+	m_tPos[3] = { 910.0f, -50.0f, 0.0f };
 	m_tPos[4] = { 1020.0f,-50.0f, 0.0f };
 	m_tPos[5] = { 1120.0f,-50.0f, 0.0f };
-	m_tPos[6] = { 1220.0f,-50.0f, 0.0f };
-	m_tSize[1] = { 0.065f,0.065f, 1.0f };
-	m_tSize[2] = { 0.065f,0.065f, 1.0f };
-	m_tSize[3] = { 0.065f,0.065f, 1.0f };
-	m_tSize[4] = { 0.065f,0.065f, 1.0f };
-	m_tSize[5] = { 0.065f,0.065f, 1.0f };
-	m_tSize[6] = { 0.065f,0.065f, 1.0f };
+	m_tPos[6] = { 1210.0f,-50.0f, 0.0f };
+	m_tSize[1] = { 0.07f,0.07f, 1.0f };
+	m_tSize[2] = { 0.07f,0.07f, 1.0f };
+	m_tSize[3] = { 0.07f,0.07f, 1.0f };
+	m_tSize[4] = { 0.07f,0.07f, 1.0f };
+	m_tSize[5] = { 0.07f,0.07f, 1.0f };
+	m_tSize[6] = { 0.07f,0.07f, 1.0f };
 	//出現時間の初期化
 	for (int i = 0; i < 7; i++)
 	{
@@ -122,7 +122,7 @@ void CStartDirection::Update()
 		//ポジションの更新
 		for (int i = 1; i < 7; i++)
 		{
-			m_tPos[i].Y = OutEasing(m_CountTimer[i], 0.0f, -670.0f, 1.0f) + 470.0f;
+			m_tPos[i].Y = OutEasing(m_CountTimer[i], 0.0f, -670.0f, 1.0f) + 450.0f;
 		}
 		if (m_startDraw)
 		{
@@ -137,11 +137,7 @@ void CStartDirection::Update()
 			if (m_CountTimer[0] < m_OldCountTimer[1] * (3.0f / 4.0f))
 			{
 				m_tSize[0].X = OutEasing(m_CountTimer[0], 0.0f, -0.3f, 1.0f) - (1.0f - 0.3f);
-				m_tSize[0].Y = OutEasing(m_CountTimer[0], 0.0f, -0.07f, 1.0f) - (1.0f - 0.07f);
-			}
-			else
-			{
-
+				m_tSize[0].Y = OutEasing(m_CountTimer[0], 0.0f, -0.09f, 1.0f) - (1.0f - 0.09f);
 			}
 			
 		}
@@ -205,10 +201,10 @@ void CStartDirection::SetTimer(float InTime)
 	m_startDraw = false;
 	m_tPos[1] = { 720.0f, -50.0f, 0.0f };
 	m_tPos[2] = { 820.0f, -50.0f, 0.0f };
-	m_tPos[3] = { 920.0f, -50.0f, 0.0f };
+	m_tPos[3] = { 910.0f, -50.0f, 0.0f };
 	m_tPos[4] = { 1020.0f,-50.0f, 0.0f };
 	m_tPos[5] = { 1120.0f,-50.0f, 0.0f };
-	m_tPos[6] = { 1220.0f,-50.0f, 0.0f };
+	m_tPos[6] = { 1210.0f,-50.0f, 0.0f };
 }
 
 bool CStartDirection::GetDraw()
