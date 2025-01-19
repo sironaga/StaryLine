@@ -41,13 +41,19 @@ public:
 	bool GetEnd();
 
 	/*＝＝＝＝＝リザルトに渡す情報＝＝＝＝＝*/
+	float m_fRinieMaxHp;
+	float m_fRinieLastHp;
 	//プレイヤーの体力の残り割合のGet
-	int GetPlayerHpProportion(void) { return (m_pAllyLeader->GetHp() / m_pAllyLeader->GetMaxHp()) * 100; }
+	int GetPlayerHpProportion(void) { return (m_fRinieLastHp / m_fRinieMaxHp) * 100; }
 	//勝敗のGet
 	bool GetWin(void) { return m_bWin; }
 	//味方の召喚総数のGet
 	int GetSummonAllyCount(void) { return m_nSummonAllyCount; }
 
+	//描画開始判定のSet
+	void SetDrawingStart(bool IsStart) { m_bDrawingStart = IsStart; }
+	//描画終了判定のSet
+	void SetDrawingEnd(bool IsEnd) { m_bDrawingEnd = IsEnd; }
 private:
 	//時間軸処理
 	void TimeLapse(void);
@@ -72,6 +78,11 @@ public:
 	//ステージナンバー
 	StageType m_nStageNum;
 private:
+	//描画開始判定
+	bool m_bDrawingStart;
+	//描画終了判定
+	bool m_bDrawingEnd;
+
 	//戦闘時間
 	int m_nBattleTime;
 	//敵のひとつ前の出現時間

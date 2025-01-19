@@ -400,7 +400,7 @@ void CBattle::CharacterUpdate(void)
 	//味方リーダーの更新処理(アニメーション)
 	if (m_pAllyLeader)
 	{
-		m_pAllyLeader->Update();
+		m_pAllyLeader->Update(m_bDrawingStart,m_bDrawingEnd);
 	}
 }
 
@@ -1272,6 +1272,9 @@ void CBattle::Delete(void)
 		if (m_pEnemyLeader->GetStatus() == St_Delete)
 		{
 			//解放処理
+			m_fRinieMaxHp = m_pAllyLeader->GetMaxHp();
+			m_fRinieLastHp = m_pAllyLeader->GetHp();
+
 			delete m_pEnemyLeader;
 			m_pEnemyLeader = nullptr;
 		}
@@ -1283,6 +1286,11 @@ void CBattle::Delete(void)
 		if (m_pAllyLeader->GetStatus() == St_Delete)
 		{
 			//解放処理
+
+			//リザルトに渡すために情報を仮保存
+			m_fRinieMaxHp = m_pAllyLeader->GetMaxHp();
+			m_fRinieLastHp = m_pAllyLeader->GetHp();
+
 			delete m_pAllyLeader;
 			m_pAllyLeader = nullptr;
 		}
