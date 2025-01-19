@@ -1396,41 +1396,44 @@ void CLeader::CreateUpdate(void)
 
 void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 {
-	//待機アニメーション
-	switch (m_nTextureNumber)
-	{
-	case 0:
+	////待機アニメーション
+	//switch (m_nTextureNumber)
+	//{
+	//case 0:
 
-		//筆を離す
-		if (IsStart)
-		{
-			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
-			{
-				m_pModel->Step(-0.01f);
-			}
-			else
-			{
-				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
-				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-				m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
-			}
-		}
-		//筆を持つ
-		if (IsEnd)
-		{
-			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
-			{
-				m_pModel->Step(0.01f);
-			}
-			else
-			{
-				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-				m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
-			}
-		}
-		break;
-	}
+	//	//筆を離す
+	//	if (IsStart)
+	//	{
+	//		if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+	//		{
+	//			m_pModel->Step(-0.01f);
+	//		}
+	//		else
+	//		{
+	//			m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
+	//			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	//			m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
+	//			
+	//		}
+	//	}
+	//	//筆を持つ
+	//	if (IsEnd)
+	//	{
+	//		if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+	//		{
+	//			m_pModel->Step(0.01f);
+	//		}
+	//		else
+	//		{
+	//			m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
+	//			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	//			m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+	//			
+	//			
+	//		}
+	//	}
+	//	break;
+	//}
 	//HPUIの更新処理
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 }
