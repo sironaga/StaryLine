@@ -363,7 +363,12 @@ int GetNowHeight()
 {
 	return g_NowHeight;
 }
-void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color, DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize)
+void StartFade()
+{
+	g_pFade->Start(true);   // フェード開始 
+	g_pFade->SetFade(1.0f, true);
+}
+void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color, DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize, bool isModel)
 {
 	if (IsKeyPress(VK_LEFT))	pos->x++;
 	if (IsKeyPress(VK_RIGHT))	pos->x--;
@@ -391,12 +396,12 @@ void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLO
 		size->z--;
 	}
 
-	if (IsKeyPress('A'))		rotate->x += DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('D'))		rotate->x -= DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('W'))		rotate->y += DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('S'))		rotate->y -= DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('Q'))		rotate->z += DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('E'))		rotate->z -= DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('E'))		rotate->z -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('A'))		rotate->x += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('D'))		rotate->x -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('W'))		rotate->y += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('S'))		rotate->y -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('Q'))		rotate->z += DirectX::XMConvertToRadians(1.0f);
 
 	if (IsKeyPress('1') && IsKeyPress(VK_SHIFT))		color->x -= 5;
 	else if (IsKeyPress('1'))		color->x += 5;
@@ -446,7 +451,7 @@ void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLO
 	else a = 0;
 }
 
-void SpriteDebug(ObjectParam* param)
+void SpriteDebug(ObjectParam* param, bool isModel)
 {
 	if (IsKeyPress(VK_LEFT))	param->pos.x++;
 	if (IsKeyPress(VK_RIGHT))	param->pos.x--;
@@ -455,31 +460,55 @@ void SpriteDebug(ObjectParam* param)
 	if (IsKeyPress(VK_SPACE))	param->pos.z++;
 	if (IsKeyPress(VK_SHIFT))	param->pos.z--;
 
-	if (IsKeyPress('J'))		param->size.x++;
-	if (IsKeyPress('L'))		param->size.x--;
-	if (IsKeyPress('I'))		param->size.y++;
-	if (IsKeyPress('K'))		param->size.y--;
-	if (IsKeyPress('U'))		param->size.z++;
-	if (IsKeyPress('O'))		param->size.z--;
-	if (IsKeyPress('Z'))
+	if (!isModel)
 	{
-		param->size.x++;
-		param->size.y++;
-		param->size.z++;
+		if (IsKeyPress('J'))		param->size.x++;
+		if (IsKeyPress('L'))		param->size.x--;
+		if (IsKeyPress('I'))		param->size.y++;
+		if (IsKeyPress('K'))		param->size.y--;
+		if (IsKeyPress('U'))		param->size.z++;
+		if (IsKeyPress('O'))		param->size.z--;
+		if (IsKeyPress('Z'))
+		{
+			param->size.x++;
+			param->size.y++;
+			param->size.z++;
+		}
+		if (IsKeyPress('X'))
+		{
+			param->size.x--;
+			param->size.y--;
+			param->size.z--;
+		}
 	}
-	if (IsKeyPress('X'))
+	else
 	{
-		param->size.x--;
-		param->size.y--;
-		param->size.z--;
+		if (IsKeyPress('J'))		param->size.x+= 0.1f;
+		if (IsKeyPress('L'))		param->size.x-= 0.1f;
+		if (IsKeyPress('I'))		param->size.y+= 0.1f;
+		if (IsKeyPress('K'))		param->size.y-= 0.1f;
+		if (IsKeyPress('U'))		param->size.z+= 0.1f;
+		if (IsKeyPress('O'))		param->size.z-= 0.1f;
+		if (IsKeyPress('Z'))
+		{
+			param->size.x+= 0.1f;
+			param->size.y+= 0.1f;
+			param->size.z+= 0.1f;
+		}
+		if (IsKeyPress('X'))
+		{
+			param->size.x-= 0.1f;
+			param->size.y-= 0.1f;
+			param->size.z-= 0.1f;
+		}
 	}
 
-	if (IsKeyPress('A'))		param->rotate.x += DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('D'))		param->rotate.x -= DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('W'))		param->rotate.y += DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('S'))		param->rotate.y -= DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('Q'))		param->rotate.z += DirectX::XMConvertToRadians(5.0f);
-	if (IsKeyPress('E'))		param->rotate.z -= DirectX::XMConvertToRadians(5.0f);
+	if (IsKeyPress('A'))		param->rotate.x += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('D'))		param->rotate.x -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('W'))		param->rotate.y += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('S'))		param->rotate.y -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('Q'))		param->rotate.z += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('E'))		param->rotate.z -= DirectX::XMConvertToRadians(1.0f);
 
 	if (IsKeyPress('1') && IsKeyPress(VK_SHIFT))		param->color.x -= 5;
 	else if (IsKeyPress('1'))							param->color.x += 5;
