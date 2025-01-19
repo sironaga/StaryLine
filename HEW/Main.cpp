@@ -87,6 +87,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 void Uninit()
 {
+	SAFE_DELETE(g_Camera);
 	SAFE_DELETE(g_pScene);
 	SAFE_DELETE(g_pFade);
 	SAFE_DELETE(g_pDirection);
@@ -94,9 +95,9 @@ void Uninit()
 	ShaderList::Uninit();
 	UninitInput();
 
-	//delete g_mainsound;
-	//g_mainsound = nullptr;
-
+	
+	SAFE_DELETE(g_mainsound);
+	g_pSourseTitleSE = nullptr;
 	LibEffekseer::Uninit();
 	Sprite::Uninit();
 	Geometory::Uninit();
@@ -345,6 +346,7 @@ void InitResolusionMain()
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();
+	SAFE_DELETE(g_pDirection);
 	g_pDirection = new CStartDirection();
 	SAFE_DELETE(g_mainsound);
 	g_mainsound = new CSoundList(SE_DECISION);
