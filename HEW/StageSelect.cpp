@@ -26,6 +26,10 @@
 #define ARROW_LEFTY (300.0f)
 StageType g_Select_type;
 
+constexpr float STAGE_BETWEEN = 1100.0f;
+constexpr float MOVE_TIME = 100.0f;
+constexpr float FIRST_POS = 200.0f;
+
 CStageSelect::CStageSelect()
 	: f_Rotation(0)
 	, f_Rad(0)
@@ -33,7 +37,7 @@ CStageSelect::CStageSelect()
 	, f_SelectY(350)
 	, MainStage(true)
 	, m_bEnd(false)
-	, m_pModel(nullptr)
+	, m_pModel{}
 	, m_ModelParam{}
 	, m_pBackGround(nullptr)
 	, m_bMoving(false)
@@ -60,13 +64,23 @@ CStageSelect::CStageSelect()
     m_pRight_Select      = new SpriteEx("Assets/Texture/StageSelectBackGround/Right_Select.png");
     m_pLeft_Select       = new SpriteEx("Assets/Texture/StageSelectBackGround/Left_Select.png");
 
-	m_pModel = new CModelEx(MODEL_PASS("StageSelect/SelectStage_Stage02_Desert.fbx"), false);
+	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
+	m_pModel[DesertField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage02_Desert.fbx"), false);
+	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
+	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_ForBeta.fbx"), false);
+
+
 
 	nSlect = 0;
-	m_ModelParam.pos = { 0.0f,0.0f,0.0f };
-	m_ModelParam.rotate = { DirectX::XMConvertToRadians(-10.0f),DirectX::XMConvertToRadians(180.0f),0.0f };
-	m_ModelParam.size = { -1.0f,1.0f,1.0f };
+	for (int i = 0; i < StageKindMax; i++)
+	{
+		m_ModelParam[i].pos = { FIRST_POS,0.0f,100.0f };
+		m_ModelParam[i].rotate = { DirectX::XMConvertToRadians(10.0f),DirectX::XMConvertToRadians(180.0f),0.0f };
+		m_ModelParam[i].size = { -2.0f,2.0f,2.0f };
 
+	}
+
+	m_ModelParam[WorldField].pos = { 0.0f,0.0f,100.0f };
 	m_pBackGround = new CBackGround();
 }
 
@@ -132,7 +146,11 @@ CStageSelect::~CStageSelect()
 		m_pLeft_Select = nullptr;
 	}
 	
-	SAFE_DELETE(m_pModel);
+	for (int i = 0; i < StageKindMax; i++)
+	{
+		SAFE_DELETE(m_pModel[i]);
+	}
+
 	SAFE_DELETE(m_pBackGround);
 }
 
@@ -184,7 +202,10 @@ void CStageSelect::Update()
 					}
 					StartFade();
 					MainStage ^= true;
-					m_ModelParam.pos = { 225.0f,0.0f,10.0f };
+
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
 
 				}
 				if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
@@ -247,7 +268,10 @@ void CStageSelect::Update()
 				}
 				if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 				{
+					g_Select_type.StageSubNumber = STAGE1;
 					MainStage ^= true;
+					m_ModelParam[WorldField].pos = { 0.0f - g_Select_type.StageMainNumber * STAGE_BETWEEN / 3.0f,0.0f,100.0f };
+
 				}
 			}//シーン移行
 			if (IsKeyTrigger(VK_RIGHT))
@@ -260,19 +284,23 @@ void CStageSelect::Update()
 			}
 		}
 	}
-	//static int moveCnt = 0;
-	//if (m_bMoving)
-	//{
-	//	moveCnt++;
-	//	if(bRight)m_ModelParam.pos.x-=2;
-	//	else m_ModelParam.pos.x+=2;
-	//	if (moveCnt >= 70)
-	//	{
-	//		m_bMoving = false;
-	//		moveCnt = 0;
-	//	}
-	//}
-	m_bMoving = false;
+	static int moveCnt = 0;
+	if (m_bMoving)
+	{
+		moveCnt++;
+
+		for (int i = 0; i < StageKindMax; i++)
+		{
+			if (bRight)m_ModelParam[i].pos.x -= STAGE_BETWEEN / 3.0f / MOVE_TIME;
+			else m_ModelParam[i].pos.x += STAGE_BETWEEN / 3.0f / MOVE_TIME;
+		}
+		if (moveCnt >= MOVE_TIME)
+		{
+			m_bMoving = false;
+			moveCnt = 0;
+		}
+	}
+	//m_bMoving = false;
 }
 
 void CStageSelect::Draw()
@@ -280,12 +308,48 @@ void CStageSelect::Draw()
 	m_pBackGround->Draw();
 	// モデル描画
 	SetRender3D();
-	m_pModel->SetPostion(m_ModelParam.pos.x, m_ModelParam.pos.y, m_ModelParam.pos.z);
-	m_pModel->SetRotation(m_ModelParam.rotate.x, m_ModelParam.rotate.y, m_ModelParam.rotate.z);
-	m_pModel->SetScale(m_ModelParam.size.x, m_ModelParam.size.y, m_ModelParam.size.z);
-	m_pModel->SetViewMatrix(GetView());
-	m_pModel->SetProjectionMatrix(GetProj());
-	m_pModel->Draw();
+	if (MainStage)
+	{
+		m_pModel[WorldField]->SetPostion(m_ModelParam[WorldField].pos.x, m_ModelParam[WorldField].pos.y, m_ModelParam[WorldField].pos.z);
+		m_pModel[WorldField]->SetRotation(m_ModelParam[WorldField].rotate.x, m_ModelParam[WorldField].rotate.y, m_ModelParam[WorldField].rotate.z);
+		m_pModel[WorldField]->SetScale(m_ModelParam[WorldField].size.x, m_ModelParam[WorldField].size.y, m_ModelParam[WorldField].size.z);
+		m_pModel[WorldField]->SetViewMatrix(GetView());
+		m_pModel[WorldField]->SetProjectionMatrix(GetProj());
+		m_pModel[WorldField]->Draw();
+	}
+	else
+	{
+		switch (g_Select_type.StageMainNumber)
+		{
+		case GrassField:
+			m_pModel[GrassField]->SetPostion(m_ModelParam[GrassField].pos.x, m_ModelParam[GrassField].pos.y, m_ModelParam[GrassField].pos.z);
+			m_pModel[GrassField]->SetRotation(m_ModelParam[GrassField].rotate.x, m_ModelParam[GrassField].rotate.y, m_ModelParam[GrassField].rotate.z);
+			m_pModel[GrassField]->SetScale(m_ModelParam[GrassField].size.x, m_ModelParam[GrassField].size.y, m_ModelParam[GrassField].size.z);
+			m_pModel[GrassField]->SetViewMatrix(GetView());
+			m_pModel[GrassField]->SetProjectionMatrix(GetProj());
+			m_pModel[GrassField]->Draw();
+			break;
+		case DesertField:
+			m_pModel[DesertField]->SetPostion(m_ModelParam[DesertField].pos.x, m_ModelParam[DesertField].pos.y, m_ModelParam[DesertField].pos.z);
+			m_pModel[DesertField]->SetRotation(m_ModelParam[DesertField].rotate.x, m_ModelParam[DesertField].rotate.y, m_ModelParam[DesertField].rotate.z);
+			m_pModel[DesertField]->SetScale(m_ModelParam[DesertField].size.x, m_ModelParam[DesertField].size.y, m_ModelParam[DesertField].size.z);
+			m_pModel[DesertField]->SetViewMatrix(GetView());
+			m_pModel[DesertField]->SetProjectionMatrix(GetProj());
+			m_pModel[DesertField]->Draw();
+			break;
+		case SnowField:	
+			m_pModel[SnowField]->SetPostion(m_ModelParam[SnowField].pos.x, m_ModelParam[SnowField].pos.y, m_ModelParam[SnowField].pos.z);
+			m_pModel[SnowField]->SetRotation(m_ModelParam[SnowField].rotate.x, m_ModelParam[SnowField].rotate.y, m_ModelParam[SnowField].rotate.z);
+			m_pModel[SnowField]->SetScale(m_ModelParam[SnowField].size.x, m_ModelParam[SnowField].size.y, m_ModelParam[SnowField].size.z);
+			m_pModel[SnowField]->SetViewMatrix(GetView());
+			m_pModel[SnowField]->SetProjectionMatrix(GetProj());
+			m_pModel[SnowField]->Draw();
+			break;
+		default:
+			break;
+		}
+	}
+
 
 	SetRender2D();
 	/*if (MainStage)

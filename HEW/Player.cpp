@@ -146,6 +146,7 @@ void CPlayer::Update()
 	}
 
 
+
 }
 
 void CPlayer::Draw()
@@ -422,10 +423,14 @@ void CPlayer::PlayerInput()
 	default:break;
 	}
 
+}
+
+void CPlayer::ArrowProcess()
+{
 	if (m_eDestination < 0 || m_eDestination > 7)return;
 	int no = m_eDestination;
-	if(!m_pFieldVtx->GetRoadStop(no))m_eArrowState = SELECTED;
-	else m_eArrowState = CANNOT_SELECT;
+	if (!m_pFieldVtx->GetRoadStop(no))m_eArrowState = SELECTED;
+	else m_eArrowState = CANNOT_SELECT;	
 }
 
 void CPlayer::SetMoveStop()
