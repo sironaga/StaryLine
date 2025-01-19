@@ -123,6 +123,8 @@ private:
 public:
 	//味方カウントのGet
 	int GetAllyCount(void) { return m_nAllyCount; }	
+	//味方の種類別カウントのGet
+	int GetAllyTypeCount(int Num) { return m_nAllyTypes[Num]; }
 	//味方要素保存
 	void SaveAllyData(int InCornerCount);
 public:
@@ -150,6 +152,8 @@ private:
 public:
 	//敵カウントのGet
 	int GetEnemyCount(void) { return m_nEnemyCount; }
+	//敵の種類別カウントのGet
+	int GetEnemyTypeCount(int Num) { return m_nEnemyTypes[Num]; }
 	//敵要素保存
 	//void SaveEnemyData(int InCornerCount, int InPattern);		
 private:
