@@ -53,6 +53,7 @@ private:
 	void DrawModel();						// モデルの描画処理
 
 	void PlayerInput();						// コントローラー入力処理
+	void ArrowProcess();
 private:
 	CModelEx* m_pModel;						// プレイヤー(筆)のモデル
 	DirectX::XMFLOAT3 m_tBrushPos;			// プレイヤー(筆)の座標

@@ -260,19 +260,19 @@ void CStageSelect::Update()
 			}
 		}
 	}
-	//static int moveCnt = 0;
-	//if (m_bMoving)
-	//{
-	//	moveCnt++;
-	//	if(bRight)m_ModelParam.pos.x-=2;
-	//	else m_ModelParam.pos.x+=2;
-	//	if (moveCnt >= 70)
-	//	{
-	//		m_bMoving = false;
-	//		moveCnt = 0;
-	//	}
-	//}
-	m_bMoving = false;
+	static int moveCnt = 0;
+	if (m_bMoving)
+	{
+		moveCnt++;
+		if(bRight)m_ModelParam.pos.x-=2;
+		else m_ModelParam.pos.x+=2;
+		if (moveCnt >= 70)
+		{
+			m_bMoving = false;
+			moveCnt = 0;
+		}
+	}
+	//m_bMoving = false;
 }
 
 void CStageSelect::Draw()
