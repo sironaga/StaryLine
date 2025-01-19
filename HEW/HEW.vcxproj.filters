@@ -129,9 +129,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
-    <ClCompile Include="StageSelect.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
     <ClCompile Include="Battle.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
@@ -144,12 +141,6 @@
     <ClCompile Include="Conection_Sys.cpp">
       <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
     </ClCompile>
-    <ClCompile Include="SceneTitle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugRoom.cpp">
-      <Filter>ソース ファイル\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="SoundList.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
@@ -161,9 +152,6 @@
     </ClCompile>
     <ClCompile Include="SpriteEx.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneDebug.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="BackGround.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
@@ -180,23 +168,53 @@
     <ClCompile Include="EffectManager.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
-    <ClCompile Include="Fade.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="FadeBlack.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="NumberUI.cpp">
+    <ClCompile Include="Easing.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="StartDirection.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="StageSelect.cpp">
+      <Filter>ソース ファイル\App</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTitle.cpp">
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneDebug.cpp">
+      <Filter>ソース ファイル\App</Filter>
     </ClCompile>
     <ClCompile Include="SceneResult.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugRoom.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="NumberUI.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_morph.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_anime.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_check.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_get.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -329,14 +347,20 @@
     <ClInclude Include="Scene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="SceneResult.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="UI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="BackGround.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="StartDirection.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneResult.h">
+      <Filter>ヘッダー ファイル\App</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
