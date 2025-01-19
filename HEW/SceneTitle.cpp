@@ -145,6 +145,7 @@ CSceneTitle::~CSceneTitle()
 		m_pTitleLogo = nullptr;
 	}
 	SAFE_DELETE(m_pTitleBack);
+
 }
 
 void CSceneTitle::Update()
@@ -432,11 +433,15 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	UninitDirectX();
 	InitDirectX(m_phWnd, wide, height, fullscreen);
 
+	Geometory::Uninit();
 	Geometory::Init();
 	Sprite::Init();
+	LibEffekseer::Uninit();
 	LibEffekseer::Init(GetDevice(), GetContext());
 	InitInput();
+	ShaderList::Uninit();
 	ShaderList::Init();
+	UninitSpriteDrawer();
 	InitSpriteDrawer(GetDevice(), GetContext(), wide, height);
 
 	SAFE_DELETE(m_pTitleLogo);
