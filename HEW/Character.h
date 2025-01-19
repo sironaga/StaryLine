@@ -126,7 +126,7 @@ protected:
 	Collision m_tSearchCollision;	//索敵当たり判定
 	Collision m_tAtkCollision;		//攻撃当たり判定
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
-	DirectX::XMFLOAT3 m_tOldPos;	//移動前位置座標
+	DirectX::XMFLOAT3 m_tFirstPos;	//初期位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	int m_nCornerCount;				//属性
 	float m_fHp;					//体力
@@ -166,9 +166,6 @@ public:
 	//攻撃当たり判定のGet
 	Collision GetAtkCollision(void) { return m_tAtkCollision; }
 
-	//移動する前に位置を保存
-	void SetOldPos(DirectX::XMFLOAT3 InPos) { m_tOldPos = InPos; }
-	DirectX::XMFLOAT3 GetOldPos(void) { return m_tOldPos; }
 	//X座標の加算
 	void AddPosX(float fAdd) { m_tPos.x += fAdd; }
 	//Y座標の加算
@@ -185,6 +182,11 @@ public:
 	void SetPosZ(float InPosZ) { m_tPos.z = InPosZ; }
 	//位置座標のGet
 	DirectX::XMFLOAT3 GetPos(void) { return m_tPos; }
+
+	//初期位置のGet
+	DirectX::XMFLOAT3 GetFirstPos(void) { return m_tFirstPos; }
+	//初期位置のSet
+	void SetFirstPos(DirectX::XMFLOAT3 InPos) { m_tFirstPos = InPos; }
 
 	//移動フラグのSet
 	void SetMoveFlag(bool flag) { m_bMoveFlag = flag; }

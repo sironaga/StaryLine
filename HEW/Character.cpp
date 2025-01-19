@@ -346,7 +346,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
 	, m_tPos{ 0.0f, 0.0f, 0.0f }
-	, m_tOldPos{ 0.0f,0.0f,0.0f }
+	, m_tFirstPos{ 0.0f,0.0f,0.0f }
 	, m_tSize{ NORMAL_SIZE ,NORMAL_SIZE ,NORMAL_SIZE }
 	, m_nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
@@ -506,13 +506,13 @@ bool CFighter::OverlapCheck(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 {
 	//サイズを重なり用に調整
 	DirectX::XMFLOAT3 Size;
-	Size.x = m_tSize.x * 0.2f;
-	Size.y = m_tSize.y * 0.2f;
-	Size.z = m_tSize.z * 0.2f;
+	Size.x = m_tSize.x * 0.4f;
+	Size.y = m_tSize.y * 0.4f;
+	Size.z = m_tSize.z * 0.4f;
 
-	InSize.x = InSize.x * 0.2f;
-	InSize.y = InSize.y * 0.2f;
-	InSize.z = InSize.z * 0.2f;
+	InSize.x = InSize.x * 0.4f;
+	InSize.y = InSize.y * 0.4f;
+	InSize.z = InSize.z * 0.4f;
 
 		/*自分の左端 <= 相手の左端*/
 	if (m_tPos.x - Size.x <= InPos.x - InSize.x	
@@ -1173,7 +1173,6 @@ CLeader::~CLeader()
 	}
 	if (m_pSubModel)
 	{
-		delete m_pSubModel;
 		m_pSubModel = nullptr;
 	}
 }
@@ -1522,7 +1521,7 @@ int HpRatio = 0;
 	case CHpUI::Ally:
 		HpRatio =  4.0f;
 		m_tUIScale.x = HpRatio;
-		m_tUIPos.x = InPos.x - m_tUIScale.x + (m_fNowHp / m_fFullHp) * m_tUIScale.x;
+		m_tUIPos.x = InPos.x + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
 		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
@@ -1530,7 +1529,7 @@ int HpRatio = 0;
 	case CHpUI::Enemy:
 		HpRatio =  4.0f;
 		m_tUIScale.x = HpRatio;
-		m_tUIPos.x = InPos.x + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x;
+		m_tUIPos.x = InPos.x - m_tUIScale.x + (m_fNowHp / m_fFullHp) * m_tUIScale.x;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
 		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
@@ -1624,6 +1623,20 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->ReSetSprite();
 
+		//ベース(Top)の描画
+		m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Frame]);
+
+		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+		m_pSprite->SetUVPos({ 0.0f,0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
+
+		DrawSetting({ 0.0f ,-5.0f,0.0f }, { 216.0f,21.0f,10.0f }, m_pSprite);
+
+		m_pSprite->Draw();
+
+		m_pSprite->ReSetSprite();
+
 		break;
 
 	case CHpUI::Player:
@@ -1645,19 +1658,6 @@ void CHpUI::Draw(int nCornerCount)
 
 		break;
 	}
-	//ベース(Top)の描画
-	m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Frame]);
-
-	m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-	m_pSprite->SetUVPos({ 0.0f,0.0f });
-	m_pSprite->SetUVScale({ 1.0f ,1.0f });
-
-	DrawSetting({ 0.0f ,-5.0f,0.0f }, { 216.0f,21.0f,10.0f }, m_pSprite);
-
-	m_pSprite->Draw();
-
-	m_pSprite->ReSetSprite();
 }
 
 void CHpUI::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize,Sprite* Sprite)

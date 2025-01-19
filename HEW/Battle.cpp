@@ -486,6 +486,8 @@ void CBattle::Draw(void)
 	}
 	//CreateEnemyLogDraw();
 	//CreateAllyLogDraw();
+	CreateEnemyLog();
+	CreateAllyLog();
 }
 
 bool CBattle::GetEnd()
@@ -739,23 +741,13 @@ void CBattle::Search(int i, Entity Entity)
 //移動処理
 void CBattle::Move(int i, Entity Entity)
 {
-	//味方の移動フラグの初期化
-	for (int i = 0; i < m_nAllyCount; i++)
-	{
-		m_pAlly[i]->SetMoveFlag(false);
-	}
-	//敵の移動フラグの初期化
-	for (int i = 0; i < m_nEnemyCount; i++)
-	{
-		m_pEnemy[i]->SetMoveFlag(false);
-	}
-
-	
 	//エンティティ番号別に処理
 	switch (Entity)
 	{
 		/*味方の判定*/
 	case CBattle::Ally:
+		m_pAlly[i]->SetMoveFlag(false);
+
 		//移動フラグが立っていたら目的地指定の処理を飛ばす
 		if (!m_pAlly[i]->GetMoveFlag())
 		{
@@ -772,8 +764,24 @@ void CBattle::Move(int i, Entity Entity)
 						DirectX::XMFLOAT3 EnemyPos = m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos();
 
 						//敵の位置にMOVESPEEDの大きさで進む
-						m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
-						m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
+						if (iAllyPos.x > EnemyPos.x - 10)
+						{
+							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
+							m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
+						}
+						else
+						{
+							if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
+							{
+								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
+								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+							}
+							else
+							{
+								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
+								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
+							}
+						}
 					}
 					//数字が大きかった場合
 					else
@@ -781,21 +789,31 @@ void CBattle::Move(int i, Entity Entity)
 						//相手のリーダーが生成されているか
 						if (m_pEnemyLeader)
 						{
+							DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
+							DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
 							//自分の位置が敵の一定のラインまで来たら
 							if (m_pAlly[i]->GetPos().x > ENEMYBOSSCORE_POSX - 10)
 							{
-								DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-								DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
 
 								//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 							}
 							//そこより手前だったら
 							else
 							{
-								//X軸を移動させる
-								m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+								if (m_pAlly[i]->m_bFirstBattlePosSetting)
+								{
+									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
+									if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
+									{
+										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+									}
+								}
+								else
+								{
+									m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+								}
 							}
 						}
 					}
@@ -806,21 +824,33 @@ void CBattle::Move(int i, Entity Entity)
 					//相手のリーダーが生成されているか
 					if (m_pEnemyLeader)
 					{
+						DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
+						DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
+
 						//自分の位置が敵の一定のラインまで来たら
 						if (m_pAlly[i]->GetPos().x > ENEMYBOSSCORE_POSX - 10)
 						{
-							DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-							DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
 
 							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-							m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 						}
 						//そこより手前だったら
 						else
 						{
-							//X軸を移動させる
-							m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+							if (m_pAlly[i]->m_bFirstBattlePosSetting)
+							{
+								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
+								if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
+								{
+									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+								}
+							}
+							else
+							{
+								m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+							}
+
 						}
 					}
 				}
@@ -836,9 +866,9 @@ void CBattle::Move(int i, Entity Entity)
 			//目的地の+-1.0fの範囲内に入ったら移動フラグをfalseにする
 			if (DestinationPos.x + 1.0f < m_pAlly[i]->GetPos().x && DestinationPos.x - 1.0f > m_pAlly[i]->GetPos().x)
 			{
-				if (DestinationPos.y + 1.0f < m_pAlly[i]->GetPos().y && DestinationPos.y - 1.0f > m_pAlly[i]->GetPos().y)
+				if (DestinationPos.y + 5.0f < m_pAlly[i]->GetPos().y && DestinationPos.y - 5.0f > m_pAlly[i]->GetPos().y)
 				{
-					if (DestinationPos.z + 1.0f < m_pAlly[i]->GetPos().z && DestinationPos.z - 1.0f > m_pAlly[i]->GetPos().z)
+					if (DestinationPos.z + 5.0f < m_pAlly[i]->GetPos().z && DestinationPos.z - 5.0f > m_pAlly[i]->GetPos().z)
 					{
 						m_pAlly[i]->SetMoveFlag(false);
 					}
@@ -848,6 +878,9 @@ void CBattle::Move(int i, Entity Entity)
 		break;
 		/*敵の判定*/
 	case CBattle::Enemy:
+
+		m_pEnemy[i]->SetMoveFlag(false);
+
 		//移動フラグが立っていたら目的地指定の処理を飛ばす
 		if (!m_pEnemy[i]->GetMoveFlag())
 		{
@@ -866,6 +899,27 @@ void CBattle::Move(int i, Entity Entity)
 						//標的の位置にMOVESPEEDの大きさで進む
 						m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
 						m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
+
+						//敵の位置にMOVESPEEDの大きさで進む
+						if (iEnemyPos.x > AllyPos.x - 10)
+						{
+							m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
+							m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
+						}
+						else
+						{
+							if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
+							{
+								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
+								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+							}
+							else
+							{
+								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
+								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
+							}
+						}
+
 					}
 					//数字が大きかった場合
 					else
@@ -873,11 +927,12 @@ void CBattle::Move(int i, Entity Entity)
 						//相手のリーダーが生成されているか
 						if (m_pAllyLeader)
 						{
+							DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
+							DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
+
 							//自分の位置が敵の一定のラインまで来たら
 							if (m_pEnemy[i]->GetPos().x < ALLYCORE_POSX + 10)
 							{
-								DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-								DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
 
 								//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
@@ -886,8 +941,18 @@ void CBattle::Move(int i, Entity Entity)
 							//そこより手前だったら
 							else
 							{
-								//X軸を移動させる
-								m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
+								if (m_pEnemy[i]->m_bFirstBattlePosSetting)
+								{
+									m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
+									if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
+									{
+										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+									}
+								}
+								else
+								{
+									m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
+								}
 							}
 						}
 					}
@@ -898,11 +963,12 @@ void CBattle::Move(int i, Entity Entity)
 					//相手のリーダーが生成されているか
 					if (m_pAllyLeader)
 					{
+						DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
+						DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
+
 						//自分の位置が敵の一定のラインまで来たら
 						if (m_pEnemy[i]->GetPos().x < ALLYCORE_POSX + 10)
 						{
-							DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-							DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
 
 							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 							m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
@@ -911,8 +977,18 @@ void CBattle::Move(int i, Entity Entity)
 						//そこより手前だったら
 						else
 						{
-							//X軸を移動させる
-							m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
+							if (m_pEnemy[i]->m_bFirstBattlePosSetting)
+							{
+								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
+								if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
+								{
+									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+								}
+							}
+							else
+							{
+								m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
+							}
 						}
 					}
 				}
@@ -925,12 +1001,13 @@ void CBattle::Move(int i, Entity Entity)
 
 			m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
 			m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
+
 			//目的地の+-1.0fの範囲内に入ったら移動フラグをfalseにする
 			if (DestinationPos.x + 1.0f < m_pEnemy[i]->GetPos().x && DestinationPos.x - 1.0f > m_pEnemy[i]->GetPos().x)
 			{
-				if (DestinationPos.y + 1.0f < m_pEnemy[i]->GetPos().y && DestinationPos.y - 1.0f > m_pEnemy[i]->GetPos().y)
+				if (DestinationPos.y + 5.0f < m_pEnemy[i]->GetPos().y && DestinationPos.y - 5.0f > m_pEnemy[i]->GetPos().y)
 				{
-					if(DestinationPos.z + 1.0f < m_pEnemy[i]->GetPos().z && DestinationPos.z - 1.0f > m_pEnemy[i]->GetPos().z)
+					if (DestinationPos.z + 5.0f < m_pEnemy[i]->GetPos().z && DestinationPos.z - 5.0f > m_pEnemy[i]->GetPos().z)
 					{
 						m_pEnemy[i]->SetMoveFlag(false);
 					}
@@ -1386,6 +1463,8 @@ void CBattle::FirstPosSetting()
 				PosX += 5.0f;
 				break;
 			}
+
+			m_pAlly[i]->SetFirstPos(m_pAlly[i]->GetPos());
 		}
 	}
 
@@ -1474,6 +1553,7 @@ void CBattle::FirstPosSetting()
 				PosX += 5.0f;
 				break;
 			}
+			m_pEnemy[i]->SetFirstPos(m_pEnemy[i]->GetPos());
 		}
 	}
 }
