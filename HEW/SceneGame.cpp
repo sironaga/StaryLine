@@ -31,6 +31,8 @@ struct ResultCheck
 
 bool m_bFever;
 bool TimeStart;
+float FadeTime;
+bool FadeTimeFlag;
 
 ResultCheck g_Resltcheck;
 ResultGameInfo g_ResultData;
@@ -78,7 +80,8 @@ CSceneGame::CSceneGame(StageType StageNum)
 
 	m_pEffect = new CEffectManager(TEX_PASS("Effect/Fire.efk"));
 
-	
+	FadeTimeFlag = true;
+	FadeTime = 0.0f;
 }
 
 CSceneGame::~CSceneGame()
@@ -107,6 +110,14 @@ CSceneGame::~CSceneGame()
 
 void CSceneGame::Update()
 {
+	if (FadeTimeFlag)
+	{
+		FadeTime++;
+	}
+	if (FadeTime > 2.5f * 60.0f)
+	{
+		FadeTimeFlag = false;
+	}
 	if (m_pBattle->GetEnd() && !m_bEnd)
 	{
 		g_ResultData.bWin = m_pBattle->GetWin();
@@ -133,7 +144,7 @@ void CSceneGame::Update()
 
 	m_pField->Update();		// フィールドは常に更新する
 	InitInput();
-	if (!TimeStart && (g_tTime.GameTime == -1.0f) && IsKeyPress(VK_SPACE))
+	if (!FadeTimeFlag && !TimeStart && (g_tTime.GameTime == -1.0f) && IsKeyPress(VK_SPACE))
 	{
 		TimeStart = true;
 	}
