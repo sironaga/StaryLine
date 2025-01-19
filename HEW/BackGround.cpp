@@ -7,7 +7,7 @@ constexpr float BG_POS_Z = 600.0f;
 
 const char* BGPass[SCENE_MAX] =
 {
-	TEX_PASS("BackGround/TitleBackGround.png"),
+	TEX_PASS("BackGround/Sky.png"),
 	TEX_PASS("BackGround/Sky.png"),
 	TEX_PASS("BackGround/Sky.png"),
 };

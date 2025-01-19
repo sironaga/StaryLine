@@ -60,12 +60,12 @@ CStageSelect::CStageSelect()
     m_pRight_Select      = new SpriteEx("Assets/Texture/StageSelectBackGround/Right_Select.png");
     m_pLeft_Select       = new SpriteEx("Assets/Texture/StageSelectBackGround/Left_Select.png");
 
-	m_pModel = new CModelEx(MODEL_PASS("StageSelect/SelectStage_Stage02_Desert.fbx"));
+	m_pModel = new CModelEx(MODEL_PASS("StageSelect/SelectStage_Stage02_Desert.fbx"), false);
 
 	nSlect = 0;
-	m_ModelParam.pos = { 225.0f,0.0f,10.0f };
-	m_ModelParam.rotate = { 0.0f,DirectX::XMConvertToRadians(180.0f),0.0f};
-	m_ModelParam.size = { 1.0f,1.0f,1.0f };
+	m_ModelParam.pos = { 0.0f,0.0f,0.0f };
+	m_ModelParam.rotate = { DirectX::XMConvertToRadians(-10.0f),DirectX::XMConvertToRadians(180.0f),0.0f };
+	m_ModelParam.size = { -1.0f,1.0f,1.0f };
 
 	m_pBackGround = new CBackGround();
 }
@@ -138,8 +138,8 @@ CStageSelect::~CStageSelect()
 
 void CStageSelect::Update()
 {
-	static bool bRight = false;
-//	SpriteDebug(&m_ModelParam,true);
+	static bool bRight = false;/*
+	SpriteDebug(&m_ModelParam,true);*/
 	if (!m_bEnd)
 	{
 		if (!m_bMoving)
@@ -260,18 +260,19 @@ void CStageSelect::Update()
 			}
 		}
 	}
-	static int moveCnt = 0;
-	if (m_bMoving)
-	{
-		moveCnt++;
-		if(bRight)m_ModelParam.pos.x-=2;
-		else m_ModelParam.pos.x+=2;
-		if (moveCnt >= 75)
-		{
-			m_bMoving = false;
-			moveCnt = 0;
-		}
-	}
+	//static int moveCnt = 0;
+	//if (m_bMoving)
+	//{
+	//	moveCnt++;
+	//	if(bRight)m_ModelParam.pos.x-=2;
+	//	else m_ModelParam.pos.x+=2;
+	//	if (moveCnt >= 70)
+	//	{
+	//		m_bMoving = false;
+	//		moveCnt = 0;
+	//	}
+	//}
+	m_bMoving = false;
 }
 
 void CStageSelect::Draw()
