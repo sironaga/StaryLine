@@ -6,6 +6,8 @@
 #include "Main.h"
 #include "Scene.h"
 #include "SpriteEX.h"
+#include "ModelEx.h"
+#include  "_StructList.h"
 
 enum E_SELECT_STAGETYPE
 {
@@ -46,6 +48,10 @@ private:
 	SpriteEx* m_pSnowFieldStage[3];
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
+
+	CModelEx* m_pModel;
+	ObjectParam
+
 	float f_Rotation;
 	float f_Rad;
 	float f_SelectX;
