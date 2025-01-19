@@ -132,12 +132,14 @@ private:
 	Texture* m_pTex_SuperStar_Number[6];
 	Texture* m_pTex_Fever_Gage[4];
 	Texture* m_pTex_Summon_Log[2];
-	Texture* m_pTex_Ally_Count;
+	Texture* m_pTex_Ally_Count[4];
+	Texture* m_pTex_Ally_Number[10];
 
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[4];//フィーバースター
 	Sprite* m_pSprite_Summon_Log;//召喚ログ
-	Sprite* m_pSprite_Ally_Count;//召喚数
+	Sprite* m_pSprite_Ally_Count[4];//召喚数
+	Sprite* m_pSprite_Ally_Number[10];//召喚Number
 
 	CEffectManager* m_pEffect;
 	CModelEx* m_pStar_Model[3];//Starのモデル

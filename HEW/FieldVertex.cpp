@@ -31,6 +31,9 @@
 #define FADE_LOG_SPEED (0.5f) //ログの終始のスピード
 #define MAIN_LOG_SPEED (1.0f) //ログの中間のスピード
 
+#define BOARD_SIZE_X (20.0f)
+#define BOARD_SIZE_Y (20.0f)
+
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//線の四頂点座標保存用
 IXAudio2SourceVoice* g_FieldSe;//FieldVertexのサウンド音量
 CSoundList* g_Fieldsound;//FieldVertexのサウンドポインター
@@ -69,11 +72,13 @@ CFieldVertex::CFieldVertex()
 	, m_pTex_SuperStar_Number{ nullptr }
 	, m_pTex_Fever_Gage{ nullptr }
 	, m_pTex_Summon_Log{ nullptr }
-	, m_pTex_Ally_Count(nullptr)
+	, m_pTex_Ally_Number{nullptr}
+	, m_pTex_Ally_Count{ nullptr }
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pSprite_Fever_Gage{ nullptr }
 	, m_pSprite_Summon_Log(nullptr)
-	, m_pSprite_Ally_Count(nullptr)
+	, m_pSprite_Ally_Number{nullptr}
+	, m_pSprite_Ally_Count{ nullptr }
 	, m_pEffect(nullptr)
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
@@ -93,7 +98,14 @@ CFieldVertex::CFieldVertex()
 		m_pSprite_Fever_Gage[2] = new Sprite();
 		m_pSprite_Fever_Gage[3] = new Sprite();
 		m_pSprite_Summon_Log = new Sprite();
-		m_pSprite_Ally_Count = new Sprite();
+		m_pSprite_Ally_Count[0] = new Sprite();
+		m_pSprite_Ally_Count[1] = new Sprite();
+		m_pSprite_Ally_Count[2] = new Sprite();
+		m_pSprite_Ally_Count[3] = new Sprite();
+		for (int i = 0; i < 10; i++)
+		{
+			m_pSprite_Ally_Number[i] = new Sprite();
+		}
 	}
 	
 	//-----テクスチャのメモリ確保-----//
@@ -104,7 +116,14 @@ CFieldVertex::CFieldVertex()
 		m_pTex_Fever_Gage[3] = new Texture();
 		m_pTex_Summon_Log[0] = new Texture();
 		m_pTex_Summon_Log[1] = new Texture();
-		m_pTex_Ally_Count = new Texture();
+		m_pTex_Ally_Count[0] = new Texture();
+		m_pTex_Ally_Count[1] = new Texture();
+		m_pTex_Ally_Count[2] = new Texture();
+		m_pTex_Ally_Count[3] = new Texture();
+		for (int i = 0; i < 10; i++)
+		{
+			m_pTex_Ally_Number[i] = new Texture();
+		}
 		for (int i = 0; i < 6; i++)
 		{
 			m_pTex_SuperStar_Number[i] = new Texture();
@@ -205,6 +224,29 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
+	HRESULT hrNumber;
+	for (int i = 0; i < 10; i++)
+	{
+		switch (i)
+		{
+		case 0:hrNumber = m_pTex_Ally_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
+		case 1:hrNumber = m_pTex_Ally_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
+		case 2:hrNumber = m_pTex_Ally_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
+		case 3:hrNumber = m_pTex_Ally_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
+		case 4:hrNumber = m_pTex_Ally_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
+		case 5:hrNumber = m_pTex_Ally_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
+		case 6:hrNumber = m_pTex_Ally_Number[6]->Create(TEX_PASS("Numbers/number_6.png")); break;
+		case 7:hrNumber = m_pTex_Ally_Number[7]->Create(TEX_PASS("Numbers/number_7.png")); break;
+		case 8:hrNumber = m_pTex_Ally_Number[8]->Create(TEX_PASS("Numbers/number_8.png")); break;
+		case 9:hrNumber = m_pTex_Ally_Number[9]->Create(TEX_PASS("Numbers/number_9.png")); break;
+		default:
+			break;
+		}
+		if (FAILED(hrNumber)) {
+			MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
+		}
+	}
+
 	//スーパースター初期化
 	HRESULT hrFeverStar;
 	for (int i = 0; i < 4; i++)
@@ -220,6 +262,24 @@ CFieldVertex::CFieldVertex()
 		}
 		if (FAILED(hrFeverStar)) {
 			MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
+		}
+	}
+
+	//スーパースター初期化
+	HRESULT hrBoard;
+	for (int i = 0; i < 4; i++)
+	{
+		switch (i)
+		{
+		case 0:hrBoard = m_pTex_Ally_Count[0]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_3.png")); break;
+		case 1:hrBoard = m_pTex_Ally_Count[1]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_4.png")); break;
+		case 2:hrBoard = m_pTex_Ally_Count[2]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_3.png")); break;
+		case 3:hrBoard = m_pTex_Ally_Count[3]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_4.png")); break;
+		default:
+			break;
+		}
+		if (FAILED(hrBoard)) {
+			MessageBox(NULL, "Summon_Count_Board 画像", "Error", MB_OK);
 		}
 	}	
 }
@@ -238,7 +298,14 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_Fever_Gage[3]);
 	SAFE_DELETE(m_pTex_Summon_Log[0]);
 	SAFE_DELETE(m_pTex_Summon_Log[1]);
-	SAFE_DELETE(m_pTex_Ally_Count);
+	SAFE_DELETE(m_pTex_Ally_Count[0]);
+	SAFE_DELETE(m_pTex_Ally_Count[1]);
+	SAFE_DELETE(m_pTex_Ally_Count[2]);
+	SAFE_DELETE(m_pTex_Ally_Count[3]);
+	for (int i = 0; i < 10; i++)
+	{
+		SAFE_DELETE(m_pTex_Ally_Number[i]);
+	}
 	for (int i = 0; i < 6; i++)
 	{
 		SAFE_DELETE(m_pTex_SuperStar_Number[i]);
@@ -252,7 +319,14 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pSprite_Fever_Gage[2]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[3]);
 	SAFE_DELETE(m_pSprite_Summon_Log);
-	SAFE_DELETE(m_pSprite_Ally_Count);
+	SAFE_DELETE(m_pSprite_Ally_Count[0]);
+	SAFE_DELETE(m_pSprite_Ally_Count[1]);
+	SAFE_DELETE(m_pSprite_Ally_Count[2]);
+	SAFE_DELETE(m_pSprite_Ally_Count[3]);
+	for (int i = 0; i < 10; i++)
+	{
+		SAFE_DELETE(m_pSprite_Ally_Number[i]);
+	}
 
 	SAFE_DELETE(m_pStar_Model[0]);
 	SAFE_DELETE(m_pStar_Model[1]);
@@ -542,8 +616,92 @@ void CFieldVertex::Draw()
 		m_pSprite_Fever_Gage[3]->Draw();//描画
 		m_pSprite_Fever_Gage[3]->ReSetSprite();//スプライトのリセット
 	}
-	//デバック用ログの表示//
-	m_pBattle->SaveAllyLogDraw();
+
+	//-----現在のキャラクターの数描画のボード-----//
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			switch (i)
+			{
+			case 0:DrawSetting({ -107.0f, 52.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			case 1:DrawSetting({ -107.0f, 78.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			case 2:DrawSetting({ 107.0f, 55.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			case 3:DrawSetting({ 107.0f, 75.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			default:
+				break;
+			}
+			
+			m_pSprite_Ally_Count[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+			m_pSprite_Ally_Count[i]->SetTexture(m_pTex_Ally_Count[i]);//星形の背景のテクスチャ設定
+			m_pSprite_Ally_Count[i]->Draw();//描画
+			m_pSprite_Ally_Count[i]->ReSetSprite();//スプライトのリセット
+		}
+	}
+
+	//-----現在のキャラクターの数描画-----//
+	{
+		int Ally_Enemy_Count[4];
+		Ally_Enemy_Count[0] = m_pBattle->GetAllyTypeCount(0);
+		Ally_Enemy_Count[1] = m_pBattle->GetAllyTypeCount(1);
+		Ally_Enemy_Count[2] = m_pBattle->GetEnemyTypeCount(0);
+		Ally_Enemy_Count[3] = m_pBattle->GetEnemyTypeCount(1);
+
+		int M = -1;
+		float Pos_Y[4];
+		Pos_Y[0] = 52.0f;
+		Pos_Y[1] = 78.0f;
+		Pos_Y[2] = 55.0f;
+		Pos_Y[3] = 75.0f;
+		for (int i = 0; i < 4; i++)
+		{
+			if (i == 2)M *= M;
+			if (Ally_Enemy_Count[i] / 100 >= 1)
+			{
+				DrawSetting({ 107.0f * M - 4.0f, Pos_Y[i],10.0f}, {10.0f,10.0f,1.0f}, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 100]);//星形の背景のテクスチャ設定
+				m_pSprite_Ally_Number[i]->Draw();//描画
+
+				DrawSetting({ 107.0f * M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[(Ally_Enemy_Count[i] % 100) / 10]);//星形の背景のテクスチャ設定
+				m_pSprite_Ally_Number[i]->Draw();//描画
+
+				DrawSetting({ 107.0f * M + 3.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
+				m_pSprite_Ally_Number[i]->Draw();//描画
+			}
+			else
+			{
+				if (Ally_Enemy_Count[i] / 10 >= 1)
+				{
+					DrawSetting({ 107.0f * M - 2.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 10]);//星形の背景のテクスチャ設定
+					m_pSprite_Ally_Number[i]->Draw();//描画
+
+					DrawSetting({ 107.0f * M + 2.0f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
+					m_pSprite_Ally_Number[i]->Draw();//描画
+				}
+				else
+				{
+					DrawSetting({ 107.0f * M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
+					m_pSprite_Ally_Number[i]->Draw();//描画
+				}
+			}
+			m_pSprite_Ally_Number[i]->ReSetSprite();//スプライトのリセット
+		}
+
+	}
 }
 
 ////=====ログの更新処理の関数=====//
