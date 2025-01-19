@@ -17,7 +17,7 @@ constexpr float SIZE_SPEED = 10.0f;
 
 const char* ch_pModelList[CDebugRoom::MAX_DEBUGMODEL] =
 {
-	MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx")
+	MODEL_PASS("Character/EnemyAxe/Idiot01.fbx")
 };
 
 CDebugRoom::CDebugRoom()
@@ -31,7 +31,7 @@ CDebugRoom::CDebugRoom()
 	{
 		m_pDebugModel[i] = new Model();
 		if (!m_pDebugModel[i]->Load(ch_pModelList[i]))MessageBox(NULL, ch_pModelList[i], "DebugRoom.cpp",MB_OK);
-		Model::AnimeNo anim = m_pDebugModel[i]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"));
+		Model::AnimeNo anim = m_pDebugModel[i]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"));
 		m_pDebugModel[i]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 		m_pDebugModel[i]->PlayAnime(anim, true);
 	}
@@ -128,7 +128,7 @@ void CDebugRoom::DrawModel(Model* model, param InParam , bool isAnim)
 	ShaderList::SetWVP(wvp);	//引数にはXMFLOAT4x4型の、要素数３の配列のアドレスを渡すこと
 
 	//モデルに使用する頂点シェーダー、ピクセルシェーダーを設定
-	if (isAnim)model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	if (isAnim)model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
 	else model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
 	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 

@@ -1,6 +1,7 @@
 #include "SceneGame.h"
 #include "File.h"
 #include "Input.h"
+#include "SceneResult.h"
 
 
 // 行き止まりが発生しない時のサイクル
@@ -32,10 +33,12 @@ bool m_bFever;
 bool TimeStart;
 
 ResultCheck g_Resltcheck;
+ResultGameInfo g_ResultData;
 
 CSceneGame::CSceneGame(StageType StageNum)
 	:m_bEnd(false)
 {
+	g_ResultData = {};
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	g_GameSound->SetMasterVolume();
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
@@ -106,6 +109,14 @@ void CSceneGame::Update()
 {
 	if (m_pBattle->GetEnd() && !m_bEnd)
 	{
+		g_ResultData.bWin = m_pBattle->GetWin();
+		g_ResultData.nHitPoint = m_pBattle->GetPlayerHpProportion();
+		g_ResultData.nAverageSpwn = m_pBattle->GetSummonAllyCount();
+		g_ResultData.nDrawCount = 10;
+		g_ResultData.nSpawnCount = m_pBattle->GetSummonAllyCount();
+		g_ResultData.nTime = g_tTime.GameTime;
+		CSceneResult::InResultData(g_ResultData);
+		CSceneResult::InStageLevel(m_pBattle->m_nStageNum);
 		SetNext(SCENE_RESULT);
 		m_bEnd = true;
 	}
