@@ -216,6 +216,9 @@
     <ClCompile Include="Fade.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
     </ClCompile>
+    <ClCompile Include="EffectManager_sp.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -361,6 +364,9 @@
     </ClInclude>
     <ClInclude Include="SceneResult.h">
       <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager_sp.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

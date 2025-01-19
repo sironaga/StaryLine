@@ -34,7 +34,7 @@ constexpr float RECOVER_TIME = 5.0f;			// 回復時間
 constexpr float ARROW_AJUST_POS =  100.0f;		// 矢印の座標X,Yの補正値
 constexpr float ARROW_BRUSH_AJUST_X = 0.0f;	
 constexpr float ARROW_BRUSH_AJUST_Y = -100.0f;	
-constexpr float ARROW_SIZE =  100.0f;			// 矢印の座標X,Yの補正値
+constexpr float ARROW_SIZE =  1.0f;			// 矢印の座標X,Yの補正値
 
 IXAudio2SourceVoice* g_pWalkSe;
 CSoundList* g_pPlayerSound;
@@ -48,7 +48,7 @@ CPlayer::CPlayer()
 	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_bCanMoveCheck(false), m_bDrawing(true)
 	, m_pTimerParam{}, m_pArrowParam{}
-	, m_pTimerTex{}, m_pArrowTex(nullptr)
+	, m_pTimerTex{}
 	, m_eArrowState{}
 	, m_tArrowCenterPos{}
 
@@ -80,18 +80,13 @@ CPlayer::CPlayer()
 	}
 	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
 
-	m_pArrowParam = new SpriteParam();
+	m_pArrowModel = new CModelEx(MODEL_PASS("Player/Board_Arrow.fbx"));
 	m_eArrowState = NONE_SELECT;
-	m_pArrowParam->pos = { 0.0f,0.0f };
-	m_pArrowParam->color = { 1.0f,1.0f,1.0f,1.0f };
-	m_pArrowParam->uvPos = { 0.0f,0.0f };
-	m_pArrowParam->uvSize = { 1.0f,1.0f };
-	m_pArrowParam->world = Get2DWorld();
-	m_pArrowParam->view = Get2DView();
-	m_pArrowParam->proj = Get2DProj();
-
-	m_pArrowTex = new Texture();
-	m_pArrowTex->Create(TEX_PASS("Player/Arrow.png"));
+	m_pArrowParam.pos = { 0.0f,0.0f,0.0f};
+	m_pArrowParam.color = { 1.0f,1.0f,1.0f,1.0f };
+	m_pArrowParam.rotate = { 0.0f,0.0f,0.0f };
+	m_pArrowParam.uvPos = { 0.0f,0.0f };
+	m_pArrowParam.uvSize = { 1.0f,1.0f };
 
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
@@ -104,7 +99,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {	
-	SAFE_DELETE(m_pArrowTex);
+	SAFE_DELETE(m_pArrowModel);
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
 
 	//音の解放
@@ -198,20 +193,16 @@ void CPlayer::Draw()
 	}
 
 	float deg = m_eDestination * (360.0f / 8.0f);
-	m_pArrowParam->rotate.z = DirectX::XMConvertToRadians(deg);
-	m_pArrowParam->world = Get2DWorld(true, m_pArrowParam->rotate, { m_tBrushPos.x	, -m_tBrushPos.y - ARROW_AJUST_POS + ARROW_BRUSH_AJUST_Y });
-	m_pArrowParam->size = { ARROW_SIZE ,ARROW_SIZE };
-	switch (m_eArrowState)
-	{
-	case SELECTED:		m_pArrowParam->color = { 1.0f, 1.0f, 1.0f, 1.0f }; break;
-	case CANNOT_SELECT:	m_pArrowParam->color = { 1.0f, 1.0f, 1.0f, 0.5f }; break;
-	default:break;
-	}
-	Sprite::SetParam(m_pArrowParam);
-	Sprite::SetTexture(m_pArrowTex);
-	if(m_eArrowState != NONE_SELECT && m_ePlayerState != MOVE)Sprite::Draw();
-	Sprite::ReSetSprite();
+	m_pArrowParam.rotate.z = DirectX::XMConvertToRadians(deg);
+	m_pArrowParam.size = { ARROW_SIZE ,ARROW_SIZE,ARROW_SIZE };
 
+	m_pArrowModel->SetPostion(m_tBrushPos.x, m_tBrushPos.y, m_tBrushPos.z);
+	m_pArrowModel->SetScale(m_pArrowParam.size.x, m_pArrowParam.size.y, m_pArrowParam.size.z);
+	m_pArrowModel->SetRotation(m_pArrowParam.rotate.x, m_pArrowParam.rotate.y, m_pArrowParam.rotate.z);
+	m_pArrowModel->SetViewMatrix(GetView());
+	m_pArrowModel->SetProjectionMatrix(GetProj());
+	/*if(m_eArrowState == SELECTED)*/
+	m_pArrowModel->Draw();
 
 	/* プレイヤーの描画 */
 	SetRender3D();											// 3D表現のセット

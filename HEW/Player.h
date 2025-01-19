@@ -77,8 +77,8 @@ private:
 		CANNOT_SELECT
 	};
 	E_ARROW_STATE m_eArrowState;
-	SpriteParam* m_pArrowParam;
-	Texture* m_pArrowTex;
+	CModelEx* m_pArrowModel;
+	ObjectParam m_pArrowParam;
 	DirectX::XMFLOAT2  m_tArrowCenterPos;
 
 	enum Timer
