@@ -27,14 +27,21 @@
 #define ALLYCREATE_POSZ_4 (-10)
 #define ALLYCREATE_POSZ_5 (-20)
 
-//敵の生成位置
-#define ENEMYCREATE_POSX (80)
 //敵の生成Z座標位置
 #define ENEMYCREATE_POSZ_1 (20)
 #define ENEMYCREATE_POSZ_2 (10)
 #define ENEMYCREATE_POSZ_3 (0)
 #define ENEMYCREATE_POSZ_4 (-10)
 #define ENEMYCREATE_POSZ_5 (-20)
+
+//敵の生成X座標位置
+enum class ENEMYCREATE_POSX
+{
+	Stage1 =  80,
+	Stage2 =  80,
+	Stage3 =  60,
+};
+
 
 //戦闘範囲X軸
 #define BATTLE_X (80)
@@ -46,7 +53,7 @@
 //移動関係計算マクロ
 #define MOVESPEED(Speed) Speed / 10
 //移動力
-#define MOVEPOWER (1.4f)
+#define MOVEPOWER (0.4f)
 
 //時間の計算マクロ
 #define Time(Num) Num * 60
@@ -454,7 +461,7 @@ void CBattle::Draw(void)
 			if (m_pEnemyLeader->GetPos().z > Z - 1.0f && m_pEnemyLeader->GetPos().z < Z + 1.0f)
 			{
 				//描画処理
-				m_pEnemyLeader->Draw();
+				m_pEnemyLeader->Draw(m_nStageNum.StageMainNumber);
 			}
 		}
 
@@ -1394,7 +1401,20 @@ void CBattle::FirstPosSetting()
 		if (!m_pEnemy[i]->m_bFirstBattlePosSetting)
 		{
 			//初期X位置を設定
-			m_pEnemy[i]->SetPosX(ENEMYCREATE_POSX + PosX);
+			switch (m_nStageNum.StageMainNumber)
+			{
+			case 0:
+				m_pEnemy[i]->SetPosX((float)ENEMYCREATE_POSX::Stage1 + PosX);
+				break;
+			case 1:
+				m_pEnemy[i]->SetPosX((float)ENEMYCREATE_POSX::Stage2 + PosX);
+				break;
+			case 2:
+				m_pEnemy[i]->SetPosX((float)ENEMYCREATE_POSX::Stage3 + PosX);
+				break;
+			}
+
+
 			////初期Y位置を設定
 			//m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
 			//初期Y位置を設定
@@ -1481,13 +1501,27 @@ void CBattle::CreateLeader(void)
 	{
 		//初期位置設定用変数
 		DirectX::XMFLOAT3 BossFirstPos;
+		switch (m_nStageNum.StageMainNumber)
+		{
+		case 0:
+			//Y座標を設定
+			BossFirstPos.y = 15.0f;
+			break;
+		case 1:
+			//Y座標を設定
+			BossFirstPos.y = 16.0f;
+			break;
+		case 2:
+			//Y座標を設定
+			BossFirstPos.y = 16.0f;
+			break;
+		}
 
 		//X座標を設定
 		BossFirstPos.x = ENEMYBOSSCORE_POSX;
-		//Y座標を設定
-		BossFirstPos.y = 8.0f;
 		//Z座標を設定
 		BossFirstPos.z = ENEMYBOSSCORE_POSZ;
+
 		//敵のリーダーを生成
 		switch (m_nStageNum.StageMainNumber)
 		{

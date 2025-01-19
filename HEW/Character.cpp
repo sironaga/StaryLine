@@ -156,17 +156,17 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		case 0:
 			//ƒ{ƒX‚ÌŽÔ(‰Šú’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		case 1:
 			//ƒ{ƒX‚ÌŽÔ(’†ŠÔ’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		case 2:
 			//ƒ{ƒX‚ÌŽÔ(ÅI’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
@@ -205,17 +205,17 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		case 0:
 			//ƒ{ƒX‚ÌŽÔ(‰Šú’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		case 1:
 			//ƒ{ƒX‚ÌŽÔ(’†ŠÔ’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		case 2:
 			//ƒ{ƒX‚ÌŽÔ(ÅI’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
@@ -254,17 +254,17 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		case 0:
 			//ƒ{ƒX‚ÌŽÔ(‰Šú’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
 		case 1:
 			//ƒ{ƒX‚ÌŽÔ(’†ŠÔ’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
 		case 2:
 			//ƒ{ƒX‚ÌŽÔ(ÅI’iŠK)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
@@ -1145,16 +1145,16 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	{
 		m_tPos.x = FirstPos.x;
 		m_tPos.y = FirstPos.y;
-		m_tPos.z = FirstPos.z;
+		m_tPos.z = FirstPos.z - 5.0f;
 		m_tSize.x = InSize;
 		m_tSize.y = InSize;
 		m_tSize.z = InSize;
 	}
 	if (m_pSubModel)
 	{
-		m_tSubPos.x = FirstPos.x + 10.0f;
-		m_tSubPos.y = FirstPos.y;
-		m_tSubPos.z = FirstPos.z;
+		m_tSubPos.x = FirstPos.x - 3.0f;
+		m_tSubPos.y = FirstPos.y + 0.5f;
+		m_tSubPos.z = FirstPos.z + 5.0f;
 		m_tSubSize.x = InSize;
 		m_tSubSize.y = InSize;
 		m_tSubSize.z = InSize;
@@ -1193,7 +1193,7 @@ void CLeader::Update(bool IsStart, bool IsEnd)
 	}
 }
 
-void CLeader::Draw()
+void CLeader::Draw(int StageNum)
 {
 	switch (m_nTextureNumber)
 	{
@@ -1246,15 +1246,36 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y, m_tPos.z, 0.0f));
-			//Šg‘åk¬s—ñ(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f);
-			//‰ñ“]s—ñ(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			DirectX::XMMATRIX T, S, R;
+			
+			switch (StageNum)
+			{
+			case 0:
+				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 11.0f, m_tPos.y - 10.0f, m_tPos.z, 0.0f));
+				//Šg‘åk¬s—ñ(Scaling)
+				S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
+				//‰ñ“]s—ñ(Rotation)
+				R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				break;
+			case 1:
+				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y - 17.0f, m_tPos.z + 6.0f, 0.0f));
+				//Šg‘åk¬s—ñ(Scaling)
+				 S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
+				//‰ñ“]s—ñ(Rotation)
+				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				break;
+			case 2:
+				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 10.0f, m_tPos.y - 5.0f, m_tPos.z, 0.0f));
+				//Šg‘åk¬s—ñ(Scaling)
+				 S = DirectX::XMMatrixScaling(0.35f, 0.35f, 0.35f);
+				//‰ñ“]s—ñ(Rotation)
+				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(1.0f), DirectX::XMConvertToRadians(170.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				break;
+			}
 			//‚»‚ê‚¼‚ê‚Ìs—ñ‚ðŠ|‚¯‡‚í‚¹‚ÄŠi”[
 			DirectX::XMMATRIX mat = S * R * T;
-
 			world = mat;
+			
 
 			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 			wvp[1] = GetView();
@@ -1286,7 +1307,7 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 12.0f, m_tPos.y, m_tPos.z, 0.0f));
 			//Šg‘åk¬s—ñ(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//‰ñ“]s—ñ(Rotation)
@@ -1326,7 +1347,7 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x - 2.0f, m_tSubPos.y + 15.0f, m_tSubPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x - 12.0f, m_tSubPos.y, m_tSubPos.z , 0.0f));
 			//Šg‘åk¬s—ñ(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
 			//‰ñ“]s—ñ(Rotation)
@@ -1499,36 +1520,41 @@ int HpRatio = 0;
 	switch (m_tNumber)
 	{
 	case CHpUI::Ally:
-		m_tUIPos.x = InPos.x - m_tUIScale.x + (m_tUIScale.x / m_fFullHp) * m_fNowHp;
+		HpRatio =  4.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = InPos.x - m_tUIScale.x + (m_fNowHp / m_fFullHp) * m_tUIScale.x;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
 		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
-		HpRatio =  4.0f;
 		break;
 	case CHpUI::Enemy:
-		m_tUIPos.x = InPos.x + m_tUIScale.x - (m_tUIScale.x / m_fFullHp) * m_fNowHp;
+		HpRatio =  4.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = InPos.x + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
 		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
-		HpRatio =  4.0f;
 		break;
 	case CHpUI::Bos:
-		m_tUIPos.x = (InPos.x + 8.6f) + m_tUIScale.x - (m_tUIScale.x / m_fFullHp) * m_fNowHp;
-		m_tUIPos.y = InPos.y + 19.2f - 34.8f;
+		HpRatio =  102.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = ( (InPos.x + 8.6f) + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x) - 47.0f;
+		//m_tUIPos.x = (InPos.x + 8.6f) - 44.0f;
+		m_tUIPos.y = -5.0;
 		m_tUIPos.z = InPos.z;
 		//HpRatio = (m_fNowHp / m_fFullHp) * 106.0f;
-		HpRatio =  106.0f;
 		break;
 	case CHpUI::Player:
-		m_tUIPos.x = (InPos.x - 8.6f) - m_tUIScale.x + (m_tUIScale.x / m_fFullHp) * m_fNowHp;
-		m_tUIPos.y = InPos.y + 19.2f - 34.8f;
+		HpRatio =  102.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = ((InPos.x - 8.6f) + (m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x) * -1) + 47.0f;
+		//m_tUIPos.x = (InPos.x - 8.6f) + 44.0f;
+		m_tUIPos.y = -5.0;
 		m_tUIPos.z = InPos.z;
 		//HpRatio = (m_fNowHp / m_fFullHp) * 106.0f;
-		HpRatio =  106.0f;
 		break;
 	}
 
-	m_tUIScale.x = HpRatio;
 }
 
 void CHpUI::Draw(int nCornerCount)
@@ -1548,9 +1574,10 @@ void CHpUI::Draw(int nCornerCount)
 		}
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x ,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
 
-		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f});
+		DrawSetting({ m_tUIPos.x ,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1570,7 +1597,8 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		m_pSprite->SetUVPos({ (m_fNowHp / m_fFullHp) - 1.0f,0.0f });
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
 
 		//DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
@@ -1586,23 +1614,11 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		m_pSprite->SetUVPos({ (m_fNowHp / m_fFullHp) - 1.0f,0.0f });
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
 
 		//DrawSetting({ m_tUIPos.x + (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 		DrawSetting({ m_tUIPos.x,m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
-
-		m_pSprite->Draw();
-
-		m_pSprite->ReSetSprite();
-
-		//ƒx[ƒX(Top)‚Ì•`‰æ
-		m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Frame]);
-
-		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-		
-		m_pSprite->SetUVPos({ 0.0f,0.0f });
-
-		DrawSetting({ 0.0f ,-5.0f,0.0f }, { 215.0f,21.0f,10.0f }, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1616,7 +1632,9 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVPos({ -1.0f + (m_fNowHp / m_fFullHp),0.0f });
+		//m_pSprite->SetUVPos({ 0.0f ,0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
 
 		//DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 		DrawSetting({ m_tUIPos.x ,m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
@@ -1625,20 +1643,21 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->ReSetSprite();
 
-		////ƒx[ƒX(Top)‚Ì•`‰æ
-		//m_pSprite->SetTexture(g_pHpGageTex[0][(int)HpTexture::Top]);
-
-		//m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-		//DrawSetting({ m_tUIPos.x + 40.0f,m_tUIPos.y,m_tUIPos.z }, { 100.0f,15.0f,5.0f }, m_pSprite);
-		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 100.0f,15.0f,5.0f }, m_pSprite);
-
-		//m_pSprite->Draw();
-
-		//m_pSprite->ReSetSprite();
-
 		break;
 	}
+	//ƒx[ƒX(Top)‚Ì•`‰æ
+	m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Frame]);
+
+	m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	m_pSprite->SetUVPos({ 0.0f,0.0f });
+	m_pSprite->SetUVScale({ 1.0f ,1.0f });
+
+	DrawSetting({ 0.0f ,-5.0f,0.0f }, { 216.0f,21.0f,10.0f }, m_pSprite);
+
+	m_pSprite->Draw();
+
+	m_pSprite->ReSetSprite();
 }
 
 void CHpUI::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize,Sprite* Sprite)
