@@ -46,7 +46,7 @@
 //移動関係計算マクロ
 #define MOVESPEED(Speed) Speed / 10
 //移動力
-#define MOVEPOWER (0.4f)
+#define MOVEPOWER (1.4f)
 
 //時間の計算マクロ
 #define Time(Num) Num * 60
@@ -732,6 +732,18 @@ void CBattle::Search(int i, Entity Entity)
 //移動処理
 void CBattle::Move(int i, Entity Entity)
 {
+	//味方の移動フラグの初期化
+	for (int i = 0; i < m_nAllyCount; i++)
+	{
+		m_pAlly[i]->SetMoveFlag(false);
+	}
+	//敵の移動フラグの初期化
+	for (int i = 0; i < m_nEnemyCount; i++)
+	{
+		m_pEnemy[i]->SetMoveFlag(false);
+	}
+
+	
 	//エンティティ番号別に処理
 	switch (Entity)
 	{

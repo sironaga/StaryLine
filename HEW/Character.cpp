@@ -91,6 +91,9 @@ CSoundList* g_AttackSound;
 //事前読み込み用関数
 void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 {
+	g_pLeaderModel[0] = nullptr;
+	g_pLeaderModel[1] = nullptr;
+	g_pLeaderModel[2] = nullptr;
 	/*味方キャラクターのModel読み込み*/
 	for (int i = 0; i < (int)Ally::MAX; i++)
 	{
@@ -146,7 +149,8 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		//モデル
 		g_pLeaderModel[(int)Leader::Quracker] = new Model();
 		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::None);
-		
+		g_pLeaderModel[2] = nullptr;
+
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
@@ -194,6 +198,7 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		//モデル
 		g_pLeaderModel[(int)Leader::Nugar] = new Model();
 		g_pLeaderModel[(int)Leader::Nugar]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[2] = nullptr;
 
 		switch (StageType.StageSubNumber)
 		{
@@ -1164,7 +1169,6 @@ CLeader::~CLeader()
 	}
 	if (m_pModel)
 	{
-		delete m_pModel;
 		m_pModel = nullptr;
 	}
 	if (m_pSubModel)
@@ -1447,11 +1451,13 @@ void CLeader::DeathUpdate(void)
 }
 
 CHpUI::CHpUI(float FullHp, HpUINumber Number)
-	:m_fFullHp(FullHp)
+	:m_fNowHp(FullHp)
+	,m_fFullHp(FullHp)
 	,m_tUIPos()
 	,m_tUIScale()
 	,m_tNumber(Number)
 	,m_fAnchorPoint()
+
 {
 	m_pSprite = new Sprite();
 
@@ -1487,36 +1493,40 @@ CHpUI::~CHpUI()
 
 void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 {
-	int HpRatio = 0;
+int HpRatio = 0;
+	m_fNowHp = InHp;
 
 	switch (m_tNumber)
 	{
 	case CHpUI::Ally:
-		m_tUIPos.x = InPos.x;
+		m_tUIPos.x = InPos.x - m_tUIScale.x + (m_tUIScale.x / m_fFullHp) * m_fNowHp;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 4.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
+		HpRatio =  4.0f;
 		break;
 	case CHpUI::Enemy:
-		m_tUIPos.x = InPos.x;
+		m_tUIPos.x = InPos.x + m_tUIScale.x - (m_tUIScale.x / m_fFullHp) * m_fNowHp;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 4.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
+		HpRatio =  4.0f;
 		break;
 	case CHpUI::Bos:
-		m_tUIPos.x = InPos.x + 8.6f;
+		m_tUIPos.x = (InPos.x + 8.6f) + m_tUIScale.x - (m_tUIScale.x / m_fFullHp) * m_fNowHp;
 		m_tUIPos.y = InPos.y + 19.2f - 34.8f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 106.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 106.0f;
+		HpRatio =  106.0f;
 		break;
 	case CHpUI::Player:
-		m_tUIPos.x = InPos.x - 8.6f;
+		m_tUIPos.x = (InPos.x - 8.6f) - m_tUIScale.x + (m_tUIScale.x / m_fFullHp) * m_fNowHp;
 		m_tUIPos.y = InPos.y + 19.2f - 34.8f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 106.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 106.0f;
+		HpRatio =  106.0f;
 		break;
 	}
-
 
 	m_tUIScale.x = HpRatio;
 }
@@ -1538,7 +1548,9 @@ void CHpUI::Draw(int nCornerCount)
 		}
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x ,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f});
 
 		m_pSprite->Draw();
 
@@ -1558,7 +1570,10 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ (m_fNowHp / m_fFullHp) - 1.0f,0.0f });
+
+		//DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1571,7 +1586,10 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x + (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ (m_fNowHp / m_fFullHp) - 1.0f,0.0f });
+
+		//DrawSetting({ m_tUIPos.x + (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x,m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1581,6 +1599,8 @@ void CHpUI::Draw(int nCornerCount)
 		m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Frame]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		
+		m_pSprite->SetUVPos({ 0.0f,0.0f });
 
 		DrawSetting({ 0.0f ,-5.0f,0.0f }, { 215.0f,21.0f,10.0f }, m_pSprite);
 
@@ -1596,7 +1616,10 @@ void CHpUI::Draw(int nCornerCount)
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+
+		//DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x ,m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1608,6 +1631,7 @@ void CHpUI::Draw(int nCornerCount)
 		//m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
 		//DrawSetting({ m_tUIPos.x + 40.0f,m_tUIPos.y,m_tUIPos.z }, { 100.0f,15.0f,5.0f }, m_pSprite);
+		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z }, { 100.0f,15.0f,5.0f }, m_pSprite);
 
 		//m_pSprite->Draw();
 

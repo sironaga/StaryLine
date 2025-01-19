@@ -47,6 +47,7 @@ public:
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 private:
+	float m_fNowHp;
 	float m_fFullHp;
 	float m_fAnchorPoint;
 	Sprite* m_pSprite;
