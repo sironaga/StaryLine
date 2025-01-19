@@ -8,6 +8,7 @@
 #include "SpriteEX.h"
 #include "ModelEx.h"
 #include  "_StructList.h"
+#include "BackGround.h"
 
 enum E_SELECT_STAGETYPE
 {
@@ -50,7 +51,8 @@ private:
 	SpriteEx* m_pLeft_Select;
 
 	CModelEx* m_pModel;
-	ObjectParam
+	ObjectParam m_ModelParam;
+	CBackGround* m_pBackGround;
 
 	float f_Rotation;
 	float f_Rad;
@@ -58,6 +60,7 @@ private:
 	float f_SelectY;
 	bool MainStage;
 	bool m_bEnd;
+	bool m_bMoving;
 
 	int nSlect;
 };
