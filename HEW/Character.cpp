@@ -506,13 +506,13 @@ bool CFighter::OverlapCheck(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 {
 	//サイズを重なり用に調整
 	DirectX::XMFLOAT3 Size;
-	Size.x = m_tSize.x * 0.4f;
-	Size.y = m_tSize.y * 0.4f;
-	Size.z = m_tSize.z * 0.4f;
+	Size.x = m_tSize.x * 1.5f;
+	Size.y = m_tSize.y * 1.5f;
+	Size.z = m_tSize.z * 1.5f;
 
-	InSize.x = InSize.x * 0.4f;
-	InSize.y = InSize.y * 0.4f;
-	InSize.z = InSize.z * 0.4f;
+	InSize.x = InSize.x * 1.5f;
+	InSize.y = InSize.y * 1.5f;
+	InSize.z = InSize.z * 1.5f;
 
 		/*自分の左端 <= 相手の左端*/
 	if (m_tPos.x - Size.x <= InPos.x - InSize.x	
@@ -1143,7 +1143,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	//メインモデルのサイズと位置
 	if (m_pModel)
 	{
-		m_tPos.x = FirstPos.x;
+		m_tPos.x = FirstPos.x - 12.0f;
 		m_tPos.y = FirstPos.y;
 		m_tPos.z = FirstPos.z - 5.0f;
 		m_tSize.x = InSize;
@@ -1152,7 +1152,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	}
 	if (m_pSubModel)
 	{
-		m_tSubPos.x = FirstPos.x - 3.0f;
+		m_tSubPos.x = FirstPos.x - 15.0f;
 		m_tSubPos.y = FirstPos.y + 0.5f;
 		m_tSubPos.z = FirstPos.z + 5.0f;
 		m_tSubSize.x = InSize;
@@ -1250,7 +1250,7 @@ void CLeader::Draw(int StageNum)
 			switch (StageNum)
 			{
 			case 0:
-				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 20.0f, m_tPos.y - 10.0f, m_tPos.z, 0.0f));
+				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 8.0f, m_tPos.y - 10.0f, m_tPos.z, 0.0f));
 				//拡大縮小行列(Scaling)
 				S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
 				//回転行列(Rotation)
@@ -1264,7 +1264,7 @@ void CLeader::Draw(int StageNum)
 				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 				break;
 			case 2:
-				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 10.0f, m_tPos.y - 5.0f, m_tPos.z, 0.0f));
+				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x + 2.0f, m_tPos.y - 5.0f, m_tPos.z, 0.0f));
 				//拡大縮小行列(Scaling)
 				 S = DirectX::XMMatrixScaling(0.35f, 0.35f, 0.35f);
 				//回転行列(Rotation)
@@ -1306,7 +1306,7 @@ void CLeader::Draw(int StageNum)
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 12.0f, m_tPos.y, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x , m_tPos.y, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
@@ -1346,7 +1346,7 @@ void CLeader::Draw(int StageNum)
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x - 12.0f, m_tSubPos.y, m_tSubPos.z , 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x, m_tSubPos.y, m_tSubPos.z , 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
 			//回転行列(Rotation)
