@@ -9,6 +9,7 @@
 #include "ModelEx.h"
 #include  "_StructList.h"
 #include "BackGround.h"
+#include "SoundList.h"
 
 enum E_SELECT_STAGETYPE
 {
@@ -48,6 +49,9 @@ private:
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
 	SpriteEx* m_pStageSelected;
+
+	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
+	CSoundList* g_StageSelectSound;
 
 	enum StageKind
 	{

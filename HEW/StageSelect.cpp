@@ -74,7 +74,9 @@ CStageSelect::CStageSelect()
 	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
 	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_ForBeta.fbx"), false);
 
-
+	g_StageSelectSound = new CSoundList(BGM_TITLE);
+	m_pSourseStageSelectBGM = g_StageSelectSound->GetSound(true);
+	m_pSourseStageSelectBGM->Start();
 
 	nSlect = 0;
 	for (int i = 0; i < StageKindMax; i++)
@@ -115,6 +117,16 @@ CStageSelect::CStageSelect()
 
 CStageSelect::~CStageSelect()
 {
+	if (m_pSourseStageSelectBGM)
+	{
+		m_pSourseStageSelectBGM->Stop();
+		m_pSourseStageSelectBGM = nullptr;
+	}
+	if (g_StageSelectSound)
+	{
+		delete g_StageSelectSound;
+		g_StageSelectSound = nullptr;
+	}
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
 		if (m_pGrassLandStage[nLoop])
@@ -174,6 +186,8 @@ CStageSelect::~CStageSelect()
 
 void CStageSelect::Update()
 {
+	if (m_pSourseStageSelectBGM)SetVolumeBGM(m_pSourseStageSelectBGM);
+
 	static bool bRight = false;/*
 	SpriteDebug(&m_ModelParam,true);*/
 	if (!m_bEnd)
@@ -185,20 +199,20 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageMainNumber)
 				{
 				case(GRASSLAND):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 					break;
 				case(DESERT):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; m_bMoving = true; }
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageMainNumber = SNOWFIELD; m_bMoving = true; }
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; }
 					g_Select_type.StageSubNumber = DESERT_STAGE1;
 					break;
 				case(SNOWFIELD):
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
 					g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
 					break;
 				}
-				if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A)))
 				{
 					StartFade();
 					MainStage ^= true;
@@ -208,7 +222,7 @@ void CStageSelect::Update()
 					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
 
 				}
-				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
 					SetNext(SCENE_TITLE, g_Select_type);
 					m_bEnd = true;
@@ -221,20 +235,20 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(GRASSLAND_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = GRASSLAND_STAGE2; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageSubNumber = GRASSLAND_STAGE2; m_bMoving = true; }
 					break;
 
 				case(GRASSLAND_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE3; m_bMoving = true;
 					}
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE1; m_bMoving = true;
 					}
 					break;
 
 				case(GRASSLAND_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE2; m_bMoving = true;
 					}
 					break;
@@ -245,20 +259,20 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(DESERT_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = DESERT_STAGE2; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageSubNumber = DESERT_STAGE2; m_bMoving = true; }
 					break;
 
 				case(DESERT_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageSubNumber = DESERT_STAGE3; m_bMoving = true;
 					}
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = DESERT_STAGE1; m_bMoving = true;
 					}
 					break;
 
 				case(DESERT_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = DESERT_STAGE2; m_bMoving = true;
 					}
 					break;
@@ -269,32 +283,32 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(SNOWFIELD_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = SNOWFIELD_STAGE2; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageSubNumber = SNOWFIELD_STAGE2; m_bMoving = true; }
 					break;
 
 				case(SNOWFIELD_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3; m_bMoving = true;
 					}
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE1; m_bMoving = true;
 					}
 					break;
 
 				case(SNOWFIELD_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2; m_bMoving = true;
 					}
 					break;
 				}
 			}
-				if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A)))
 				{
 					CSceneResult::InStageLevel(g_Select_type);
 					SetNext(SCENE_GAME, g_Select_type);
 					m_bEnd = true;
 				}
-				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 					MainStage ^= true;
@@ -302,11 +316,11 @@ void CStageSelect::Update()
 
 				}
 			}//V[Ús
-			if (IsKeyTrigger(VK_RIGHT))
+			if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
 			{
 				bRight = true;
 			}
-			if (IsKeyTrigger(VK_LEFT))
+			if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
 			{
 				bRight = false;
 			}
@@ -383,6 +397,10 @@ void CStageSelect::Draw()
 	float Scale2 = 1.05f + cosAngle / 30.0f;
 	float ArrowSize2 = 220.0f * Scale2;
 	float ArrowSize3 = 162.0f * Scale2;
+
+	float Scale3 = 1.05f + cosAngle / 30.0f;
+	float ArrowSize4 = 220.0f * Scale2;
+	float ArrowSize5 = 140.0f * Scale2;
 
 	m_pBackGround->Draw();
 	// f`æ
@@ -585,7 +603,8 @@ void CStageSelect::Draw()
 					m_pGrassLandStage[1]->SetProjection(GetProj());
 					m_pGrassLandStage[1]->SetView(GetView());
 					m_pGrassLandStage[1]->SetTexture();
-					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 110.0f);
+					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+					//if (!m_bMoving)
 					m_pGrassLandStage[1]->SetSize(210.0f, 130.0f, 100.0f);
 					m_pGrassLandStage[1]->Disp();
 
@@ -605,7 +624,7 @@ void CStageSelect::Draw()
 						m_pStageSelected->SetView(GetView());
 						m_pStageSelected->SetTexture();
 						m_pStageSelected->SetPositon(subposX[0], 80.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 						m_pStageSelected->Disp();
 					}
 					break;
@@ -616,7 +635,7 @@ void CStageSelect::Draw()
 					m_pGrassLandStage[0]->SetProjection(GetProj());
 					m_pGrassLandStage[0]->SetView(GetView());
 					m_pGrassLandStage[0]->SetTexture();
-					m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 110.0f);
+					m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
 					m_pGrassLandStage[0]->SetSize(210.0f, 130.0f, 100.0f);
 					m_pGrassLandStage[0]->Disp();
 
@@ -624,7 +643,7 @@ void CStageSelect::Draw()
 					m_pGrassLandStage[1]->SetProjection(GetProj());
 					m_pGrassLandStage[1]->SetView(GetView());
 					m_pGrassLandStage[1]->SetTexture();
-					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 110.0f);
+					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
 					m_pGrassLandStage[1]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pGrassLandStage[1]->Disp();
 
@@ -632,7 +651,7 @@ void CStageSelect::Draw()
 					m_pGrassLandStage[2]->SetProjection(GetProj());
 					m_pGrassLandStage[2]->SetView(GetView());
 					m_pGrassLandStage[2]->SetTexture();
-					m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 110.0f);
+					m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 					m_pGrassLandStage[2]->SetSize(210.0f, 130.0f, 100.0f);
 					m_pGrassLandStage[2]->Disp();
 					if (m_bMoving == false)
@@ -659,7 +678,7 @@ void CStageSelect::Draw()
 						m_pStageSelected->SetView(GetView());
 						m_pStageSelected->SetTexture();
 						m_pStageSelected->SetPositon(subposX[1], 80.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 						m_pStageSelected->Disp();
 					}
 					break;
@@ -670,7 +689,7 @@ void CStageSelect::Draw()
 					m_pGrassLandStage[1]->SetProjection(GetProj());
 					m_pGrassLandStage[1]->SetView(GetView());
 					m_pGrassLandStage[1]->SetTexture();
-					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 110.0f);
+					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
 					m_pGrassLandStage[1]->SetSize(210.0f, 130.0f, 100.0f);
 					m_pGrassLandStage[1]->Disp();
 
@@ -678,7 +697,7 @@ void CStageSelect::Draw()
 					m_pGrassLandStage[2]->SetProjection(GetProj());
 					m_pGrassLandStage[2]->SetView(GetView());
 					m_pGrassLandStage[2]->SetTexture();
-					m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 110.0f);
+					m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 					m_pGrassLandStage[2]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pGrassLandStage[2]->Disp();
 					if (m_bMoving == false)
@@ -697,22 +716,60 @@ void CStageSelect::Draw()
 						m_pStageSelected->SetView(GetView());
 						m_pStageSelected->SetTexture();
 						m_pStageSelected->SetPositon(subposX[2], 80.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 						m_pStageSelected->Disp();
 					}
 					break;
 				case(DESERT_STAGE1):
 
+					SetRender3D();
 					Sprite::ReSetSprite();
 					m_pDesertStage[0]->SetProjection(GetProj());
 					m_pDesertStage[0]->SetView(GetView());
 					m_pDesertStage[0]->SetTexture();
-					m_pDesertStage[0]->SetPositon(subposX[0], 60.0f, 110.0f);
+					m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
 					m_pDesertStage[0]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pDesertStage[0]->Disp();
+
+					Sprite::ReSetSprite();
+					m_pDesertStage[1]->SetProjection(GetProj());
+					m_pDesertStage[1]->SetView(GetView());
+					m_pDesertStage[1]->SetTexture();
+					m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+					m_pDesertStage[1]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pDesertStage[1]->Disp();
+
+					if (m_bMoving == false)
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pStageSelected->SetProjection(GetProj());
+						m_pStageSelected->SetView(GetView());
+						m_pStageSelected->SetTexture();
+						m_pStageSelected->SetPositon(subposX[0], 80.0f, 140.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+						m_pStageSelected->Disp();
+					}
 					break;
 
 				case(DESERT_STAGE2):
+
+					SetRender3D();
+					Sprite::ReSetSprite();
+					m_pDesertStage[0]->SetProjection(GetProj());
+					m_pDesertStage[0]->SetView(GetView());
+					m_pDesertStage[0]->SetTexture();
+					m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+					m_pDesertStage[0]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pDesertStage[0]->Disp();
 
 					Sprite::ReSetSprite();
 					m_pDesertStage[1]->SetProjection(GetProj());
@@ -721,9 +778,54 @@ void CStageSelect::Draw()
 					m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
 					m_pDesertStage[1]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pDesertStage[1]->Disp();
+
+					Sprite::ReSetSprite();
+					m_pDesertStage[2]->SetProjection(GetProj());
+					m_pDesertStage[2]->SetView(GetView());
+					m_pDesertStage[2]->SetTexture();
+					m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+					m_pDesertStage[2]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pDesertStage[2]->Disp();
+					if (m_bMoving == false)
+					{
+						Sprite::ReSetSprite();
+						m_pLeft_Select->SetProjection(GetProj());
+						m_pLeft_Select->SetView(GetView());
+						m_pLeft_Select->SetTexture();
+						m_pLeft_Select->SetPositon(-180.0f, 80.0f, 145.0f);
+						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pLeft_Select->Disp();
+
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pStageSelected->SetProjection(GetProj());
+						m_pStageSelected->SetView(GetView());
+						m_pStageSelected->SetTexture();
+						m_pStageSelected->SetPositon(subposX[1], 80.0f, 140.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+						m_pStageSelected->Disp();
+					}
+
 					break;
 
 				case(DESERT_STAGE3):
+
+					SetRender3D();
+					Sprite::ReSetSprite();
+					m_pDesertStage[1]->SetProjection(GetProj());
+					m_pDesertStage[1]->SetView(GetView());
+					m_pDesertStage[1]->SetTexture();
+					m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+					m_pDesertStage[1]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pDesertStage[1]->Disp();
 
 					Sprite::ReSetSprite();
 					m_pDesertStage[2]->SetProjection(GetProj());
@@ -732,9 +834,30 @@ void CStageSelect::Draw()
 					m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 					m_pDesertStage[2]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pDesertStage[2]->Disp();
+					if (m_bMoving == false)
+					{
+						Sprite::ReSetSprite();
+						m_pLeft_Select->SetProjection(GetProj());
+						m_pLeft_Select->SetView(GetView());
+						m_pLeft_Select->SetTexture();
+						m_pLeft_Select->SetPositon(-180.0f, 80.0f, 145.0f);
+						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pLeft_Select->Disp();
+
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pStageSelected->SetProjection(GetProj());
+						m_pStageSelected->SetView(GetView());
+						m_pStageSelected->SetTexture();
+						m_pStageSelected->SetPositon(subposX[2], 80.0f, 140.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+						m_pStageSelected->Disp();
+					}
+
 					break;
 				case(SNOWFIELD_STAGE1):
 
+					SetRender3D();
 					Sprite::ReSetSprite();
 					m_pSnowFieldStage[0]->SetProjection(GetProj());
 					m_pSnowFieldStage[0]->SetView(GetView());
@@ -742,9 +865,46 @@ void CStageSelect::Draw()
 					m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
 					m_pSnowFieldStage[0]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pSnowFieldStage[0]->Disp();
+
+					Sprite::ReSetSprite();
+					m_pSnowFieldStage[1]->SetProjection(GetProj());
+					m_pSnowFieldStage[1]->SetView(GetView());
+					m_pSnowFieldStage[1]->SetTexture();
+					m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+					m_pSnowFieldStage[1]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pSnowFieldStage[1]->Disp();
+
+					if (m_bMoving == false)
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pStageSelected->SetProjection(GetProj());
+						m_pStageSelected->SetView(GetView());
+						m_pStageSelected->SetTexture();
+						m_pStageSelected->SetPositon(subposX[0], 80.0f, 140.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+						m_pStageSelected->Disp();
+					}
 					break;
 
 				case(SNOWFIELD_STAGE2):
+
+					SetRender3D();
+					Sprite::ReSetSprite();
+					m_pSnowFieldStage[0]->SetProjection(GetProj());
+					m_pSnowFieldStage[0]->SetView(GetView());
+					m_pSnowFieldStage[0]->SetTexture();
+					m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+					m_pSnowFieldStage[0]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pSnowFieldStage[0]->Disp();
 
 					Sprite::ReSetSprite();
 					m_pSnowFieldStage[1]->SetProjection(GetProj());
@@ -753,9 +913,54 @@ void CStageSelect::Draw()
 					m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
 					m_pSnowFieldStage[1]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pSnowFieldStage[1]->Disp();
+
+					Sprite::ReSetSprite();
+					m_pSnowFieldStage[2]->SetProjection(GetProj());
+					m_pSnowFieldStage[2]->SetView(GetView());
+					m_pSnowFieldStage[2]->SetTexture();
+					m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+					m_pSnowFieldStage[2]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pSnowFieldStage[2]->Disp();
+					if (m_bMoving == false)
+					{
+						Sprite::ReSetSprite();
+						m_pLeft_Select->SetProjection(GetProj());
+						m_pLeft_Select->SetView(GetView());
+						m_pLeft_Select->SetTexture();
+						m_pLeft_Select->SetPositon(-180.0f, 80.0f, 145.0f);
+						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pLeft_Select->Disp();
+
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pStageSelected->SetProjection(GetProj());
+						m_pStageSelected->SetView(GetView());
+						m_pStageSelected->SetTexture();
+						m_pStageSelected->SetPositon(subposX[1], 80.0f, 140.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+						m_pStageSelected->Disp();
+					}
+
 					break;
 
 				case(SNOWFIELD_STAGE3):
+
+					SetRender3D();
+					Sprite::ReSetSprite();
+					m_pSnowFieldStage[1]->SetProjection(GetProj());
+					m_pSnowFieldStage[1]->SetView(GetView());
+					m_pSnowFieldStage[1]->SetTexture();
+					m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+					m_pSnowFieldStage[1]->SetSize(210.0f, 130.0f, 100.0f);
+					m_pSnowFieldStage[1]->Disp();
 
 					Sprite::ReSetSprite();
 					m_pSnowFieldStage[2]->SetProjection(GetProj());
@@ -764,6 +969,26 @@ void CStageSelect::Draw()
 					m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 					m_pSnowFieldStage[2]->SetSize(220.0f, 140.0f, 100.0f);
 					m_pSnowFieldStage[2]->Disp();
+					if (m_bMoving == false)
+					{
+						Sprite::ReSetSprite();
+						m_pLeft_Select->SetProjection(GetProj());
+						m_pLeft_Select->SetView(GetView());
+						m_pLeft_Select->SetTexture();
+						m_pLeft_Select->SetPositon(-180.0f, 80.0f, 145.0f);
+						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pLeft_Select->Disp();
+
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pStageSelected->SetProjection(GetProj());
+						m_pStageSelected->SetView(GetView());
+						m_pStageSelected->SetTexture();
+						m_pStageSelected->SetPositon(subposX[2], 80.0f, 140.0f);
+						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+						m_pStageSelected->Disp();
+					}
+
 					break;
 			
 			}
