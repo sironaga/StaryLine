@@ -54,7 +54,7 @@ CSceneResult::CSceneResult()
 	}
 	// =====================================================================
 	
-	// --- デフォルト
+	// ---　場所の設定
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
 		m_pStageSelect[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
@@ -92,7 +92,9 @@ CSceneResult::CSceneResult()
 	m_pSummonData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 	m_pSummonData->SetSize(0.3f, 0.14f, 1.0f);
 	m_pSummonData->SetPositon(1632.0f, 493.5f, 10.0f);
-
+	m_pNumber = new CNumberUI();
+	m_pNumber->SetPos({ 920.0f, 540.0f ,0.0f });
+	m_pNumber->SetScale({ 0.1f,0.2f,1.0f });
 	// ----
 	if (ResultGameData.bWin)
 	{
@@ -140,7 +142,7 @@ CSceneResult::CSceneResult()
 		m_pLighting->SetPositon(940.0f, 570.0f, 10.0f);
 	}
 
-	// 選択初期化
+	// 変数初期化
 	nSlect = 0;
 	CPosY = 200.0f;
 	CScle = 0;
@@ -152,11 +154,6 @@ CSceneResult::CSceneResult()
 	fCTime = 0.0f;
 	// Animationタイマー
 	nAnimationTimer = timeGetTime();
-	// 数字の描画
-	m_pNumber = new CNumberUI();
-
-	m_pNumber->SetPos({ 920.0f, 540.0f ,0.0f});
-	m_pNumber->SetScale({ 0.1f,0.2f,1.0f });
 }
 
 CSceneResult::~CSceneResult()
@@ -225,6 +222,11 @@ CSceneResult::~CSceneResult()
 		delete m_pClearTime;
 		m_pClearTime = nullptr;
 	}
+	if (m_pNumber)
+	{
+		delete m_pNumber;
+		m_pNumber = nullptr;
+	}
 }
 
 void CSceneResult::Update()
@@ -234,11 +236,13 @@ void CSceneResult::Update()
 	{
 		nSlect = 0;
 		// SE
+
 	}
 	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyPress('D'))
 	{
 		nSlect = 1;
 		// SE
+
 	}
 	// ----
 
@@ -249,6 +253,7 @@ void CSceneResult::Update()
 		if(WithGetKeyTriger(XINPUT_GAMEPAD_A,VK_RETURN))
 		{
 			SetNext(STAGE_SELECT);
+
 		}
 	}
 	else
@@ -444,6 +449,7 @@ void CSceneResult::Draw()
 		m_pNextUI[0]->Disp();
 		m_pSelect[nSlect]->SetTexture();
 		m_pSelect[nSlect]->Disp();
+
 		// 分岐による星描画処理
 		if (ResultGameData.bWin)
 		{
@@ -504,7 +510,7 @@ void CSceneResult::Draw()
 			m_pStar->Disp();
 		}
 
-
+		// 数字の描画
 		if (ResultGameData.bWin)
 		{
 
@@ -512,6 +518,11 @@ void CSceneResult::Draw()
 			int nSeconds;
 			nMinutes = ResultGameData.nTime / 60;
 			nSeconds = ResultGameData.nTime % 60;
+			
+			if (nSeconds < 0)
+			{
+				nSeconds = 0;
+			}
 
 			// 秒数　(分)
 			m_pNumber->SetNumber(nMinutes);
