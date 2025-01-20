@@ -47,7 +47,9 @@ private:
 		DEFAULT,	// 真ん中(基本状態)
 	}m_eDestination;
 
-	void UpdateStop();						// 止まっている状態での更新処理
+public:
+	void UpdateStop();	// 止まっている状態での更新処理
+private:
 	void UpdateMove();						// 動いている状態での更新処理
 
 	void DrawModel();						// モデルの描画処理

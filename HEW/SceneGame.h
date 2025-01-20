@@ -49,3 +49,4 @@ private:
 
 bool GetFeverMode();
 bool GetTimeStart();
+float GetTime();
