@@ -455,6 +455,8 @@ void CFieldVertex::Draw()
 
 	//-----ü‚Ì•`‰æ-----//
 	{
+		/*if (GetFeverMode())m_pStarLine->SetLineMode(1);
+		else m_pStarLine->SetLineMode(0);*/
 		for (int i = 0; i <= NowLine; i++)
 		{
 			m_pStarLine->SetLineInfo(//’¸“_î•ñŠi”[
@@ -953,6 +955,11 @@ void CFieldVertex::SetBattleAddress(CBattle* InAddress)
 void CFieldVertex::SetPlayerAddress(CPlayer* InAddress)
 {
 	m_pPlayer = InAddress;
+}
+
+void CFieldVertex::SetStarLineAddress(StarLine* InAddress)
+{
+	m_pStarLine = InAddress;
 }
 
 ////=====FieldVertex‚Ì’¸“_î•ñ‚È‚Ç‚ğ‰Šú‰»‚·‚éŠÖ”=====//
