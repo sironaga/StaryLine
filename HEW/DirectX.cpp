@@ -10,7 +10,7 @@ DepthStencil*			g_pDSV;
 ID3D11RasterizerState*	g_pRasterizerState[3];
 ID3D11BlendState*		g_pBlendState[BLEND_MAX];
 ID3D11SamplerState*		g_pSamplerState[SAMPLER_MAX];
-
+ID3D11Debug* g_Debug;
 
 ID3D11Device* GetDevice()
 {
@@ -177,6 +177,8 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	}
 	SetSamplerState(SAMPLER_LINEAR);
 
+	g_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&g_Debug));
+	
 	return S_OK;
 }
 
@@ -272,6 +274,11 @@ ID3D11Buffer* CreateVertexBuffer(void* vtxData, UINT vtxNum)
 	hr = GetDevice()->CreateBuffer(&vtxBufDesc, &vtxSubResource, &pVtxBuf);
 	if (FAILED(hr)) { return nullptr; }
 	return pVtxBuf;
+}
+
+ID3D11Debug* GetDebug()
+{
+	return g_Debug;
 }
 
 void SetFullscreenSwap()
