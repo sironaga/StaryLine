@@ -416,7 +416,7 @@ void CStageSelect::Draw()
 			m_pRight_Select->SetView(GetView());
 			m_pRight_Select->SetTexture();
 			m_pRight_Select->SetPositon(200.0f, 80.0f, 145.0f);
-			m_pRight_Select->SetSize(100.0f, 80.0f, 100.0f);
+			m_pRight_Select->SetSize(50.0f, 30.0f, 100.0f);
 			m_pRight_Select->Disp();
 			break;
 		case(DESERT):
