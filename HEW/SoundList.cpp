@@ -3,7 +3,7 @@
 #include "iostream"
 #include "vector"
 
-#define MAX_SOUND (9)
+#define MAX_SOUND (12)
 
 #define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
 #define FILENAME_SELECTSE (L"Assets/Sound/select.wav")
@@ -15,9 +15,9 @@
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
 #define FILENAME_BATTLEBGM (L"Assets/Sound/battle.wav")
-
 #define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
-
+#define FILENAME_GAMEOVERBGM (L"Assets/Sound/gameover.wav")
+#define FILENAME_GAMECLEARBGM (L"Assets/Sound/gameclear.wav")
 float g_volumeBGM = 0.5f;
 float g_volumeSE = 0.5f;
 float g_masterSound = 0.5f;
@@ -54,6 +54,13 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case BGM_FEVER:
 		m_sound = new CSound(FILENAME_FEVERBGM);
+		break;
+	case BGM_GAMEOVER:
+		m_sound = new CSound(FILENAME_GAMEOVERBGM);
+		break;
+	case BGM_GAMECLEAR:
+		m_sound = new CSound(FILENAME_GAMECLEARBGM);
+		break;
 	default:
 		break;
 	}

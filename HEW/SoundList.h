@@ -24,6 +24,10 @@ enum NAME
 	,BGM_BATTLE
 	//フィーバー時SE
 	,BGM_FEVER
+	//ゲームオーバーBGM
+	,BGM_GAMEOVER
+	//ゲームクリアBGM
+	,BGM_GAMECLEAR
 };
 class CSoundList
 {

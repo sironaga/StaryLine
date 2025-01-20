@@ -135,6 +135,8 @@ CBattle::CBattle()
 	, m_bWin(false)
 	, m_nSpawnTime(0)
 	, m_nSummonAllyCount(0)
+	, m_bDrawingStart(false)
+	, m_bDrawingEnd(false)
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
