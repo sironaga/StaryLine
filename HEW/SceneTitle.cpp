@@ -168,12 +168,12 @@ void CSceneTitle::Update()
 		switch (g_Title_type)
 		{
 		case(GAMESTART):
-			if (IsKeyTrigger(VK_DOWN))
+			if (IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
 				g_Title_type = GAMECONTINUE;
 				m_SelectPos.y += SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_RETURN))
+			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				m_bSelected = true;
 				SetNext(STAGE_SELECT);
@@ -181,17 +181,17 @@ void CSceneTitle::Update()
 			break;
 
 		case(GAMECONTINUE):
-			if (IsKeyTrigger(VK_DOWN))
+			if (IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
 				g_Title_type = GAMEOPTION;
 				m_SelectPos.y += SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_UP))
+			if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				g_Title_type = GAMESTART;
 				m_SelectPos.y -= SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_RETURN))
+			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				//コンティニューシーンへ切り替える処理
 				m_bSelected = true;
@@ -201,18 +201,18 @@ void CSceneTitle::Update()
 		case(GAMEOPTION):
 			if (!m_pOption->GetOption())
 			{
-				if (IsKeyTrigger(VK_DOWN))
+				if (IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 				{
 					g_Title_type = GAMEEND;
 					m_SelectPos.y += SELECT_MOVE;
 				}
-				if (IsKeyTrigger(VK_UP))
+				if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 				{
 					g_Title_type = GAMECONTINUE;
 					m_SelectPos.y -= SELECT_MOVE;
 				}
 			}
-			if (IsKeyTrigger(VK_RETURN))
+			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				m_bSelected = true;
 				//オプションへ切り替える処理
@@ -222,12 +222,12 @@ void CSceneTitle::Update()
 			break;
 
 		case(GAMEEND):
-			if (IsKeyTrigger(VK_UP))
+			if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				g_Title_type = GAMEOPTION;
 				m_SelectPos.y -= SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_RETURN))
+			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				m_bSelected = true;
 				SetGameEnd();
@@ -237,11 +237,11 @@ void CSceneTitle::Update()
 		default:break;
 		}
 	}
-	if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
+	/*if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
 	{
 
 		SetNext(SCENE_DEBUGROOM);
-	}
+	}*/
 	static bool b = false;
 	if (m_pOption->GetIsFullScreen()==0 && !b)
 	{
