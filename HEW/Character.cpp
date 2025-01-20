@@ -1143,12 +1143,25 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	//メインモデルのサイズと位置
 	if (m_pModel)
 	{
-		m_tPos.x = FirstPos.x - 12.0f;
-		m_tPos.y = FirstPos.y;
-		m_tPos.z = FirstPos.z - 5.0f;
-		m_tSize.x = InSize;
-		m_tSize.y = InSize;
-		m_tSize.z = InSize;
+		switch (m_nTextureNumber)
+		{
+		case 0:
+			m_tPos.x = FirstPos.x;
+			m_tPos.y = FirstPos.y;
+			m_tPos.z = FirstPos.z - 5.0f;
+			m_tSize.x = InSize;
+			m_tSize.y = InSize;
+			m_tSize.z = InSize;
+			break;
+		case 1:
+			m_tPos.x = FirstPos.x ;
+			m_tPos.y = FirstPos.y;
+			m_tPos.z = FirstPos.z - 5.0f;
+			m_tSize.x = InSize;
+			m_tSize.y = InSize;
+			m_tSize.z = InSize;
+			break;
+		}
 	}
 	if (m_pSubModel)
 	{
@@ -1202,7 +1215,7 @@ void CLeader::Draw(int StageNum)
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x , m_tPos.y, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
