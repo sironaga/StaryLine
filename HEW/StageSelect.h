@@ -67,6 +67,7 @@ private:
 	float f_Rad;
 	float f_SelectX;
 	float f_SelectY;
+	float posX[3];
 	bool MainStage;
 	bool m_bEnd;
 	bool m_bMoving;
