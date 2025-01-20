@@ -102,7 +102,9 @@ void Uninit()
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
-
+	ID3D11Debug *pDebug;
+	pDebug = GetDebug();
+	pDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
 	//g_pSourseTitleSE = nullptr;
 }
 
