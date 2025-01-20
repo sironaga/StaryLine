@@ -47,6 +47,7 @@ private:
 	SpriteEx* m_pSnowFieldStage[3];
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
+	SpriteEx* m_pStageSelected;
 
 	enum StageKind
 	{
@@ -68,6 +69,7 @@ private:
 	float f_SelectX;
 	float f_SelectY;
 	float posX[3];
+	float subposX[3];
 	bool MainStage;
 	bool m_bEnd;
 	bool m_bMoving;
