@@ -809,6 +809,10 @@ void CBattle::Move(int i, Entity Entity)
 									{
 										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
 									}
+									else
+									{
+										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+									}
 								}
 								else
 								{
@@ -844,6 +848,10 @@ void CBattle::Move(int i, Entity Entity)
 								if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
 								{
 									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+								}
+								else
+								{
+									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 								}
 							}
 							else
@@ -948,6 +956,10 @@ void CBattle::Move(int i, Entity Entity)
 									{
 										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
 									}
+									else
+									{
+										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
+									}
 								}
 								else
 								{
@@ -983,6 +995,10 @@ void CBattle::Move(int i, Entity Entity)
 								if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
 								{
 									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+								}
+								else
+								{
+									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
 								}
 							}
 							else
