@@ -5,6 +5,7 @@
 #include"Controller.h"
 #include"InputEx.h"
 #include"Easing.h"
+
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
@@ -154,6 +155,21 @@ CSceneResult::CSceneResult()
 	fCTime = 0.0f;
 	// Animationタイマー
 	nAnimationTimer = timeGetTime();
+	if (ResultGameData.bWin)
+	{
+		m_pResultSound = new CSoundList(BGM_GAMECLEAR);
+		m_pResultBGM = m_pResultSound->GetSound(true);
+		m_pResultBGM->Start();
+	}
+	else
+	{
+		m_pResultSound = new CSoundList(BGM_GAMEOVER);
+		m_pResultBGM = m_pResultSound->GetSound(true);
+		m_pResultBGM->Start();
+	}
+	m_pResultSelectSound    = new CSoundList(SE_SELECT);
+	m_pResultSelectSE = m_pResultSelectSound->GetSound(false);
+
 }
 
 CSceneResult::~CSceneResult()
@@ -227,6 +243,25 @@ CSceneResult::~CSceneResult()
 		delete m_pNumber;
 		m_pNumber = nullptr;
 	}
+	if (m_pResultBGM)
+	{
+		m_pResultBGM->Stop();
+		m_pResultBGM = nullptr;
+	}
+	if (m_pResultSound)
+	{
+		SAFE_DELETE(m_pResultSound);
+	}
+	if (m_pResultSelectSE)
+	{
+		m_pResultSelectSE->Stop();
+		m_pResultSelectSE = nullptr;
+	}
+	if (m_pResultSelectSound)
+	{
+		SAFE_DELETE(m_pResultSelectSound);
+	}
+	
 }
 
 void CSceneResult::Update()
@@ -236,13 +271,25 @@ void CSceneResult::Update()
 	{
 		nSlect = 0;
 		// SE
-
+		m_pResultSelectSE->Stop();
+		m_pResultSelectSE->FlushSourceBuffers();
+		XAUDIO2_BUFFER buffer;
+		buffer = m_pResultSelectSound->GetBuffer(false);
+		m_pResultSelectSE->SubmitSourceBuffer(&buffer);
+		if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+		m_pResultSelectSE->Start();
 	}
 	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyPress('D'))
 	{
 		nSlect = 1;
 		// SE
-
+		m_pResultSelectSE->Stop();
+		m_pResultSelectSE->FlushSourceBuffers();
+		XAUDIO2_BUFFER buffer;
+		buffer = m_pResultSelectSound->GetBuffer(false);
+		m_pResultSelectSE->SubmitSourceBuffer(&buffer);
+		if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+		m_pResultSelectSE->Start();
 	}
 	// ----
 

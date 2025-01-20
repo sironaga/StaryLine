@@ -5,6 +5,7 @@
 #include"SpriteEx.h"
 #include"Main.h"
 #include"NumberUI.h"
+#include "SoundList.h"
 
 class CSceneResult : public CScene
 {
@@ -48,7 +49,10 @@ private:
 	float fTime;
 	float fCTime;
 
-
+	CSoundList* m_pResultSound;
+	IXAudio2SourceVoice* m_pResultBGM;
+	CSoundList* m_pResultSelectSound;
+	IXAudio2SourceVoice* m_pResultSelectSE;
 	CNumberUI* m_pNumber;
 
 	static StageType StageLevel; 
