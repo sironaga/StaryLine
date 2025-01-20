@@ -80,6 +80,7 @@ private:
 	CModelEx* m_pArrowModel;
 	ObjectParam m_pArrowParam;
 	DirectX::XMFLOAT2  m_tArrowCenterPos;
+	DirectX::XMFLOAT2 m_tAjustPos;
 
 	enum Timer
 	{
