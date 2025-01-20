@@ -30,12 +30,21 @@
 
 StageType g_Select_type;
 
+constexpr float STAGE_BETWEEN = 1100.0f;
+constexpr float MOVE_TIME = 100.0f;
+constexpr float FIRST_POS = 200.0f;
+
 CStageSelect::CStageSelect()
 	: f_Rotation(0)
 	, f_Rad(0)
 	, f_SelectX(350)
 	, f_SelectY(350)
 	, MainStage(true)
+	, m_bEnd(false)
+	, m_pModel{}
+	, m_ModelParam{}
+	, m_pBackGround(nullptr)
+	, m_bMoving(false)
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -56,7 +65,20 @@ CStageSelect::CStageSelect()
     m_pRight_Select      = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Right.png");
     m_pLeft_Select       = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Left.png");
 
+	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
+	m_pModel[DesertField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage02_Desert.fbx"), false);
+	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
+	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_ForBeta.fbx"), false);
+
+
+
 	nSlect = 0;
+	for (int i = 0; i < StageKindMax; i++)
+	{
+		m_ModelParam[i].pos = { FIRST_POS,0.0f,100.0f };
+		m_ModelParam[i].rotate = { DirectX::XMConvertToRadians(10.0f),DirectX::XMConvertToRadians(180.0f),0.0f };
+		m_ModelParam[i].size = { -2.0f,2.0f,2.0f };
+
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -77,6 +99,12 @@ CStageSelect::CStageSelect()
 	m_pRight_Select->SetView(GetView());
 	m_pLeft_Select->SetProjection(GetProj());
 	m_pLeft_Select->SetView(GetView());
+
+	}
+
+	m_ModelParam[WorldField].pos = { 0.0f,0.0f,100.0f };
+	m_pBackGround = new CBackGround();
+
 }
 
 CStageSelect::~CStageSelect()
@@ -125,12 +153,21 @@ CStageSelect::~CStageSelect()
 		m_pLeft_Select = nullptr;
 	}
 	
+	for (int i = 0; i < StageKindMax; i++)
+	{
+		SAFE_DELETE(m_pModel[i]);
+	}
+
+	SAFE_DELETE(m_pBackGround);
 }
 
 void CStageSelect::Update()
 {
-	if (MainStage)
+	static bool bRight = false;/*
+	SpriteDebug(&m_ModelParam,true);*/
+	if (!m_bEnd)
 	{
+
 		switch (g_Select_type.StageMainNumber)
 		{
 		case(GRASSLAND):
@@ -154,10 +191,136 @@ void CStageSelect::Update()
 		if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 		{
 			SetNext(SCENE_TITLE, g_Select_type);
+
+		if (!m_bMoving)
+		{
+			if (MainStage)
+			{
+				switch (g_Select_type.StageMainNumber)
+				{
+				case(GRASSLAND):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
+
+					break;
+				case(GRASSLANDBACK):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
+
+					break;
+				case(DESERT):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; m_bMoving = true; }
+					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLANDBACK;	m_bMoving = true; }
+
+					break;
+				case(DESERTBACK):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageMainNumber = SNOWFIELD; m_bMoving = true; }
+					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = GRASSLANDBACK; m_bMoving = true; }
+
+					break;
+				case(SNOWFIELD):
+					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) { g_Select_type.StageMainNumber = DESERTBACK; m_bMoving = true; }
+
+					break;
+				}
+				if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				{
+					switch (g_Select_type.StageMainNumber)
+					{
+					case(GRASSLANDBACK):
+						g_Select_type.StageMainNumber = GRASSLAND;
+						break;
+					case(DESERTBACK):
+						g_Select_type.StageMainNumber = DESERT;
+						break;
+					}
+					StartFade();
+					MainStage ^= true;
+
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
+
+				}
+				if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				{
+					SetNext(SCENE_TITLE, g_Select_type);
+					m_bEnd = true;
+				}
+			}
+			else
+			{
+				switch (g_Select_type.StageSubNumber)
+				{
+				case(STAGE1):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) { g_Select_type.StageSubNumber = STAGE2; m_bMoving = true; }
+					break;
+
+				case(STAGE2):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+						g_Select_type.StageSubNumber = STAGE3; m_bMoving = true;
+					}
+					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+						g_Select_type.StageSubNumber = STAGE1BACK; m_bMoving = true;
+					}
+					break;
+
+				case(STAGE3):
+					//if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))	{ g_Select_type = STAGE1; }
+					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+						g_Select_type.StageSubNumber = STAGE2BACK; m_bMoving = true;
+					}
+					break;
+				case(STAGE1BACK):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+						g_Select_type.StageSubNumber = STAGE2; m_bMoving = true;
+					}
+					break;
+				case(STAGE2BACK):
+					if (IsKeyTrigger(VK_RIGHT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+						g_Select_type.StageSubNumber = STAGE3; m_bMoving = true;
+					}
+					if (IsKeyTrigger(VK_LEFT) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)) {
+						g_Select_type.StageSubNumber = STAGE1BACK; m_bMoving = true;
+					}
+				default:break;
+				}
+				if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				{
+					switch (g_Select_type.StageSubNumber)
+					{
+					case(STAGE1BACK):
+						g_Select_type.StageSubNumber = STAGE1;
+						break;
+					case(STAGE2BACK):
+						g_Select_type.StageSubNumber = STAGE2;
+						break;
+					}
+					CSceneResult::InStageLevel(g_Select_type);
+					SetNext(SCENE_GAME, g_Select_type);
+					m_bEnd = true;
+				}
+				if (IsKeyTrigger(VK_BACK) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				{
+					g_Select_type.StageSubNumber = STAGE1;
+					MainStage ^= true;
+					m_ModelParam[WorldField].pos = { 0.0f - g_Select_type.StageMainNumber * STAGE_BETWEEN / 3.0f,0.0f,100.0f };
+
+				}
+			}//ﾂシﾂーﾂδ督暗堋行
+			if (IsKeyTrigger(VK_RIGHT))
+			{
+				bRight = true;
+			}
+			if (IsKeyTrigger(VK_LEFT))
+			{
+				bRight = false;
+			}
+
 		}
 	}
-	else
+	static int moveCnt = 0;
+	if (m_bMoving)
 	{
+
 		if (g_Select_type.StageMainNumber == GRASSLAND)
 		{
 			switch (g_Select_type.StageSubNumber)
@@ -218,15 +381,74 @@ void CStageSelect::Update()
 			SetNext(SCENE_GAME, g_Select_type);
 		}
 		if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+
+		moveCnt++;
+
+		for (int i = 0; i < StageKindMax; i++)
 		{
-			MainStage ^= true;
+			if (bRight)m_ModelParam[i].pos.x -= STAGE_BETWEEN / 3.0f / MOVE_TIME;
+			else m_ModelParam[i].pos.x += STAGE_BETWEEN / 3.0f / MOVE_TIME;
 		}
-	}//シーン移行
+		if (moveCnt >= MOVE_TIME)
+
+		{
+			m_bMoving = false;
+			moveCnt = 0;
+		}
+	}
+	//m_bMoving = false;
 }
 
 void CStageSelect::Draw()
 {
+	m_pBackGround->Draw();
+	// ﾂδつデﾂδ仰描ﾂ嘉ｦ
+	SetRender3D();
 	if (MainStage)
+	{
+		m_pModel[WorldField]->SetPostion(m_ModelParam[WorldField].pos.x, m_ModelParam[WorldField].pos.y, m_ModelParam[WorldField].pos.z);
+		m_pModel[WorldField]->SetRotation(m_ModelParam[WorldField].rotate.x, m_ModelParam[WorldField].rotate.y, m_ModelParam[WorldField].rotate.z);
+		m_pModel[WorldField]->SetScale(m_ModelParam[WorldField].size.x, m_ModelParam[WorldField].size.y, m_ModelParam[WorldField].size.z);
+		m_pModel[WorldField]->SetViewMatrix(GetView());
+		m_pModel[WorldField]->SetProjectionMatrix(GetProj());
+		m_pModel[WorldField]->Draw();
+	}
+	else
+	{
+		switch (g_Select_type.StageMainNumber)
+		{
+		case GrassField:
+			m_pModel[GrassField]->SetPostion(m_ModelParam[GrassField].pos.x, m_ModelParam[GrassField].pos.y, m_ModelParam[GrassField].pos.z);
+			m_pModel[GrassField]->SetRotation(m_ModelParam[GrassField].rotate.x, m_ModelParam[GrassField].rotate.y, m_ModelParam[GrassField].rotate.z);
+			m_pModel[GrassField]->SetScale(m_ModelParam[GrassField].size.x, m_ModelParam[GrassField].size.y, m_ModelParam[GrassField].size.z);
+			m_pModel[GrassField]->SetViewMatrix(GetView());
+			m_pModel[GrassField]->SetProjectionMatrix(GetProj());
+			m_pModel[GrassField]->Draw();
+			break;
+		case DesertField:
+			m_pModel[DesertField]->SetPostion(m_ModelParam[DesertField].pos.x, m_ModelParam[DesertField].pos.y, m_ModelParam[DesertField].pos.z);
+			m_pModel[DesertField]->SetRotation(m_ModelParam[DesertField].rotate.x, m_ModelParam[DesertField].rotate.y, m_ModelParam[DesertField].rotate.z);
+			m_pModel[DesertField]->SetScale(m_ModelParam[DesertField].size.x, m_ModelParam[DesertField].size.y, m_ModelParam[DesertField].size.z);
+			m_pModel[DesertField]->SetViewMatrix(GetView());
+			m_pModel[DesertField]->SetProjectionMatrix(GetProj());
+			m_pModel[DesertField]->Draw();
+			break;
+		case SnowField:	
+			m_pModel[SnowField]->SetPostion(m_ModelParam[SnowField].pos.x, m_ModelParam[SnowField].pos.y, m_ModelParam[SnowField].pos.z);
+			m_pModel[SnowField]->SetRotation(m_ModelParam[SnowField].rotate.x, m_ModelParam[SnowField].rotate.y, m_ModelParam[SnowField].rotate.z);
+			m_pModel[SnowField]->SetScale(m_ModelParam[SnowField].size.x, m_ModelParam[SnowField].size.y, m_ModelParam[SnowField].size.z);
+			m_pModel[SnowField]->SetViewMatrix(GetView());
+			m_pModel[SnowField]->SetProjectionMatrix(GetProj());
+			m_pModel[SnowField]->Draw();
+			break;
+		default:
+			break;
+		}
+	}
+
+
+	SetRender2D();
+	/*if (MainStage)
 	{
 		switch (g_Select_type.StageMainNumber)
 		{
@@ -398,7 +620,7 @@ void CStageSelect::Draw()
 			
 			}
 		}
-	}
+	}*/
 }
 
 //int CStageSelect::GetStageNum()

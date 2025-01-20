@@ -30,7 +30,7 @@ CDebugRoom::CDebugRoom()
 	for (int i = 0; i < MAX_DEBUGMODEL; i++)
 	{
 		m_pDebugModel[i] = new Model();
-		if (!m_pDebugModel[i]->Load(ch_pModelList[i]))MessageBox(NULL, ch_pModelList[i], "DebugRoom.cpp",MB_OK);
+		if (!m_pDebugModel[i]->Load(ch_pModelList[i]))MessageBox(NULL, ch_pModelList[i], "DebugRoom.cpp", MB_OK);
 		Model::AnimeNo anim = m_pDebugModel[i]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"));
 		m_pDebugModel[i]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 		m_pDebugModel[i]->PlayAnime(anim, true);
@@ -110,6 +110,7 @@ void CDebugRoom::Draw()
 
 void CDebugRoom::DrawModel(Model* model, param InParam , bool isAnim)
 {
+	SetRender3D();
 	//シェーダーへ変換行列を設定
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(InParam.Pos.x, InParam.Pos.y, InParam.Pos.z);
@@ -162,4 +163,7 @@ void CDebugRoom::DrawModel(Model* model, param InParam , bool isAnim)
 		//モデルの描画
 		model->Draw(i);
 	}
+#ifdef _DEBUG
+	//model->DrawBone();
+#endif
 }

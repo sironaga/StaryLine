@@ -35,16 +35,16 @@ enum E_TITLE_TYPE
 
 
 CSceneTitle::CSceneTitle()
-	:f_SelectY(350.0f), m_pSelect(nullptr), m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
+	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 {
 	g_Title_type = GAMESTART;
-	m_pSelect = new Texture();
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
-	if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
+	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
 	//テクスチャの読み込み
 	/*tex = new Texture();
 	tex->Create("Assets/Texture/Title/Title_Logo.png");*/
 	m_pTitleLogo		 = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
+	m_pTitleBack		 = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
 	m_pTitleFrame		 = new SpriteEx("Assets/Texture/Title/Title_Selected.png");
 	m_pTitleUnderbar	 = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
 	m_pTitleStart[0]	 = new SpriteEx("Assets/Texture/Title/Title_First.png");
@@ -69,6 +69,8 @@ CSceneTitle::CSceneTitle()
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
+	m_pTitleBack->SetProjection(Get2DProj());
+	m_pTitleBack->SetView(Get2DView());
 	m_pTitleFrame->SetProjection(Get2DProj());
 	m_pTitleFrame->SetView(Get2DView());
 	m_pTitleUnderbar->SetProjection(Get2DProj());
@@ -142,10 +144,8 @@ CSceneTitle::~CSceneTitle()
 		delete m_pTitleUnderbar;
 		m_pTitleLogo = nullptr;
 	}
+	SAFE_DELETE(m_pTitleBack);
 
-
-	SAFE_DELETE(m_pSelect);
-	//SAFE_DELETE(m_pParam);
 }
 
 void CSceneTitle::Update()
@@ -313,6 +313,13 @@ void CSceneTitle::Draw()
 
 	g_pTitleBG->Draw();
 
+	m_pTitleBack->SetTexture();
+	m_pTitleBack->SetProjection(Get2DProj());
+	m_pTitleBack->SetView(Get2DView());
+	m_pTitleBack->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
+	m_pTitleBack->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pTitleBack->Disp();
+
 	m_pTitleLogo->SetTexture();
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
@@ -426,16 +433,16 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	UninitDirectX();
 	InitDirectX(m_phWnd, wide, height, fullscreen);
 
+	Geometory::Uninit();
 	Geometory::Init();
 	Sprite::Init();
+	LibEffekseer::Uninit();
 	LibEffekseer::Init(GetDevice(), GetContext());
 	InitInput();
+	ShaderList::Uninit();
 	ShaderList::Init();
+	UninitSpriteDrawer();
 	InitSpriteDrawer(GetDevice(), GetContext(), wide, height);
-
-	if(m_pSelect)delete m_pSelect;
-	m_pSelect = new Texture();
-	if (FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL, "Select.png", "Error", MB_OK);
 
 	SAFE_DELETE(m_pTitleLogo);
 	m_pTitleLogo = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
@@ -459,6 +466,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pTitleEnd[0] = new SpriteEx("Assets/Texture/Title/Title_Finish.png");
 	SAFE_DELETE(m_pTitleEnd[1]);
 	m_pTitleEnd[1] = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
+	SAFE_DELETE(m_pTitleBack);
+	m_pTitleBack = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -473,6 +482,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
+	m_pTitleBack->SetProjection(Get2DProj());
+	m_pTitleBack->SetView(Get2DView());
 	m_pTitleFrame->SetProjection(Get2DProj());
 	m_pTitleFrame->SetView(Get2DView());
 	m_pTitleUnderbar->SetProjection(Get2DProj());

@@ -6,6 +6,9 @@
 #include "Main.h"
 #include "Scene.h"
 #include "SpriteEX.h"
+#include "ModelEx.h"
+#include  "_StructList.h"
+#include "BackGround.h"
 
 enum E_SELECT_STAGETYPE
 {
@@ -44,11 +47,29 @@ private:
 	SpriteEx* m_pSnowFieldStage[3];
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
+
+	enum StageKind
+	{
+		GrassField = 0,
+		DesertField,
+		SnowField,
+		WorldField,
+
+		StageKindMax
+	};
+
+	CModelEx* m_pModel[StageKindMax];
+	ObjectParam m_ModelParam[StageKindMax];
+	ObjectParam m_ModelSubParam[StageKindMax];
+	CBackGround* m_pBackGround;
+
 	float f_Rotation;
 	float f_Rad;
 	float f_SelectX;
 	float f_SelectY;
 	bool MainStage;
+	bool m_bEnd;
+	bool m_bMoving;
 
 	int nSlect;
 };

@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include "DirectX.h"
 #include "Defines.h"
+#include "_StructList.h"
 
 
 HRESULT Init(HWND hWnd, UINT width, UINT height);
@@ -52,4 +53,9 @@ void InitResolusionMain();
 void SetNowResolusion(int wide,int height);
 int GetNowWide();
 int GetNowHeight();
+void StartFade();
+
+void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color,  DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize,bool isModel = false);
+void SpriteDebug(ObjectParam* param ,bool isModel = false);
+
 #endif // __MAIN_H__

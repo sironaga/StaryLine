@@ -1,23 +1,22 @@
+// --- Include
 #include "SceneResult.h"
 #include"Input.h"
 #include"InputEx.h"
 #include"Controller.h"
 #include"InputEx.h"
-
-
+#include"Easing.h"
+// --- Global
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
-
 
 CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	ResultGameData.bWin = 0;
+	//ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
-	
-	// --- Default
+	// -- Default
 	m_pHitPoint			= new SpriteEx("Assets/Texture/Result/Result_Helth.png");
 	m_pStageSelect[0]	= new SpriteEx("Assets/Texture/Result/Result_Stageselect.png");
 	m_pStageSelect[1]	= new SpriteEx("Assets/Texture/Result/Result_Stageselect_Push.png");
@@ -28,7 +27,7 @@ CSceneResult::CSceneResult()
 	m_pUnderBar			= new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
 	m_pBack				= new SpriteEx("Assets/Texture/Result/B.png");
 
-
+	// -- 分岐読み込み
 	if (ResultGameData.bWin)
 	{
 		// --- WinData
@@ -53,10 +52,9 @@ CSceneResult::CSceneResult()
 		m_pNextUI[1]	= new SpriteEx("Assets/Texture/Result/Lose/Result_Retry_Push.png");
 		m_pStar			= new SpriteEx("Assets/Texture/Star/star2.png");
 	}
-
 	// =====================================================================
 	
-	// --- デフォルト
+	// ---　場所の設定
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
 		m_pStageSelect[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
@@ -94,7 +92,9 @@ CSceneResult::CSceneResult()
 	m_pSummonData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 	m_pSummonData->SetSize(0.3f, 0.14f, 1.0f);
 	m_pSummonData->SetPositon(1632.0f, 493.5f, 10.0f);
-
+	m_pNumber = new CNumberUI();
+	m_pNumber->SetPos({ 920.0f, 540.0f ,0.0f });
+	m_pNumber->SetScale({ 0.1f,0.2f,1.0f });
 	// ----
 	if (ResultGameData.bWin)
 	{
@@ -142,20 +142,18 @@ CSceneResult::CSceneResult()
 		m_pLighting->SetPositon(940.0f, 570.0f, 10.0f);
 	}
 
-	// 選択初期化
+	// 変数初期化
 	nSlect = 0;
 	CPosY = 200.0f;
 	CScle = 0;
 	nCount = 0;
 	StarPosY = 1000.0f;
 	LogoAngle = 0.0f;
-	fStarAngle = 90.0f;
+	fTime = 0.0f;
+	fStarAngle = 120.0f;
+	fCTime = 0.0f;
 	// Animationタイマー
 	nAnimationTimer = timeGetTime();
-	// 数字の描画
-	m_pNumber = new CNumberUI();
-	m_pNumber->SetColor(1.5f, 0.7f, 0.7f, 1.0f);
-	m_pNumber->SetLend(2);
 }
 
 CSceneResult::~CSceneResult()
@@ -224,20 +222,27 @@ CSceneResult::~CSceneResult()
 		delete m_pClearTime;
 		m_pClearTime = nullptr;
 	}
+	if (m_pNumber)
+	{
+		delete m_pNumber;
+		m_pNumber = nullptr;
+	}
 }
 
 void CSceneResult::Update()
 {
-	// -- 入力処理
+	// --- 入力処理
 	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyPress('A'))
 	{
 		nSlect = 0;
 		// SE
+
 	}
 	if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyPress('D'))
 	{
 		nSlect = 1;
 		// SE
+
 	}
 	// ----
 
@@ -248,6 +253,7 @@ void CSceneResult::Update()
 		if(WithGetKeyTriger(XINPUT_GAMEPAD_A,VK_RETURN))
 		{
 			SetNext(STAGE_SELECT);
+
 		}
 	}
 	else
@@ -281,17 +287,12 @@ void CSceneResult::Update()
 		}
 	}
 	// ----
+	// --- AnimationProcess
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
 		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
-	m_pNumber->SetNumber(1);
-
-}
-
-void CSceneResult::Draw()
-{
 	// --- 更新処理
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -327,8 +328,12 @@ void CSceneResult::Draw()
 	m_pBack->SetView(Get2DView());
 	m_pStar->SetProjection(Get2DProj());
 	m_pStar->SetView(Get2DView());
-	// -- 描画
 
+}
+
+void CSceneResult::Draw()
+{
+	// -- 描画
 	m_pBack->SetTexture();
 	m_pBack->Disp();
 	m_pLighting->SetTexture();
@@ -336,7 +341,7 @@ void CSceneResult::Draw()
 	m_pShadow->SetTexture();
 	m_pShadow->Disp();
 
-
+	// --　分岐によるアニメーション処理
 	if (ResultGameData.bWin)
 	{
 		// Animation計算
@@ -369,9 +374,11 @@ void CSceneResult::Draw()
 	else
 	{
 	
-	
+		fCTime += 0.1f;
 		CPosY-= 20;
-		
+		StarPosY = InEasing(0.0f, 730.0f, 5, 1.0f) - 10.0f;
+
+		StarPosY -= InEasing(fCTime,0.0f,50.0f,1.0f);
 		if (CPosY <= 0)
 		{
 			CPosY = 0;
@@ -382,13 +389,16 @@ void CSceneResult::Draw()
 			}
 			else
 			{
-				StarPosY -= 10.0f;
+				fTime += 0.1f;
+				StarPosY = InEasing(fTime, 730.0f, 5, 1.0f) ;
+				StarPosY -= 100.0f;
 				fStarAngle -= 1.0f;
-			
-				if (StarPosY < 0.0f)
+				if (StarPosY >= 720.0f)
 				{
-					StarPosY = 0.0f;
+					StarPosY = 740.0f;
 				}
+
+
 
 				if (fStarAngle < 0.0f)
 				{
@@ -422,6 +432,7 @@ void CSceneResult::Draw()
 		m_pText->Disp();
 
 	}
+
 		m_pHitPoint->SetTexture();
 		m_pHitPoint->Disp();
 		m_pClearTime->SetTexture();
@@ -439,6 +450,7 @@ void CSceneResult::Draw()
 		m_pSelect[nSlect]->SetTexture();
 		m_pSelect[nSlect]->Disp();
 
+		// 分岐による星描画処理
 		if (ResultGameData.bWin)
 		{
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
@@ -474,31 +486,85 @@ void CSceneResult::Draw()
 			float dAngle;
 			dAngle = 225.0f + fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(400.0f, 740.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(300.0f, StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 			dAngle = 180.0f - fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(475.0f, 730.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(475.0f, StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 			dAngle = 180.0f + fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1350.0f, 730.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(1350.0f,  StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 			dAngle = 225.0f - fStarAngle;
 			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1500.0f, 740.0f - StarPosY, 10.0f);
+			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+			m_pStar->SetPositon(1600.0f, StarPosY, 10.0f);
 			m_pStar->SetTexture();
 			m_pStar->Disp();
 		}
-}
 
+		// 数字の描画
+		if (ResultGameData.bWin)
+		{
+
+			int nMinutes;
+			int nSeconds;
+			nMinutes = ResultGameData.nTime / 60;
+			nSeconds = ResultGameData.nTime % 60;
+			
+			if (nSeconds < 0)
+			{
+				nSeconds = 0;
+			}
+
+			// 秒数　(分)
+			m_pNumber->SetNumber(nMinutes);
+			m_pNumber->SetPos({ 1780.0f, 305.0f ,0.0f });
+			m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+			m_pNumber->Draw();
+			// 秒数　(秒)
+			m_pNumber->SetNumber(nSeconds);
+			m_pNumber->SetPos({ 1850.0f, 305.0f ,0.0f });
+			m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+			m_pNumber->Draw();
+		}
+		//  Hp割合
+		m_pNumber->SetNumber(ResultGameData.nHitPoint);
+	
+		m_pNumber->SetPos({ 1790.0f, 380.0f ,0.0f });
+		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+		m_pNumber->Draw();
+		//	合計召喚数
+		m_pNumber->SetNumber(ResultGameData.nSpawnCount);
+
+		m_pNumber->SetPos({ 1790.0f, 450.0f ,0.0f });
+		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+		m_pNumber->Draw();
+		// 平均召喚数
+
+		int nAv;
+		nAv = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
+
+		m_pNumber->SetNumber(nAv);
+
+		m_pNumber->SetPos({ 1810.0f, 500.0f ,0.0f });
+		m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
+		m_pNumber->Draw();
+		// 描画回数
+		m_pNumber->SetNumber(ResultGameData.nDrawCount);
+
+		m_pNumber->SetPos({ 1810.0f, 530.0f ,0.0f });
+		m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
+		m_pNumber->Draw();
+	
+}
 
 void CSceneResult::InResultData(ResultGameInfo InData)
 {

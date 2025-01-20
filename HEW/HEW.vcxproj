@@ -28,7 +28,9 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DebugRoom.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="EffectManager_sp.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FadeBlack.cpp" />
     <ClCompile Include="Field.cpp" />
@@ -63,6 +65,7 @@
     <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="StarLine.cpp" />
+    <ClCompile Include="StartDirection.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UI.cpp" />
@@ -81,7 +84,9 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="EffectManager_sp.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FadeBlack.h" />
     <ClInclude Include="Field.h" />
@@ -113,6 +118,7 @@
     <ClInclude Include="SpriteEx.h" />
     <ClInclude Include="StageSelect.h" />
     <ClInclude Include="StarLine.h" />
+    <ClInclude Include="StartDirection.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="_StructList.h" />

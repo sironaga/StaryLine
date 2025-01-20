@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "Battle.h"
 #include "Scene.h"
+#include "StarLine.h"
 
 class CSceneGame : public CScene
 {
@@ -39,6 +40,7 @@ private:
 	CSoundList* g_GameSound;
 	IXAudio2SourceVoice* m_pSourseFeverBGM;
 	CSoundList* g_FeverSound;
+	StarLine* m_pStarLine;
 
 	bool m_bPhase;
 	bool m_bEnd;

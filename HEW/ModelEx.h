@@ -6,7 +6,7 @@
 class CModelEx
 {
 public:
-	CModelEx(const char *ModelFile, bool isAnime = false);
+	CModelEx(const char* ModelFile, bool isAnime = false, Model::Flip flip = Model::None);
 	CModelEx(Model* InData);
 	~CModelEx();
 	void Draw();

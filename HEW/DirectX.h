@@ -4,6 +4,7 @@
 #include<math.h>
 #include<d3d11.h>
 #include <DirectXMath.h>
+#include <dxgidebug.h>
 #include<timeapi.h>
 #include <d3dcompiler.h>
 #include<Windows.h>
@@ -76,6 +77,7 @@ IDXGISwapChain* GetSwapChain();
 RenderTarget* GetDefaultRTV();
 DepthStencil* GetDefaultDSV();
 
+
 HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen);
 void UninitDirectX();
 void BeginDrawDirectX();
@@ -98,7 +100,7 @@ template<typename A, size_t N, typename T>
 void Fill(A(&array)[N], const T& val) {
 	std::fill((T*)array, (T*)(array + N), val);
 }
-
+ID3D11Debug* GetDebug();
 
 
 #endif

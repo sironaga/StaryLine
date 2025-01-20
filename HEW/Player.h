@@ -53,6 +53,7 @@ private:
 	void DrawModel();						// モデルの描画処理
 
 	void PlayerInput();						// コントローラー入力処理
+	void ArrowProcess();
 private:
 	CModelEx* m_pModel;						// プレイヤー(筆)のモデル
 	DirectX::XMFLOAT3 m_tBrushPos;			// プレイヤー(筆)の座標
@@ -66,6 +67,7 @@ private:
 	bool m_bCanMoveCheck;					// 目的地へ行けるかどうか
 
 	bool m_bDrawing;						// 作図中かどうか
+	bool m_bool;
 
 	
 	enum E_ARROW_STATE
@@ -74,10 +76,11 @@ private:
 		SELECTED,
 		CANNOT_SELECT
 	};
-	E_ARROW_STATE m_eArrowState[8];
-	SpriteParam* m_pArrowParam[8];
-	Texture* m_pArrowTex;
+	E_ARROW_STATE m_eArrowState;
+	CModelEx* m_pArrowModel;
+	ObjectParam m_pArrowParam;
 	DirectX::XMFLOAT2  m_tArrowCenterPos;
+	DirectX::XMFLOAT2 m_tAjustPos;
 
 	enum Timer
 	{
@@ -99,9 +102,12 @@ public:
 	// 描画中か取得
 	const bool GetCanMove() { return m_bDrawing; }
 
+	bool GetMoveStop() { return m_bool; }
+
 	/* Setter */
 	// 再作図開始のための設定
-	void SetPlayerStop();	
+	void SetPlayerStop();
+	void SetMoveStop();
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:

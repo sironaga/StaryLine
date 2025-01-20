@@ -26,6 +26,7 @@
 #include "SceneGame.h"
 #include "SceneResult.h"
 #include "SceneDebug.h"
+#include "StartDirection.h"
 
 //--- グローバル変数
 CStageSelect* g_pSceneSelect;
@@ -37,6 +38,7 @@ CSoundList* g_mainsound;
 bool IsGame = true;
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
+CStartDirection* g_pDirection;
 HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
 int g_NowWide = 1920;
@@ -49,7 +51,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// DirectX初期化
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
-
+	
 	// 他機能初期化
 	g_Camera = new CameraDebug();
 	Geometory::Init();
@@ -63,6 +65,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 
+	//ゲームスタート演出作成
+	g_pDirection = new CStartDirection();
+
 	// フェード作成 
 	g_pFade = new CFadeBlack();
 	g_pFade->SetFade(1.0f, true);
@@ -70,6 +75,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	// シーン作成 
 	g_pScene = new CSceneTitle();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
+	g_pScene->SetGameDirection(g_pDirection);
 
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
@@ -81,21 +87,24 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 void Uninit()
 {
+	SAFE_DELETE(g_Camera);
 	SAFE_DELETE(g_pScene);
 	SAFE_DELETE(g_pFade);
-
+	SAFE_DELETE(g_pDirection);
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
 
-	//delete g_mainsound;
-	//g_mainsound = nullptr;
-
+	
+	SAFE_DELETE(g_mainsound);
+	g_pSourseTitleSE = nullptr;
 	LibEffekseer::Uninit();
 	Sprite::Uninit();
 	Geometory::Uninit();
 	UninitDirectX();
-
+	ID3D11Debug *pDebug;
+	pDebug = GetDebug();
+	pDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
 	//g_pSourseTitleSE = nullptr;
 }
 
@@ -112,11 +121,8 @@ void Update()
 	// シーン切り替え判定 
 	if (g_pScene->ChangeScene()) 
 	{
-		g_hWnd = g_pScene->GethWnd();
-		g_mainsound->SetMasterVolume();
-		g_pSourseTitleSE->FlushSourceBuffers();
-		if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
-		g_pSourseTitleSE->Start();
+		
+		
 		StageType stage = {};
 		// 次のシーンの情報を取得 
 		int scene = g_pScene->NextScene();
@@ -130,8 +136,18 @@ void Update()
 		switch (scene)
 		{
 		case SCENE_TITLE:g_pScene = new CSceneTitle(); break; // TITLE 
-		case STAGE_SELECT: g_pScene = new CStageSelect(); break;
-		case SCENE_GAME:g_pScene = new CSceneGame(stage); break; // GAME 
+		case STAGE_SELECT: 
+			g_pScene = new CStageSelect(); 
+			g_hWnd = g_pScene->GethWnd();
+			g_mainsound->SetMasterVolume();
+			g_pSourseTitleSE->FlushSourceBuffers();
+			XAUDIO2_BUFFER buffer;
+			buffer = g_mainsound->GetBuffer(false);
+			g_pSourseTitleSE->SubmitSourceBuffer(&buffer);
+			if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
+			g_pSourseTitleSE->Start();
+			break;
+		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(2.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
@@ -141,7 +157,10 @@ void Update()
 		g_pFade->SetFade(1.0f, true);
 		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
 		g_pScene->SethWnd(g_hWnd);
+		
+		g_pScene->SetGameDirection(g_pDirection);
 	}
+	g_pDirection->Update();
 }
 
 void Draw()
@@ -213,7 +232,7 @@ void Draw()
 
 	g_pScene->RootDraw();
 	LibEffekseer::Draw();
-
+	g_pDirection->Draw();
 	EndDrawDirectX();
 }
 // --- View情報のゲッター　XMFLOAT4*4
@@ -329,6 +348,11 @@ void InitResolusionMain()
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();
+	SAFE_DELETE(g_pDirection);
+	g_pDirection = new CStartDirection();
+	SAFE_DELETE(g_mainsound);
+	g_mainsound = new CSoundList(SE_DECISION);
+	g_pSourseTitleSE = g_mainsound->GetSound(false);
 }
 void SetNowResolusion(int wide, int height)
 {
@@ -342,5 +366,199 @@ int GetNowWide()
 int GetNowHeight()
 {
 	return g_NowHeight;
+}
+void StartFade()
+{
+	g_pFade->Start(true);   // フェード開始 
+	g_pFade->SetFade(1.0f, true);
+}
+void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color, DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize, bool isModel)
+{
+	if (IsKeyPress(VK_LEFT))	pos->x++;
+	if (IsKeyPress(VK_RIGHT))	pos->x--;
+	if (IsKeyPress(VK_UP))		pos->y++;
+	if (IsKeyPress(VK_DOWN))	pos->y--;
+	if (IsKeyPress(VK_SPACE))	pos->z++;
+	if (IsKeyPress(VK_SHIFT))	pos->z--;
+
+	if (IsKeyPress('J'))		size->x++;
+	if (IsKeyPress('L'))		size->x--;
+	if (IsKeyPress('I'))		size->y++;
+	if (IsKeyPress('K'))		size->y--;
+	if (IsKeyPress('U'))		size->z++;
+	if (IsKeyPress('O'))		size->z--;
+	if (IsKeyPress('Z'))
+	{
+		size->x++;
+		size->y++;
+		size->z++;
+	}
+	if (IsKeyPress('X'))
+	{
+		size->x--;
+		size->y--;
+		size->z--;
+	}
+
+	if (IsKeyPress('E'))		rotate->z -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('A'))		rotate->x += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('D'))		rotate->x -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('W'))		rotate->y += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('S'))		rotate->y -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('Q'))		rotate->z += DirectX::XMConvertToRadians(1.0f);
+
+	if (IsKeyPress('1') && IsKeyPress(VK_SHIFT))		color->x -= 5;
+	else if (IsKeyPress('1'))		color->x += 5;
+	if (IsKeyPress('2') && IsKeyPress(VK_SHIFT))		color->y -= 5;
+	else if (IsKeyPress('2'))		color->y += 5;
+	if (IsKeyPress('3') && IsKeyPress(VK_SHIFT))		color->z -= 5;
+	else if (IsKeyPress('3'))		color->z += 5;
+	if (IsKeyPress('4') && IsKeyPress(VK_SHIFT))		color->w -= 5;
+	else if (IsKeyPress('4'))		color->w += 5;
+
+	if (IsKeyPress('6') && IsKeyPress(VK_SHIFT))		uvPos->x -= 0.05;
+	else if (IsKeyPress('6'))		uvPos->x += 0.05;
+	if (IsKeyPress('7') && IsKeyPress(VK_SHIFT))		uvPos->y -= 0.05;
+	else if (IsKeyPress('7'))		uvPos->y += 0.05;
+	if (IsKeyPress('8') && IsKeyPress(VK_SHIFT))		uvSize->x -= 0.05;
+	else if (IsKeyPress('8'))		uvSize->x += 0.05;
+	if (IsKeyPress('9') && IsKeyPress(VK_SHIFT))		uvSize->y -= 0.05;
+	else if (IsKeyPress('9'))		uvSize->y += 0.05;
+
+	static int a = 0;
+
+	if (IsKeyPress('0'))
+	{
+		a++;
+		if (a >= 120)
+		{
+			pos->x = 0.0f;
+			pos->y = 0.0f;
+			pos->z = 0.0f;
+			size->x = 1.0f;
+			size->y = 1.0f;
+			size->z = 1.0f;
+			rotate->x = 0.0f;
+			rotate->y = 0.0f;
+			rotate->z = 0.0f;
+			color->x = 1.0f;
+			color->y = 1.0f;
+			color->z = 1.0f;
+			color->w = 1.0f;
+			uvPos->x = 0.0f;
+			uvPos->y = 0.0f;
+			uvSize->x = 1.0f;
+			uvSize->y = 1.0f;
+			a = 0;
+		}
+	}
+	else a = 0;
+}
+
+void SpriteDebug(ObjectParam* param, bool isModel)
+{
+	if (IsKeyPress(VK_LEFT))	param->pos.x++;
+	if (IsKeyPress(VK_RIGHT))	param->pos.x--;
+	if (IsKeyPress(VK_UP))		param->pos.y++;
+	if (IsKeyPress(VK_DOWN))	param->pos.y--;
+	if (IsKeyPress(VK_SPACE))	param->pos.z++;
+	if (IsKeyPress(VK_SHIFT))	param->pos.z--;
+
+	if (!isModel)
+	{
+		if (IsKeyPress('J'))		param->size.x++;
+		if (IsKeyPress('L'))		param->size.x--;
+		if (IsKeyPress('I'))		param->size.y++;
+		if (IsKeyPress('K'))		param->size.y--;
+		if (IsKeyPress('U'))		param->size.z++;
+		if (IsKeyPress('O'))		param->size.z--;
+		if (IsKeyPress('Z'))
+		{
+			param->size.x++;
+			param->size.y++;
+			param->size.z++;
+		}
+		if (IsKeyPress('X'))
+		{
+			param->size.x--;
+			param->size.y--;
+			param->size.z--;
+		}
+	}
+	else
+	{
+		if (IsKeyPress('J'))		param->size.x+= 0.1f;
+		if (IsKeyPress('L'))		param->size.x-= 0.1f;
+		if (IsKeyPress('I'))		param->size.y+= 0.1f;
+		if (IsKeyPress('K'))		param->size.y-= 0.1f;
+		if (IsKeyPress('U'))		param->size.z+= 0.1f;
+		if (IsKeyPress('O'))		param->size.z-= 0.1f;
+		if (IsKeyPress('Z'))
+		{
+			param->size.x+= 0.1f;
+			param->size.y+= 0.1f;
+			param->size.z+= 0.1f;
+		}
+		if (IsKeyPress('X'))
+		{
+			param->size.x-= 0.1f;
+			param->size.y-= 0.1f;
+			param->size.z-= 0.1f;
+		}
+	}
+
+	if (IsKeyPress('A'))		param->rotate.x += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('D'))		param->rotate.x -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('W'))		param->rotate.y += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('S'))		param->rotate.y -= DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('Q'))		param->rotate.z += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('E'))		param->rotate.z -= DirectX::XMConvertToRadians(1.0f);
+
+	if (IsKeyPress('1') && IsKeyPress(VK_SHIFT))		param->color.x -= 5;
+	else if (IsKeyPress('1'))							param->color.x += 5;
+	if (IsKeyPress('2') && IsKeyPress(VK_SHIFT))		param->color.y -= 5;
+	else if (IsKeyPress('2'))							param->color.y += 5;
+	if (IsKeyPress('3') && IsKeyPress(VK_SHIFT))		param->color.z -= 5;
+	else if (IsKeyPress('3'))							param->color.z += 5;
+	if (IsKeyPress('4') && IsKeyPress(VK_SHIFT))		param->color.w -= 5;
+	else if (IsKeyPress('4'))							param->color.w += 5;
+
+	if (IsKeyPress('6') && IsKeyPress(VK_SHIFT))		param->uvPos.x -= 0.05;
+	else if (IsKeyPress('6'))							param->uvPos.x += 0.05;
+	if (IsKeyPress('7') && IsKeyPress(VK_SHIFT))		param->uvPos.y -= 0.05;
+	else if (IsKeyPress('7'))							param->uvPos.y += 0.05;
+	if (IsKeyPress('8') && IsKeyPress(VK_SHIFT))		param->uvSize.x -= 0.05;
+	else if (IsKeyPress('8'))							param->uvSize.x += 0.05;
+	if (IsKeyPress('9') && IsKeyPress(VK_SHIFT))		param->uvSize.y -= 0.05;
+	else if (IsKeyPress('9'))							param->uvSize.y += 0.05;
+
+	static int a = 0;
+
+	if (IsKeyPress('0'))
+	{
+		a++;
+		if (a >= 120)
+		{
+			param->pos.x = 0.0f;
+			param->pos.y = 0.0f;
+			param->pos.z = 0.0f;
+			param->size.x = 1.0f;
+			param->size.y = 1.0f;
+			param->size.z = 1.0f;
+			param->rotate.x = 0.0f;
+			param->rotate.y = 0.0f;
+			param->rotate.z = 0.0f;
+			param->color.x = 1.0f;
+			param->color.y = 1.0f;
+			param->color.z = 1.0f;
+			param->color.w = 1.0f;
+			param->uvPos.x = 0.0f;
+			param->uvPos.y = 0.0f;
+			param->uvSize.x = 1.0f;
+			param->uvSize.y = 1.0f;
+			a = 0;
+		}
+	}
+	else a = 0;
 }
 // EOF

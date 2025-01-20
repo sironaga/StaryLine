@@ -438,6 +438,42 @@ void COption::UpdateInput()
 
 void COption::SetValue(int kind)
 {
+	for (int i = 0; i < TAB_MAX; i++)
+	{
+		if (i == kind)continue;
+		switch (i)
+		{
+		case COption::MASTER:
+			m_pParam[TAB_MASTERVOLUME]->color.w = 0.5f;
+			break;
+		case COption::BGM:
+			m_pParam[TAB_BGM]->color.w = 0.5f;
+			break;
+		case COption::SE:
+			m_pParam[TAB_SE]->color.w = 0.5f;
+			break;
+		case COption::SCREEN_MODE:
+			m_pParam[TAB_WINDOWMODE]->color.w = 0.5f;
+			break;
+		case COption::RESOLUSION:
+			m_pParam[TAB_RESOLUSION]->color.w = 0.5f;
+			break;
+		case COption::FRAME_RATE:
+			m_pParam[TAB_FPS]->color.w = 0.5f;
+			break;
+		case COption::KEY_BOARD:
+			m_pParam[TAB_KEYBOARD]->color.w = 0.5f;
+			break;
+		case COption::CONTROLLER:
+			m_pParam[TAB_CONTROLLER]->color.w = 0.5f;
+			break;
+		case COption::TAB_MAX:
+			break;
+		default:
+			break;
+		}
+	}
+
 	switch (kind)
 	{
 	case COption::MASTER:
@@ -488,6 +524,15 @@ void COption::SetValue(int kind)
 	{
 		m_nValue[kind] = m_nTempValue[kind];
 		m_bSetValue = false;
+
+		m_pParam[TAB_MASTERVOLUME]->color.w = 1.0f;
+		m_pParam[TAB_BGM]->color.w = 1.0f;
+		m_pParam[TAB_SE]->color.w = 1.0f;
+		m_pParam[TAB_WINDOWMODE]->color.w = 1.0f;
+		m_pParam[TAB_RESOLUSION]->color.w = 1.0f;
+		m_pParam[TAB_FPS]->color.w = 1.0f;
+		m_pParam[TAB_KEYBOARD]->color.w = 1.0f;
+		m_pParam[TAB_CONTROLLER]->color.w = 1.0f;
 	}
 	if (IsKeyTrigger(VK_ESCAPE))
 	{

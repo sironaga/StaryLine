@@ -3,11 +3,12 @@
 CScene::CScene()
 	: m_pFade(nullptr), m_next(-1) ,m_tStage{}
 {
-
+	
 }
 
 CScene::~CScene()
 {
+	m_GameDirection = nullptr;
 	m_pFade = nullptr;
 }
 
@@ -21,6 +22,7 @@ void CScene::RootDraw()
 {
 	Draw();
 	if (m_pFade) m_pFade->Draw();
+
 }
 
 bool CScene::ChangeScene()
@@ -70,4 +72,9 @@ void CScene::SethWnd(HWND hWnd)
 HWND CScene::GethWnd()
 {
 	return m_phWnd;
+}
+
+void CScene::SetGameDirection(CStartDirection* Direction)
+{
+	m_GameDirection = Direction;
 }

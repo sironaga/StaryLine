@@ -43,10 +43,11 @@ public:
 	CHpUI(float FullHp, HpUINumber Number);
 	~CHpUI();
 	void Update(float InHp, DirectX::XMFLOAT3 InPos,float InSizeY);
-	void Draw(void);
+	void Draw(int nCornerCount = 0);
 private:
 	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 private:
+	float m_fNowHp;
 	float m_fFullHp;
 	float m_fAnchorPoint;
 	Sprite* m_pSprite;
@@ -64,6 +65,8 @@ public:
 	enum class FighterEffect
 	{
 		Attack,
+		Move,
+		Death,
 		MAX,
 	};
 protected:
@@ -82,6 +85,13 @@ protected:
 		float Width;	//幅
 		float Height;	//高さ
 	};
+	//エフェクト関係
+	//struct EffectInfo
+	//{
+	//	CEffectManager* m_pEffect; //エフェクト関係
+	//	float m_fEffectTimer;
+	//	bool m_bEffectPlay;//攻撃エフェクトのPlayを実行したかどうか
+	//};
 
 	/*関数*/
 protected:
@@ -116,7 +126,7 @@ protected:
 	Collision m_tSearchCollision;	//索敵当たり判定
 	Collision m_tAtkCollision;		//攻撃当たり判定
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
-	DirectX::XMFLOAT3 m_tOldPos;	//移動前位置座標
+	DirectX::XMFLOAT3 m_tFirstPos;	//初期位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	int m_nCornerCount;				//属性
 	float m_fHp;					//体力
@@ -131,15 +141,15 @@ protected:
 	DirectX::XMFLOAT3 m_tDestinationPos;//目的地
 
 	CHpUI* m_pHpGage;	//体力ゲージ
-	CEffectManager* m_pEffect[(int)FighterEffect::MAX]; //エフェクト関係
-	float m_fEffectTimer;
-	bool m_bAttackEffectPlay;//エフェクトのPlayを実行したかどうか
+
 protected:
 	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;
 
 	Model* m_pModel;
+
+	//EffectInfo m_tEffect[(int)FighterEffect::MAX];
 
 	/*変数のSet&Get*/
 public:
@@ -148,14 +158,14 @@ public:
 	//ステータスのget
 	Status GetStatus(void) { return m_tStatus; }
 
+	//死亡エフェクトの再生
+	//void PlayDeathEffect(void);
+
 	//索敵当たり判定のGet
 	Collision GetSearchCollision(void) { return m_tSearchCollision; }
 	//攻撃当たり判定のGet
 	Collision GetAtkCollision(void) { return m_tAtkCollision; }
 
-	//移動する前に位置を保存
-	void SetOldPos(DirectX::XMFLOAT3 InPos) { m_tOldPos = InPos; }
-	DirectX::XMFLOAT3 GetOldPos(void) { return m_tOldPos; }
 	//X座標の加算
 	void AddPosX(float fAdd) { m_tPos.x += fAdd; }
 	//Y座標の加算
@@ -172,6 +182,11 @@ public:
 	void SetPosZ(float InPosZ) { m_tPos.z = InPosZ; }
 	//位置座標のGet
 	DirectX::XMFLOAT3 GetPos(void) { return m_tPos; }
+
+	//初期位置のGet
+	DirectX::XMFLOAT3 GetFirstPos(void) { return m_tFirstPos; }
+	//初期位置のSet
+	void SetFirstPos(DirectX::XMFLOAT3 InPos) { m_tFirstPos = InPos; }
 
 	//移動フラグのSet
 	void SetMoveFlag(bool flag) { m_bMoveFlag = flag; }
@@ -250,36 +265,34 @@ private:
 class CLeader
 {
 public:
-	CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber);
+	CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber,bool SubModelCreate = false);
 	~CLeader();
 
-	void Update(void);	//更新処理
-	void Draw(void);	//描画処理
+	void Update(bool IsStart = false,bool IsEnd = false);	//更新処理
+	void Draw(int StageNum = 0);	//描画処理
 	void HpDraw(void);	//Hpの描画処理
 
 	void Damage(CFighter* pFighter);
 private:
 	void CreateUpdate(void);
-	void BattleUpdate(void);
+	void BattleUpdate(bool IsStart = false, bool IsEnd = false);
 	void DeathUpdate(void);
 
 private:
 	Status m_tStatus;				//ステータス状態
+	Model* m_pModel;
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
+
+	Model* m_pSubModel;
+	DirectX::XMFLOAT3 m_tSubPos;		//位置座標
+	DirectX::XMFLOAT3 m_tSubSize;		//サイズ
+
 	float m_fHp;					//体力
-	float m_fMaxHp;					//体力
+	float m_fMaxHp;					//最大体力
 
-	Model* m_pModel;
 
-	/*アニメーション関係*/
-	DirectX::XMFLOAT2 m_tUVPos;
-	DirectX::XMFLOAT2 m_tUVScale;
-	int m_nAnimationFrame;
-	int m_nAnimationX;
-	int m_nAnimationY;
-
-	int m_nStatusMode;
+	//int m_nStatusMode;
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
 public:

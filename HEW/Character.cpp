@@ -4,6 +4,7 @@
 #include "Main.h"
 #include "Geometory.h"
 #include "ShaderList.h"
+#include "Input.h"
 
 //キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((m_tSize.x *(Num / 2)) + (m_tSize.x))
@@ -13,6 +14,9 @@
 #define MAX_CHARACTER_ATK_COLLISION_WIDTH(Num)  ((m_tSize.x * (Num / 2)) + (m_tSize.x))
 //キャラクターの縦の攻撃当たり判定(相手の人数)
 #define MAX_CHARACTER_ATK_COLLISION_HEIGHT(Num) ((m_tSize.y * (Num / 2)) + (m_tSize.y))
+
+//モデル表示でバック用変数
+float Y = 0.0f;
 
 //味方キャラクターの列挙型
 enum class Ally
@@ -44,14 +48,23 @@ enum class Leader
 //Hpゲージの列挙型
 enum class HpTexture
 {
-	Gage,
-	Top,
+	Linie,
+	Boss,
+	Frame,
+	Ally1,
+	Ally2,
+	Enemy1,
+	Enemy2,
+	MAX,
 };
 
 //Characterのエフェクトの列挙型
 enum class CharactersEffect
 {
-	FighterAttack,
+	SwordAtk,
+	BowAtk,
+	Move,
+	Death,
 	MAX,
 };
 
@@ -62,18 +75,25 @@ Model* g_pAllyModel[(int)Ally::MAX];
 Model* g_pEnemyModel[(int)Enemy::MAX];
 //リーダーたち
 Model* g_pLeaderModel[(int)Leader::MAX];
+//リーダー用アニメーション
+Model::AnimeNo g_pLeader_Anima;
 //ボスの車
 Model* g_pBosCar;
 //Hpのテクスチャ
-Texture* g_pHpGageTex[2][2];
+Texture* g_pHpGageTex[(int)HpTexture::MAX];
+//Texture* g_pHpGageTex[2][2];
+
 //キャラクターのエフェクト
-CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
+//CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
 //攻撃音
 CSoundList* g_AttackSound;
 
 //事前読み込み用関数
 void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 {
+	g_pLeaderModel[0] = nullptr;
+	g_pLeaderModel[1] = nullptr;
+	g_pLeaderModel[2] = nullptr;
 	/*味方キャラクターのModel読み込み*/
 	for (int i = 0; i < (int)Ally::MAX; i++)
 	{
@@ -81,24 +101,28 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	}
 	g_pAllyModel[(int)Ally::Ally3]->Load(MODEL_PASS("Character/Triangle/Triangle.fbx"), 0.05f, Model::None);
 	g_pAllyModel[(int)Ally::Ally4]->Load(MODEL_PASS("Character/Square/Square.fbx"), 0.05f, Model::None);
-	
+	g_pHpGageTex[(int)HpTexture::Ally1] = new Texture();
+	g_pHpGageTex[(int)HpTexture::Ally1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_LinieS.png"));
+	g_pHpGageTex[(int)HpTexture::Ally2] = new Texture();
+	g_pHpGageTex[(int)HpTexture::Ally2]->Create(TEX_PASS("HpGage/Battle_HP_Gage_LinieS.png"));
 	/*Linie関連のModel読み込み*/
 	//Hpゲージ
-	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage] = new Texture();
-	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top] = new Texture();
-	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Linie.png"));
-	g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Linie.png"));
+	g_pHpGageTex[(int)HpTexture::Linie] = new Texture();
+	g_pHpGageTex[(int)HpTexture::Linie]->Create(TEX_PASS("HpGage/Battle_HP_Gage_Linie.png"));
+
+	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage] = new Texture();
+	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top] = new Texture();
+	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Linie.png"));
+	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Linie.png"));
 	//モデル
 	g_pLeaderModel[(int)Leader::Linie] = new Model();
-	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"), 1.0f, Model::None);
-	Model::AnimeNo anim = g_pLeaderModel[(int)Leader::Linie]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"));
-	g_pLeaderModel[(int)Leader::Linie]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-	g_pLeaderModel[(int)Leader::Linie]->PlayAnime(anim, true);
+	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"), 1.0f, Model::None);
+	g_pLeader_Anima = g_pLeaderModel[(int)Leader::Linie]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"));
 
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)
 	{
-	case 0://砂漠
+	case 0://草原
 		
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
@@ -107,37 +131,46 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		}
 		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
 		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
-		
+		g_pHpGageTex[(int)HpTexture::Enemy1] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Enemy1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_QrackerS.png"));
+		g_pHpGageTex[(int)HpTexture::Enemy2] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Enemy2]->Create(TEX_PASS("HpGage/Battle_HP_Gage_QrackerS.png"));
+
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
-		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage]  = new Texture();
-		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  = new Texture();
-		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage] ->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
-		g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
+		g_pHpGageTex[(int)HpTexture::Boss] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Boss]->Create(TEX_PASS("HpGage/Battle_HP_Gage_Qracker.png"));
+		g_pHpGageTex[(int)HpTexture::Frame] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Frame]->Create(TEX_PASS("HpGage/Battle_HP_top_Qracker.png"));
+		//g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage]  = new Texture();
+		//g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  = new Texture();
+		//g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage] ->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		//g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Quracker] = new Model();
-		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
-		
+		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[2] = nullptr;
+
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		case 1:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		case 2:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
-	case 1://草原
+	case 1://砂漠
 
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
@@ -146,33 +179,43 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		}
 		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
 		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
+		g_pHpGageTex[(int)HpTexture::Enemy1] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Enemy1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_NugarS.png"));
+		g_pHpGageTex[(int)HpTexture::Enemy2] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Enemy2]->Create(TEX_PASS("HpGage/Battle_HP_Gage_NugarS.png"));
 
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
-		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage] = new Texture();
-		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top] = new Texture();
-		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
-		g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
+		g_pHpGageTex[(int)HpTexture::Boss] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Boss]->Create(TEX_PASS("HpGage/Battle_HP_Gage_Nugar.png"));
+		g_pHpGageTex[(int)HpTexture::Frame] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Frame]->Create(TEX_PASS("HpGage/Battle_HP_top_Nugar.png"));
+		//g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage] = new Texture();
+		//g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top] = new Texture();
+		//g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		//g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
+		
 		//モデル
 		g_pLeaderModel[(int)Leader::Nugar] = new Model();
 		g_pLeaderModel[(int)Leader::Nugar]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[2] = nullptr;
 
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		case 1:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		case 2:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
@@ -185,35 +228,43 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		}
 		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
 		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
-		
+		g_pHpGageTex[(int)HpTexture::Enemy1] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Enemy1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_KanneleS.png"));
+		g_pHpGageTex[(int)HpTexture::Enemy2] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Enemy2]->Create(TEX_PASS("HpGage/Battle_HP_Gage_BoldowS.png"));
+
 		/*ボスたちのModel読み込み*/
 		//Hpゲージ
-		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage] = new Texture();
-		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top] = new Texture();
-		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
-		g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
+		g_pHpGageTex[(int)HpTexture::Boss] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Boss]->Create(TEX_PASS("HpGage/Battle_HP_Gage_KanneleBoldow.png"));
+		g_pHpGageTex[(int)HpTexture::Frame] = new Texture();
+		g_pHpGageTex[(int)HpTexture::Frame]->Create(TEX_PASS("HpGage/Battle_HP_top_KanneleBoldow.png"));
+		//g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage] = new Texture();
+		//g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top] = new Texture();
+		//g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
+		//g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
 		g_pLeaderModel[(int)Leader::Kannele] = new Model();
-		g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Kannele/Char_Boss03_Kannele.fbx"), 1.0f, Model::None);
 		g_pLeaderModel[(int)Leader::Boldow] = new Model();
-		g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Boldow/Char_Boss03_Boldow.fbx"), 1.0f, Model::None);
 		
 		switch (StageType.StageSubNumber)
 		{
 		case 0:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
 		case 1:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
 		case 2:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
-			g_pBosCar->Load(MODEL_PASS("Boss01_Car.fbx"), 1.0f, Model::None);
+			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
@@ -223,12 +274,23 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	g_AttackSound->SetMasterVolume();
 	/*エフェクトの読み込み*/
-	g_pCharacterEffects[(int)CharactersEffect::FighterAttack] = new CEffectManager(EFFECT_PASS("Fire.efk"));
+	//g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("SwordAtk.efkefc"));
+	////g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("fire.efk"));
+	//g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager(EFFECT_PASS("Yumi.efkefc"));
+	//g_pCharacterEffects[(int)CharactersEffect::Move] = new CEffectManager(EFFECT_PASS("MoveChara.efkefc"));
+	//g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("Death.efkefc"));
+	////g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("fire.efk"));
 }
 
 //事前読み込みで用意したもののポインタ破棄
 void UnInitCharacterTexture()
 {
+	//車モデルの破棄
+	if (g_pBosCar)
+	{
+		delete 	g_pBosCar;
+		g_pBosCar = nullptr;
+	}
 	//味方モデルの破棄
 	for (int i = 0; i < (int)Ally::MAX; i++)
 	{
@@ -250,36 +312,32 @@ void UnInitCharacterTexture()
 	//リーダーたちのモデルの破棄
 	for (int i = 0; i < (int)Leader::MAX; i++)
 	{
-		delete g_pLeaderModel[i];
-		g_pLeaderModel[i] = nullptr;
+		if (g_pLeaderModel[i])
+		{
+			delete g_pLeaderModel[i];
+			g_pLeaderModel[i] = nullptr;
+		}
 	}
 	//キャラクターのエフェクトの破棄
-	for (int i= 0; i < (int)CharactersEffect::MAX; i++)
-	{
-		delete g_pCharacterEffects[i];
-		g_pCharacterEffects[i] = nullptr;
-	}
+	//for (int i= 0; i < (int)CharactersEffect::MAX; i++)
+	//{
+	//	delete g_pCharacterEffects[i];
+	//	g_pCharacterEffects[i] = nullptr;
+	//}
 
 	//Hpテクスチャの破棄
-	delete g_pHpGageTex[0][0];
-	g_pHpGageTex[0][0] = nullptr;
-	delete g_pHpGageTex[0][1];
-	g_pHpGageTex[0][1] = nullptr;
-	delete g_pHpGageTex[1][0];
-	g_pHpGageTex[1][0] = nullptr;
-	delete g_pHpGageTex[1][1];
-	g_pHpGageTex[1][1] = nullptr;
+	for (int i = 0; i < (int)HpTexture::MAX; i++)
+	{
+			if (g_pHpGageTex[i])
+			{
+				delete g_pHpGageTex[i];
+				g_pHpGageTex[i] = nullptr;
+			}
+	}
 
 	//サウンドの破棄
 	delete g_AttackSound;
 	g_AttackSound = nullptr;
-
-	//エフェクトの破棄
-	for (int i = 0; i < (int)CharactersEffect::MAX; i++)
-	{
-		delete g_pCharacterEffects[i];
-		g_pCharacterEffects[i] = nullptr;
-	}
 }
 
 //キャラクターの基底クラスのコンストラクタ
@@ -288,7 +346,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
 	, m_tPos{ 0.0f, 0.0f, 0.0f }
-	, m_tOldPos{ 0.0f,0.0f,0.0f }
+	, m_tFirstPos{ 0.0f,0.0f,0.0f }
 	, m_tSize{ NORMAL_SIZE ,NORMAL_SIZE ,NORMAL_SIZE }
 	, m_nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
@@ -299,7 +357,6 @@ CFighter::CFighter(int InCornerCount)
 	, m_fAtkAnimationMaxTime(0.0f)
 	, m_bIsHit(false)
 	, m_pHpGage{}
-	, m_pEffect{}
 	, m_nTargetNumber(-1)
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
@@ -307,9 +364,9 @@ CFighter::CFighter(int InCornerCount)
 	, m_pSourceAttack(nullptr)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
-	, m_bAttackEffectPlay(false)
-	, m_fEffectTimer(0.0f)
+	//, m_tEffect{}
 	, m_pModel(nullptr)
+	, m_tDestinationPos()
 {
 	//サウンドの設定
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
@@ -321,16 +378,10 @@ CFighter::CFighter(int InCornerCount)
 CFighter::~CFighter()
 {
 	//Hpポインタの破棄
-	delete m_pHpGage;
-	m_pHpGage = nullptr;
-
-	//エフェクトの破棄
-	for (int i = 0; i < (int)CharactersEffect::MAX; i++)
+	if (m_pHpGage)
 	{
-		if (m_pEffect[i])
-		{
-			m_pEffect[i] = nullptr;
-		}
+		delete m_pHpGage;
+		m_pHpGage = nullptr;
 	}
 
 	//サウンドの破棄
@@ -347,6 +398,15 @@ CFighter::~CFighter()
 	{
 		m_pModel = nullptr;
 	}
+
+	//エフェクトの破棄
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//	{
+	//		m_tEffect[i].m_pEffect = nullptr;
+	//	}
+	//}
 }
 
 //攻撃の当たり判定チェック
@@ -446,13 +506,13 @@ bool CFighter::OverlapCheck(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize)
 {
 	//サイズを重なり用に調整
 	DirectX::XMFLOAT3 Size;
-	Size.x = m_tSize.x * 0.2f;
-	Size.y = m_tSize.y * 0.2f;
-	Size.z = m_tSize.z * 0.2f;
+	Size.x = m_tSize.x * 1.5f;
+	Size.y = m_tSize.y * 1.5f;
+	Size.z = m_tSize.z * 1.5f;
 
-	InSize.x = InSize.x * 0.2f;
-	InSize.y = InSize.y * 0.2f;
-	InSize.z = InSize.z * 0.2f;
+	InSize.x = InSize.x * 1.5f;
+	InSize.y = InSize.y * 1.5f;
+	InSize.z = InSize.z * 1.5f;
 
 		/*自分の左端 <= 相手の左端*/
 	if (m_tPos.x - Size.x <= InPos.x - InSize.x	
@@ -517,6 +577,12 @@ void CFighter::Damage(CFighter* pFighter)
 	}
 }
 
+//void CFighter::PlayDeathEffect(void)
+//{
+//	m_tEffect[(int)FighterEffect::Death].m_pEffect->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
+//	m_tEffect[(int)FighterEffect::Death].m_bEffectPlay = true;
+//}
+
 //味方クラスのコンストラクタ
 CAlly::CAlly(int InCornerCount)
 	:CFighter(InCornerCount)
@@ -525,18 +591,24 @@ CAlly::CAlly(int InCornerCount)
 	SettingStatus();
 	//Hpのポインタの作成
 	m_pHpGage = new CHpUI(m_fHp,CHpUI::Ally);
-	//角数ごとに同期するモデルポインタを変更
+	//角数ごとに同期するポインタを変更
 	switch (m_nCornerCount)
 	{
 	case 3:
+		//モデル
 		m_pModel = g_pAllyModel[(int)Ally::Ally3];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::SwordAtk];
 		break;
 	case 4:
+		//モデル
 		m_pModel = g_pAllyModel[(int)Ally::Ally4];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::BowAtk];
 		break;
 	}
-	//攻撃エフェクトのポインタ同期
-	m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::FighterAttack];
+	//m_tEffect[(int)FighterEffect::Move].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Move];
+	//m_tEffect[(int)FighterEffect::Death].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Death];
 }
 
 //味方クラスのデストラクタ
@@ -561,17 +633,17 @@ void CAlly::Update(void)
 	}
 
 	//エフェクトの更新
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if(m_pEffect[i])
-		m_pEffect[i]->Update();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if(m_tEffect[i].m_pEffect)
+	//	m_tEffect[i].m_pEffect->Update();
+	//}
 }
 
 void CAlly::Draw(void)
 {
 	//体力ゲージの描画
-	m_pHpGage->Draw();
+	m_pHpGage->Draw(m_nCornerCount);
 
 	//キャラクターの描画
 	SetRender3D();
@@ -614,11 +686,11 @@ void CAlly::Draw(void)
 	}
 
 	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-		m_pEffect[i]->Draw();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//	m_tEffect[i].m_pEffect->Draw();
+	//}
 }
 //生成更新処理
 void CAlly::CreateUpdate(void)
@@ -648,11 +720,11 @@ void CAlly::BattleUpdate(void)
 			if (m_fAtkAnimationMaxTime <= m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 		//攻撃エフェクト
-		if (!m_bAttackEffectPlay)
-		{
-			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
-			m_bAttackEffectPlay = true;
-		}
+		//if (!m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay)
+		//{
+		//	m_tEffect[(int)FighterEffect::Attack].m_pEffect->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 5000);
+		//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = true;
+		//}
 		//攻撃音
 		if (!m_bTimeSoundStart)
 		{
@@ -663,16 +735,27 @@ void CAlly::BattleUpdate(void)
 			m_bTimeSoundStart = true;
 		}
 	}
-	//攻撃エフェクトの再生時間
-	if (m_bAttackEffectPlay)
-	{
-		m_fEffectTimer++;
-	}
-	if (m_fEffectTimer > 60.0f)
-	{
-		m_fTimeSound = 0.0f;
-		m_bAttackEffectPlay = false;
-	}
+	//エフェクトの再生時間
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_bEffectPlay)
+	//	{
+	//		m_tEffect[i].m_fEffectTimer++;
+	//	}
+	//}
+	//if (m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer > 5000.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Attack].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = false;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Move].m_fEffectTimer > 60.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Move].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Move].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Move].m_bEffectPlay = false;
+	//}
+	
 	//攻撃音の再生時間
 	if (m_bTimeSoundStart)
 	{
@@ -699,8 +782,24 @@ void CAlly::DeathUpdate(void)
 {
 	//死亡アニメーション
 	
+	//死亡エフェクトの再生時間
+	//if (m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer++;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Death].m_fEffectTimer > 60.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Death].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Death].m_bEffectPlay = false;
+	//}
+
+
 	//死亡アニメーションが終わったら
-	SetStatus(St_Delete);
+	//if (!m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+		SetStatus(St_Delete);
+	//}
 }
 
 //初期ステータス決め
@@ -777,14 +876,21 @@ CEnemy::CEnemy(int InCornerCount)
 	switch (m_nCornerCount)
 	{
 	case 3:
+		//モデル
 		m_pModel = g_pEnemyModel[(int)Enemy::Enemy1];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::SwordAtk];
 		break;
 	case 4:
+		//モデル
 		m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
+		//攻撃エフェクトのポインタ同期
+		//m_tEffect[(int)FighterEffect::Attack].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::BowAtk];
 		break;
 	}
-	//攻撃エフェクトのポインタ同期
-	m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::FighterAttack];
+	//m_tEffect[(int)FighterEffect::Move].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Move];
+	//m_tEffect[(int)FighterEffect::Death].m_pEffect = g_pCharacterEffects[(int)CharactersEffect::Death];
+
 }
 
 CEnemy::~CEnemy()
@@ -807,17 +913,17 @@ void CEnemy::Update(void)
 	}
 
 	//エフェクトの更新
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-			m_pEffect[i]->Update();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//		m_tEffect[i].m_pEffect->Update();
+	//}
 }
 
 void CEnemy::Draw(void)
 {
 	//体力ゲージの描画
-	m_pHpGage->Draw();
+	m_pHpGage->Draw(m_nCornerCount);
 
 	//キャラクターの描画
 	SetRender3D();
@@ -859,11 +965,11 @@ void CEnemy::Draw(void)
 		}
 	}
 	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-			m_pEffect[i]->Draw();
-	}
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_pEffect)
+	//		m_tEffect[i].m_pEffect->Draw();
+	//}
 }
 
 void CEnemy::CreateUpdate(void)
@@ -888,11 +994,11 @@ void CEnemy::BattleUpdate(void)
 			if (m_fAtkAnimationMaxTime == m_fAtkCharge)m_fAtkAnimationTime = 0;
 		}
 		//攻撃エフェクト
-		if (!m_bAttackEffectPlay)
-		{
-			m_pEffect[(int)FighterEffect::Attack]->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 60);
-			m_bAttackEffectPlay = true;
-		}
+		//if (!m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay)
+		//{
+		//	m_tEffect[(int)FighterEffect::Attack].m_pEffect->Play({ m_tPos.x, m_tPos.y, m_tPos.z - m_tSize.z / 2 }, 5000.0f);
+		//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = true;
+		//}
 		//攻撃音
 		if (!m_bTimeSoundStart)
 		{
@@ -903,16 +1009,26 @@ void CEnemy::BattleUpdate(void)
 			m_bTimeSoundStart = true;
 		}
 	}
-	//攻撃エフェクトの再生時間
-	if (m_bAttackEffectPlay)
-	{
-		m_fEffectTimer++;
-	}
-	if (m_fEffectTimer > 60.0f)
-	{
-		m_fTimeSound = 0.0f;
-		m_bAttackEffectPlay = false;
-	}
+	//エフェクトの再生時間
+	//for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//{
+	//	if (m_tEffect[i].m_bEffectPlay)
+	//	{
+	//		m_tEffect[i].m_fEffectTimer++;
+	//	}
+	//}
+	//if (m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer > 5000.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Attack].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Attack].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Attack].m_bEffectPlay = false;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Move].m_fEffectTimer > 60.0f)
+	//{
+	//	//m_tEffect[(int)FighterEffect::Move].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Move].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Move].m_bEffectPlay = false;
+	//}
 	//攻撃音の再生時間
 	if(m_bTimeSoundStart)
 	{
@@ -938,10 +1054,24 @@ void CEnemy::BattleUpdate(void)
 void CEnemy::DeathUpdate(void)
 {
 	//死亡アニメーション
-	
+
+	//死亡エフェクト
+	//if (m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer++;
+	//}
+	//if (m_tEffect[(int)FighterEffect::Death].m_fEffectTimer > 60.0f)
+	//{
+	//	m_tEffect[(int)FighterEffect::Death].m_pEffect->Stop();
+	//	m_tEffect[(int)FighterEffect::Death].m_fEffectTimer = 0.0f;
+	//	m_tEffect[(int)FighterEffect::Death].m_bEffectPlay = false;
+	//}
+
 	//死亡アニメーションが終わったら
-	SetStatus(St_Delete);
-	
+	//if (!m_tEffect[(int)FighterEffect::Death].m_bEffectPlay)
+	//{
+		SetStatus(St_Delete);
+	//}
 }
 
 void CEnemy::SettingStatus(void)
@@ -981,64 +1111,101 @@ void CEnemy::SettingStatus(void)
 	}
 }
 
-CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber)
+CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, bool SubModelCreate)
 	:m_tStatus(St_Create)
-	,m_tPos(FirstPos)
+	, m_pModel(nullptr)
+	, m_tPos()
+	, m_tSize()
+	, m_pSubModel(nullptr)
+	, m_tSubPos()
+	, m_tSubSize()
 	, m_fHp(300.0f)
 	, m_fMaxHp(m_fHp)
-	,m_nTextureNumber(InTextureNumber)
+	, m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
-	, m_nAnimationFrame(0)
 {
-	m_tSize.x = InSize;
-	m_tSize.y = InSize;
-	m_tSize.z = InSize;
-
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
 		m_pModel = g_pLeaderModel[(int)Leader::Linie];
-		m_pHpGage = new CHpUI(m_fHp,CHpUI::Player);
-		m_nAnimationFrame = 1;
-		m_nAnimationX = 8;
-		m_nAnimationY = 8;
+		m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
 		break;
 	case 1://ボス
 		m_pModel = g_pLeaderModel[1];
+		if (SubModelCreate)
+		{
+			m_pSubModel = g_pLeaderModel[2];
+		}
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
-		m_nAnimationFrame = 1;
-		m_nAnimationX = 1;
-		m_nAnimationY = 1;
 		break;
+
 	}
-
-	m_tUVPos = { 0.0f,0.0f };
-	m_tUVScale = { 1.0f / m_nAnimationX,1.0f / m_nAnimationY };
-
+	//メインモデルのサイズと位置
+	if (m_pModel)
+	{
+		switch (m_nTextureNumber)
+		{
+		case 0:
+			m_tPos.x = FirstPos.x;
+			m_tPos.y = FirstPos.y;
+			m_tPos.z = FirstPos.z - 5.0f;
+			m_tSize.x = InSize;
+			m_tSize.y = InSize;
+			m_tSize.z = InSize;
+			break;
+		case 1:
+			m_tPos.x = FirstPos.x ;
+			m_tPos.y = FirstPos.y;
+			m_tPos.z = FirstPos.z - 5.0f;
+			m_tSize.x = InSize;
+			m_tSize.y = InSize;
+			m_tSize.z = InSize;
+			break;
+		}
+	}
+	if (m_pSubModel)
+	{
+		m_tSubPos.x = FirstPos.x - 15.0f;
+		m_tSubPos.y = FirstPos.y + 0.5f;
+		m_tSubPos.z = FirstPos.z + 5.0f;
+		m_tSubSize.x = InSize;
+		m_tSubSize.y = InSize;
+		m_tSubSize.z = InSize;
+	}
 }
-
 CLeader::~CLeader()
 {
-	delete m_pHpGage;
-	m_pHpGage = nullptr;
+	if (m_pHpGage)
+	{
+		delete m_pHpGage;
+		m_pHpGage = nullptr;
+	}
+	if (m_pModel)
+	{
+		m_pModel = nullptr;
+	}
+	if (m_pSubModel)
+	{
+		m_pSubModel = nullptr;
+	}
 }
 
-void CLeader::Update(void)
+void CLeader::Update(bool IsStart, bool IsEnd)
 {
-	m_pHpGage->Update(m_fHp,{m_tPos.x,m_tPos.y,m_tPos.z},m_tSize.y);
+	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 
 	switch (m_tStatus)
 	{
 	case St_Create:CreateUpdate();
 		break;
-	case St_Battle:BattleUpdate();
+	case St_Battle:BattleUpdate(IsStart, IsEnd);
 		break;
 	case St_Death:DeathUpdate();
 		break;
 	}
 }
 
-void CLeader::Draw()
+void CLeader::Draw(int StageNum)
 {
 	switch (m_nTextureNumber)
 	{
@@ -1048,7 +1215,7 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x , m_tPos.y, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
@@ -1091,15 +1258,36 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y, m_tPos.z, 0.0f));
-			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f);
-			//回転行列(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			DirectX::XMMATRIX T, S, R;
+			
+			switch (StageNum)
+			{
+			case 0:
+				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 8.0f, m_tPos.y - 10.0f, m_tPos.z, 0.0f));
+				//拡大縮小行列(Scaling)
+				S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
+				//回転行列(Rotation)
+				R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				break;
+			case 1:
+				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y - 17.0f, m_tPos.z + 6.0f, 0.0f));
+				//拡大縮小行列(Scaling)
+				 S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
+				//回転行列(Rotation)
+				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				break;
+			case 2:
+				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x + 2.0f, m_tPos.y - 5.0f, m_tPos.z, 0.0f));
+				//拡大縮小行列(Scaling)
+				 S = DirectX::XMMatrixScaling(0.35f, 0.35f, 0.35f);
+				//回転行列(Rotation)
+				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(1.0f), DirectX::XMConvertToRadians(170.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				break;
+			}
 			//それぞれの行列を掛け合わせて格納
 			DirectX::XMMATRIX mat = S * R * T;
-
 			world = mat;
+			
 
 			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 			wvp[1] = GetView();
@@ -1131,7 +1319,7 @@ void CLeader::Draw()
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y + 15.0f, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x , m_tPos.y, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
@@ -1166,6 +1354,46 @@ void CLeader::Draw()
 				}
 			}
 		}
+		if (m_pSubModel)
+		{
+			SetRender3D();
+			DirectX::XMFLOAT4X4 wvp[3];
+			DirectX::XMMATRIX world;
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x, m_tSubPos.y, m_tSubPos.z , 0.0f));
+			//拡大縮小行列(Scaling)
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
+			//回転行列(Rotation)
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+			//それぞれの行列を掛け合わせて格納
+			DirectX::XMMATRIX mat = S * R * T;
+
+			world = mat;
+
+			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+			wvp[1] = GetView();
+			wvp[2] = GetProj();
+
+			Geometory::SetView(wvp[1]);
+			Geometory::SetProjection(wvp[2]);
+
+			ShaderList::SetWVP(wvp);
+
+			m_pSubModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pSubModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+			for (int i = 0; i < m_pSubModel->GetMeshNum(); ++i)
+			{
+				Model::Material material = *m_pSubModel->GetMaterial(m_pSubModel->GetMesh(i)->materialID);
+				material.ambient.x = 0.85f; // x (r) 
+				material.ambient.y = 0.85f; // y (g) 
+				material.ambient.z = 0.85f; // z (b) 
+				ShaderList::SetMaterial(material);
+
+				if (m_pSubModel) {
+					m_pSubModel->Draw(i);
+				}
+			}
+		}
 		break;
 	}
 /*Modelテスト用*/
@@ -1176,7 +1404,9 @@ void CLeader::Draw()
 	////拡大縮小行列(Scaling)
 	//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
 	////回転行列(Rotation)
-	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(180.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	//if (IsKeyPress('K'))Y -= 1.0f;
+	//if (IsKeyPress('L'))Y += 1.0f;
+	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(Y), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	////それぞれの行列を掛け合わせて格納
 	//DirectX::XMMATRIX mat = S * R * T;
 }
@@ -1201,10 +1431,46 @@ void CLeader::CreateUpdate(void)
 
 }
 
-void CLeader::BattleUpdate(void)
+void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 {
-	//待機アニメーション
+	////待機アニメーション
+	//switch (m_nTextureNumber)
+	//{
+	//case 0:
 
+	//	//筆を離す
+	//	if (IsStart)
+	//	{
+	//		if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+	//		{
+	//			m_pModel->Step(-0.01f);
+	//		}
+	//		else
+	//		{
+	//			m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
+	//			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	//			m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
+	//			
+	//		}
+	//	}
+	//	//筆を持つ
+	//	if (IsEnd)
+	//	{
+	//		if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+	//		{
+	//			m_pModel->Step(0.01f);
+	//		}
+	//		else
+	//		{
+	//			m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
+	//			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+	//			m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+	//			
+	//			
+	//		}
+	//	}
+	//	break;
+	//}
 	//HPUIの更新処理
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 }
@@ -1218,10 +1484,13 @@ void CLeader::DeathUpdate(void)
 }
 
 CHpUI::CHpUI(float FullHp, HpUINumber Number)
-	:m_fFullHp(FullHp)
+	:m_fNowHp(FullHp)
+	,m_fFullHp(FullHp)
 	,m_tUIPos()
 	,m_tUIScale()
 	,m_tNumber(Number)
+	,m_fAnchorPoint()
+
 {
 	m_pSprite = new Sprite();
 
@@ -1239,7 +1508,7 @@ CHpUI::CHpUI(float FullHp, HpUINumber Number)
 		break;
 	case CHpUI::Bos:
 	case CHpUI::Player:
-		m_tUIScale.y = 3.0f;
+		m_tUIScale.y = 4.0f;
 		m_tUIScale.z = 1.0f;
 		m_fAnchorPoint = 8.0f;
 		break;
@@ -1248,56 +1517,79 @@ CHpUI::CHpUI(float FullHp, HpUINumber Number)
 
 CHpUI::~CHpUI()
 {
+	if (m_pSprite)
+	{
+		delete m_pSprite;
+		m_pSprite = nullptr;
+	}
 }
 
 void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 {
-	int HpRatio = 0;
+int HpRatio = 0;
+	m_fNowHp = InHp;
 
 	switch (m_tNumber)
 	{
 	case CHpUI::Ally:
-		m_tUIPos.x = InPos.x;
+		HpRatio =  4.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = InPos.x + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 4.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
 		break;
 	case CHpUI::Enemy:
-		m_tUIPos.x = InPos.x;
+		HpRatio =  4.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = InPos.x - m_tUIScale.x + (m_fNowHp / m_fFullHp) * m_tUIScale.x;
 		m_tUIPos.y = InPos.y + InSizeY - 1.0f;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 4.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 4.0f;
 		break;
 	case CHpUI::Bos:
-		m_tUIPos.x = InPos.x + 8.0f;
-		m_tUIPos.y = InPos.y + 20.0f - 34.8f;
+		HpRatio =  102.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = ( (InPos.x + 8.6f) + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x) - 47.0f;
+		//m_tUIPos.x = (InPos.x + 8.6f) - 44.0f;
+		m_tUIPos.y = -5.0;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 95.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 106.0f;
 		break;
 	case CHpUI::Player:
-		m_tUIPos.x = InPos.x - 8.0f;
-		m_tUIPos.y = InPos.y + 20.0f - 34.8f;
+		HpRatio =  102.0f;
+		m_tUIScale.x = HpRatio;
+		m_tUIPos.x = ((InPos.x - 8.6f) + (m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x) * -1) + 47.0f;
+		//m_tUIPos.x = (InPos.x - 8.6f) + 44.0f;
+		m_tUIPos.y = -5.0;
 		m_tUIPos.z = InPos.z;
-		HpRatio = (InHp / m_fFullHp) * 95.0f;
+		//HpRatio = (m_fNowHp / m_fFullHp) * 106.0f;
 		break;
 	}
 
-
-	m_tUIScale.x = HpRatio;
 }
 
-void CHpUI::Draw(void)
+void CHpUI::Draw(int nCornerCount)
 {
 	SetRender2D();
 	switch (m_tNumber)
 	{
 	case CHpUI::Ally:
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[0][0]);
-
+		if (nCornerCount == 3)
+		{
+			m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Ally1]);
+		}
+		else if (nCornerCount == 4)
+		{
+			m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Ally2]);
+		}
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
+
+		DrawSetting({ m_tUIPos.x ,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1306,11 +1598,22 @@ void CHpUI::Draw(void)
 		break;
 	case CHpUI::Enemy:
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[1][0]);
+		if (nCornerCount == 3)
+		{
+			m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Enemy1]);
+		}
+		else if (nCornerCount == 4)
+		{
+			m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Enemy2]);
+		}
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
+
+		//DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x,m_tUIPos.y,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1319,22 +1622,29 @@ void CHpUI::Draw(void)
 		break;
 	case CHpUI::Bos:
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[1][(int)HpTexture::Gage]);
+		m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Boss]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x + (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ 1.0f - (m_fNowHp / m_fFullHp),0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
+
+		//DrawSetting({ m_tUIPos.x + (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x,m_tUIPos.y - 5.0f ,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
 		m_pSprite->ReSetSprite();
 
 		//ベース(Top)の描画
-		m_pSprite->SetTexture(g_pHpGageTex[1][(int)HpTexture::Top]);
+		m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Frame]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - 40.0f,m_tUIPos.y,m_tUIPos.z }, { 100.0f,15.0f,5.0f }, m_pSprite);
+		m_pSprite->SetUVPos({ 0.0f,0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
+
+		DrawSetting({ 0.0f ,-5.0f,0.0f }, { 216.0f,21.0f,10.0f }, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1344,22 +1654,16 @@ void CHpUI::Draw(void)
 
 	case CHpUI::Player:
 		//ゲージの描画
-		m_pSprite->SetTexture(g_pHpGageTex[0][(int)HpTexture::Gage]);
+		m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Linie]);
 
 		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
-		DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		m_pSprite->SetUVPos({ -1.0f + (m_fNowHp / m_fFullHp),0.0f });
+		//m_pSprite->SetUVPos({ 0.0f ,0.0f });
+		m_pSprite->SetUVScale({ 1.0f ,1.0f });
 
-		m_pSprite->Draw();
-
-		m_pSprite->ReSetSprite();
-
-		//ベース(Top)の描画
-		m_pSprite->SetTexture(g_pHpGageTex[0][(int)HpTexture::Top]);
-
-		m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-
-		DrawSetting({ m_tUIPos.x + 40.0f,m_tUIPos.y,m_tUIPos.z }, { 100.0f,15.0f,5.0f }, m_pSprite);
+		//DrawSetting({ m_tUIPos.x - (m_fAnchorPoint - (m_tUIScale.x / 2)),m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
+		DrawSetting({ m_tUIPos.x ,m_tUIPos.y - 5.0f,m_tUIPos.z + 0.1f }, m_tUIScale, m_pSprite);
 
 		m_pSprite->Draw();
 
@@ -1367,7 +1671,6 @@ void CHpUI::Draw(void)
 
 		break;
 	}
-
 }
 
 void CHpUI::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize,Sprite* Sprite)

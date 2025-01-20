@@ -1,7 +1,7 @@
 #include "ModelEx.h"
 #include "Main.h"
 
-CModelEx::CModelEx(const char *ModelFile, bool isAnime)
+CModelEx::CModelEx(const char *ModelFile, bool isAnime,Model::Flip flip)
 	: T{}, S{}, R{}, mat{}
 	, world{}, view{}, proj{}, wvp{}
 	, tX(0.0f), tY(0.0f), tZ(0.0f)
@@ -11,7 +11,7 @@ CModelEx::CModelEx(const char *ModelFile, bool isAnime)
 {
 
 	CModel = new Model();
-	if (!CModel->Load(ModelFile))MessageBox(NULL, ModelFile, "読み込みエラー", MB_OK);
+	if (!CModel->Load(ModelFile,1.0f,flip))MessageBox(NULL, ModelFile, "読み込みエラー", MB_OK);
 	if (isAnime)
 	{
 		Model::AnimeNo anime = CModel->AddAnimation(ModelFile);
