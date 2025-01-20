@@ -45,6 +45,7 @@ CSceneTitle::CSceneTitle()
 	tex->Create("Assets/Texture/Title/Title_Logo.png");*/
 	m_pTitleLogo		 = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
 	m_pTitleBack		 = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
+	m_pLini				 = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 	m_pTitleFrame		 = new SpriteEx("Assets/Texture/Title/Title_Selected.png");
 	m_pTitleUnderbar	 = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
 	m_pTitleStart[0]	 = new SpriteEx("Assets/Texture/Title/Title_First.png");
@@ -69,6 +70,8 @@ CSceneTitle::CSceneTitle()
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
+	m_pLini->SetProjection(Get2DProj());
+	m_pLini->SetView(Get2DView());
 	m_pTitleBack->SetProjection(Get2DProj());
 	m_pTitleBack->SetView(Get2DView());
 	m_pTitleFrame->SetProjection(Get2DProj());
@@ -145,6 +148,7 @@ CSceneTitle::~CSceneTitle()
 		m_pTitleLogo = nullptr;
 	}
 	SAFE_DELETE(m_pTitleBack);
+	SAFE_DELETE(m_pLini);
 
 }
 
@@ -320,6 +324,13 @@ void CSceneTitle::Draw()
 	m_pTitleBack->SetSize(1920.0f, -1080.0f, 0.0f);
 	m_pTitleBack->Disp();
 
+	m_pLini->SetTexture();
+	m_pLini->SetProjection(Get2DProj());
+	m_pLini->SetView(Get2DView());
+	m_pLini->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
+	m_pLini->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pLini->Disp();
+
 	m_pTitleLogo->SetTexture();
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
@@ -468,6 +479,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pTitleEnd[1] = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
 	SAFE_DELETE(m_pTitleBack);
 	m_pTitleBack = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
+	SAFE_DELETE(m_pLini);
+	m_pLini = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{

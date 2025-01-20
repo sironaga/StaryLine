@@ -34,6 +34,7 @@ private:
 private:
 	SpriteEx* m_pTitleLogo;
 	SpriteEx* m_pTitleBack;
+	SpriteEx* m_pLini;
 	SpriteEx* m_pTitleFrame;
 	SpriteEx* m_pTitleUnderbar;
 	SpriteEx* m_pTitleStart[2];
