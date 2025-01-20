@@ -50,10 +50,12 @@ CSceneGame::CSceneGame(StageType StageNum)
 	m_pPlayer = new CPlayer();
 	m_pBattle = new CBattle();
 	m_pField = new Field(StageNum);
+	m_pStarLine = new StarLine();
 
 	m_pFieldVertex->SetBattleAddress(m_pBattle);
 	m_pFieldVertex->SetPlayerAddress(m_pPlayer);
 	m_pPlayer->SetFieldVertexAddress(m_pFieldVertex);
+	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
 	SetFileAddress(m_pBattle);
 
 	InitCharacterTexture(m_pFieldVertex, StageNum);//キャラクターテクスチャ～の初期化
@@ -190,6 +192,7 @@ void CSceneGame::Update()
 
 		if (t == 30.0f)
 		{
+			m_pStarLine->SetLineMode(1);
 			m_pSourseGameBGM->Stop();
 			m_pSourseFeverBGM->FlushSourceBuffers();
 			XAUDIO2_BUFFER buffer;
@@ -209,6 +212,7 @@ void CSceneGame::Update()
 	//毎描画開始時スーパースターをセット
 	if ((float)SHAPE_DRAW_START * 60.0f /* + g_tTime.GameSTimeSycleEnd */ == g_tTime.GameTime)
 	{
+		m_pStarLine->SetLineMode(0);
 		m_pBattle->SetDrawingStart(false);
 		m_pBattle->SetDrawingEnd(true);
 		m_pEffect->Play({ m_pPlayer->GetPlayerPos().x, m_pPlayer->GetPlayerPos().y, m_pPlayer->GetPlayerPos().z });

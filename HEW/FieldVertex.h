@@ -45,6 +45,7 @@ public:
 
 	void SetBattleAddress(CBattle*);//CBattleクラスのアドレス情報をセットする関数
 	void SetPlayerAddress(CPlayer*);//CPlayerクラスのアドレス情報をセットする関数
+	void SetStarLineAddress(StarLine*);//StarLineクラスのアドレス情報をセットする関数
 
 	void InitFieldVertex();//ゲーム中にFieldVertexの情報初期化する
 	void ResetFeverPoint();//フィーバーポイントをリセットする関数
@@ -128,6 +129,7 @@ private:
 
 	CBattle* m_pBattle;//バトルクラスのポインター
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
+	StarLine* m_pStarLine;
 
 	Texture* m_pTex_SuperStar_Number[6];
 	Texture* m_pTex_Fever_Gage[4];
@@ -143,5 +145,5 @@ private:
 
 	CEffectManager* m_pEffect;
 	CModelEx* m_pStar_Model[3];//Starのモデル
-	StarLine* m_pStarLine;
+	
 };
