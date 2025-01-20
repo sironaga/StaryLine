@@ -14,17 +14,19 @@ enum E_SELECT_STAGETYPE
 {
 	GRASSLAND = 0,
 	DESERT,
-	SNOWFIELD,
-	GRASSLANDBACK,
-	DESERTBACK
+	SNOWFIELD
 };
 enum E_SELECT_STAGENUMBER
 {
-	STAGE1 = 0,
-	STAGE2,
-	STAGE3,
-	STAGE1BACK,
-	STAGE2BACK
+	GRASSLAND_STAGE1 = 0,
+	GRASSLAND_STAGE2,
+	GRASSLAND_STAGE3,
+	DESERT_STAGE1,
+	DESERT_STAGE2,
+	DESERT_STAGE3,
+	SNOWFIELD_STAGE1,
+	SNOWFIELD_STAGE2,
+	SNOWFIELD_STAGE3
 };
 
 class CStageSelect : public CScene
@@ -40,11 +42,7 @@ private:
 	SpriteEx* m_pGrassLand;
 	SpriteEx* m_pDesert;
 	SpriteEx* m_pSnowField;
-	SpriteEx* m_pGrassLandBack;
-	SpriteEx* m_pDesertBack;
-	SpriteEx* m_pSnowFieldBack;
 	SpriteEx* m_pGrassLandStage[3];
-	SpriteEx* m_pGrassLandStageBack[2];
 	SpriteEx* m_pDesertStage[3];
 	SpriteEx* m_pSnowFieldStage[3];
 	SpriteEx* m_pRight_Select;

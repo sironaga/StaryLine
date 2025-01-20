@@ -525,15 +525,15 @@ void CBattle::TimeLapse(void)
 		case (int)E_SELECT_STAGETYPE::GRASSLAND:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:
+			case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE1:
 				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_1; 
 				m_nSpawnTime += (int)NEXTSPAWN::Stage1_1; 
 				break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:
+			case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE2:
 				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_2; 
 				m_nSpawnTime += (int)NEXTSPAWN::Stage1_2;
 				break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:
+			case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE3:
 				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage1_3;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage1_3;
 				break;
@@ -542,15 +542,15 @@ void CBattle::TimeLapse(void)
 		case (int)E_SELECT_STAGETYPE::DESERT:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:
+			case (int)E_SELECT_STAGENUMBER::DESERT_STAGE1:
 				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_1;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage2_1;
 				break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:
+			case (int)E_SELECT_STAGENUMBER::DESERT_STAGE2:
 				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_2;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage2_2;
 				break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:
+			case (int)E_SELECT_STAGENUMBER::DESERT_STAGE3:
 				m_nCreateEnemyNum = (int)ENEMY_SPAWNNUM::Stage2_3;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage2_3;
 				break;
@@ -559,15 +559,15 @@ void CBattle::TimeLapse(void)
 		case (int)E_SELECT_STAGETYPE::SNOWFIELD:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:
+			case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE1:
 				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_1;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage3_1;
 				break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:
+			case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE2:
 				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_2;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage3_2;
 				break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:
+			case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE3:
 				m_nCreateEnemyNum= (int)ENEMY_SPAWNNUM::Stage3_3;
 				m_nSpawnTime += (int)NEXTSPAWN::Stage3_3;
 				break;
@@ -619,25 +619,25 @@ void CBattle::CreateEnemy(void)
 		case (int)E_SELECT_STAGETYPE::GRASSLAND:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage1_1; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage1_2; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage1_3; break;
+			case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage1_1; break;
+			case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage1_2; break;
+			case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage1_3; break;
 			}
 			break;
 		case (int)E_SELECT_STAGETYPE::DESERT:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage2_1; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage2_2; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage2_3; break;
+			case (int)E_SELECT_STAGENUMBER::DESERT_STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage2_1; break;
+			case (int)E_SELECT_STAGENUMBER::DESERT_STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage2_2; break;
+			case (int)E_SELECT_STAGENUMBER::DESERT_STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage2_3; break;
 			}
 			break;
 		case (int)E_SELECT_STAGETYPE::SNOWFIELD:
 			switch (m_nStageNum.StageSubNumber)
 			{
-			case (int)E_SELECT_STAGENUMBER::STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage3_1; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage3_2; break;
-			case (int)E_SELECT_STAGENUMBER::STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage3_3; break;
+			case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE1:Probability = (int)ENEMY_PROBABILITY::Stage3_1; break;
+			case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE2:Probability = (int)ENEMY_PROBABILITY::Stage3_2; break;
+			case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE3:Probability = (int)ENEMY_PROBABILITY::Stage3_3; break;
 			}
 			break;
 		}
