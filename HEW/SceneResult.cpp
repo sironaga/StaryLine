@@ -315,11 +315,24 @@ void CSceneResult::Update()
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
 			{
 				StageLevel.StageSubNumber++;
-				if (StageLevel.StageSubNumber > 3)
+				if (StageLevel.StageSubNumber < 3)
 				{
-					StageLevel.StageSubNumber = 1;
-					StageLevel.StageMainNumber++;
+					StageLevel.StageMainNumber = 0
+				}else
+				if (StageLevel.StageSubNumber < 6)
+				{
+					StageLevel.StageMainNumber = 1;
+				}else
+				if (StageLevel.StageSubNumber < 9)
+				{
+					StageLevel.StageSubNumber = 2;
 				}
+				else
+				{
+					SetNext(STAGE_SELECT);
+				}
+				
+				
 				SetNext(SCENE_GAME, StageLevel);
 			}
 
