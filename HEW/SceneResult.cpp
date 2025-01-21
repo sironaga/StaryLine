@@ -6,6 +6,9 @@
 #include"InputEx.h"
 #include"Easing.h"
 
+// 変数きれいにする！！！！！！！！！！！！！！！！！
+
+
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
@@ -14,7 +17,7 @@ CSceneResult::CSceneResult()
 	:nAnimationFrame(0),nDefAnimation(0),bDefAnimation(false),nCounter(0)
 {
 	// デバッグ
-	ResultGameData.bWin = 0;
+	//ResultGameData.bWin = 0;
 
 	// --- テクスチャの読み込み
 	// -- Default
@@ -412,6 +415,7 @@ void CSceneResult::Update()
 	m_pBack->SetView(Get2DView());
 	m_pStar->SetProjection(Get2DProj());
 	m_pStar->SetView(Get2DView());
+
 
 }
 
