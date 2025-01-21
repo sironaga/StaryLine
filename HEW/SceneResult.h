@@ -5,6 +5,7 @@
 #include"SpriteEx.h"
 #include"Main.h"
 #include"NumberUI.h"
+#include "SoundList.h"
 
 class CSceneResult : public CScene
 {
@@ -16,6 +17,10 @@ public:
 	static void InResultData(ResultGameInfo InData);
 	static void InStageLevel(StageType InLevel);
 
+private:
+	void WinAnimation(void);
+	void LoseAnimation(void);
+	void NumberDisp(void);
 private:
 	// --- èüîsä÷åWñ≥ÇµÇ…ïœÇÌÇÁÇ»Ç¢Ç‚Ç¬
 	SpriteEx* m_pHitPoint;
@@ -38,6 +43,9 @@ private:
 	// --- ïœêî
 	int nAnimationTimer;
 	int nAnimationFrame;
+	int nCounter;
+	int nDefAnimation;
+	bool bDefAnimation;
 	int nSlect; 
 	float CScle;
 	float nCount;
@@ -48,7 +56,10 @@ private:
 	float fTime;
 	float fCTime;
 
-
+	CSoundList* m_pResultSound;
+	IXAudio2SourceVoice* m_pResultBGM;
+	CSoundList* m_pResultSelectSound;
+	IXAudio2SourceVoice* m_pResultSelectSE;
 	CNumberUI* m_pNumber;
 
 	static StageType StageLevel; 

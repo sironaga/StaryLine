@@ -195,60 +195,65 @@ void CPlayer::Draw()
 		Sprite::ReSetSprite();
 	}
 
-	DirectX::XMFLOAT3 starPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
-	DirectX::XMFLOAT2 arrowPos = { starPos.x ,starPos.y };
-	switch (m_eDestination)
-	{
-	case CPlayer::UP: 
-		arrowPos.y = starPos.y + ARROW_AJUST_POS + m_tAjustPos.y;
-		break;
-	case CPlayer::UPRIGHT:
-		arrowPos.x = starPos.x + ARROW_AJUST_POS + m_tAjustPos.x;
-		arrowPos.y = starPos.y + ARROW_AJUST_POS + m_tAjustPos.y;
-		break;
-	case CPlayer::RIGHT:
-		arrowPos.x = starPos.x + ARROW_AJUST_POS + m_tAjustPos.x;
-		break;
-	case CPlayer::DOWNRIGHT:
-		arrowPos.x = starPos.x + ARROW_AJUST_POS + m_tAjustPos.x;
-		arrowPos.y = starPos.y - ARROW_AJUST_POS + m_tAjustPos.y - ARROW_BRUSH_AJUST_Y;
-		break;
-	case CPlayer::DOWN:
-		arrowPos.y = starPos.y - ARROW_AJUST_POS + m_tAjustPos.y - ARROW_BRUSH_AJUST_Y;
-		break;
-	case CPlayer::DOWNLEFT:
-		arrowPos.x = starPos.x - ARROW_AJUST_POS + m_tAjustPos.x;
-		arrowPos.y = starPos.y - ARROW_AJUST_POS + m_tAjustPos.y - ARROW_BRUSH_AJUST_Y;
-		break;
-	case CPlayer::LEFT:
-		arrowPos.x = starPos.x - ARROW_AJUST_POS + m_tAjustPos.x;
-		break;
-	case CPlayer::UPLEFT:
-		arrowPos.x = starPos.x - ARROW_AJUST_POS + m_tAjustPos.x;
-		arrowPos.y = starPos.y + ARROW_AJUST_POS + m_tAjustPos.y;
-		break;
-	case CPlayer::DEFAULT:
-		arrowPos.x = starPos.x;
-		arrowPos.y = starPos.y;
-		break;
-	default:
-		break;
-	}
-
-	float deg = m_eDestination * (360.0f / 8.0f);
-	m_pArrowParam.rotate.z = DirectX::XMConvertToRadians(deg);
-	m_pArrowParam.size = { ARROW_SIZE ,ARROW_SIZE,ARROW_SIZE };
-
-	m_pArrowModel->SetPostion(arrowPos.x, arrowPos.y, m_tBrushPos.z);
-	m_pArrowModel->SetScale(m_pArrowParam.size.x, m_pArrowParam.size.y, m_pArrowParam.size.z);
-	m_pArrowModel->SetRotation(m_pArrowParam.rotate.x, m_pArrowParam.rotate.y, -m_pArrowParam.rotate.z);
-	m_pArrowModel->SetViewMatrix(GetView());
-	m_pArrowModel->SetProjectionMatrix(GetProj());
-	/*if(m_eArrowState == SELECTED)*/
-	m_pArrowModel->Draw();
-
-	/* プレイヤーの描画 */
 	SetRender3D();											// 3D表現のセット
+
+	if (GetTimeStart() || GetTime() == -1.0f)
+	{
+		DirectX::XMFLOAT3 starPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
+		DirectX::XMFLOAT2 arrowPos = { starPos.x ,starPos.y };
+		switch (m_eDestination)
+		{
+		case CPlayer::UP:
+			arrowPos.y = starPos.y + ARROW_AJUST_POS + m_tAjustPos.y;
+			break;
+		case CPlayer::UPRIGHT:
+			arrowPos.x = starPos.x + ARROW_AJUST_POS + m_tAjustPos.x;
+			arrowPos.y = starPos.y + ARROW_AJUST_POS + m_tAjustPos.y;
+			break;
+		case CPlayer::RIGHT:
+			arrowPos.x = starPos.x + ARROW_AJUST_POS + m_tAjustPos.x;
+			break;
+		case CPlayer::DOWNRIGHT:
+			arrowPos.x = starPos.x + ARROW_AJUST_POS + m_tAjustPos.x;
+			arrowPos.y = starPos.y - ARROW_AJUST_POS + m_tAjustPos.y - ARROW_BRUSH_AJUST_Y;
+			break;
+		case CPlayer::DOWN:
+			arrowPos.y = starPos.y - ARROW_AJUST_POS + m_tAjustPos.y - ARROW_BRUSH_AJUST_Y;
+			break;
+		case CPlayer::DOWNLEFT:
+			arrowPos.x = starPos.x - ARROW_AJUST_POS + m_tAjustPos.x;
+			arrowPos.y = starPos.y - ARROW_AJUST_POS + m_tAjustPos.y - ARROW_BRUSH_AJUST_Y;
+			break;
+		case CPlayer::LEFT:
+			arrowPos.x = starPos.x - ARROW_AJUST_POS + m_tAjustPos.x;
+			break;
+		case CPlayer::UPLEFT:
+			arrowPos.x = starPos.x - ARROW_AJUST_POS + m_tAjustPos.x;
+			arrowPos.y = starPos.y + ARROW_AJUST_POS + m_tAjustPos.y;
+			break;
+		case CPlayer::DEFAULT:
+			arrowPos.x = starPos.x;
+			arrowPos.y = starPos.y;
+			break;
+		default:
+			break;
+		}
+
+		float deg = m_eDestination * (360.0f / 8.0f);
+		m_pArrowParam.rotate.z = DirectX::XMConvertToRadians(deg);
+		m_pArrowParam.size = { ARROW_SIZE ,ARROW_SIZE,ARROW_SIZE };
+
+		m_pArrowModel->SetPostion(arrowPos.x, arrowPos.y, m_tBrushPos.z);
+		m_pArrowModel->SetScale(m_pArrowParam.size.x, m_pArrowParam.size.y, m_pArrowParam.size.z);
+		m_pArrowModel->SetRotation(m_pArrowParam.rotate.x, m_pArrowParam.rotate.y, -m_pArrowParam.rotate.z);
+		m_pArrowModel->SetViewMatrix(GetView());
+		m_pArrowModel->SetProjectionMatrix(GetProj());
+		/*if(m_eArrowState == SELECTED)*/
+		if(!(m_eDestination == CPlayer::DEFAULT))m_pArrowModel->Draw();//DEFAULTを表示しない
+
+	}
+	/* プレイヤーの描画 */
+	
 	DrawModel();											// プレイヤー(筆)の描画
 
 	/* エフェクトの描画 */
@@ -374,7 +379,7 @@ void CPlayer::UpdateMove()
 void CPlayer::DrawModel()
 {
 	// アニメーション
-	if (m_bDrawing)	// 作図中のとき
+	if (m_bDrawing || GetTime() == -1.0f)	// 作図中のとき
 	{
 		if (m_fBrushSize >= 1.0f) m_fBrushSize = 1.0f;
 		else m_fBrushSize += 0.05f;

@@ -5,6 +5,7 @@
 #include "Geometory.h"
 #include "ShaderList.h"
 #include "Input.h"
+#include "StageSelect.h"
 
 //キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((m_tSize.x *(Num / 2)) + (m_tSize.x))
@@ -122,15 +123,15 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)
 	{
-	case 0://草原
+	case (int)E_SELECT_STAGETYPE::GRASSLAND://草原
 		
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
 		{
 			g_pEnemyModel[i] = new Model();
 		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/Idiot1/Stage1/Stage1_Idiot1.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/Idiot2/Stage1/Stage1_Idiot2.fbx"), 0.05f, Model::None);
 		g_pHpGageTex[(int)HpTexture::Enemy1] = new Texture();
 		g_pHpGageTex[(int)HpTexture::Enemy1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_QrackerS.png"));
 		g_pHpGageTex[(int)HpTexture::Enemy2] = new Texture();
@@ -153,32 +154,32 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 
 		switch (StageType.StageSubNumber)
 		{
-		case 0:
+		case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE1:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
-		case 1:
+		case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE2:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
-		case 2:
+		case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE3:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss01_Chariot.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
-	case 1://砂漠
+	case (int)E_SELECT_STAGETYPE::DESERT://砂漠
 
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
 		{
 			g_pEnemyModel[i] = new Model();
 		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/Idiot1/Stage2/Stage2_Idiot1.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/Idiot2/Stage2/Stage2_Idiot2.fbx"), 0.05f, Model::None);
 		g_pHpGageTex[(int)HpTexture::Enemy1] = new Texture();
 		g_pHpGageTex[(int)HpTexture::Enemy1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_NugarS.png"));
 		g_pHpGageTex[(int)HpTexture::Enemy2] = new Texture();
@@ -202,32 +203,32 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 
 		switch (StageType.StageSubNumber)
 		{
-		case 0:
+		case (int)E_SELECT_STAGENUMBER::DESERT_STAGE1:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
-		case 1:
+		case (int)E_SELECT_STAGENUMBER::DESERT_STAGE2:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
-		case 2:
+		case (int)E_SELECT_STAGENUMBER::DESERT_STAGE3:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss02_Car.fbx"), 1.0f, Model::None);
 			break;
 		}
 		break;
-	case 2://雪原
+	case (int)E_SELECT_STAGETYPE::SNOWFIELD://雪原
 		
 		/*敵キャラクターのModel読み込み*/
 		for (int i = 0; i < (int)Enemy::MAX; i++)
 		{
 			g_pEnemyModel[i] = new Model();
 		}
-		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/EnemyAxe/Idiot01.fbx"), 0.05f, Model::None);
-		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/EnemyBow/Idiot02.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy1]->Load(MODEL_PASS("Character/Idiot1/Stage3/Stage3_Idiot1.fbx"), 0.05f, Model::None);
+		g_pEnemyModel[(int)Enemy::Enemy2]->Load(MODEL_PASS("Character/Idiot2/Stage3/Stage3_Idiot2.fbx"), 0.05f, Model::None);
 		g_pHpGageTex[(int)HpTexture::Enemy1] = new Texture();
 		g_pHpGageTex[(int)HpTexture::Enemy1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_KanneleS.png"));
 		g_pHpGageTex[(int)HpTexture::Enemy2] = new Texture();
@@ -251,17 +252,17 @@ void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
 		
 		switch (StageType.StageSubNumber)
 		{
-		case 0:
+		case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE1:
 			//ボスの車(初期段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
-		case 1:
+		case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE2:
 			//ボスの車(中間段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
 			break;
-		case 2:
+		case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE3:
 			//ボスの車(最終段階)
 			g_pBosCar = new Model();
 			g_pBosCar->Load(MODEL_PASS("Car/Prop_Boss03_LiveStage.fbx"), 1.0f, Model::None);
@@ -729,6 +730,7 @@ void CAlly::BattleUpdate(void)
 		if (!m_bTimeSoundStart)
 		{
 			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->FlushSourceBuffers();
 			m_pSourceAttack->SubmitSourceBuffer(&buffer);
 			if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
 			m_pSourceAttack->Start();
@@ -1003,8 +1005,10 @@ void CEnemy::BattleUpdate(void)
 		if (!m_bTimeSoundStart)
 		{
 			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->FlushSourceBuffers();
 			m_pSourceAttack->SubmitSourceBuffer(&buffer);
 			if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
+			m_pSourceAttack->SetVolume(1.0f);
 			m_pSourceAttack->Start();
 			m_bTimeSoundStart = true;
 		}
@@ -1154,7 +1158,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 			m_tSize.z = InSize;
 			break;
 		case 1:
-			m_tPos.x = FirstPos.x ;
+			m_tPos.x = FirstPos.x - 12.0f;
 			m_tPos.y = FirstPos.y;
 			m_tPos.z = FirstPos.z - 5.0f;
 			m_tSize.x = InSize;
@@ -1234,16 +1238,26 @@ void CLeader::Draw(int StageNum)
 
 			ShaderList::SetWVP(wvp);
 
-			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
 			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 			{
-				Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
+				Model::Mesh tMesh = * m_pModel->GetMesh(i);
+				Model::Material material = *m_pModel->GetMaterial(tMesh.materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
 				ShaderList::SetMaterial(material);
+
+				// ボーンの情報をシェーダーに送る
+				DirectX::XMFLOAT4X4 bones[200];
+
+				for (int i = 0; i < tMesh.bones.size(); ++i) {
+					DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+						tMesh.bones[i].invOffset * m_pModel->GetBoneMatrix(tMesh.bones[i].nodeIndex)
+					));
+				}
 
 				if (m_pModel) {
 					m_pModel->Draw(i);
@@ -1433,44 +1447,40 @@ void CLeader::CreateUpdate(void)
 
 void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 {
-	////待機アニメーション
-	//switch (m_nTextureNumber)
-	//{
-	//case 0:
-
-	//	//筆を離す
-	//	if (IsStart)
-	//	{
-	//		if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
-	//		{
-	//			m_pModel->Step(-0.01f);
-	//		}
-	//		else
-	//		{
-	//			m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
-	//			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-	//			m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
-	//			
-	//		}
-	//	}
-	//	//筆を持つ
-	//	if (IsEnd)
-	//	{
-	//		if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
-	//		{
-	//			m_pModel->Step(0.01f);
-	//		}
-	//		else
-	//		{
-	//			m_pModel->PlayAnime(m_pModel->GetAnimePlayNo(), false);
-	//			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-	//			m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-	//			
-	//			
-	//		}
-	//	}
-	//	break;
-	//}
+	//待機アニメーション
+	switch (m_nTextureNumber)
+	{
+	case 0:
+		//筆を離す
+		if (IsEnd)
+		{
+			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+			{
+				m_pModel->Step(-0.01f);
+			}
+			else
+			{
+				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+				m_pModel->PlayAnime(g_pLeader_Anima, false);
+				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
+			}
+		}
+		//筆を持つ
+		if (IsStart)
+		{
+			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+			{
+				m_pModel->Step(0.01f);
+			}
+			else
+			{
+				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+				m_pModel->PlayAnime(g_pLeader_Anima, false);
+				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+			}
+		}
+		break;
+	}
 	//HPUIの更新処理
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 }
@@ -1550,7 +1560,7 @@ int HpRatio = 0;
 	case CHpUI::Bos:
 		HpRatio =  102.0f;
 		m_tUIScale.x = HpRatio;
-		m_tUIPos.x = ( (InPos.x + 8.6f) + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x) - 47.0f;
+		m_tUIPos.x = ( (InPos.x + 20.6f) + m_tUIScale.x - (m_fNowHp / m_fFullHp) * m_tUIScale.x) - 47.0f;
 		//m_tUIPos.x = (InPos.x + 8.6f) - 44.0f;
 		m_tUIPos.y = -5.0;
 		m_tUIPos.z = InPos.z;
