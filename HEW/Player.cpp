@@ -374,7 +374,7 @@ void CPlayer::UpdateMove()
 void CPlayer::DrawModel()
 {
 	// アニメーション
-	if (m_bDrawing)	// 作図中のとき
+	if (m_bDrawing || GetTime() == -1.0f)	// 作図中のとき
 	{
 		if (m_fBrushSize >= 1.0f) m_fBrushSize = 1.0f;
 		else m_fBrushSize += 0.05f;

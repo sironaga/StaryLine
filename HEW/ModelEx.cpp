@@ -59,7 +59,7 @@ void CModelEx::Draw()
 	//モデルに使用する頂点シェーダー、ピクセルシェーダーを設定
 	if (m_bAnime)CModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	else CModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	CModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+	CModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
 
 	//複数のメッシュで構成されている場合ある部分は金属的な表現、ある部分は非金属的な表現と

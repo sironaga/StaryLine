@@ -34,7 +34,7 @@ void COption::Update()
 		{
 		case SEC_SOUND:
 			UpdateSound();
-			if (IsKeyTrigger(VK_RIGHT))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))
 			{
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
@@ -43,12 +43,12 @@ void COption::Update()
 			break;
 		case SEC_SCREEN:
 			UpdateScreen();
-			if (IsKeyTrigger(VK_LEFT))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))
 			{
 				m_nSection = SEC_SOUND;
 				m_nSelect = MASTER;
 			}
-			if (IsKeyTrigger(VK_RIGHT))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))
 			{
 				m_nSection = SEC_INPUT;
 				m_nSelect = KEY_BOARD;
@@ -57,7 +57,7 @@ void COption::Update()
 			break;
 		case SEC_INPUT:
 			UpdateInput();
-			if (IsKeyTrigger(VK_LEFT))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))
 			{
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
@@ -66,13 +66,13 @@ void COption::Update()
 			break;
 		default:break;
 		}
-		if (IsKeyTrigger(VK_ESCAPE))
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
 		{
 			m_nSelect = SEC_SOUND;
 			m_nSection = MASTER;
 			m_bOptionMode = false;
 		}
-		if (IsKeyTrigger(VK_RETURN))m_bSetValue = true;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))m_bSetValue = true;
 	}
 }
 
@@ -377,22 +377,22 @@ void COption::UpdateSound()
 	switch (m_nSelect)
 	{
 	case MASTER:
-		if (IsKeyTrigger(VK_DOWN))	m_nSelect = BGM;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = BGM;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_MASTERVOLUME]->pos.y;
 		break;
 	case BGM:
-		if (IsKeyTrigger(VK_UP))	m_nSelect = MASTER;
-		if (IsKeyTrigger(VK_DOWN))	m_nSelect = SE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = MASTER;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN))	m_nSelect = SE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_BGM]->pos.y;
 		break;
 	case SE:
-		if (IsKeyTrigger(VK_UP))	m_nSelect = BGM;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = BGM;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_SE]->pos.y;
 		break;
 	default:break;
 	}
 
-	if (IsKeyTrigger(VK_CONTROL))InitValue(SEC_SOUND);
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_Y, VK_CONTROL))InitValue(SEC_SOUND);
 }
 
 void COption::UpdateScreen()
@@ -400,22 +400,22 @@ void COption::UpdateScreen()
 	switch (m_nSelect)
 	{
 	case SCREEN_MODE:
-		if (IsKeyTrigger(VK_DOWN))	m_nSelect = FRAME_RATE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = FRAME_RATE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_WINDOWMODE]->pos.y;
 		break;
 	case FRAME_RATE:
-		if (IsKeyTrigger(VK_UP))	m_nSelect = SCREEN_MODE;
-		if (IsKeyTrigger(VK_DOWN))	m_nSelect = RESOLUSION;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = SCREEN_MODE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = RESOLUSION;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_FPS]->pos.y;
 		break;
 	case RESOLUSION:
-		if (IsKeyTrigger(VK_UP))	m_nSelect = FRAME_RATE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = FRAME_RATE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_RESOLUSION]->pos.y;
 		break;
 	default:break;
 	}
 
-	if (IsKeyTrigger(VK_CONTROL))InitValue(SEC_SCREEN);
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_Y, VK_CONTROL))InitValue(SEC_SCREEN);
 }
 
 void COption::UpdateInput()
@@ -423,17 +423,17 @@ void COption::UpdateInput()
 	switch (m_nSelect)
 	{
 	case KEY_BOARD:
-		if (IsKeyTrigger(VK_DOWN))	m_nSelect = CONTROLLER;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = CONTROLLER;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_KEYBOARD]->pos.y;
 		break;
 	case CONTROLLER:
-		if (IsKeyTrigger(VK_UP))	m_nSelect = KEY_BOARD;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = KEY_BOARD;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_CONTROLLER]->pos.y;
 		break;
 	default:break;
 	}
 
-	if (IsKeyTrigger(VK_CONTROL))InitValue(SEC_INPUT);
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_Y, VK_CONTROL))InitValue(SEC_INPUT);
 }
 
 void COption::SetValue(int kind)
@@ -477,50 +477,50 @@ void COption::SetValue(int kind)
 	switch (kind)
 	{
 	case COption::MASTER:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[MASTER]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[MASTER]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[MASTER]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[MASTER]--;
 		AJUST_MINMAX(m_nTempValue[MASTER], 0, 10);
 		break;
 	case COption::BGM:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[BGM]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[BGM]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[BGM]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[BGM]--;
 		AJUST_MINMAX(m_nTempValue[BGM], 0, 10);
 		break;
 	case COption::SE:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[SE]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[SE]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[SE]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[SE]--;
 		AJUST_MINMAX(m_nTempValue[SE], 0, 10);
 		break;
 	case COption::SCREEN_MODE:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[SCREEN_MODE]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[SCREEN_MODE]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[SCREEN_MODE]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[SCREEN_MODE]--;
 		AJUST_MINMAX(m_nTempValue[SCREEN_MODE], 0, 1);
 		break;
 	case COption::RESOLUSION:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[RESOLUSION]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[RESOLUSION]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))m_nTempValue[RESOLUSION]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[RESOLUSION]--;
 		AJUST_MINMAX(m_nTempValue[RESOLUSION], 0, 3);
 		break;
 	case COption::FRAME_RATE:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[FRAME_RATE]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[FRAME_RATE]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[FRAME_RATE]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[FRAME_RATE]--;
 		AJUST_MINMAX(m_nTempValue[FRAME_RATE], 0, 1);
 		break;
 	case COption::KEY_BOARD:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[KEY_BOARD]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[KEY_BOARD]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[KEY_BOARD]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[KEY_BOARD]--;
 		AJUST_MINMAX(m_nTempValue[KEY_BOARD], 0, 1);
 		break;
 	case COption::CONTROLLER:
-		if (IsKeyTrigger(VK_RIGHT))m_nTempValue[CONTROLLER]++;
-		if (IsKeyTrigger(VK_LEFT))m_nTempValue[CONTROLLER]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[CONTROLLER]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[CONTROLLER]--;
 		AJUST_MINMAX(m_nTempValue[CONTROLLER], 0, 1);
 		break;
 	default:
 		break;
 	}
 
-	if (IsKeyTrigger(VK_RETURN))
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_SPACE))
 	{
 		m_nValue[kind] = m_nTempValue[kind];
 		m_bSetValue = false;
@@ -534,7 +534,7 @@ void COption::SetValue(int kind)
 		m_pParam[TAB_KEYBOARD]->color.w = 1.0f;
 		m_pParam[TAB_CONTROLLER]->color.w = 1.0f;
 	}
-	if (IsKeyTrigger(VK_ESCAPE))
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
 	{
 		m_nTempValue[kind] = m_nValue[kind];
 		m_bSetValue = false;
