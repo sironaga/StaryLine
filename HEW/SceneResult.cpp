@@ -393,238 +393,17 @@ void CSceneResult::Update()
 
 void CSceneResult::Draw()
 {
-	// -- •`‰æ
-	m_pBack->SetTexture();
-	m_pBack->Disp();
-	m_pLighting->SetTexture();
-	m_pLighting->Disp();
-	m_pShadow->SetTexture();
-	m_pShadow->Disp();
 
-	// --@•ªŠò‚É‚æ‚éƒAƒjƒ[ƒVƒ‡ƒ“ˆ—
 	if (ResultGameData.bWin)
 	{
-		// AnimationŒvZ
-		float UvSize;
-		UvSize = (1.0f / 8.0f);
-		int nUvMovePosX, nUvMovePosY;
-		if (nAnimationFrame > 63)
-		{
-			nAnimationFrame = 63;
-		}
-		nUvMovePosX = nAnimationFrame % 8;
-		nUvMovePosY = nAnimationFrame / 8;
-
-		float fUvPosX, fUvPosY;
-
-		fUvPosX = UvSize * (float)nUvMovePosX;
-		fUvPosY = UvSize * (float)nUvMovePosY;
-
-
-		m_pCharacter->SetUvSize((1.0f / 8.0f), (1.0f / 8.0f));
-		m_pCharacter->SetUvPos(fUvPosX, fUvPosY);
-		m_pCharacter->SetTexture();
-		m_pCharacter->Disp();
-		m_pCharacter->SetUvSize(1.0f, 1.0f);
-		m_pCharacter->SetUvPos(0.0f, 0.0f);
-
-		m_pText->SetTexture();
-		m_pText->Disp();
+		WinAnimation();
 	}
 	else
 	{
-	
-		fCTime += 0.1f;
-		CPosY-= 20;
-		StarPosY = InEasing(0.0f, 730.0f, 5, 1.0f) - 10.0f;
-
-		StarPosY -= InEasing(fCTime,0.0f,50.0f,1.0f);
-		if (CPosY <= 0)
-		{
-			CPosY = 0;
-
-			if (nCount < 3)
-			{
-				nCount += 0.1f;
-			}
-			else
-			{
-				fTime += 0.1f;
-				StarPosY = InEasing(fTime, 730.0f, 5, 1.0f) ;
-				StarPosY -= 100.0f;
-				fStarAngle -= 1.0f;
-				if (StarPosY >= 720.0f)
-				{
-					StarPosY = 740.0f;
-				}
-
-
-
-				if (fStarAngle < 0.0f)
-				{
-					fStarAngle = 0.0f;
-				}
-
-				if (LogoAngle < 10.0f)
-				{
-					LogoAngle++;
-				}
-			}
-		}
-		else
-		{
-			nAnimationFrame = 0;
-		}
-		CScle = sinf(nCount);
-		CScle = CScle / 20.0f;
-
-		m_pCharacter->SetSize(0.4f, 0.4f - CScle, 1.0f);
-		m_pCharacter->SetPositon(940.0f, 620.0f - CPosY, 10.0f);
-		m_pCharacter->SetTexture();
-		m_pCharacter->Disp();
-
-		float Angle;
-		Angle = 180.0f + (float)LogoAngle;
-
-		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(Angle));
-		m_pText->SetPositon(960.0f, 150.0f, 10.0f);
-		m_pText->SetTexture();
-		m_pText->Disp();
-
+		LoseAnimation();
 	}
 
-		m_pHitPoint->SetTexture();
-		m_pHitPoint->Disp();
-		m_pClearTime->SetTexture();
-		m_pClearTime->Disp();
-		m_pSummonData->SetTexture();
-		m_pSummonData->Disp();
-		m_pUnderBar->SetTexture();
-		m_pUnderBar->Disp();
-		m_pTextShadow->SetTexture();
-		m_pTextShadow->Disp();
-		m_pStageSelect[0]->SetTexture();
-		m_pStageSelect[0]->Disp();
-		m_pNextUI[0]->SetTexture();
-		m_pNextUI[0]->Disp();
-		m_pSelect[nSlect]->SetTexture();
-		m_pSelect[nSlect]->Disp();
-
-		// •ªŠò‚É‚æ‚é¯•`‰æˆ—
-		if (ResultGameData.bWin)
-		{
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(200.0f, 140.0f, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-
-
-
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(400.0f, 340.0f, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1500.0f, 100.0f, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-
-
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-			m_pStar->SetSize(0.05f, 0.1f, 1.0f);
-			m_pStar->SetPositon(1700.0f, 140.0f, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-
-		}
-		else
-		{
-			float dAngle;
-			dAngle = 225.0f + fStarAngle;
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
-			m_pStar->SetPositon(300.0f, StarPosY, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-			dAngle = 180.0f - fStarAngle;
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
-			m_pStar->SetPositon(475.0f, StarPosY, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-			dAngle = 180.0f + fStarAngle;
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
-			m_pStar->SetPositon(1350.0f,  StarPosY, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-			dAngle = 225.0f - fStarAngle;
-			m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
-			m_pStar->SetSize(0.075f, 0.15f, 1.0f);
-			m_pStar->SetPositon(1600.0f, StarPosY, 10.0f);
-			m_pStar->SetTexture();
-			m_pStar->Disp();
-		}
-
-		m_pNumber->SetArrangment(m_pNumber->Left_AL);
-
-		// ”š‚Ì•`‰æ
-		if (ResultGameData.bWin)
-		{
-
-			int nMinutes;
-			int nSeconds;
-			nMinutes = ResultGameData.nTime / 60;
-			nSeconds = ResultGameData.nTime % 60;
-			
-			if (nSeconds < 0)
-			{
-				nSeconds = 0;
-			}
-
-			// •b”@(•ª)
-			m_pNumber->SetNumber(nMinutes);
-			m_pNumber->SetLend(2);
-			m_pNumber->SetPos({ 1800.0f, 305.0f ,0.0f });
-			m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
-			m_pNumber->Draw();
-			// •b”@(•b)
-			m_pNumber->SetNumber(nSeconds);
-			m_pNumber->SetLend(2);
-			m_pNumber->SetPos({ 1890.0f, 305.0f ,0.0f });
-			m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
-			m_pNumber->Draw();
-		}
-		//  HpŠ„‡
-		m_pNumber->SetNumber(ResultGameData.nHitPoint);
-		m_pNumber->SetPos({ 1830.0f, 380.0f ,0.0f });
-		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
-		m_pNumber->Draw();
-		//	‡Œv¢Š«”
-		m_pNumber->SetNumber(ResultGameData.nSpawnCount);
-		m_pNumber->SetNumber(111);
-		m_pNumber->SetPos({ 1830.0f, 450.0f ,0.0f });
-		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
-		m_pNumber->Draw();
-		// •½‹Ï¢Š«”
-
-		int nAv;
-		nAv = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
-		m_pNumber->SetNumber(nAv);
-		m_pNumber->SetNumber(111);
-		m_pNumber->SetPos({ 1835.0f, 500.0f ,0.0f });
-		m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
-		m_pNumber->Draw();
-		// •`‰æ‰ñ”
-		m_pNumber->SetNumber(ResultGameData.nDrawCount);
-		m_pNumber->SetNumber(111);
-		m_pNumber->SetPos({ 1835.0f, 530.0f ,0.0f });
-		m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
-		m_pNumber->Draw();
+	NumberDisp();
 	
 }
 
@@ -636,4 +415,285 @@ void CSceneResult::InResultData(ResultGameInfo InData)
 void CSceneResult::InStageLevel(StageType  nInLevel)
 {
 	StageLevel = nInLevel;
+}
+
+void CSceneResult::WinAnimation(void)
+{
+	// -- •`‰æ
+	m_pBack->SetTexture();
+	m_pBack->Disp();
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
+	m_pShadow->SetTexture();
+	m_pShadow->Disp();
+
+	// --@•ªŠò‚É‚æ‚éƒAƒjƒ[ƒVƒ‡ƒ“ˆ—
+	
+	// AnimationŒvZ
+	float UvSize;
+	UvSize = (1.0f / 8.0f);
+	int nUvMovePosX, nUvMovePosY;
+	if (nAnimationFrame > 63)
+	{
+		nAnimationFrame = 63;
+	}
+	nUvMovePosX = nAnimationFrame % 8;
+	nUvMovePosY = nAnimationFrame / 8;
+
+	float fUvPosX, fUvPosY;
+
+	fUvPosX = UvSize * (float)nUvMovePosX;
+	fUvPosY = UvSize * (float)nUvMovePosY;
+
+
+	m_pCharacter->SetUvSize((1.0f / 8.0f), (1.0f / 8.0f));
+	m_pCharacter->SetUvPos(fUvPosX, fUvPosY);
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+	m_pCharacter->SetUvSize(1.0f, 1.0f);
+	m_pCharacter->SetUvPos(0.0f, 0.0f);
+
+	m_pText->SetTexture();
+	m_pText->Disp();
+	
+
+	m_pHitPoint->SetTexture();
+	m_pHitPoint->Disp();
+	m_pClearTime->SetTexture();
+	m_pClearTime->Disp();
+	m_pSummonData->SetTexture();
+	m_pSummonData->Disp();
+	m_pUnderBar->SetTexture();
+	m_pUnderBar->Disp();
+	m_pTextShadow->SetTexture();
+	m_pTextShadow->Disp();
+	m_pStageSelect[0]->SetTexture();
+	m_pStageSelect[0]->Disp();
+	m_pNextUI[0]->SetTexture();
+	m_pNextUI[0]->Disp();
+	m_pSelect[nSlect]->SetTexture();
+	m_pSelect[nSlect]->Disp();
+
+	// •ªŠò‚É‚æ‚é¯•`‰æˆ—
+
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+	m_pStar->SetPositon(200.0f, 140.0f, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+
+
+
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+	m_pStar->SetPositon(400.0f, 340.0f, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+	m_pStar->SetPositon(1500.0f, 100.0f, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+
+
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
+	m_pStar->SetPositon(1700.0f, 140.0f, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+}
+
+void CSceneResult::LoseAnimation(void)
+{
+	// -- •`‰æ
+	m_pBack->SetTexture();
+	m_pBack->Disp();
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
+	m_pShadow->SetTexture();
+	m_pShadow->Disp();
+
+	// --@•ªŠò‚É‚æ‚éƒAƒjƒ[ƒVƒ‡ƒ“ˆ—
+	
+
+	fCTime += 0.1f;
+	CPosY -= 20;
+	StarPosY = InEasing(0.0f, 730.0f, 5, 1.0f) - 10.0f;
+
+	StarPosY -= InEasing(fCTime, 0.0f, 50.0f, 1.0f);
+	if (CPosY <= 0)
+	{
+		CPosY = 0;
+
+		if (nCount < 3)
+		{
+			nCount += 0.1f;
+		}
+		else
+		{
+			fTime += 0.1f;
+			StarPosY = InEasing(fTime, 730.0f, 5, 1.0f);
+			StarPosY -= 100.0f;
+			fStarAngle -= 1.0f;
+			if (StarPosY >= 720.0f)
+			{
+				StarPosY = 740.0f;
+			}
+
+
+
+			if (fStarAngle < 0.0f)
+			{
+				fStarAngle = 0.0f;
+			}
+
+			if (LogoAngle < 10.0f)
+			{
+				LogoAngle++;
+			}
+		}
+	}
+	else
+	{
+		nAnimationFrame = 0;
+	}
+	CScle = sinf(nCount);
+	CScle = CScle / 20.0f;
+
+	m_pCharacter->SetSize(0.4f, 0.4f - CScle, 1.0f);
+	m_pCharacter->SetPositon(940.0f, 620.0f - CPosY, 10.0f);
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+
+	float Angle;
+	Angle = 180.0f + (float)LogoAngle;
+
+	m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(Angle));
+	m_pText->SetPositon(960.0f, 150.0f, 10.0f);
+	m_pText->SetTexture();
+		m_pText->Disp();
+
+	
+
+	m_pHitPoint->SetTexture();
+	m_pHitPoint->Disp();
+	m_pClearTime->SetTexture();
+	m_pClearTime->Disp();
+	m_pSummonData->SetTexture();
+	m_pSummonData->Disp();
+	m_pUnderBar->SetTexture();
+	m_pUnderBar->Disp();
+	m_pTextShadow->SetTexture();
+	m_pTextShadow->Disp();
+	m_pStageSelect[0]->SetTexture();
+	m_pStageSelect[0]->Disp();
+	m_pNextUI[0]->SetTexture();
+	m_pNextUI[0]->Disp();
+	m_pSelect[nSlect]->SetTexture();
+	m_pSelect[nSlect]->Disp();
+
+	// •ªŠò‚É‚æ‚é¯•`‰æˆ—
+
+	float dAngle;
+	dAngle = 225.0f + fStarAngle;
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
+	m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+	m_pStar->SetPositon(300.0f, StarPosY, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+	dAngle = 180.0f - fStarAngle;
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
+	m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+	m_pStar->SetPositon(475.0f, StarPosY, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+	dAngle = 180.0f + fStarAngle;
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
+	m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+	m_pStar->SetPositon(1350.0f, StarPosY, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+	dAngle = 225.0f - fStarAngle;
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(dAngle));
+	m_pStar->SetSize(0.075f, 0.15f, 1.0f);
+	m_pStar->SetPositon(1600.0f, StarPosY, 10.0f);
+	m_pStar->SetTexture();
+	m_pStar->Disp();
+
+}
+
+void CSceneResult::NumberDisp(void)
+{
+	m_pNumber->SetArrangment(m_pNumber->Left_AL);
+
+	// ”š‚Ì•`‰æ
+	if (ResultGameData.bWin)
+	{
+
+		int nMinutes = 0;
+		int nSeconds = 0;
+		nMinutes = ResultGameData.nTime / 60;
+		nSeconds = ResultGameData.nTime % 60;
+
+		if (nSeconds < 0)
+		{
+			nSeconds = 0;
+		}
+
+		// •b”@(•ª)
+		m_pNumber->SetNumber(nMinutes);
+		m_pNumber->SetLend(2);
+		m_pNumber->SetPos({ 1800.0f, 305.0f ,0.0f });
+		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+		m_pNumber->Draw();
+		// •b”@(•b)
+		m_pNumber->SetNumber(nSeconds);
+		m_pNumber->SetLend(2);
+		m_pNumber->SetPos({ 1890.0f, 305.0f ,0.0f });
+		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+		m_pNumber->Draw();
+	}
+	//  HpŠ„‡
+	m_pNumber->SetNumber(ResultGameData.nHitPoint);
+	if (ResultGameData.nHitPoint < 0)
+	{
+		m_pNumber->SetNumber(123);
+	}
+	m_pNumber->SetPos({ 1830.0f, 380.0f ,0.0f });
+	m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+	m_pNumber->Draw();
+	//	‡Œv¢Š«”
+	m_pNumber->SetNumber(ResultGameData.nSpawnCount);
+	if (ResultGameData.nSpawnCount < 0)
+	{
+		m_pNumber->SetNumber(123);
+	}
+	m_pNumber->SetPos({ 1830.0f, 450.0f ,0.0f });
+	m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
+	m_pNumber->Draw();
+	// •½‹Ï¢Š«”
+
+	int nAv;
+	if (ResultGameData.nSpawnCount > 0 && ResultGameData.nDrawCount > 0)
+	{
+		nAv = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
+		m_pNumber->SetNumber(nAv);
+	}
+	else
+	{
+		m_pNumber->SetNumber(123);
+	}
+	m_pNumber->SetPos({ 1835.0f, 500.0f ,0.0f });
+	m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
+	m_pNumber->Draw();
+	// •`‰æ‰ñ”
+	m_pNumber->SetNumber(ResultGameData.nDrawCount);
+	if (ResultGameData.nDrawCount < 0)
+	{
+		m_pNumber->SetNumber(111);
+	}
+	m_pNumber->SetPos({ 1835.0f, 530.0f ,0.0f });
+	m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
+	m_pNumber->Draw();
 }

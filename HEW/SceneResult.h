@@ -18,6 +18,10 @@ public:
 	static void InStageLevel(StageType InLevel);
 
 private:
+	void WinAnimation(void);
+	void LoseAnimation(void);
+	void NumberDisp(void);
+private:
 	// --- Ÿ”sŠÖŒW–³‚µ‚É•Ï‚í‚ç‚È‚¢‚â‚Â
 	SpriteEx* m_pHitPoint;
 	SpriteEx* m_pSelect[2];
