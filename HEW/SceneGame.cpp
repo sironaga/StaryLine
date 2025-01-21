@@ -60,7 +60,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
 	SetFileAddress(m_pBattle);
 
-	InitCharacterTexture(m_pFieldVertex, StageNum);//キャラクターテクスチャ～の初期化
+	InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
 	m_pBattle->m_nStageNum = StageNum;
 
 	// タイマー初期化
