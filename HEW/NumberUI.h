@@ -6,6 +6,15 @@
 class CNumberUI : public CUI
 {
 public:
+	// ↓バカきも日本語enum (仮置きです)
+	enum nMode
+	{
+		Right_AL,
+		Left_AL,
+		Center_AL,
+	};
+
+
 	CNumberUI();
 	~CNumberUI();
 	void Draw() override;
@@ -16,6 +25,7 @@ public:
 	void SetColor(float R, float G, float B, float A);
 	void SetLend(int InData);
 	void SetNumberColor(int InColor);
+	void SetArrangment(nMode InMode);
 private:
 	SpriteEx* m_pNumber[2][10][10];
 	int nNumber;
@@ -25,6 +35,6 @@ private:
 	FLOAT3 Scale;
 	FLOAT3 Color;
 	float fAlpha;
-
+	nMode NowMode;
 };
 

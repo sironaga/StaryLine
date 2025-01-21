@@ -5,7 +5,7 @@ CNumberUI::CNumberUI()
 	:m_pNumber{}
 	,nNumber(),nLong(),nColor(0)
 	,Pos(),Scale(),Color()
-	,fAlpha()
+	,fAlpha(), NowMode(Center_AL)
 {
 	m_pNumber[0][0][nColor] = new SpriteEx("Assets/Texture/Number/Num_0.png");
 	m_pNumber[0][1][nColor] = new SpriteEx("Assets/Texture/Number/Num_1.png");
@@ -92,7 +92,20 @@ void CNumberUI::Draw()
 		m_pNumber[0][l][nColor]->SetTexture();
 		m_pNumber[0][l][nColor]->SetView(Get2DView());
 		m_pNumber[0][l][nColor]->SetProjection(Get2DProj());
-		m_pNumber[0][l][nColor]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
+		switch (NowMode)
+		{
+		case CNumberUI::Right_AL:
+			m_pNumber[0][l][nColor]->SetPositon(Pos.X - ((Scale.X * 1000.0f) * nLoop), Pos.Y, Pos.Z);
+			break;
+		case CNumberUI::Left_AL:
+			m_pNumber[0][l][nColor]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * nLoop), Pos.Y, Pos.Z);
+			break;
+		case CNumberUI::Center_AL:
+			m_pNumber[0][l][nColor]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * (nLong / 2)) - (Scale.X * 1000.0f) * nLoop, Pos.Y, Pos.Z);
+			break;
+		default:
+			break;
+		}
 		m_pNumber[0][l][nColor]->SetSize(Scale.X, Scale.Y, Scale.Z);
 		m_pNumber[0][l][nColor]->Disp();
 		m_pNumber[0][l][nColor]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -152,4 +165,9 @@ void CNumberUI::SetLend(int InData)
 void CNumberUI::SetNumberColor(int InColor)
 {
 	nColor = InColor;
+}
+
+void CNumberUI::SetArrangment(nMode InMode)
+{
+	NowMode = InMode;
 }
