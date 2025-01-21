@@ -717,7 +717,7 @@ void CSceneResult::NumberDisp(void)
 	}
 	else
 	{
-		m_pNumber->SetNumber(123);
+		m_pNumber->SetNumber(0);
 	}
 	m_pNumber->SetPos({ 1835.0f, 500.0f ,0.0f });
 	m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
@@ -726,7 +726,7 @@ void CSceneResult::NumberDisp(void)
 	m_pNumber->SetNumber(ResultGameData.nDrawCount);
 	if (ResultGameData.nDrawCount < 0)
 	{
-		m_pNumber->SetNumber(111);
+		m_pNumber->SetNumber(0);
 	}
 	m_pNumber->SetPos({ 1835.0f, 530.0f ,0.0f });
 	m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
