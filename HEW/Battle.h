@@ -177,8 +177,9 @@ private:
 
 
 	bool m_bWinCommand[12];
+	float m_fWinCommandResetTimer;
 	bool m_bLoseCommand[12];
-	float m_fCommandResetTimer;
+	float m_fLoseCommandResetTimer;
 	bool WinEndCommand(void);
 	bool LoseEndCommand(void);
 

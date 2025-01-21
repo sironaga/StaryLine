@@ -775,7 +775,7 @@ void CBattle::Move(int i, Entity Entity)
 						DirectX::XMFLOAT3 EnemyPos = m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos();
 
 						//敵の位置にMOVESPEEDの大きさで進む
-						if (iAllyPos.x > EnemyPos.x - 1.0f)
+						if (iAllyPos.x > EnemyPos.x - 10.0f)
 						{
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
 							m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
@@ -784,8 +784,8 @@ void CBattle::Move(int i, Entity Entity)
 						{
 							if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
 							{
-								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
-								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyPos.x,EnemyPos.y, m_pAlly[i]->GetFirstPos().z }).x);
+								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyPos.x,EnemyPos.y, m_pAlly[i]->GetFirstPos().z }).z);
 							}
 							else
 							{
@@ -817,8 +817,8 @@ void CBattle::Move(int i, Entity Entity)
 								{
 									if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
 									{
-										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);
+										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
 									}
 									else
 									{
@@ -856,13 +856,14 @@ void CBattle::Move(int i, Entity Entity)
 						{
 							if (m_pAlly[i]->m_bFirstBattlePosSetting)
 							{
-								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 								if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
 								{
-									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
+									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);
+									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
 								}
 								else
 								{
+									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 								}
 							}
@@ -917,9 +918,9 @@ void CBattle::Move(int i, Entity Entity)
 						DirectX::XMFLOAT3 AllyPos = m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos();
 
 						//標的の位置にMOVESPEEDの大きさで進む
-						m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
-						m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
-
+						//m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
+						//m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
+						
 						//敵の位置にMOVESPEEDの大きさで進む
 						if (iEnemyPos.x > AllyPos.x - 10)
 						{
@@ -930,8 +931,8 @@ void CBattle::Move(int i, Entity Entity)
 						{
 							if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
 							{
-								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
-								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, { AllyPos.x,AllyPos.y,m_pEnemy[i]->GetFirstPos().z }).x);
+								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, { AllyPos.x,AllyPos.y,m_pEnemy[i]->GetFirstPos().z }).z);
 							}
 							else
 							{
@@ -963,13 +964,14 @@ void CBattle::Move(int i, Entity Entity)
 							{
 								if (m_pEnemy[i]->m_bFirstBattlePosSetting)
 								{
-									m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
 									if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
 									{
-										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+										m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).x);
+										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).z);
 									}
 									else
 									{
+										m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
 										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
 									}
 								}
@@ -1003,13 +1005,14 @@ void CBattle::Move(int i, Entity Entity)
 						{
 							if (m_pEnemy[i]->m_bFirstBattlePosSetting)
 							{
-								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
 								if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
 								{
-									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, m_pEnemy[i]->GetFirstPos()).z);
+									m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).x);
+									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).z);
 								}
 								else
 								{
+									m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
 									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
 								}
 							}
@@ -1808,58 +1811,58 @@ bool CBattle::WinEndCommand(void)
 {
 	if (IsKeyTrigger('W')) {
 		m_bWinCommand[0] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('A') && m_bWinCommand[0]) {
 		m_bWinCommand[1] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('T') && m_bWinCommand[1]) {
 		m_bWinCommand[2] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('A') && m_bWinCommand[2]) {
 		m_bWinCommand[3] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('S') && m_bWinCommand[3]) {
 		m_bWinCommand[4] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('I') && m_bWinCommand[4]) {
 		m_bWinCommand[5] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('N') && m_bWinCommand[5]) {
 		m_bWinCommand[6] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('O') && m_bWinCommand[6]) {
 		m_bWinCommand[7] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('K') && m_bWinCommand[7]) {
 		m_bWinCommand[8] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('A') && m_bWinCommand[8]) {
 		m_bWinCommand[9] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('T') && m_bWinCommand[9]) {
 		m_bWinCommand[10] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('I') && m_bWinCommand[10]) {
 		m_bWinCommand[11] = true;
 	}
 
-	m_fCommandResetTimer += 1.0f / 60.0f;
+	m_fWinCommandResetTimer += 1.0f / 60.0f;
 
-	if (m_fCommandResetTimer > 4.0f)
+	if (m_fWinCommandResetTimer > 4.0f)
 	{
 		for (int i = 0; i < 12; i++)m_bWinCommand[i] = false;
-		m_fCommandResetTimer = 0.0f;
+		m_fWinCommandResetTimer = 0.0f;
 	}
 
 	return m_bWinCommand[11];
@@ -1869,58 +1872,58 @@ bool CBattle::LoseEndCommand(void)
 {
 	if (IsKeyTrigger('W')) {
 		m_bLoseCommand[0] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('A') && m_bLoseCommand[0]) {
 		m_bLoseCommand[1] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('T') && m_bLoseCommand[1]) {
 		m_bLoseCommand[2] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('A') && m_bLoseCommand[2]) {
 		m_bLoseCommand[3] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('S') && m_bLoseCommand[3]) {
 		m_bLoseCommand[4] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('I') && m_bLoseCommand[4]) {
 		m_bLoseCommand[5] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('N') && m_bLoseCommand[5]) {
 		m_bLoseCommand[6] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('O') && m_bLoseCommand[6]) {
 		m_bLoseCommand[7] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('M') && m_bLoseCommand[7]) {
 		m_bLoseCommand[8] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('A') && m_bLoseCommand[8]) {
 		m_bLoseCommand[9] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('K') && m_bLoseCommand[9]) {
 		m_bLoseCommand[10] = true;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 	if (IsKeyTrigger('E') && m_bLoseCommand[10]) {
 		m_bLoseCommand[11] = true;
 	}
 
-	m_fCommandResetTimer += 1.0f / 60.0f;
+	m_fLoseCommandResetTimer += 1.0f / 60.0f;
 
-	if (m_fCommandResetTimer > 4.0f)
+	if (m_fLoseCommandResetTimer > 4.0f)
 	{
 		for (int i = 0; i < 12; i++)m_bLoseCommand[i] = false;
-		m_fCommandResetTimer = 0.0f;
+		m_fLoseCommandResetTimer = 0.0f;
 	}
 
 	return m_bLoseCommand[11];
