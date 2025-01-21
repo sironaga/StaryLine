@@ -175,6 +175,13 @@ private:
 	//敵生成ログの描画
 	void CreateEnemyLogDraw(void);
 
+
+	bool m_bWinCommand[12];
+	bool m_bLoseCommand[12];
+	float m_fCommandResetTimer;
+	bool WinEndCommand(void);
+	bool LoseEndCommand(void);
+
 	/*図形判定用*/
 private:
 	//味方保存種類別カウント

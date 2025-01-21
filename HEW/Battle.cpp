@@ -137,6 +137,8 @@ CBattle::CBattle()
 	, m_nSummonAllyCount(0)
 	, m_bDrawingStart(false)
 	, m_bDrawingEnd(false)
+	, m_bWinCommand{false}
+	, m_bLoseCommand{false}
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
@@ -181,7 +183,10 @@ CBattle::CBattle()
 CBattle::~CBattle()
 {
 	//数字テクスチャの解放
-	if (m_pLogVtx)m_pLogVtx->Release();
+	if (m_pLogVtx)
+	{
+		m_pLogVtx->Release();
+	}
 	for (int i = 0; i < 10; i++)
 	{
 		if (m_pLogTex[i])m_pLogTex[i]->Release();
@@ -190,16 +195,20 @@ CBattle::~CBattle()
 	//味方ポインタの解放
 	for (int i = 0; i < m_pAlly.size(); i++)
 	{
-		if (!m_pAlly[i])continue;
-		delete m_pAlly[i];
-		m_pAlly[i] = nullptr;
+		if (m_pAlly[i])
+		{
+			delete m_pAlly[i];
+			m_pAlly[i] = nullptr;
+		}
 	}
 	//敵ポインタの解放
 	for (int i = 0; i < m_pEnemy.size(); i++)
 	{
-		if (!m_pEnemy[i])continue;
-		delete m_pEnemy[i];
-		m_pEnemy[i] = nullptr;
+		if (m_pEnemy[i])
+		{
+			delete m_pEnemy[i];
+			m_pEnemy[i] = nullptr;
+		}
 	}
 	//味方リーダーポインタの解放
 	if (m_pAllyLeader)
@@ -766,7 +775,7 @@ void CBattle::Move(int i, Entity Entity)
 						DirectX::XMFLOAT3 EnemyPos = m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos();
 
 						//敵の位置にMOVESPEEDの大きさで進む
-						if (iAllyPos.x > EnemyPos.x - 10)
+						if (iAllyPos.x > EnemyPos.x - 1.0f)
 						{
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
 							m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
@@ -806,13 +815,14 @@ void CBattle::Move(int i, Entity Entity)
 							{
 								if (m_pAlly[i]->m_bFirstBattlePosSetting)
 								{
-									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 									if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
 									{
+										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, m_pAlly[i]->GetFirstPos()).z);
 									}
 									else
 									{
+										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 									}
 								}
@@ -1326,7 +1336,7 @@ void CBattle::Alive(void)
 		if (m_pEnemyLeader->GetStatus() == St_Battle)
 		{
 			//敵の体力が残っているかどうか
-			if (m_pEnemyLeader->GetHp() <= 0.0f)
+			if (m_pEnemyLeader->GetHp() <= 0.0f || WinEndCommand())
 			{
 				//ステータスを死亡状態にする
 				m_pEnemyLeader->SetStatus(St_Death);
@@ -1340,7 +1350,7 @@ void CBattle::Alive(void)
 		if (m_pAllyLeader->GetStatus() == St_Battle)
 		{
 			//味方のリーダーの体力が残っているかどうか
-			if (m_pAllyLeader->GetHp() <= 0.0f)
+			if (m_pAllyLeader->GetHp() <= 0.0f || LoseEndCommand())
 			{
 				//ステータスを死亡状態にする
 				m_pAllyLeader->SetStatus(St_Death);
@@ -1793,6 +1803,129 @@ void CBattle::CreateEnemyLogDraw(void)
 		}
 	}
 }
+
+bool CBattle::WinEndCommand(void)
+{
+	if (IsKeyTrigger('W')) {
+		m_bWinCommand[0] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bWinCommand[0]) {
+		m_bWinCommand[1] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('T') && m_bWinCommand[1]) {
+		m_bWinCommand[2] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bWinCommand[2]) {
+		m_bWinCommand[3] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('S') && m_bWinCommand[3]) {
+		m_bWinCommand[4] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('I') && m_bWinCommand[4]) {
+		m_bWinCommand[5] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('N') && m_bWinCommand[5]) {
+		m_bWinCommand[6] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('O') && m_bWinCommand[6]) {
+		m_bWinCommand[7] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('K') && m_bWinCommand[7]) {
+		m_bWinCommand[8] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bWinCommand[8]) {
+		m_bWinCommand[9] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('T') && m_bWinCommand[9]) {
+		m_bWinCommand[10] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('I') && m_bWinCommand[10]) {
+		m_bWinCommand[11] = true;
+	}
+
+	m_fCommandResetTimer += 1.0f / 60.0f;
+
+	if (m_fCommandResetTimer > 4.0f)
+	{
+		for (int i = 0; i < 12; i++)m_bWinCommand[i] = false;
+		m_fCommandResetTimer = 0.0f;
+	}
+
+	return m_bWinCommand[11];
+}
+
+bool CBattle::LoseEndCommand(void)
+{
+	if (IsKeyTrigger('W')) {
+		m_bLoseCommand[0] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bLoseCommand[0]) {
+		m_bLoseCommand[1] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('T') && m_bLoseCommand[1]) {
+		m_bLoseCommand[2] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bLoseCommand[2]) {
+		m_bLoseCommand[3] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('S') && m_bLoseCommand[3]) {
+		m_bLoseCommand[4] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('I') && m_bLoseCommand[4]) {
+		m_bLoseCommand[5] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('N') && m_bLoseCommand[5]) {
+		m_bLoseCommand[6] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('O') && m_bLoseCommand[6]) {
+		m_bLoseCommand[7] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('M') && m_bLoseCommand[7]) {
+		m_bLoseCommand[8] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bLoseCommand[8]) {
+		m_bLoseCommand[9] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('K') && m_bLoseCommand[9]) {
+		m_bLoseCommand[10] = true;
+		m_fCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('E') && m_bLoseCommand[10]) {
+		m_bLoseCommand[11] = true;
+	}
+
+	m_fCommandResetTimer += 1.0f / 60.0f;
+
+	if (m_fCommandResetTimer > 4.0f)
+	{
+		for (int i = 0; i < 12; i++)m_bLoseCommand[i] = false;
+		m_fCommandResetTimer = 0.0f;
+	}
+
+	return m_bLoseCommand[11];
+}
+
 
 //味方を角数別にカウント
 void CBattle::CreateAllyLog(void)
