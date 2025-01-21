@@ -573,14 +573,14 @@ void CFieldVertex::Draw()
 		m_pSprite_Summon_Log->ReSetSprite();//スプライトのリセット
 	}
 
-	////-----ステラの数描画-----//
-	//{
-	//	DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
-	//	m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
-	//	m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
-	//	m_pSprite_SuperStar_Number->Draw();//描画
-	//	m_pSprite_SuperStar_Number->ReSetSprite();//スプライトのリセット
-	//}
+	//-----ステラの数描画-----//
+	{
+		DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
+		m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
+		m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
+		m_pSprite_SuperStar_Number->Draw();//描画
+		m_pSprite_SuperStar_Number->ReSetSprite();//スプライトのリセット
+	}
 
 	//-----フィーバーゲージ描画-----//
 	{
