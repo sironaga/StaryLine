@@ -14,7 +14,7 @@ CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	//ResultGameData.bWin = 1;
+	ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	// -- Default
@@ -317,7 +317,7 @@ void CSceneResult::Update()
 				StageLevel.StageSubNumber++;
 				if (StageLevel.StageSubNumber < 3)
 				{
-					StageLevel.StageMainNumber = 0
+					StageLevel.StageMainNumber = 0;
 				}else
 				if (StageLevel.StageSubNumber < 6)
 				{
@@ -570,6 +570,8 @@ void CSceneResult::Draw()
 			m_pStar->Disp();
 		}
 
+		m_pNumber->SetArrangment(m_pNumber->Left_AL);
+
 		// 数字の描画
 		if (ResultGameData.bWin)
 		{
@@ -586,41 +588,41 @@ void CSceneResult::Draw()
 
 			// 秒数　(分)
 			m_pNumber->SetNumber(nMinutes);
-			m_pNumber->SetPos({ 1780.0f, 305.0f ,0.0f });
+			m_pNumber->SetLend(2);
+			m_pNumber->SetPos({ 1800.0f, 305.0f ,0.0f });
 			m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
 			m_pNumber->Draw();
 			// 秒数　(秒)
 			m_pNumber->SetNumber(nSeconds);
-			m_pNumber->SetPos({ 1850.0f, 305.0f ,0.0f });
+			m_pNumber->SetLend(2);
+			m_pNumber->SetPos({ 1890.0f, 305.0f ,0.0f });
 			m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
 			m_pNumber->Draw();
 		}
 		//  Hp割合
 		m_pNumber->SetNumber(ResultGameData.nHitPoint);
-	
-		m_pNumber->SetPos({ 1790.0f, 380.0f ,0.0f });
+		m_pNumber->SetPos({ 1830.0f, 380.0f ,0.0f });
 		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
 		m_pNumber->Draw();
 		//	合計召喚数
 		m_pNumber->SetNumber(ResultGameData.nSpawnCount);
-
-		m_pNumber->SetPos({ 1790.0f, 450.0f ,0.0f });
+		m_pNumber->SetNumber(111);
+		m_pNumber->SetPos({ 1830.0f, 450.0f ,0.0f });
 		m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
 		m_pNumber->Draw();
 		// 平均召喚数
 
-		int nAv;
+		//int nAv;
 		nAv = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
-
 		m_pNumber->SetNumber(nAv);
-
-		m_pNumber->SetPos({ 1810.0f, 500.0f ,0.0f });
+		m_pNumber->SetNumber(111);
+		m_pNumber->SetPos({ 1835.0f, 500.0f ,0.0f });
 		m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
 		m_pNumber->Draw();
 		// 描画回数
 		m_pNumber->SetNumber(ResultGameData.nDrawCount);
-
-		m_pNumber->SetPos({ 1810.0f, 530.0f ,0.0f });
+		m_pNumber->SetNumber(111);
+		m_pNumber->SetPos({ 1835.0f, 530.0f ,0.0f });
 		m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
 		m_pNumber->Draw();
 	
