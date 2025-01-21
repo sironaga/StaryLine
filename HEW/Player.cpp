@@ -195,6 +195,8 @@ void CPlayer::Draw()
 		Sprite::ReSetSprite();
 	}
 
+	SetRender3D();											// 3D表現のセット
+
 	if (GetTimeStart() || GetTime() == -1.0f)
 	{
 		DirectX::XMFLOAT3 starPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
@@ -247,11 +249,11 @@ void CPlayer::Draw()
 		m_pArrowModel->SetViewMatrix(GetView());
 		m_pArrowModel->SetProjectionMatrix(GetProj());
 		/*if(m_eArrowState == SELECTED)*/
-		m_pArrowModel->Draw();
+		if(!(m_eDestination == CPlayer::DEFAULT))m_pArrowModel->Draw();//DEFAULTを表示しない
 
 	}
 	/* プレイヤーの描画 */
-	SetRender3D();											// 3D表現のセット
+	
 	DrawModel();											// プレイヤー(筆)の描画
 
 	/* エフェクトの描画 */
