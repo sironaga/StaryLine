@@ -14,10 +14,10 @@ ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
 
 CSceneResult::CSceneResult()
-	:nAnimationFrame(0),nDefAnimation(0),bDefAnimation(false),nCounter(0)
+	:nAnimationFrame(0),nDefAnimation(0),bDefAnimation(false),nCounter(0), nScore(0)
 {
 	// デバッグ
-	//ResultGameData.bWin = 0;
+	ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	// -- Default
@@ -731,4 +731,21 @@ void CSceneResult::NumberDisp(void)
 	m_pNumber->SetPos({ 1835.0f, 530.0f ,0.0f });
 	m_pNumber->SetScale({ 0.015f,0.03f,1.0f });
 	m_pNumber->Draw();
+
+
+	// ベストスコア計算
+	//nScore = ResultGameData.nHitPoint * ResultGameData.nSpawnCount / ResultGameData.nTime;
+
+	if (IsKeyPress('A'))nScore++;
+	if (IsKeyPress('D'))nScore--;
+	if (nScore < 0)
+	{
+		nScore = 0;
+	}
+	m_pNumber->SetArrangment(CNumberUI::Left_AL);
+	m_pNumber->SetNumber(nScore);
+	m_pNumber->SetPos({ 620.0f, 140.0f ,0.0f });
+	m_pNumber->SetScale({ 0.06f,0.12f,1.0f });
+	m_pNumber->Draw();
+
 }

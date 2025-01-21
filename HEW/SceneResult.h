@@ -55,6 +55,7 @@ private:
 	float LogoAngle;
 	float fTime;
 	float fCTime;
+	int nScore;
 
 	CSoundList* m_pResultSound;
 	IXAudio2SourceVoice* m_pResultBGM;

@@ -95,7 +95,7 @@ void CNumberUI::Draw()
 		switch (NowMode)
 		{
 		case CNumberUI::Right_AL:
-			m_pNumber[0][l][nColor]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * nLoop), Pos.Y, Pos.Z);
+			m_pNumber[0][l][nColor]->SetPositon(Pos.X + ((Scale.X * 1000.0f) * nLoop) - ((Scale.X * 1000.0f) * nLong), Pos.Y, Pos.Z);
 			break;
 		case CNumberUI::Left_AL:
 			m_pNumber[0][l][nColor]->SetPositon(Pos.X - ((Scale.X * 1000.0f) * nLoop), Pos.Y, Pos.Z);
