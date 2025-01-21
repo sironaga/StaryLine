@@ -6,15 +6,18 @@
 #include"InputEx.h"
 #include"Easing.h"
 
+// 変数きれいにする！！！！！！！！！！！！！！！！！
+
+
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
 
 CSceneResult::CSceneResult()
-	:nAnimationFrame(0)
+	:nAnimationFrame(0),nDefAnimation(0),bDefAnimation(false),nCounter(0)
 {
 	// デバッグ
-	//ResultGameData.bWin = 1;
+	//ResultGameData.bWin = 0;
 
 	// --- テクスチャの読み込み
 	// -- Default
@@ -351,6 +354,30 @@ void CSceneResult::Update()
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
 		nAnimationFrame++;
+		if (nAnimationFrame > 63)
+		{
+			if (bDefAnimation)
+			{
+				nDefAnimation--;
+				if (nDefAnimation < 1)bDefAnimation = false;
+			}
+			else
+			{
+				if (nDefAnimation > 16)
+				{
+					if (nCounter > 5)
+					{
+						nCounter = 0;
+						bDefAnimation = true;
+					}
+					nCounter++;
+				}
+				else
+				{
+					nDefAnimation++;
+				}
+			}
+		}
 		nAnimationTimer = timeGetTime();
 	}
 	// --- 更新処理
@@ -388,6 +415,7 @@ void CSceneResult::Update()
 	m_pBack->SetView(Get2DView());
 	m_pStar->SetProjection(Get2DProj());
 	m_pStar->SetView(Get2DView());
+
 
 }
 
@@ -437,13 +465,20 @@ void CSceneResult::WinAnimation(void)
 	{
 		nAnimationFrame = 63;
 	}
-	nUvMovePosX = nAnimationFrame % 8;
-	nUvMovePosY = nAnimationFrame / 8;
+
+	int nX, nY;
+	nX = nDefAnimation % 8;
+	nY = nDefAnimation / 8;
+
+	nUvMovePosX = (nAnimationFrame ) % 8;
+	nUvMovePosY = (nAnimationFrame ) / 8;
 
 	float fUvPosX, fUvPosY;
 
-	fUvPosX = UvSize * (float)nUvMovePosX;
-	fUvPosY = UvSize * (float)nUvMovePosY;
+	fUvPosX = UvSize * ((float)nUvMovePosX - (float)nX);
+	fUvPosY = UvSize * ((float)nUvMovePosY - (float)nY);
+
+
 
 
 	m_pCharacter->SetUvSize((1.0f / 8.0f), (1.0f / 8.0f));
@@ -476,7 +511,7 @@ void CSceneResult::WinAnimation(void)
 
 	// 分岐による星描画処理
 
-	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f + fStarAngle));
 	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 	m_pStar->SetPositon(200.0f, 140.0f, 10.0f);
 	m_pStar->SetTexture();
@@ -484,20 +519,20 @@ void CSceneResult::WinAnimation(void)
 
 
 
-	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f - fStarAngle));
 	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 	m_pStar->SetPositon(400.0f, 340.0f, 10.0f);
 	m_pStar->SetTexture();
 	m_pStar->Disp();
 
-	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f + fStarAngle));
 	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 	m_pStar->SetPositon(1500.0f, 100.0f, 10.0f);
 	m_pStar->SetTexture();
 	m_pStar->Disp();
 
 
-	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pStar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f - fStarAngle));
 	m_pStar->SetSize(0.05f, 0.1f, 1.0f);
 	m_pStar->SetPositon(1700.0f, 140.0f, 10.0f);
 	m_pStar->SetTexture();
@@ -667,7 +702,7 @@ void CSceneResult::NumberDisp(void)
 	m_pNumber->SetNumber(ResultGameData.nSpawnCount);
 	if (ResultGameData.nSpawnCount < 0)
 	{
-		m_pNumber->SetNumber(123);
+		m_pNumber->SetNumber(0);
 	}
 	m_pNumber->SetPos({ 1830.0f, 450.0f ,0.0f });
 	m_pNumber->SetScale({ 0.03f,0.06f,1.0f });
