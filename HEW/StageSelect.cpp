@@ -64,11 +64,12 @@ CStageSelect::CStageSelect()
 	m_pSnowFieldStage[1] = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Board_3.2.png");
 	m_pSnowFieldStage[2] = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Board_3.3.png");
 
-	m_pStageSelected = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Selected.png");
+	m_pStageSelected     = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Selected.png");
 
     m_pRight_Select      = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Right.png");
     m_pLeft_Select       = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Left.png");
-
+	
+	m_pStageSelect_Underbar = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Underbar.png");
 	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
 	m_pModel[DesertField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage02_Desert.fbx"), false);
 	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
@@ -107,6 +108,8 @@ CStageSelect::CStageSelect()
 	m_pLeft_Select->SetView(GetView());
 	m_pStageSelected->SetProjection(GetProj());
 	m_pStageSelected->SetView(GetView());
+	m_pStageSelect_Underbar->SetProjection(GetProj());
+	m_pStageSelect_Underbar->SetView(GetView());
 
 	}
 
@@ -144,6 +147,11 @@ CStageSelect::~CStageSelect()
 		delete m_pSnowFieldStage[nLoop];
 		m_pSnowFieldStage[nLoop] = nullptr;
 		}
+	}
+	if (m_pStageSelect_Underbar)
+	{
+		delete m_pStageSelect_Underbar;
+		m_pStageSelect_Underbar = nullptr;
 	}
 	if (m_pStageSelected)
 	{
@@ -310,7 +318,9 @@ void CStageSelect::Update()
 				}
 				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
+					//StartFade();
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
+					subposX[0] = 0.0f; subposX[1] = 400.0f; subposX[2] = 800.0f;
 					MainStage ^= true;
 					m_ModelParam[WorldField].pos = { 0.0f - g_Select_type.StageMainNumber * STAGE_BETWEEN / 3.0f,0.0f,100.0f };
 
@@ -387,6 +397,7 @@ void CStageSelect::Draw()
 	//// それを使いスケールをかけていく
 	//float ScaleX = (sinf(rad) * 0.5f + 0.5f) * 10.0f + 40.0f;
 	//float ScaleY = (sinf(rad + PI) * 0.5f + 0.5f) * 10.0f + 40.0f;
+
 	static float deg = 0.0f;    //度数
 	deg += 4.0f;    // 度数を増やし続ける
 		float rad = DirectX::XMConvertToRadians(deg);    //ラジアンに変換する
@@ -404,6 +415,47 @@ void CStageSelect::Draw()
 
 	m_pBackGround->Draw();
 	// f`æ
+	
+	SetRender2D;
+	Sprite::ReSetSprite();
+	m_pStageSelect_Underbar->SetProjection(Get2DProj());
+	m_pStageSelect_Underbar->SetView(Get2DView());
+	m_pStageSelect_Underbar->SetTexture();
+	m_pStageSelect_Underbar->SetPositon(CENTER_POS_X, CENTER_POS_Y + 510, 0.0f);
+	m_pStageSelect_Underbar->SetSize(1920.0f, -60.0f, 0.0f);
+	m_pStageSelect_Underbar->Disp();
+
+	//if (g_Select_type.StageSubNumber == GRASSLAND_STAGE1)
+	//{
+	//Sprite::ReSetSprite();
+	//m_pStageSelect_Underbar->SetProjection(Get2DProj());
+	//m_pStageSelect_Underbar->SetView(Get2DView());
+	//m_pStageSelect_Underbar->SetTexture();
+	//m_pStageSelect_Underbar->SetPositon(CENTER_POS_X, CENTER_POS_Y + 510, 0.0f);
+	//m_pStageSelect_Underbar->SetSize(1920.0f, -60.0f, 0.0f);
+	//m_pStageSelect_Underbar->Disp();
+	//}
+	//if (g_Select_type.StageSubNumber == GRASSLAND_STAGE2)
+	//{
+	//	Sprite::ReSetSprite();
+	//	m_pStageSelect_Underbar->SetProjection(Get2DProj());
+	//	m_pStageSelect_Underbar->SetView(Get2DView());
+	//	m_pStageSelect_Underbar->SetTexture();
+	//	m_pStageSelect_Underbar->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
+	//	m_pStageSelect_Underbar->SetSize(1920.0f, -60.0f, 0.0f);
+	//	m_pStageSelect_Underbar->Disp();
+	//}
+	//if (g_Select_type.StageSubNumber == GRASSLAND_STAGE3)
+	//{
+	//	Sprite::ReSetSprite();
+	//	m_pStageSelect_Underbar->SetProjection(Get2DProj());
+	//	m_pStageSelect_Underbar->SetView(Get2DView());
+	//	m_pStageSelect_Underbar->SetTexture();
+	//	m_pStageSelect_Underbar->SetPositon(CENTER_POS_X, CENTER_POS_Y - 510, 0.0f);
+	//	m_pStageSelect_Underbar->SetSize(1920.0f, -60.0f, 0.0f);
+	//	m_pStageSelect_Underbar->Disp();
+	//}
+
 	SetRender3D();
 	if (MainStage)
 	{

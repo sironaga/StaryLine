@@ -49,6 +49,7 @@ private:
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
 	SpriteEx* m_pStageSelected;
+	SpriteEx* m_pStageSelect_Underbar;
 
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* g_StageSelectSound;
