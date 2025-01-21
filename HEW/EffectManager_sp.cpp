@@ -15,6 +15,9 @@ CEffectManager_sp::CEffectManager_sp(const char* pass, int SplitX, int SplitY, f
 	m_tParam.color = { 1.0f,1.0f,1.0f,1.0f };
 	m_tParam.uvPos =  { 0.0f / (float)SplitX, 0.0f / (float)SplitY };
 	m_tParam.uvSize = { 1.0f / (float)SplitX, 1.0f / (float)SplitY };
+
+	m_pTexture = new Texture();
+	m_pTexture->Create(pass);
 }
 
 CEffectManager_sp::CEffectManager_sp(CEffectManager_sp* InData)
@@ -46,7 +49,11 @@ void CEffectManager_sp::Update()
 			if (m_nPage >= m_nSplitNum)
 			{
 				if (m_bLoop) m_nPage = 0;
-				else m_bPlay = false;
+				else
+				{
+					m_bPlay = false;
+					m_nPage = 0;
+				}
 			}
 		}
 	}
@@ -75,6 +82,7 @@ void CEffectManager_sp::Draw(bool is3D)
 			Sprite::SetWorld(world);
 			Sprite::SetView(GetView());
 			Sprite::SetProjection(GetProj());
+			Sprite::SetTexture(m_pTexture);
 			Sprite::Draw();
 		}
 		else
@@ -88,6 +96,7 @@ void CEffectManager_sp::Draw(bool is3D)
 			Sprite::SetWorld(Get2DWorld(true, m_tParam.rotate));
 			Sprite::SetView(Get2DView());
 			Sprite::SetProjection(Get2DProj());
+			Sprite::SetTexture(m_pTexture);
 			Sprite::Draw();
 		}
 	}

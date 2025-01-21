@@ -33,9 +33,19 @@ enum E_TITLE_TYPE
 	GAMEEND,
 }g_Title_type;
 
+enum E_TITLE_ANIME
+{
+	AnimeStart = 0,
+	StartToChara = 30,
+	CharaToLogo = 90,
+	LogoToBar = 120,
+
+}g_eTitleAnim;
 
 CSceneTitle::CSceneTitle()
 	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
+	, m_nAnimCount(0), m_tCharaLogoTexPos{}
+	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y}
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -45,7 +55,8 @@ CSceneTitle::CSceneTitle()
 	tex->Create("Assets/Texture/Title/Title_Logo.png");*/
 	m_pTitleLogo		 = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
 	m_pTitleBack		 = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
-	m_pLini				 = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
+	m_pLini[0]			 = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
+	m_pLini[1]			 = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 	m_pTitleFrame		 = new SpriteEx("Assets/Texture/Title/Title_Selected.png");
 	m_pTitleUnderbar	 = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
 	m_pTitleStart[0]	 = new SpriteEx("Assets/Texture/Title/Title_First.png");
@@ -67,11 +78,11 @@ CSceneTitle::CSceneTitle()
 		m_pTitleOption[nLoop]->SetView(Get2DView());
 		m_pTitleEnd[nLoop]->SetProjection(Get2DProj());
 		m_pTitleEnd[nLoop]->SetView(Get2DView());
+		m_pLini[nLoop]->SetProjection(Get2DProj());
+		m_pLini[nLoop]->SetView(Get2DView());
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
-	m_pLini->SetProjection(Get2DProj());
-	m_pLini->SetView(Get2DView());
 	m_pTitleBack->SetProjection(Get2DProj());
 	m_pTitleBack->SetView(Get2DView());
 	m_pTitleFrame->SetProjection(Get2DProj());
@@ -80,6 +91,7 @@ CSceneTitle::CSceneTitle()
 	m_pTitleUnderbar->SetView(Get2DView());
 
 
+	g_eTitleAnim = AnimeStart;
 	//m_pParam = new SpriteParam();
 	//m_pParam->pos = { -160.0f,-170.0f };
 	//m_pParam->size = { 100.0f,100.0f };
@@ -148,7 +160,11 @@ CSceneTitle::~CSceneTitle()
 		m_pTitleLogo = nullptr;
 	}
 	SAFE_DELETE(m_pTitleBack);
-	SAFE_DELETE(m_pLini);
+	for (int i = 0; i < 2; i++)
+	{
+
+		SAFE_DELETE(m_pLini[i]);
+	}
 
 }
 
@@ -160,6 +176,47 @@ void CSceneTitle::Update()
 	SetAllMasterVolume(m_pOption->GetMasterVoluem());
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
+
+	if(g_eTitleAnim == LogoToBar)m_nLiniYCount += 2;
+	float rad = DirectX::XMConvertToRadians(m_nLiniYCount);
+	float cosMove = cosf(rad) - 0.5f;
+	float Y = CENTER_POS_Y + 75.0f;
+
+	switch (g_eTitleAnim)
+	{
+	case AnimeStart:
+
+		if (m_nAnimCount >= StartToChara)
+		{
+			g_eTitleAnim = StartToChara;
+		}
+		break;
+	case StartToChara:
+
+		for (int i = 0; i < 2; i++)
+		{
+			m_tCharaLogoTexPos[i] = 
+			{ (m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)),
+				(m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)) };
+		}
+		if (m_nAnimCount >= CharaToLogo)
+		{
+			g_eTitleAnim = CharaToLogo;
+		}
+		break;
+	case CharaToLogo:
+		if (m_nAnimCount >= LogoToBar)
+		{
+			g_eTitleAnim = LogoToBar;
+		}
+		break;
+	case LogoToBar:
+		m_tLiniPos.y = Y + cosMove * 50.0f;
+		break;
+	default:
+		break;
+	}
+
 
 	if (m_pOption->GetOption())
 	{
@@ -291,6 +348,7 @@ void CSceneTitle::Update()
 	}
 
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
+	m_nAnimCount++;
 }
 
 void CSceneTitle::Draw()
@@ -322,20 +380,33 @@ void CSceneTitle::Draw()
 	m_pTitleBack->SetView(Get2DView());
 	m_pTitleBack->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
 	m_pTitleBack->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pTitleBack->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
 	m_pTitleBack->Disp();
 
-	m_pLini->SetTexture();
-	m_pLini->SetProjection(Get2DProj());
-	m_pLini->SetView(Get2DView());
-	m_pLini->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
-	m_pLini->SetSize(1920.0f, -1080.0f, 0.0f);
-	m_pLini->Disp();
+	m_pLini[0]->SetTexture();
+	m_pLini[0]->SetProjection(Get2DProj());
+	m_pLini[0]->SetView(Get2DView());
+	m_pLini[0]->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
+	m_pLini[0]->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pLini[0]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pLini[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pLini[0]->Disp();
+	
+	m_pLini[1]->SetTexture();
+	m_pLini[1]->SetProjection(Get2DProj());
+	m_pLini[1]->SetView(Get2DView());
+	m_pLini[1]->SetPositon(m_tLiniPos.x, m_tLiniPos.y, 0.0f);
+	m_pLini[1]->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pLini[1]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pLini[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pLini[1]->Disp();
 
 	m_pTitleLogo->SetTexture();
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
 	m_pTitleLogo->SetPositon(CENTER_POS_X + 500, CENTER_POS_Y - 250, 0.0f);
-	m_pTitleLogo->SetSize(840.0f, -560.0f, 0.0f);	
+	m_pTitleLogo->SetSize(840.0f, -560.0f, 0.0f);
+	m_pTitleLogo->SetUvSize(1.0f, 1.0f);
 	m_pTitleLogo->Disp();
 
 	m_pTitleUnderbar->SetTexture();
@@ -372,8 +443,8 @@ void CSceneTitle::Draw()
 	m_pTitleEnd[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 370, 0.0f);
 	m_pTitleEnd[0]->SetSize(450.0f, -60.0f, 0.0f);
 	m_pTitleEnd[0]->Disp();
-	
-	if(m_bSelected)
+
+	if (m_bSelected)
 	{
 		switch (g_Title_type)
 		{
@@ -479,8 +550,10 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pTitleEnd[1] = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
 	SAFE_DELETE(m_pTitleBack);
 	m_pTitleBack = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
-	SAFE_DELETE(m_pLini);
-	m_pLini = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
+	SAFE_DELETE(m_pLini[0]);
+	m_pLini[0] = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
+	SAFE_DELETE(m_pLini[1]);
+	m_pLini[1] = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -492,6 +565,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 		m_pTitleOption[nLoop]->SetView(Get2DView());
 		m_pTitleEnd[nLoop]->SetProjection(Get2DProj());
 		m_pTitleEnd[nLoop]->SetView(Get2DView());
+		m_pLini[nLoop]->SetProjection(Get2DProj());
+		m_pLini[nLoop]->SetView(Get2DView());
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
