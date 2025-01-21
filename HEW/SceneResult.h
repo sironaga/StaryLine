@@ -43,6 +43,9 @@ private:
 	// --- •Ï”
 	int nAnimationTimer;
 	int nAnimationFrame;
+	int nCounter;
+	int nDefAnimation;
+	bool bDefAnimation;
 	int nSlect; 
 	float CScle;
 	float nCount;
