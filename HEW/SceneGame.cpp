@@ -2,6 +2,7 @@
 #include "File.h"
 #include "Input.h"
 #include "SceneResult.h"
+#include "InputEx.h"
 
 
 // 行き止まりが発生しない時のサイクル
@@ -33,6 +34,7 @@ bool m_bFever;
 bool TimeStart;
 float FadeTime;
 bool FadeTimeFlag;
+int DrawCount;
 
 ResultCheck g_Resltcheck;
 ResultGameInfo g_ResultData;
@@ -69,6 +71,8 @@ CSceneGame::CSceneGame(StageType StageNum)
 
 	TimeStart = false;
 	g_tTime.GameTime = -1.0f;
+
+	DrawCount = 0;
 
 	InitSave();
 
@@ -125,7 +129,7 @@ void CSceneGame::Update()
 		g_ResultData.bWin = m_pBattle->GetWin();
 		g_ResultData.nHitPoint = m_pBattle->GetPlayerHpProportion();
 		g_ResultData.nAverageSpwn = m_pBattle->GetSummonAllyCount();
-		g_ResultData.nDrawCount = 10;
+		g_ResultData.nDrawCount = DrawCount;
 		g_ResultData.nSpawnCount = m_pBattle->GetSummonAllyCount();
 		g_ResultData.nTime = g_tTime.GameTime;
 		CSceneResult::InResultData(g_ResultData);
@@ -146,9 +150,10 @@ void CSceneGame::Update()
 
 	m_pField->Update();		// フィールドは常に更新する
 	InitInput();
-	if (!FadeTimeFlag && !TimeStart && (g_tTime.GameTime == -1.0f) && IsKeyPress(VK_SPACE))
+	if (!FadeTimeFlag && !TimeStart && (g_tTime.GameTime == -1.0f) && (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE)))
 	{
 		TimeStart = true;
+		DrawCount++;
 	}
 	// ゲーム中(移動をしてから)は経過時間を記録し続ける
 	if (TimeStart)
