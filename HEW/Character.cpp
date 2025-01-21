@@ -730,8 +730,10 @@ void CAlly::BattleUpdate(void)
 		if (!m_bTimeSoundStart)
 		{
 			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->FlushSourceBuffers();
 			m_pSourceAttack->SubmitSourceBuffer(&buffer);
 			if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
+			m_pSourceAttack->SetVolume(1.0f);
 			m_pSourceAttack->Start();
 			m_bTimeSoundStart = true;
 		}
@@ -1004,8 +1006,10 @@ void CEnemy::BattleUpdate(void)
 		if (!m_bTimeSoundStart)
 		{
 			XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
+			m_pSourceAttack->FlushSourceBuffers();
 			m_pSourceAttack->SubmitSourceBuffer(&buffer);
 			if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
+			m_pSourceAttack->SetVolume(1.0f);
 			m_pSourceAttack->Start();
 			m_bTimeSoundStart = true;
 		}
