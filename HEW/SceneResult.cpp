@@ -14,7 +14,7 @@ CSceneResult::CSceneResult()
 	:nAnimationFrame(0)
 {
 	// デバッグ
-	ResultGameData.bWin = 1;
+	//ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	// -- Default
@@ -612,7 +612,7 @@ void CSceneResult::Draw()
 		m_pNumber->Draw();
 		// 平均召喚数
 
-		//int nAv;
+		int nAv;
 		nAv = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
 		m_pNumber->SetNumber(nAv);
 		m_pNumber->SetNumber(111);
