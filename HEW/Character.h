@@ -15,9 +15,9 @@
 //#define MAX_ENEMY (200)	//敵の最大数
 #define NORMAL_SIZE (10)//キャラクターの基本サイズ
 
-class CFieldVertex;
-void InitCharacterTexture(CFieldVertex* InAddress, StageType StageType);	//テクスチャ読み込み
+void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
+void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
 
 //ステータス情報
 enum Status
@@ -115,7 +115,6 @@ public:
 
 protected:
 	virtual void SettingStatus(void) = 0;		//ステータス決め
-	
 	/*変数*/
 public:
 	int m_nTargetNumber;			//標的の選別番号
@@ -147,12 +146,15 @@ protected:
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;
 
+	bool m_bReLoadFlag;
 	Model* m_pModel;
-
 	//EffectInfo m_tEffect[(int)FighterEffect::MAX];
 
 	/*変数のSet&Get*/
 public:
+	//モデル読み込みフラグの切り替え
+	void SetReLoadFlag(void) { m_bReLoadFlag = true; }
+
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
 	//ステータスのget
@@ -279,10 +281,13 @@ private:
 	void DeathUpdate(void);
 
 private:
+	bool m_bReLoadFlag;
+
 	Status m_tStatus;				//ステータス状態
 	Model* m_pModel;
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
+	bool m_bSubModelCreate;
 
 	Model* m_pSubModel;
 	DirectX::XMFLOAT3 m_tSubPos;		//位置座標
@@ -296,6 +301,8 @@ private:
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
 public:
+	//モデル読み込みフラグの切り替え
+	void SetReLoadFlag(void) { m_bReLoadFlag = true; }
 	//ステータスのSet
 	void SetStatus(Status InStatus) { m_tStatus = InStatus; }
 	//ステータスのget
