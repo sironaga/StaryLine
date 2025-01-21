@@ -27,6 +27,7 @@
 #include "SceneResult.h"
 #include "SceneDebug.h"
 #include "StartDirection.h"
+#include "Pause.h"
 
 //--- グローバル変数
 CStageSelect* g_pSceneSelect;
@@ -39,6 +40,8 @@ bool IsGame = true;
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
 CStartDirection* g_pDirection;
+CPause* g_pPause;
+COption* g_pOption;
 HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
 int g_NowWide = 1920;
@@ -80,8 +83,11 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	
+	g_pPause = new CPause();
+
 	g_pScene->SethWnd(hWnd);
 	
+
 	return hr;
 }
 
@@ -91,6 +97,7 @@ void Uninit()
 	SAFE_DELETE(g_pScene);
 	SAFE_DELETE(g_pFade);
 	SAFE_DELETE(g_pDirection);
+	SAFE_DELETE(g_pPause);
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
@@ -110,11 +117,16 @@ void Uninit()
 
 void Update()
 {
+	g_SceneType;
+	static int scene = SCENE_TITLE;
 	// --- 入力情報の更新
 	Controller_Update();
 	UpdateInput();
 	// --- カメラ情報の更新
 	g_Camera->Update();
+	//ポーズの更新処理
+	//g_pPause->Update();
+	if (scene == SCENE_GAME) g_pPause->Update();
 	// --- ゲームモードによる分岐処理
 	g_pScene->RootUpdate();
 
@@ -125,7 +137,7 @@ void Update()
 		
 		StageType stage = {};
 		// 次のシーンの情報を取得 
-		int scene = g_pScene->NextScene();
+		scene = g_pScene->NextScene();
 		if(scene == SCENE_GAME)stage = g_pScene->GetStage();
 		g_SceneType = (E_SCENE_TYPE)scene;
 		// 現在のシーンを削除 
@@ -228,11 +240,14 @@ void Draw()
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
-
-
-	g_pScene->RootDraw();
-	LibEffekseer::Draw();
-	g_pDirection->Draw();
+	
+	g_pPause->Draw();
+	if (!g_pPause->GetPause())
+	{
+		g_pScene->RootDraw();
+		LibEffekseer::Draw();
+		g_pDirection->Draw();
+	}
 	EndDrawDirectX();
 }
 // --- View情報のゲッター　XMFLOAT4*4
@@ -353,6 +368,8 @@ void InitResolusionMain()
 	SAFE_DELETE(g_mainsound);
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
+	SAFE_DELETE(g_pPause);
+	g_pPause = new CPause();
 }
 void SetNowResolusion(int wide, int height)
 {
@@ -560,5 +577,11 @@ void SpriteDebug(ObjectParam* param, bool isModel)
 		}
 	}
 	else a = 0;
+}
+
+void SetPauseOption(COption* InOption)
+{
+	g_pOption = InOption;
+	g_pPause->SetOption(InOption);
 }
 // EOF
