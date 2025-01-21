@@ -39,7 +39,8 @@ public:
 	void Draw(void);		
 	//リザルトにいく
 	bool GetEnd();
-
+	//テクスチャの再読み込み
+	void ReLoadTexture(void);
 	/*＝＝＝＝＝リザルトに渡す情報＝＝＝＝＝*/
 	float m_fRinieMaxHp;
 	float m_fRinieLastHp;

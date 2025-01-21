@@ -506,6 +506,24 @@ bool CBattle::GetEnd()
 	return m_bEnd;
 }
 
+void CBattle::ReLoadTexture(void)
+{
+	//味方ポインタの解放
+	for (int i = 0; i < m_pAlly.size(); i++)
+	{
+		m_pAlly[i]->SetReLoadFlag();
+	}
+	//敵ポインタの解放
+	for (int i = 0; i < m_pEnemy.size(); i++)
+	{
+		m_pEnemy[i]->SetReLoadFlag();
+	}
+	//味方リーダーポインタの解放
+	m_pAllyLeader->SetReLoadFlag();
+	//敵リーダーポインタの解放
+	m_pEnemyLeader->SetReLoadFlag();
+}
+
 //味方の情報保存処理
 void CBattle::SaveAllyData(int InCornerCount)
 {
