@@ -219,6 +219,9 @@
     <ClCompile Include="EffectManager_sp.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
+    <ClCompile Include="Pause.cpp">
+      <Filter>ソース ファイル\Systems\DirectX\Default</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -367,6 +370,9 @@
     </ClInclude>
     <ClInclude Include="EffectManager_sp.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="Pause.h">
+      <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -124,9 +124,9 @@ void Update()
 	UpdateInput();
 	// --- カメラ情報の更新
 	g_Camera->Update();
-	//ポーズの更新処理
-	//g_pPause->Update();
+	//ポーズの更新
 	if (scene == SCENE_GAME) g_pPause->Update();
+	 if (g_pPause->GetPause()) return;
 	// --- ゲームモードによる分岐処理
 	g_pScene->RootUpdate();
 

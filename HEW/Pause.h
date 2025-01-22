@@ -29,6 +29,15 @@ public:
 	//ÉQÅ[ÉÄÇ…ñﬂÇÈÇÃîªíË
 	bool GetReturn();
 private:
+	enum SECTION_KIND
+	{
+		SEC_OPTION,
+		SEC_RETRY,
+		SEC_RETURN,
+		SEC_STAGESELECT,
+
+	};
+private:
 	SpriteEx* m_pPauseTex[10];
 	COption* m_pOption;
 
