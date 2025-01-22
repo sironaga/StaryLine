@@ -2,6 +2,9 @@
 #include "Input.h"
 #include "Main.h"
 #include "Defines.h"
+
+
+
 CPause::CPause()
 	:m_bPause(false)
 ,m_bOption(false)
@@ -58,11 +61,113 @@ CPause::~CPause()
 
 void CPause::Update()
 {
+	static int section = SEC_RETURN;//選択中のバーの場所
+	//ポーズボタンを押したか
 	if (IsKeyTrigger(VK_ESCAPE))
 	{
 		m_bPause = true;
 	}
 	if (!m_bPause) return;
+
+	//バー選択中
+	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
+	{
+		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))
+		{
+			switch (section)
+			{
+			case SEC_OPTION:
+				section = SEC_STAGESELECT;
+				break;
+			case SEC_RETRY:
+				section = SEC_RETURN;
+				break;
+			case SEC_RETURN:
+				section = SEC_RETURN;
+				break;
+			case SEC_STAGESELECT:
+				section = SEC_RETRY;
+				break;
+			default:
+				break;
+			}
+		}
+		if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))
+		{
+			switch (section)
+			{
+			case SEC_OPTION:
+				section = SEC_OPTION;
+				break;
+			case SEC_RETRY:
+				section = SEC_STAGESELECT;
+				break;
+			case SEC_RETURN:
+				section = SEC_RETRY;
+				break;
+			case SEC_STAGESELECT:
+				section = SEC_OPTION;
+				break;
+			default:
+				break;
+			}
+		}
+		switch (section)
+		{
+		case SEC_OPTION:
+			m_fPos[9] = m_fPos[1];
+			break;
+		case SEC_RETRY:
+			m_fPos[9] = m_fPos[3];
+			break;
+		case SEC_RETURN:
+			m_fPos[9] = m_fPos[5];
+			break;
+		case SEC_STAGESELECT:
+			m_fPos[9] = m_fPos[7];
+			break;
+		default:
+			break;
+		}
+		//決定ボタン
+		if (IsKeyTrigger(VK_RETURN))
+		{
+			switch (section)
+			{
+			case SEC_OPTION:
+				m_bOption = true;
+				break;
+			case SEC_RETRY:
+				m_bRetry = true;
+				break;
+			case SEC_RETURN:
+				m_bReturn = true;
+				break;
+			case SEC_STAGESELECT:
+				m_bSelect = true;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	else
+	{
+		switch (section)
+		{
+		case SEC_OPTION:
+			m_pOption->Update();
+			break;
+		case SEC_RETRY:
+			break;
+		case SEC_RETURN:
+			break;
+		case SEC_STAGESELECT:
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void CPause::Draw()
@@ -98,6 +203,7 @@ void CPause::Draw()
 		m_pPauseTex[2]->SetPositon(m_fPos[2].X, m_fPos[2].Y, m_fPos[2].Z);
 		m_pPauseTex[2]->SetSize(m_fSize[2].X, m_fSize[2].Y, m_fSize[2].Z);
 		m_pPauseTex[2]->Disp();
+		m_pOption->Draw();
 	}
 	//リトライバー
 	if (!m_bRetry)
