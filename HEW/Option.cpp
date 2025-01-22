@@ -12,6 +12,7 @@ COption::COption()
 	, m_nTempValue{}
 	, m_bOptionMode(false), m_bSetValue(false)
 	, NowResolusion(1)
+	, m_fMul(1.0f)
 {
 	LoadPass();
 	InitParam();
@@ -41,7 +42,7 @@ void COption::Update()
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = -380.0f;
+			m_pParam[SECTION_SELECT]->pos.x = -380.0f* m_fMul;
 			break;
 		case SEC_SCREEN:
 			UpdateScreen();
@@ -64,7 +65,7 @@ void COption::Update()
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = 380.0f;
+			m_pParam[SECTION_SELECT]->pos.x = 380.0f * m_fMul;
 			break;
 		default:break;
 		}
@@ -143,7 +144,12 @@ void COption::SetMulSize(float mul)
 	{
 		m_pParam[i]->size.x *= mul;
 		m_pParam[i]->size.y *= mul;
+		if (m_pParam[i]->pos.x < SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x - m_pParam[i]->pos.x *  0.5f;
+		else if(m_pParam[i]->pos.x > SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x + m_pParam[i]->pos.x *  0.5f;
+		if (m_pParam[i]->pos.y <SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y - m_pParam[i]->pos.y *  0.5f;
+		else if (m_pParam[i]->pos.y > SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y + m_pParam[i]->pos.y *  0.5f;
 	}
+	m_fMul = mul;
 }
 
 bool COption::GetOption()
@@ -573,16 +579,16 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[TAB_MASTERVOLUME]);
 	Sprite::SetTexture(m_pTexture[TAB_MASTERVOLUME]);
 	Sprite::Draw();	
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[MASTER] * 70.0f;
-	m_pParam[BAR_GAGE]->pos = { (300.0f - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f,300.0f };
+	m_pParam[BAR_GAGE]->size.x = m_nTempValue[MASTER] * 70.0f * m_fMul;
+	m_pParam[BAR_GAGE]->pos = { (300.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f,300.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { 300.0f,300.0f };
+	m_pParam[BAR_FRAME]->pos = { 300.0f * m_fMul,300.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { m_nTempValue[MASTER] * 70.0f - 50.0f ,300.0f };
+	m_pParam[BAR_HANDLE]->pos = { (m_nTempValue[MASTER] * 70.0f - 50.0f) * m_fMul ,300.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
@@ -590,16 +596,16 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[TAB_BGM]);
 	Sprite::SetTexture(m_pTexture[TAB_BGM]);
 	Sprite::Draw();
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[BGM] * 70.0f;
-	m_pParam[BAR_GAGE]->pos = { (300.0f - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f,200.0f };
+	m_pParam[BAR_GAGE]->size.x = m_nTempValue[BGM] * 70.0f * m_fMul;
+	m_pParam[BAR_GAGE]->pos = { (300.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f,200.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { 300.0f,200.0f };
+	m_pParam[BAR_FRAME]->pos = { 300.0f * m_fMul,200.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { m_nTempValue[BGM] * 70.0f - 50.0f ,200.0f };
+	m_pParam[BAR_HANDLE]->pos = { (m_nTempValue[BGM] * 70.0f - 50.0f) * m_fMul ,200.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
@@ -607,16 +613,16 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[TAB_SE]);
 	Sprite::SetTexture(m_pTexture[TAB_SE]);
 	Sprite::Draw();
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[SE] * 70.0f;
-	m_pParam[BAR_GAGE]->pos = { (300.0f - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f,100.0f };
+	m_pParam[BAR_GAGE]->size.x = m_nTempValue[SE] * 70.0f * m_fMul;
+	m_pParam[BAR_GAGE]->pos = { (300.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f,100.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { 300.0f,100.0f };
+	m_pParam[BAR_FRAME]->pos = { 300.0f * m_fMul,100.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { m_nTempValue[SE] * 70.0f - 50.0f,100.0f };
+	m_pParam[BAR_HANDLE]->pos = { (m_nTempValue[SE] * 70.0f - 50.0f) * m_fMul,100.0f * m_fMul };
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
@@ -667,21 +673,21 @@ void COption::DrawScreen()
 		switch (m_nTempValue[SCREEN_MODE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f* m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1: 
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
@@ -692,21 +698,21 @@ void COption::DrawScreen()
 		switch (m_nTempValue[SCREEN_MODE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,300.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,300.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
@@ -731,21 +737,21 @@ void COption::DrawScreen()
 		switch (m_nTempValue[FRAME_RATE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
@@ -756,21 +762,21 @@ void COption::DrawScreen()
 		switch (m_nTempValue[FRAME_RATE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { -90.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f,200.0f };
+			m_pParam[OFF_NOT_SELECTED]->pos = { 350.0f * m_fMul,200.0f * m_fMul };
 			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
@@ -794,8 +800,8 @@ void COption::DrawScreen()
 	default:break;
 	}
 	Sprite::Draw();
-	m_pParam[SELECT_LEFT]->pos.y = 100.0f;
-	m_pParam[SELECT_RIGHT]->pos.y = 100.0f;
+	m_pParam[SELECT_LEFT]->pos.y = 100.0f * m_fMul;
+	m_pParam[SELECT_RIGHT]->pos.y = 100.0f * m_fMul;
 	Sprite::SetParam(m_pParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
@@ -845,16 +851,16 @@ void COption::DrawInput()
 	Sprite::SetParam(m_pParam[TAB_CONTROLLER]);
 	Sprite::SetTexture(m_pTexture[TAB_CONTROLLER]);
 	Sprite::Draw();
-	m_pParam[SELECT_LEFT]->pos.y = 300.0f;
-	m_pParam[SELECT_RIGHT]->pos.y = 300.0f;
+	m_pParam[SELECT_LEFT]->pos.y = 300.0f*m_fMul;
+	m_pParam[SELECT_RIGHT]->pos.y = 300.0f * m_fMul;
 	Sprite::SetParam(m_pParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
 	Sprite::SetParam(m_pParam[SELECT_RIGHT]);
 	Sprite::SetTexture(m_pTexture[SELECT_RIGHT]);
 	Sprite::Draw();
-	m_pParam[SELECT_LEFT]->pos.y = 200.0f;
-	m_pParam[SELECT_RIGHT]->pos.y = 200.0f;
+	m_pParam[SELECT_LEFT]->pos.y = 200.0f * m_fMul;
+	m_pParam[SELECT_RIGHT]->pos.y = 200.0f * m_fMul;
 	Sprite::SetParam(m_pParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
@@ -897,7 +903,7 @@ void COption::DrawInput()
 	default:break;
 	}
 
-	m_pParam[INPUT_TIPE_A]->pos.y = 300.0f;
+	m_pParam[INPUT_TIPE_A]->pos.y = 300.0f * m_fMul;
 	Sprite::SetParam(m_pParam[INPUT_TIPE_A]);
 	switch (m_nTempValue[KEY_BOARD])
 	{
@@ -908,7 +914,7 @@ void COption::DrawInput()
 	}
 	Sprite::Draw();
 
-	m_pParam[INPUT_TIPE_A]->pos.y = 200.0f;
+	m_pParam[INPUT_TIPE_A]->pos.y = 200.0f * m_fMul;
 	Sprite::SetParam(m_pParam[INPUT_TIPE_A]);
 	switch (m_nTempValue[CONTROLLER])
 	{

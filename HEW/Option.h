@@ -189,6 +189,7 @@ private:
 	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
 	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
 
+	float m_fMul;
 	int m_nSection;							// 大項目の選択
 	int m_nSelect;							// 小項目の選択
 	static int m_nValue[TAB_MAX];					// 各小項目の物量(確定)
