@@ -1279,10 +1279,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 				}
 				if (Count > 4)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
-				/*if (BadShapes)
-				{
-					MessageBox(NULL, "凹角形でちゃった(はーと)","バカな君へ", MB_OK);
-				}*/
+
 				if (!BadShapes)
 				{
 					Shapes_Count[NowShapes] = Count;
@@ -1369,6 +1366,14 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (!GetFeverMode())
 							{
 								nFeverPoint += 1.0f;
+								m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
+								Ally_Count++;//召喚数増やす
+								SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
+								SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
+								SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
+								SummonLog[NowSummonLog].Alpha = 0.0f;
+								SummonLog[NowSummonLog].MoveType = 1;
+								NowSummonLog++;//召喚ログを増やす
 							}
 						}
 						m_tVertex[Comparison2[m]].Angle[1] = 181.0f;
