@@ -25,6 +25,15 @@ public:
 	/// escボタン・Bボタンで閉じる
 	void SetOption();
 	/// @brief
+	///ポジションに足す
+	void SetAddPosX(float add);
+	/// @brief
+	///ポジションに足す
+	void SetAddPosY(float add);
+	/// @brief
+	/// サイズに掛ける
+	void SetMulSize(float mul);
+	/// @brief
 	/// オプション画面の状態取得
 	/// @return
 	/// true:オプション画面を開いている

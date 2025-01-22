@@ -121,6 +121,31 @@ void COption::SetOption()
 	m_bOptionMode = true;
 }
 
+void COption::SetAddPosX(float add)
+{
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		m_pParam[i]->pos.x += add;
+	}
+}
+
+void COption::SetAddPosY(float add)
+{
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		m_pParam[i]->pos.y += add;
+	}
+}
+
+void COption::SetMulSize(float mul)
+{
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		m_pParam[i]->size.x *= mul;
+		m_pParam[i]->size.y *= mul;
+	}
+}
+
 bool COption::GetOption()
 {
 	return m_bOptionMode;

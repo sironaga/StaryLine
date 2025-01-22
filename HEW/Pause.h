@@ -1,6 +1,7 @@
 #pragma once
 #include "SpriteEx.h"
 #include "Option.h"
+#include "BackGround.h"
 class CPause
 {
 public:
@@ -40,6 +41,7 @@ private:
 private:
 	SpriteEx* m_pPauseTex[10];
 	COption* m_pOption;
+	CBackGround* m_BackGround;
 
 	bool m_bPause;
 	bool m_bOption;
