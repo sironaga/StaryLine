@@ -18,7 +18,7 @@ CSceneResult::CSceneResult()
 	:nSelect(0),nAnimationFrame(0),nCAnimation(0),bCAnimation(true),bAnimation(false),bScore(true),bBestScore(false)
 {
 	// デバッグ
-	ResultGameData.bWin = 1;
+	//ResultGameData.bWin = 1;
 
 	// --- テクスチャの読み込み
 	LoadTexture();
