@@ -26,7 +26,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 
-
+    void SetMasterVolume() override;
 	void SetResult(bool InWin);
 private:
 

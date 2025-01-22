@@ -46,6 +46,7 @@ public:
 	void SetBattleAddress(CBattle*);//CBattleクラスのアドレス情報をセットする関数
 	void SetPlayerAddress(CPlayer*);//CPlayerクラスのアドレス情報をセットする関数
 	void SetStarLineAddress(StarLine*);//StarLineクラスのアドレス情報をセットする関数
+	void SetMasterVolume();//マスターヴォリュームを設定
 
 	void InitFieldVertex();//ゲーム中にFieldVertexの情報初期化する
 	void ResetFeverPoint();//フィーバーポイントをリセットする関数

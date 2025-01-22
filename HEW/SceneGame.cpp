@@ -374,6 +374,13 @@ float GetTime()
 	return g_tTime.GamePhaseTime;
 }
 
+void CSceneGame::SetMasterVolume()
+{
+	g_FeverSound->SetMasterVolume();
+	g_GameSound->SetMasterVolume();
+	m_pFieldVertex->SetMasterVolume();
+}
+
 void CSceneGame::SetResult(bool InWin)
 {
 	g_Resltcheck.IsEnd = true;

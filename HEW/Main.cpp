@@ -129,7 +129,11 @@ void Update()
 	g_Camera->Update();
 	//ポーズの更新
 	if (scene == SCENE_GAME) g_pPause->Update();
-	 if (g_pPause->GetPause()) return;
+	if (g_pPause->GetPause())
+	{
+		g_pScene->SetMasterVolume();
+		return;
+	}
 	// --- ゲームモードによる分岐処理
 	g_pScene->RootUpdate();
 
