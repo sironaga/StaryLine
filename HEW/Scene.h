@@ -40,6 +40,8 @@ public:
 
 	//ゲームスタート演出
 	void SetGameDirection(CStartDirection* Direction);
+
+	virtual void SetMasterVolume();
 protected:
 	CFade* m_pFade; // フェード処理クラス 
 	int  m_next;  // 切り替え先のシーン 

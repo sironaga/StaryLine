@@ -78,3 +78,7 @@ void CScene::SetGameDirection(CStartDirection* Direction)
 {
 	m_GameDirection = Direction;
 }
+
+void CScene::SetMasterVolume()
+{
+}

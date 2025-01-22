@@ -962,6 +962,11 @@ void CFieldVertex::SetStarLineAddress(StarLine* InAddress)
 	m_pStarLine = InAddress;
 }
 
+void CFieldVertex::SetMasterVolume()
+{
+	g_Fieldsound->SetMasterVolume();
+}
+
 ////=====FieldVertex‚Ì’¸“_î•ñ‚È‚Ç‚ğ‰Šú‰»‚·‚éŠÖ”=====//
 void CFieldVertex::InitFieldVertex()
 {
