@@ -17,6 +17,11 @@ COption::COption()
 	LoadPass();
 	InitParam();
 	InitValue();
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		OldPos[i].X = m_pParam[i]->pos.x;
+		OldPos[i].Y = m_pParam[i]->pos.y;
+	}
 }
 
 COption::~COption()
@@ -140,16 +145,18 @@ void COption::SetAddPosY(float add)
 
 void COption::SetMulSize(float mul)
 {
+	m_fMul = mul;
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
+		OldPos[i].X = m_pParam[i]->pos.x;
+		OldPos[i].Y = m_pParam[i]->pos.y;
 		m_pParam[i]->size.x *= mul;
 		m_pParam[i]->size.y *= mul;
-		if (m_pParam[i]->pos.x < SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x - m_pParam[i]->pos.x *  0.5f;
-		else if(m_pParam[i]->pos.x > SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x + m_pParam[i]->pos.x *  0.5f;
-		if (m_pParam[i]->pos.y <SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y - m_pParam[i]->pos.y *  0.5f;
-		else if (m_pParam[i]->pos.y > SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y + m_pParam[i]->pos.y *  0.5f;
+		if (m_pParam[i]->pos.x < SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x - m_pParam[i]->pos.x * m_fMul;
+		else if(m_pParam[i]->pos.x > SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x + m_pParam[i]->pos.x * m_fMul;
+		if (m_pParam[i]->pos.y <SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y - m_pParam[i]->pos.y * m_fMul;
+		else if (m_pParam[i]->pos.y > SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y + m_pParam[i]->pos.y * m_fMul;
 	}
-	m_fMul = mul;
 }
 
 bool COption::GetOption()
@@ -206,6 +213,19 @@ void COption::InitResolusion()
 	}
 	LoadPass();
 	InitParam();
+}
+
+void COption::ResetSize()
+{
+	
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		m_pParam[i]->size.x /= m_fMul;
+		m_pParam[i]->size.y /= m_fMul;
+		m_pParam[i]->pos.x = OldPos[i].X;
+		m_pParam[i]->pos.y = OldPos[i].Y;
+	}
+	m_fMul = 1.0f;
 }
 
 void COption::LoadPass()

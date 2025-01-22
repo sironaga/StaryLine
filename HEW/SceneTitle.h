@@ -20,7 +20,7 @@
 class CSceneTitle : public CScene
 {
 public:
-	CSceneTitle();
+	CSceneTitle(COption*pOption);
 	virtual ~CSceneTitle();
 	virtual void Update()override;
 	virtual void Draw()override;
