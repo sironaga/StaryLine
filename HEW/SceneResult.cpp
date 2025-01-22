@@ -456,10 +456,13 @@ void CSceneResult::SetCamData(void)
 		m_pNextUI[nLoop]->SetProjection(Get2DProj());
 		m_pNextUI[nLoop]->SetView(Get2DView());
 	}
-	m_pScore->SetView(Get2DView());
-	m_pScore->SetProjection(Get2DProj());
-	m_pBestScore->SetView(Get2DView());
-	m_pBestScore->SetProjection(Get2DProj());
+	if (ResultGameData.bWin)
+	{
+		m_pScore->SetView(Get2DView());
+		m_pScore->SetProjection(Get2DProj());
+		m_pBestScore->SetView(Get2DView());
+		m_pBestScore->SetProjection(Get2DProj());
+	}
 	m_pHitPoint->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pHitPoint->SetProjection(Get2DProj());
 	m_pHitPoint->SetView(Get2DView());
