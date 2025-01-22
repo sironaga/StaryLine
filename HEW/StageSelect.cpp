@@ -73,7 +73,7 @@ CStageSelect::CStageSelect()
 	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
 	m_pModel[DesertField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage02_Desert.fbx"), false);
 	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
-	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_ForBeta.fbx"), false);
+	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), false);
 
 	g_StageSelectSound = new CSoundList(BGM_TITLE);
 	m_pSourseStageSelectBGM = g_StageSelectSound->GetSound(true);
