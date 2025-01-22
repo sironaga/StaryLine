@@ -28,6 +28,7 @@
 #include "SceneDebug.h"
 #include "StartDirection.h"
 #include "Pause.h"
+#include "Option.h"
 
 //--- グローバル変数
 CStageSelect* g_pSceneSelect;
@@ -75,6 +76,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pFade = new CFadeBlack();
 	g_pFade->SetFade(1.0f, true);
 
+	//g_pOption = new COption();
 	// シーン作成 
 	g_pScene = new CSceneTitle();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
@@ -84,7 +86,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	
 	g_pPause = new CPause();
-
+	
 	g_pScene->SethWnd(hWnd);
 	
 
