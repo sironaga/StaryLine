@@ -67,7 +67,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		UnregisterClass(wcex.lpszClassName, hInstance);
 		return 0;
 	}
-	
+	ShowCursor(FALSE);
 
 
 	//--- FPSêßå‰
