@@ -17,7 +17,7 @@ CEffectManager_sp::CEffectManager_sp(const char* pass, int SplitX, int SplitY, f
 	m_tParam.uvSize = { 1.0f / (float)SplitX, 1.0f / (float)SplitY };
 
 	m_pTexture = new Texture();
-	m_pTexture->Create(pass);
+	if (FAILED(m_pTexture->Create(pass))) MessageBox(NULL, pass, "Error:EffectManager_sp.cpp", MB_OK);
 }
 
 CEffectManager_sp::CEffectManager_sp(CEffectManager_sp* InData)
