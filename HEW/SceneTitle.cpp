@@ -165,6 +165,10 @@ CSceneTitle::~CSceneTitle()
 
 		SAFE_DELETE(m_pLini[i]);
 	}
+	if (m_pOption)
+	{
+		SetPauseOption(m_pOption);
+	}
 
 }
 

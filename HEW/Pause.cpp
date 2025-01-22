@@ -11,6 +11,7 @@ CPause::CPause()
 ,m_bRetry(false)
 ,m_bSelect(false)
 ,m_bReturn(false)
+,m_pOption(nullptr)
 {
 	//テクスチャの読み込み
 	m_pPauseTex[0] = new SpriteEx(TEX_PASS("Pause/Pause_.png"));
@@ -23,7 +24,9 @@ CPause::CPause()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
-	
+
+	m_BackGround = new CBackGround();
+
 	//ポジションの初期化
 	m_fPos[0] ={285.0f,SCREEN_HEIGHT/2.0f,0.0f};
 	m_fPos[1] ={ 285.0f,625.0f,0.0f };
@@ -37,16 +40,16 @@ CPause::CPause()
 	m_fPos[9] = { 290.0f,340.0f,0.0f };
 
 	//サイズの初期化
-	m_fSize[0] = { 0.3f,1.0f,0.0f };
-	m_fSize[1] = { 0.3f,0.07f,0.0f };
-	m_fSize[2] = { 0.3f,0.07f,0.0f };
-	m_fSize[3] = { 0.3f,0.07f,0.0f };
-	m_fSize[4] = { 0.3f,0.07f,0.0f };
-	m_fSize[5] = { 0.3f,0.07f,0.0f };
-	m_fSize[6] = { 0.3f,0.07f,0.0f };
-	m_fSize[7] = { 0.3f,0.07f,0.0f };
-	m_fSize[8] = { 0.3f,0.07f,0.0f };
-	m_fSize[9] = { 0.304f,0.087f,0.0f };
+	m_fSize[0] = { 0.3f,1.0f, 1.0f };
+	m_fSize[1] = { 0.3f,0.07f,1.0f };
+	m_fSize[2] = { 0.3f,0.07f,1.0f };
+	m_fSize[3] = { 0.3f,0.07f,1.0f };
+	m_fSize[4] = { 0.3f,0.07f,1.0f };
+	m_fSize[5] = { 0.3f,0.07f,1.0f };
+	m_fSize[6] = { 0.3f,0.07f,1.0f };
+	m_fSize[7] = { 0.3f,0.07f,1.0f };
+	m_fSize[8] = { 0.3f,0.07f,1.0f };
+	m_fSize[9] = { 0.304f,0.087f,1.0f };
 
 }
 
@@ -56,7 +59,14 @@ CPause::~CPause()
 	{
 		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
 	}
-	if (m_pOption) m_pOption = nullptr;
+	if (m_pOption)
+	{
+		SAFE_DELETE(m_pOption);
+	}
+	if (m_BackGround)
+	{
+		SAFE_DELETE(m_BackGround);
+	}
 }
 
 void CPause::Update()
@@ -70,6 +80,7 @@ void CPause::Update()
 	if (!m_bPause) return;
 
 	//バー選択中
+	m_BackGround->Update();
 	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
 	{
 		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))
@@ -172,6 +183,8 @@ void CPause::Update()
 
 void CPause::Draw()
 {
+	m_BackGround->Draw();
+	//SetRender3D();
 	//ポーズ
 	m_pPauseTex[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pPauseTex[0]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
@@ -203,7 +216,7 @@ void CPause::Draw()
 		m_pPauseTex[2]->SetPositon(m_fPos[2].X, m_fPos[2].Y, m_fPos[2].Z);
 		m_pPauseTex[2]->SetSize(m_fSize[2].X, m_fSize[2].Y, m_fSize[2].Z);
 		m_pPauseTex[2]->Disp();
-		m_pOption->Draw();
+		
 	}
 	//リトライバー
 	if (!m_bRetry)
@@ -283,11 +296,17 @@ void CPause::Draw()
 	m_pPauseTex[9]->SetPositon(m_fPos[9].X, m_fPos[9].Y, m_fPos[9].Z);
 	m_pPauseTex[9]->SetSize(m_fSize[9].X, m_fSize[9].Y, m_fSize[9].Z);
 	m_pPauseTex[9]->Disp();
+	if (m_bOption)
+	{
+		m_pOption->Draw();
+	}
 }
 
 void CPause::SetOption(COption* InOption)
 {
 	m_pOption = InOption;
+	//m_pOption->SetAddPosX(200.0f);
+	//m_pOption->SetMulSize(0.5f);
 }
 
 bool CPause::GetPause()

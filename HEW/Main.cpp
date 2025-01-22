@@ -241,12 +241,16 @@ void Draw()
 	Geometory::SetProjection(mat[1]);
 #endif
 	
-	g_pPause->Draw();
+	
 	if (!g_pPause->GetPause())
 	{
 		g_pScene->RootDraw();
 		LibEffekseer::Draw();
 		g_pDirection->Draw();
+	}
+	else
+	{
+		g_pPause->Draw();
 	}
 	EndDrawDirectX();
 }
