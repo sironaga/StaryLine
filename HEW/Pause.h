@@ -2,6 +2,7 @@
 #include "SpriteEx.h"
 #include "Option.h"
 #include "BackGround.h"
+#include "SoundList.h"
 class CPause
 {
 public:
@@ -17,7 +18,8 @@ public:
 	//====セッター====
 	//オプションの情報を設定
 	void SetOption(COption* InOption);
-
+	void SetRetry();
+	void SetSelect();
 	//====ゲッター====
 	//ポーズ画面の判定
 	bool GetPause();
@@ -41,8 +43,9 @@ private:
 private:
 	SpriteEx* m_pPauseTex[10];
 	COption* m_pOption;
-	CBackGround* m_BackGround;
-
+	CBackGround* m_pBackGround;
+	CSoundList* m_pSoundPause[3];
+	IXAudio2SourceVoice* m_pSoundPauseSE[3];
 	bool m_bPause;
 	bool m_bOption;
 	bool m_bRetry;

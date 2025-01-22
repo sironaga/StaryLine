@@ -13,6 +13,7 @@ COption::COption()
 	, m_bOptionMode(false), m_bSetValue(false)
 	, NowResolusion(1)
 	, m_fMul(1.0f)
+	, MovePos({0.0f,0.0f})
 {
 	LoadPass();
 	InitParam();
@@ -127,19 +128,13 @@ void COption::SetOption()
 	m_bOptionMode = true;
 }
 
-void COption::SetAddPosX(float add)
+void COption::SetAddPos(float x,float y)
 {
+	MovePos = { x,y };
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
-		m_pParam[i]->pos.x += add;
-	}
-}
-
-void COption::SetAddPosY(float add)
-{
-	for (int i = 0; i < KINDMAX_OPTION; i++)
-	{
-		m_pParam[i]->pos.y += add;
+		m_pParam[i]->pos.x += x;
+		m_pParam[i]->pos.y += y;
 	}
 }
 
@@ -226,6 +221,16 @@ void COption::ResetSize()
 		m_pParam[i]->pos.y = OldPos[i].Y;
 	}
 	m_fMul = 1.0f;
+}
+
+void COption::ResetPos()
+{
+	for (int i = 0; i < KINDMAX_OPTION; i++)
+	{
+		m_pParam[i]->pos.x -= MovePos.X;
+		m_pParam[i]->pos.y -= MovePos.Y;
+	}
+	MovePos = { 0.0f,0.0f };
 }
 
 void COption::LoadPass()

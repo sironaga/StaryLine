@@ -134,6 +134,16 @@ void Update()
 		g_pScene->SetMasterVolume();
 		return;
 	}
+	if (g_pPause->GetRetry())
+	{
+		g_pPause->SetRetry();
+		g_pScene->SetNext(SCENE_GAME, g_pScene->GetStage());
+	}
+	if (g_pPause->GetSelect())
+	{
+		g_pPause->SetSelect();
+		g_pScene->SetNext(STAGE_SELECT);
+	}
 	// --- ゲームモードによる分岐処理
 	g_pScene->RootUpdate();
 
