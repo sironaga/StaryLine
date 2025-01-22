@@ -7,45 +7,51 @@ CNumberUI::CNumberUI()
 	,Pos(),Scale(),Color()
 	,fAlpha(), NowMode(Center_AL)
 {
-	m_pNumber[0][0][nColor] = new SpriteEx("Assets/Texture/Number/Num_0.png");
-	m_pNumber[0][1][nColor] = new SpriteEx("Assets/Texture/Number/Num_1.png");
-	m_pNumber[0][2][nColor] = new SpriteEx("Assets/Texture/Number/Num_2.png");
-	m_pNumber[0][3][nColor] = new SpriteEx("Assets/Texture/Number/Num_3.png");
-	m_pNumber[0][4][nColor] = new SpriteEx("Assets/Texture/Number/Num_4.png");
-	m_pNumber[0][5][nColor] = new SpriteEx("Assets/Texture/Number/Num_5.png");
-	m_pNumber[0][6][nColor] = new SpriteEx("Assets/Texture/Number/Num_6.png");
-	m_pNumber[0][7][nColor] = new SpriteEx("Assets/Texture/Number/Num_7.png");
-	m_pNumber[0][8][nColor] = new SpriteEx("Assets/Texture/Number/Num_8.png");
-	m_pNumber[0][9][nColor] = new SpriteEx("Assets/Texture/Number/Num_9.png");
-	
-	m_pNumber[1][0][nColor] = new SpriteEx("Assets/Texture/Number/Num_0_Bold.png");
-	m_pNumber[1][1][nColor] = new SpriteEx("Assets/Texture/Number/Num_1_Bold.png");
-	m_pNumber[1][2][nColor] = new SpriteEx("Assets/Texture/Number/Num_2_Bold.png");
-	m_pNumber[1][3][nColor] = new SpriteEx("Assets/Texture/Number/Num_3_Bold.png");
-	m_pNumber[1][4][nColor] = new SpriteEx("Assets/Texture/Number/Num_4_Bold.png");
-	m_pNumber[1][5][nColor] = new SpriteEx("Assets/Texture/Number/Num_5_Bold.png");
-	m_pNumber[1][6][nColor] = new SpriteEx("Assets/Texture/Number/Num_6_Bold.png");
-	m_pNumber[1][7][nColor] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
-	m_pNumber[1][8][nColor] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
-	m_pNumber[1][9][nColor] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
+	m_pNumber[0][0][0] = new SpriteEx("Assets/Texture/Number/Num_0.png");
+	m_pNumber[0][1][0] = new SpriteEx("Assets/Texture/Number/Num_1.png");
+	m_pNumber[0][2][0] = new SpriteEx("Assets/Texture/Number/Num_2.png");
+	m_pNumber[0][3][0] = new SpriteEx("Assets/Texture/Number/Num_3.png");
+	m_pNumber[0][4][0] = new SpriteEx("Assets/Texture/Number/Num_4.png");
+	m_pNumber[0][5][0] = new SpriteEx("Assets/Texture/Number/Num_5.png");
+	m_pNumber[0][6][0] = new SpriteEx("Assets/Texture/Number/Num_6.png");
+	m_pNumber[0][7][0] = new SpriteEx("Assets/Texture/Number/Num_7.png");
+	m_pNumber[0][8][0] = new SpriteEx("Assets/Texture/Number/Num_8.png");
+	m_pNumber[0][9][0] = new SpriteEx("Assets/Texture/Number/Num_9.png");
 					
-	m_pNumber[0][0][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_0.png");
-	m_pNumber[0][1][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_1.png");
-	m_pNumber[0][2][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_2.png");
-	m_pNumber[0][3][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_3.png");
-	m_pNumber[0][4][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_4.png");
-	m_pNumber[0][5][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_5.png");
-	m_pNumber[0][6][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_6.png");
-	m_pNumber[0][7][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_7.png");
-	m_pNumber[0][8][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_8.png");
-	m_pNumber[0][9][nColor] = new SpriteEx("Assets/Texture/Number/White/Num_9.png");
+	m_pNumber[1][0][0] = new SpriteEx("Assets/Texture/Number/Num_0_Bold.png");
+	m_pNumber[1][1][0] = new SpriteEx("Assets/Texture/Number/Num_1_Bold.png");
+	m_pNumber[1][2][0] = new SpriteEx("Assets/Texture/Number/Num_2_Bold.png");
+	m_pNumber[1][3][0] = new SpriteEx("Assets/Texture/Number/Num_3_Bold.png");
+	m_pNumber[1][4][0] = new SpriteEx("Assets/Texture/Number/Num_4_Bold.png");
+	m_pNumber[1][5][0] = new SpriteEx("Assets/Texture/Number/Num_5_Bold.png");
+	m_pNumber[1][6][0] = new SpriteEx("Assets/Texture/Number/Num_6_Bold.png");
+	m_pNumber[1][7][0] = new SpriteEx("Assets/Texture/Number/Num_7_Bold.png");
+	m_pNumber[1][8][0] = new SpriteEx("Assets/Texture/Number/Num_8_Bold.png");
+	m_pNumber[1][9][0] = new SpriteEx("Assets/Texture/Number/Num_9_Bold.png");
+					
+	m_pNumber[0][0][1] = new SpriteEx("Assets/Texture/Number/White/Num_0.png");
+	m_pNumber[0][1][1] = new SpriteEx("Assets/Texture/Number/White/Num_1.png");
+	m_pNumber[0][2][1] = new SpriteEx("Assets/Texture/Number/White/Num_2.png");
+	m_pNumber[0][3][1] = new SpriteEx("Assets/Texture/Number/White/Num_3.png");
+	m_pNumber[0][4][1] = new SpriteEx("Assets/Texture/Number/White/Num_4.png");
+	m_pNumber[0][5][1] = new SpriteEx("Assets/Texture/Number/White/Num_5.png");
+	m_pNumber[0][6][1] = new SpriteEx("Assets/Texture/Number/White/Num_6.png");
+	m_pNumber[0][7][1] = new SpriteEx("Assets/Texture/Number/White/Num_7.png");
+	m_pNumber[0][8][1] = new SpriteEx("Assets/Texture/Number/White/Num_8.png");
+	m_pNumber[0][9][1] = new SpriteEx("Assets/Texture/Number/White/Num_9.png");
+
+	m_pNumber[0][0][2] = new SpriteEx("Assets/Texture/Number/Score/0.png");
+	m_pNumber[0][1][2] = new SpriteEx("Assets/Texture/Number/Score/1.png");
+	m_pNumber[0][2][2] = new SpriteEx("Assets/Texture/Number/Score/2.png");
+	m_pNumber[0][3][2] = new SpriteEx("Assets/Texture/Number/Score/3.png");
+	m_pNumber[0][4][2] = new SpriteEx("Assets/Texture/Number/Score/4.png");
+	m_pNumber[0][5][2] = new SpriteEx("Assets/Texture/Number/Score/5.png");
+	m_pNumber[0][6][2] = new SpriteEx("Assets/Texture/Number/Score/6.png");
+	m_pNumber[0][7][2] = new SpriteEx("Assets/Texture/Number/Score/7.png");
+	m_pNumber[0][8][2] = new SpriteEx("Assets/Texture/Number/Score/8.png");
+	m_pNumber[0][9][2] = new SpriteEx("Assets/Texture/Number/Score/9.png");
 
 	Color.X = Color.Y = Color.Z = fAlpha = 1.0f;	
-
-	if (nColor > 1)
-	{
-		MessageBox(NULL, "nColorエラー", "NumberUI.cpp", MB_OK);
-	}
 }
 
 CNumberUI::~CNumberUI()
@@ -165,6 +171,11 @@ void CNumberUI::SetLend(int InData)
 void CNumberUI::SetNumberColor(int InColor)
 {
 	nColor = InColor;
+	if (nColor > 2)
+	{
+		MessageBox(NULL, "nColorエラー", "NumberUI.cpp", MB_OK);
+		nColor = 2;
+	}
 }
 
 void CNumberUI::SetArrangment(nMode InMode)
