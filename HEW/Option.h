@@ -8,6 +8,8 @@
 /// それに伴い減ったテクスチャの再設定
 /// </summary>
 
+	// 小項目の種類
+
 
 
 class COption
@@ -54,7 +56,7 @@ public:
 	/// FPSを取得する
 	/// @return
 	/// 30.0fもしくは60.0f
-	float GetFPS();
+	static float GetFPS();
 	/// @brief
 	/// 解像度を取得する
 	/// @return
@@ -160,7 +162,6 @@ private:
 		SEC_INPUT,
 	};
 
-	// 小項目の種類
 	enum TAB_KIND
 	{
 		MASTER = 0,
@@ -175,12 +176,13 @@ private:
 		TAB_MAX
 	};
 
+
 	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
 	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
 
 	int m_nSection;							// 大項目の選択
 	int m_nSelect;							// 小項目の選択
-	int m_nValue[TAB_MAX];					// 各小項目の物量(確定)
+	static int m_nValue[TAB_MAX];					// 各小項目の物量(確定)
 	int m_nTempValue[TAB_MAX];				// 各小項目の物量(推定)
 
 	bool m_bOptionMode;						// オプション画面を開いているかどうか

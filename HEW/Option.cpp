@@ -4,10 +4,12 @@
 #include "Defines.h"
 #include "Sprite.h"
 
+int COption::m_nValue[TAB_MAX];
+
 COption::COption()
 	: m_nSelect(SEC_SOUND), m_nSection(MASTER)
 	, m_pTexture{}, m_pParam{}
-	, m_nValue{}, m_nTempValue{}
+	, m_nTempValue{}
 	, m_bOptionMode(false), m_bSetValue(false)
 	, NowResolusion(1)
 {

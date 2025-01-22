@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <crtdbg.h>
 #include "resource.h"
+#include"Option.h"
 
 // timeGetTime周りの使用
 #pragma comment(lib, "winmm.lib")
@@ -95,12 +96,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DWORD nowTime = timeGetTime();
 			float diff = static_cast<float>(nowTime - preExecTime);
 			static int fpsCount = 0;
+
+			float Fps;
+			Fps = COption::GetFPS();
+			if (Fps < 30.0f)Fps = 60.0f;
+
+
 			if (diff >= 1000.0f / fFPS)
 			{
 				Update();
+			}
+
+			if (diff >= 1000.0f / Fps)
+			{
 				Draw();
+
 				preExecTime = nowTime;
 				fpsCount++;
+
 #ifdef _DEBUG	//デバッグ時のみ実行
 				//整数型から文字列へ変換
 
