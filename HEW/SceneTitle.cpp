@@ -45,7 +45,7 @@ enum E_TITLE_ANIME
 CSceneTitle::CSceneTitle()
 	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 	, m_nAnimCount(0), m_tCharaLogoTexPos{}
-	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y}
+	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -164,6 +164,10 @@ CSceneTitle::~CSceneTitle()
 	{
 
 		SAFE_DELETE(m_pLini[i]);
+	}
+	if (m_pOption)
+	{
+		SetPauseOption(m_pOption);
 	}
 
 }

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <crtdbg.h>
 #include "resource.h"
+#include"Option.h"
 
 // timeGetTime周りの使用
 #pragma comment(lib, "winmm.lib")
@@ -73,6 +74,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	timeBeginPeriod(1);
 	DWORD countStartTime = timeGetTime();
 	DWORD preExecTime = countStartTime;
+	DWORD UpdateNowTime = timeGetTime();
 	DWORD fpsCount = 0;			//FPS値計測カウンタ
 	DWORD FPS = 0;				//直近のFPS
 	//--- ウィンドウの管理
@@ -95,27 +97,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DWORD nowTime = timeGetTime();
 			float diff = static_cast<float>(nowTime - preExecTime);
 			static int fpsCount = 0;
-			if (diff >= 1000.0f / fFPS)
+			static int UpdatefpsCount = 0;
+
+			float Updatediff = static_cast<float>(nowTime - UpdateNowTime);
+
+
+			float Fps;
+			Fps = COption::GetFPS();
+			if (Fps < 30.0f)Fps = 60.0f;
+
+			if (Updatediff >= 1000.0f / fFPS)
 			{
 				Update();
+				UpdateNowTime = nowTime;
+				UpdatefpsCount++;
+			}
+			if (diff >= 1000.0f / Fps)
+			{
 				Draw();
+
 				preExecTime = nowTime;
 				fpsCount++;
-#ifdef _DEBUG	//デバッグ時のみ実行
-				//整数型から文字列へ変換
-
-				if (nowTime - countStartTime >= 1000)
-				{
-					char mes[256];
-					//sprintf→文字列に対してprintfで書き込む
-					sprintf(mes, "FPS:%d", fpsCount);
-					//FPSの表示
-					SetWindowText(hWnd, mes);
-					fpsCount = 0;
-					countStartTime = nowTime;
-				}
-#endif
 			}
+#ifdef _DEBUG
+			//デバッグ時のみ実行
+				//整数型から文字列へ変換
+			if (nowTime - countStartTime >= 1000)
+			{
+				char mes[256];
+				//sprintf→文字列に対してprintfで書き込む
+				sprintf(mes, "DARW_FPS:%d UPDATE_FPS:%d", fpsCount,UpdatefpsCount);
+				//FPSの表示
+				SetWindowText(hWnd, mes);
+				UpdatefpsCount = 0;
+				fpsCount = 0;
+				countStartTime = nowTime;
+			}
+#endif
+			
 		}
 	}
 

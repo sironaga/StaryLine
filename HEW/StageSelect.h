@@ -49,11 +49,16 @@ private:
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
 	SpriteEx* m_pStageSelected;
+	SpriteEx* m_pStageSelect_Underbar;
+	SpriteEx* m_pStageSelect;
+	SpriteEx* m_pWorldSelect;
+	SpriteEx* m_pWorld[3];
 
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* g_StageSelectSound;
 
-	enum StageKind
+	DirectX::XMFLOAT3 m_rotate;
+		enum StageKind
 	{
 		GrassField = 0,
 		DesertField,

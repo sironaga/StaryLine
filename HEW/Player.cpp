@@ -428,6 +428,20 @@ void CPlayer::PlayerInput()
 	else if ((tControllerMove.x < 0.0f && tControllerMove.y == 0.0f)) m_eDestination = LEFT;
 	else m_eDestination = DEFAULT;
 
+	switch (m_eDestination)
+	{
+	case CPlayer::UP:m_nDestination = m_nNowVertex - 5;			break;
+	case CPlayer::UPRIGHT:m_nDestination = m_nNowVertex - 4;	break;
+	case CPlayer::RIGHT:m_nDestination = m_nNowVertex + 1;		break;
+	case CPlayer::DOWNRIGHT:m_nDestination = m_nNowVertex + 6;	break;
+	case CPlayer::DOWN:m_nDestination = m_nNowVertex + 5;		break;
+	case CPlayer::DOWNLEFT:m_nDestination = m_nNowVertex + 4;	break;
+	case CPlayer::LEFT:m_nDestination = m_nNowVertex - 1;		break;
+	case CPlayer::UPLEFT:m_nDestination = m_nNowVertex - 6;		break;
+	case CPlayer::DEFAULT:m_nDestination = m_nNowVertex;		break;
+	default:break;
+	}
+	if (m_eDestination != DEFAULT)return;
 	// キー入力情報の取得
 	DIRECTION KeyData = WASDKeyBorad();
 

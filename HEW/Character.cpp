@@ -90,7 +90,7 @@ Texture* g_pHpGageTex[(int)HpTexture::MAX];
 CSoundList* g_AttackSound;
 
 //事前読み込み用関数
-void InitCharacterTexture(CFieldVertex* InAddress,StageType StageType)
+void InitCharacterTexture(StageType StageType)
 {
 	g_pLeaderModel[0] = nullptr;
 	g_pLeaderModel[1] = nullptr;
@@ -339,6 +339,12 @@ void UnInitCharacterTexture()
 	//サウンドの破棄
 	delete g_AttackSound;
 	g_AttackSound = nullptr;
+}
+
+void ReLoadCharacterTexture(StageType StageType)
+{
+	UnInitCharacterTexture();
+	InitCharacterTexture(StageType);
 }
 
 //キャラクターの基底クラスのコンストラクタ
@@ -621,7 +627,23 @@ CAlly::~CAlly()
 //味方クラスの更新処理
 void CAlly::Update(void)
 {
-	
+	//モデルの再読み込みフラグが立っていたら読み込む
+	if (m_bReLoadFlag)
+	{
+		if (m_pModel)m_pModel = nullptr;
+		switch (m_nCornerCount)
+		{
+		case 3:
+			//モデル
+			m_pModel = g_pAllyModel[(int)Ally::Ally3];
+			break;
+		case 4:
+			//モデル
+			m_pModel = g_pAllyModel[(int)Ally::Ally4];
+			break;
+		}
+		m_bReLoadFlag = false;
+	}
 	// 状況に応じて処理を分ける
 	switch (m_tStatus)
 	{
@@ -902,6 +924,24 @@ CEnemy::~CEnemy()
 
 void CEnemy::Update(void)
 {
+	//モデルの再読み込みフラグが立っていたら読み込む
+	if (m_bReLoadFlag)
+	{
+		if (m_pModel)m_pModel = nullptr;
+		switch (m_nCornerCount)
+		{
+		case 3:
+			//モデル
+			m_pModel = g_pEnemyModel[(int)Enemy::Enemy1];
+			break;
+		case 4:
+			//モデル
+			m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
+			break;
+		}
+		m_bReLoadFlag = false;
+	}
+
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 
 	// 状況に応じて処理を分ける
@@ -1127,6 +1167,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	, m_fMaxHp(m_fHp)
 	, m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
+	, m_bSubModelCreate(SubModelCreate)
 {
 	switch (m_nTextureNumber)
 	{
@@ -1136,7 +1177,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 		break;
 	case 1://ボス
 		m_pModel = g_pLeaderModel[1];
-		if (SubModelCreate)
+		if (m_bSubModelCreate)
 		{
 			m_pSubModel = g_pLeaderModel[2];
 		}
@@ -1196,6 +1237,26 @@ CLeader::~CLeader()
 
 void CLeader::Update(bool IsStart, bool IsEnd)
 {
+	if (m_bReLoadFlag)
+	{
+		switch (m_nTextureNumber)
+		{
+		case 0://プレイヤー
+			m_pModel = g_pLeaderModel[(int)Leader::Linie];
+			m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
+			break;
+		case 1://ボス
+			m_pModel = g_pLeaderModel[1];
+			if (m_bSubModelCreate)
+			{
+				m_pSubModel = g_pLeaderModel[2];
+			}
+			m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
+			break;
+
+		}
+		m_bReLoadFlag = false;
+	}
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 
 	switch (m_tStatus)
