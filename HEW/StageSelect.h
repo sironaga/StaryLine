@@ -54,7 +54,8 @@ private:
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* g_StageSelectSound;
 
-	enum StageKind
+	DirectX::XMFLOAT3 m_rotate;
+		enum StageKind
 	{
 		GrassField = 0,
 		DesertField,
