@@ -2,7 +2,7 @@
 #include "Input.h"
 #include "Main.h"
 #include "Defines.h"
-#include "SoundList.h"
+
 
 
 CPause::CPause()
@@ -12,6 +12,7 @@ CPause::CPause()
 ,m_bSelect(false)
 ,m_bReturn(false)
 ,m_pOption(nullptr)
+
 {
 	//テクスチャの読み込み
 	m_pPauseTex[0] = new SpriteEx(TEX_PASS("Pause/Pause_.png"));
@@ -25,7 +26,7 @@ CPause::CPause()
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
 
-	m_BackGround = new CBackGround();
+	m_pBackGround = new CBackGround();
 
 	//ポジションの初期化
 	m_fPos[0] ={285.0f,SCREEN_HEIGHT/2.0f,0.0f};
@@ -51,6 +52,14 @@ CPause::CPause()
 	m_fSize[8] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[9] = { SCREEN_WIDTH * 0.304f,SCREEN_HEIGHT * 0.087f,0.0f };
 
+	
+		m_pSoundPause[0] = new CSoundList(SE_CANCEL);
+		m_pSoundPause[1] = new CSoundList(SE_DECISION);
+		m_pSoundPause[2] = new CSoundList(SE_SELECT);
+		for (int i = 0; i < 3; i++)
+		{
+			m_pSoundPauseSE[i] = m_pSoundPause[i]->GetSound(false);
+		}
 }
 
 CPause::~CPause()
@@ -63,15 +72,16 @@ CPause::~CPause()
 	{
 		m_pOption=nullptr;
 	}
-	if (m_BackGround)
+	if (m_pBackGround)
 	{
-		SAFE_DELETE(m_BackGround);
+		SAFE_DELETE(m_pBackGround);
 	}
 }
 
 void CPause::Update()
 {
 	static int section = SEC_RETURN;//選択中のバーの場所
+	XAUDIO2_BUFFER buffer;
 	//ポーズボタンを押したか
 	if (IsKeyTrigger(VK_ESCAPE))
 	{
@@ -79,7 +89,7 @@ void CPause::Update()
 	}
 	if (!m_bPause) return;
 
-	//バー選択中
+	//バー選択
 	m_pOption->Update();
 	SetAllMasterVolume(m_pOption->GetMasterVoluem());
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
@@ -88,19 +98,42 @@ void CPause::Update()
 	{
 		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))
 		{
-			//se
+			
+			
 			switch (section)
 			{
 			case SEC_OPTION:
+				//se
+				m_pSoundPauseSE[2]->Stop();
+				m_pSoundPauseSE[2]->FlushSourceBuffers();
+				
+				buffer = m_pSoundPause[2]->GetBuffer(false);
+				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(m_pSoundPauseSE[2]);
+				m_pSoundPauseSE[2]->Start();
 				section = SEC_STAGESELECT;
 				break;
 			case SEC_RETRY:
+				//se
+				m_pSoundPauseSE[2]->Stop();
+				m_pSoundPauseSE[2]->FlushSourceBuffers();
+				buffer = m_pSoundPause[2]->GetBuffer(false);
+				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(m_pSoundPauseSE[2]);
+				m_pSoundPauseSE[2]->Start();
 				section = SEC_RETURN;
 				break;
 			case SEC_RETURN:
 				section = SEC_RETURN;
 				break;
 			case SEC_STAGESELECT:
+				//se
+				m_pSoundPauseSE[2]->Stop();
+				m_pSoundPauseSE[2]->FlushSourceBuffers();
+				buffer = m_pSoundPause[2]->GetBuffer(false);
+				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(m_pSoundPauseSE[2]);
+				m_pSoundPauseSE[2]->Start();
 				section = SEC_RETRY;
 				break;
 			default:
@@ -109,19 +142,40 @@ void CPause::Update()
 		}
 		if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))
 		{
-			//se
+			
 			switch (section)
 			{
 			case SEC_OPTION:
 				section = SEC_OPTION;
 				break;
 			case SEC_RETRY:
+				//se
+				m_pSoundPauseSE[2]->Stop();
+				m_pSoundPauseSE[2]->FlushSourceBuffers();
+				buffer = m_pSoundPause[2]->GetBuffer(false);
+				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(m_pSoundPauseSE[2]);
+				m_pSoundPauseSE[2]->Start();
 				section = SEC_STAGESELECT;
 				break;
 			case SEC_RETURN:
+				//se
+				m_pSoundPauseSE[2]->Stop();
+				m_pSoundPauseSE[2]->FlushSourceBuffers();
+				buffer = m_pSoundPause[2]->GetBuffer(false);
+				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(m_pSoundPauseSE[2]);
+				m_pSoundPauseSE[2]->Start();
 				section = SEC_RETRY;
 				break;
 			case SEC_STAGESELECT:
+				//se
+				m_pSoundPauseSE[2]->Stop();
+				m_pSoundPauseSE[2]->FlushSourceBuffers();
+				buffer = m_pSoundPause[2]->GetBuffer(false);
+				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(m_pSoundPauseSE[2]);
+				m_pSoundPauseSE[2]->Start();
 				section = SEC_OPTION;
 				break;
 			default:
@@ -149,6 +203,13 @@ void CPause::Update()
 		if (IsKeyTrigger(VK_RETURN))
 		{
 			//se
+			//se
+			m_pSoundPauseSE[1]->Stop();
+			m_pSoundPauseSE[1]->FlushSourceBuffers();
+			buffer = m_pSoundPause[1]->GetBuffer(false);
+			m_pSoundPauseSE[1]->SubmitSourceBuffer(&buffer);
+			SetVolumeSE(m_pSoundPauseSE[1]);
+			m_pSoundPauseSE[1]->Start();
 			switch (section)
 			{
 			case SEC_OPTION:
@@ -158,6 +219,7 @@ void CPause::Update()
 				m_bOption = true;
 				break;
 			case SEC_RETRY:
+				m_bPause = false;
 				m_bRetry = true;
 				break;
 			case SEC_RETURN:
@@ -165,6 +227,7 @@ void CPause::Update()
 				//m_bReturn = true;
 				break;
 			case SEC_STAGESELECT:
+				m_bPause = false;
 				m_bSelect = true;
 				break;
 			default:
@@ -172,17 +235,30 @@ void CPause::Update()
 			}
 		}
 	}
+	//バー選択中
 	else
 	{
+
 		switch (section)
 		{
 		case SEC_OPTION:
-			m_BackGround->Update();
+			m_pBackGround->Update();
+			for (int i = 0; i < 3; i++)
+			{
+				m_pSoundPause[i]->SetMasterVolume();
+				m_pSoundPauseSE[i]->SetVolume(m_pOption->GetSEVoluem());
+			}
 			if (!m_pOption->GetOption())
 			{
 				if (IsKeyTrigger(VK_ESCAPE))
 				{
 					//se
+					m_pSoundPauseSE[0]->Stop();
+					m_pSoundPauseSE[0]->FlushSourceBuffers();
+					buffer = m_pSoundPause[0]->GetBuffer(false);
+					m_pSoundPauseSE[0]->SubmitSourceBuffer(&buffer);
+					SetVolumeSE(m_pSoundPauseSE[0]);
+					m_pSoundPauseSE[0]->Start();
 					m_bOption = false;
 				}
 			}
@@ -201,7 +277,7 @@ void CPause::Update()
 
 void CPause::Draw()
 {
-	m_BackGround->Draw();
+	m_pBackGround->Draw();
 	SetRender2D();
 	//ポーズ
 	m_pPauseTex[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -324,6 +400,16 @@ void CPause::SetOption(COption* InOption)
 {
 	m_pOption = InOption;
 	//m_pOption->SetAddPosX(200.0f);
+}
+
+void CPause::SetRetry()
+{
+	m_bRetry = false;
+}
+
+void CPause::SetSelect()
+{
+	m_bSelect = false;
 }
 
 bool CPause::GetPause()

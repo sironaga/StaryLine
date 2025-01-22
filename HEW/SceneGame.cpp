@@ -93,6 +93,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 
 CSceneGame::~CSceneGame()
 {
+	m_GameDirection->SetTimer(0.0f);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pFieldVertex);
 	SAFE_DELETE(m_pBattle);
@@ -379,6 +380,8 @@ void CSceneGame::SetMasterVolume()
 	g_FeverSound->SetMasterVolume();
 	g_GameSound->SetMasterVolume();
 	m_pFieldVertex->SetMasterVolume();
+	SetVolumeBGM(m_pSourseGameBGM);
+	SetVolumeBGM(m_pSourseFeverBGM);
 }
 
 void CSceneGame::SetResult(bool InWin)
