@@ -74,6 +74,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	timeBeginPeriod(1);
 	DWORD countStartTime = timeGetTime();
 	DWORD preExecTime = countStartTime;
+	DWORD UpdateNowTime = timeGetTime();
 	DWORD fpsCount = 0;			//FPS値計測カウンタ
 	DWORD FPS = 0;				//直近のFPS
 	//--- ウィンドウの管理
@@ -97,15 +98,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			float diff = static_cast<float>(nowTime - preExecTime);
 			static int fpsCount = 0;
 
+			float Updatediff = static_cast<float>(nowTime - UpdateNowTime);
+
+
 			float Fps;
 			Fps = COption::GetFPS();
 			if (Fps < 30.0f)Fps = 60.0f;
 
-
-			if (diff >= 1000.0f / fFPS)
+			if (Updatediff >= 1000.0f / fFPS)
 			{
 				Update();
+				UpdateNowTime = nowTime;
 			}
+
 
 			if (diff >= 1000.0f / Fps)
 			{
