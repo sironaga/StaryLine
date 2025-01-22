@@ -269,6 +269,7 @@ void CSceneGame::Update()
 			m_pBattle->SetDrawingStart(true);
 			m_pBattle->SetDrawingEnd(false);
 			m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+			/*タイマー終了のSE*/
 		}
 
 		// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
@@ -337,6 +338,7 @@ void CSceneGame::Draw()
 
 		m_bPhase = true;
 
+		/*再描画開始のSE*/
 	}
 	if (m_bFever)
 	{
