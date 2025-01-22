@@ -84,6 +84,7 @@ public:
 	/// @brief
 	// 解像度変更時に必要な初期化の呼び出し
 	void InitResolusion();
+	void ResetSize();
 private:
 	// ボタンテクスチャの種類
 	enum OPTION_TEXTURE_KIND
@@ -189,6 +190,7 @@ private:
 	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
 	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
 
+	FLOAT2 OldPos[KINDMAX_OPTION];
 	float m_fMul;
 	int m_nSection;							// 大項目の選択
 	int m_nSelect;							// 小項目の選択

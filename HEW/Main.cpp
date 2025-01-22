@@ -76,9 +76,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pFade = new CFadeBlack();
 	g_pFade->SetFade(1.0f, true);
 
-	//g_pOption = new COption();
+	g_pOption = new COption();
 	// シーン作成 
-	g_pScene = new CSceneTitle();
+	g_pScene = new CSceneTitle(g_pOption);
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 	g_pScene->SetGameDirection(g_pDirection);
 
@@ -86,7 +86,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	
 	g_pPause = new CPause();
-	
+	g_pPause->SetOption(g_pOption);
 	g_pScene->SethWnd(hWnd);
 	
 
@@ -100,6 +100,7 @@ void Uninit()
 	SAFE_DELETE(g_pFade);
 	SAFE_DELETE(g_pDirection);
 	SAFE_DELETE(g_pPause);
+	SAFE_DELETE(g_pOption);
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
@@ -149,7 +150,7 @@ void Update()
 		// シーンの切り替え 
 		switch (scene)
 		{
-		case SCENE_TITLE:g_pScene = new CSceneTitle(); break; // TITLE 
+		case SCENE_TITLE:g_pScene = new CSceneTitle(g_pOption); break; // TITLE 
 		case STAGE_SELECT: 
 			g_pScene = new CStageSelect(); 
 			g_hWnd = g_pScene->GethWnd();
@@ -376,6 +377,7 @@ void InitResolusionMain()
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	SAFE_DELETE(g_pPause);
 	g_pPause = new CPause();
+	g_pPause->SetOption(g_pOption);
 }
 void SetNowResolusion(int wide, int height)
 {
@@ -585,9 +587,5 @@ void SpriteDebug(ObjectParam* param, bool isModel)
 	else a = 0;
 }
 
-void SetPauseOption(COption* InOption)
-{
-	g_pOption = InOption;
-	g_pPause->SetOption(InOption);
-}
+
 // EOF

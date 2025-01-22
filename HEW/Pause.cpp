@@ -2,7 +2,7 @@
 #include "Input.h"
 #include "Main.h"
 #include "Defines.h"
-
+#include "SoundList.h"
 
 
 CPause::CPause()
@@ -61,7 +61,7 @@ CPause::~CPause()
 	}
 	if (m_pOption)
 	{
-		SAFE_DELETE(m_pOption);
+		m_pOption=nullptr;
 	}
 	if (m_BackGround)
 	{
@@ -81,10 +81,14 @@ void CPause::Update()
 
 	//バー選択中
 	m_pOption->Update();
+	SetAllMasterVolume(m_pOption->GetMasterVoluem());
+	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
+	SetAllVolumeSE(m_pOption->GetSEVoluem());
 	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
 	{
 		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))
 		{
+			//se
 			switch (section)
 			{
 			case SEC_OPTION:
@@ -105,6 +109,7 @@ void CPause::Update()
 		}
 		if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))
 		{
+			//se
 			switch (section)
 			{
 			case SEC_OPTION:
@@ -143,17 +148,21 @@ void CPause::Update()
 		//決定ボタン
 		if (IsKeyTrigger(VK_RETURN))
 		{
+			//se
 			switch (section)
 			{
 			case SEC_OPTION:
 				m_pOption->SetOption();
+				m_pOption->ResetSize();
+				m_pOption->SetMulSize(0.5f);
 				m_bOption = true;
 				break;
 			case SEC_RETRY:
 				m_bRetry = true;
 				break;
 			case SEC_RETURN:
-				m_bReturn = true;
+				m_bPause = false;
+				//m_bReturn = true;
 				break;
 			case SEC_STAGESELECT:
 				m_bSelect = true;
@@ -169,7 +178,14 @@ void CPause::Update()
 		{
 		case SEC_OPTION:
 			m_BackGround->Update();
-			if (IsKeyTrigger(VK_ESCAPE))m_bOption = false;
+			if (!m_pOption->GetOption())
+			{
+				if (IsKeyTrigger(VK_ESCAPE))
+				{
+					//se
+					m_bOption = false;
+				}
+			}
 			break;
 		case SEC_RETRY:
 			break;
@@ -308,7 +324,6 @@ void CPause::SetOption(COption* InOption)
 {
 	m_pOption = InOption;
 	//m_pOption->SetAddPosX(200.0f);
-	m_pOption->SetMulSize(0.5f);
 }
 
 bool CPause::GetPause()

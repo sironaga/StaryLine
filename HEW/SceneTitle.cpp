@@ -42,7 +42,7 @@ enum E_TITLE_ANIME
 
 }g_eTitleAnim;
 
-CSceneTitle::CSceneTitle()
+CSceneTitle::CSceneTitle(COption* pOption)
 	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 	, m_nAnimCount(0), m_tCharaLogoTexPos{}
 	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
@@ -97,7 +97,7 @@ CSceneTitle::CSceneTitle()
 	//m_pParam->size = { 100.0f,100.0f };
 	//m_pParam->world = m_pParam->operator()();
 
-	m_pOption = new COption();
+	m_pOption = pOption;
 	g_pTitleBG = new CBackGround();
 
 	g_TitleSound = new CSoundList(BGM_TITLE);
@@ -167,7 +167,7 @@ CSceneTitle::~CSceneTitle()
 	}
 	if (m_pOption)
 	{
-		SetPauseOption(m_pOption);
+		m_pOption = nullptr;
 	}
 
 }
@@ -225,6 +225,7 @@ void CSceneTitle::Update()
 	if (m_pOption->GetOption())
 	{
 		m_bSelected = false;
+		m_pOption->ResetSize();
 		m_pOption->Update();
 	}
 
