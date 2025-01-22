@@ -584,7 +584,7 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 
 
 	m_pOption->InitResolusion();
-
+	//m_pOption->SetAddPos(1000.0f, 0.0f);
 
 	if(g_pTitleBG)delete g_pTitleBG;
 	g_pTitleBG = new CBackGround();
@@ -592,6 +592,7 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	if (m_pFade)delete m_pFade;
 	m_pFade = new CFadeBlack();
 	m_pFade->SetFade(0.5f, true);
+
 }
 
 

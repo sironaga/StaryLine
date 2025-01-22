@@ -88,7 +88,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pPause = new CPause();
 	g_pPause->SetOption(g_pOption);
 	g_pScene->SethWnd(hWnd);
-	
+	//g_pOption->SetAddPos(1000.0f, 0.0f);
 
 	return hr;
 }
