@@ -381,6 +381,7 @@ void SetRender3D()
 }
 void InitResolusionMain()
 {
+	
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();
@@ -388,6 +389,7 @@ void InitResolusionMain()
 	g_pDirection = new CStartDirection();
 	SAFE_DELETE(g_mainsound);
 	g_mainsound = new CSoundList(SE_DECISION);
+	g_mainsound->SetMasterVolume();
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	SAFE_DELETE(g_pPause);
 	g_pPause = new CPause();

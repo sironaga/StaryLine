@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "SceneResult.h"
 #include "InputEx.h"
+#include "SpriteDrawer.h"
 
 
 // 行き止まりが発生しない時のサイクル
@@ -388,4 +389,39 @@ void CSceneGame::SetResult(bool InWin)
 {
 	g_Resltcheck.IsEnd = true;
 	g_Resltcheck.IsWin = InWin;
+}
+
+void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
+{
+	UninitDirectX();
+	InitDirectX(m_phWnd, wide, height, fullscreen);
+
+	Geometory::Uninit();
+	Geometory::Init();
+	Sprite::Init();
+	LibEffekseer::Uninit();
+	LibEffekseer::Init(GetDevice(), GetContext());
+	InitInput();
+	ShaderList::Uninit();
+	ShaderList::Init();
+	UninitSpriteDrawer();
+	InitSpriteDrawer(GetDevice(), GetContext(), wide, height);
+
+	SAFE_DELETE(m_pBackGround);
+	m_pBackGround = new CBackGround();
+	SAFE_DELETE(g_GameSound);
+	g_GameSound = new CSoundList(BGM_BATTLE);
+	g_GameSound->SetMasterVolume();
+	m_pSourseGameBGM = g_GameSound->GetSound(true);
+	SAFE_DELETE(g_FeverSound);
+	g_FeverSound = new CSoundList(BGM_FEVER);
+	g_FeverSound->SetMasterVolume();
+	m_pFieldVertex->InitSound();
+	m_pPlayer->InitSound();
+
+	ReLoadCharacterTexture(m_pBattle->m_nStageNum);
+	m_pBattle->ReLoadTexture();
+	
+	SetNowResolusion(wide, height);
+	InitResolusionMain();
 }

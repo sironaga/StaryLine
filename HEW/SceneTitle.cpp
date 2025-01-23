@@ -225,6 +225,7 @@ void CSceneTitle::Update()
 	if (m_pOption->GetOption())
 	{
 		m_bSelected = false;
+		m_pOption->ResetPos();
 		m_pOption->ResetSize();
 		m_pOption->Update();
 	}

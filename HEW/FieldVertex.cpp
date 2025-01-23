@@ -1065,6 +1065,14 @@ void CFieldVertex::SubtractFeverPoint()
 	}
 }
 
+void CFieldVertex::InitSound()
+{
+	SAFE_DELETE(g_Fieldsound);
+	g_Fieldsound = new CSoundList(SE_COMPLETE);
+	g_Fieldsound->SetMasterVolume();
+	g_FieldSe = g_Fieldsound->GetSound(false);
+}
+
 ////=====フィーバーポイントをリセットする関数=====//
 void CFieldVertex::ResetFeverPoint()
 {
