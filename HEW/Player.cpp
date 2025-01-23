@@ -519,6 +519,14 @@ void CPlayer::SetFieldVertexAddress(CFieldVertex* InAddress)
 	m_pFieldVtx = InAddress;	// CFieldVertexアドレスの取得
 }
 
+void CPlayer::InitSound()
+{
+	SAFE_DELETE(g_pPlayerSound);
+	g_pPlayerSound = new CSoundList(SE_WALK);
+	g_pPlayerSound->SetMasterVolume();
+	g_pWalkSe = g_pPlayerSound->GetSound(false);
+}
+
 void CPlayer::SetPlayerStop()
 {
 	m_ePlayerState = STOP;		// プレイヤーの動きを止める

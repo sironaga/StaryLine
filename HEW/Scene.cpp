@@ -79,6 +79,11 @@ void CScene::SetGameDirection(CStartDirection* Direction)
 	m_GameDirection = Direction;
 }
 
+
+void CScene::InitResolusion(float wide, float height, bool fullscreen)
+{
+}
+
 void CScene::SetMasterVolume()
 {
 }

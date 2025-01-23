@@ -40,7 +40,8 @@ public:
 
 	//ゲームスタート演出
 	void SetGameDirection(CStartDirection* Direction);
-
+	
+	virtual void InitResolusion(float wide, float height, bool fullscreen);
 	virtual void SetMasterVolume();
 protected:
 	CFade* m_pFade; // フェード処理クラス 

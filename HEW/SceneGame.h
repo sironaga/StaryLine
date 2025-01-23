@@ -28,6 +28,7 @@ public:
 
     void SetMasterVolume() override;
 	void SetResult(bool InWin);
+	void InitResolusion(float wide, float height, bool fullscreen) override;
 private:
 
 	CFieldVertex* m_pFieldVertex;

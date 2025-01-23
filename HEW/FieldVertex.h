@@ -58,6 +58,7 @@ public:
 
 	void SubtractFeverPoint();//フィーバー中にフィーバーゲージを減らす関数
 
+	void InitSound();//音の初期化
 private:
 
 	// ログの構造体 //

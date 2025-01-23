@@ -48,7 +48,7 @@ void COption::Update()
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = -380.0f* m_fMul;
+			m_pParam[SECTION_SELECT]->pos.x = ( - 380.0f * m_fMul)+MovePos.X;
 			break;
 		case SEC_SCREEN:
 			UpdateScreen();
@@ -62,7 +62,7 @@ void COption::Update()
 				m_nSection = SEC_INPUT;
 				m_nSelect = KEY_BOARD;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = 0.0f;
+			m_pParam[SECTION_SELECT]->pos.x = 0.0f + MovePos.X;
 			break;
 		case SEC_INPUT:
 			UpdateInput();
@@ -71,7 +71,7 @@ void COption::Update()
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = 380.0f * m_fMul;
+			m_pParam[SECTION_SELECT]->pos.x = (380.0f * m_fMul) + MovePos.X;
 			break;
 		default:break;
 		}

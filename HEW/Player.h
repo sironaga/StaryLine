@@ -126,4 +126,7 @@ public:
 	void SetFieldVertexAddress(CFieldVertex* InAddress);
 private:
 	CFieldVertex* m_pFieldVtx;				// FieldVertexクラスのアドレス
+public:
+	/*＝＝＝＝＝＝＝＝＝音＝＝＝＝＝＝＝＝＝*/
+	void InitSound();
 };
