@@ -31,6 +31,8 @@ public:
 	bool GetSelect();
 	//ÉQÅ[ÉÄÇ…ñﬂÇÈÇÃîªíË
 	bool GetReturn();
+	//textureÇÃçƒì«Ç›çûÇ›
+	void InitReload();
 private:
 	enum SECTION_KIND
 	{
@@ -54,6 +56,14 @@ private:
 
 	FLOAT3 m_fPos[10];
 	FLOAT3 m_fSize[10];
+
+	enum
+	{
+		SCREEN_800,
+		SCREEN_1280,
+		SCREEN_1600,
+		SCREEN_1920,
+	};
 
 };
 
