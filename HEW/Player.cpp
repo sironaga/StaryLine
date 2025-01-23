@@ -51,6 +51,7 @@ CPlayer::CPlayer()
 	, m_pTimerTex{}
 	, m_eArrowState{}
 	, m_tArrowCenterPos{}, m_tAjustPos{}
+	, m_bool(false)
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
@@ -95,7 +96,6 @@ CPlayer::CPlayer()
 	g_pPlayerSound = new CSoundList(SE_WALK);
 	g_pPlayerSound->SetMasterVolume();
 	g_pWalkSe = g_pPlayerSound->GetSound(true);
-	m_bool = false;
 }
 
 CPlayer::~CPlayer()
@@ -268,6 +268,50 @@ void CPlayer::Reset()
 	if (m_pTimerParam[Timer_Gauge]->size.y >= TIMER_BARSIZE_Y) m_pTimerParam[Timer_Gauge]->size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する
 
 	m_pTimerParam[Timer_Gauge]->pos = { TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f };
+}
+
+void CPlayer::Reload()
+{
+	const char* pass[Timer_Max]
+	{
+		TEX_PASS("Player/UI_Drawing_under.png"),
+		TEX_PASS("Player/UI_Drawing_Gauge.png"),
+		TEX_PASS("Player/UI_Drawing_top.png"),
+	};
+	for (int i = 0; i < Timer_Max; i++)
+	{
+		m_pTimerTex[i] = new Texture();
+		m_pTimerTex[i]->Create(pass[i]);
+	}
+	for (int i = 0; i < Timer_Max; i++)
+	{
+		m_pTimerParam[i] = new SpriteParam();
+		m_pTimerParam[i]->size = { TIMER_OUTSIZE_X,TIMER_OUTSIZE_Y };
+		m_pTimerParam[i]->pos = { TIMER_BAR_OFFSET_X,TIMER_BAR_OFFSET_Y };
+		m_pTimerParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
+		m_pTimerParam[i]->uvPos = { 0.0f,0.0f };
+		m_pTimerParam[i]->uvSize = { 1.0f,1.0f };
+		m_pTimerParam[i]->world = Get2DWorld();
+		m_pTimerParam[i]->view = Get2DView();
+		m_pTimerParam[i]->proj = Get2DProj();
+	}
+	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
+
+	m_pArrowModel = new CModelEx(MODEL_PASS("Player/Board_Arrow.fbx"));
+	m_eArrowState = NONE_SELECT;
+	m_pArrowParam.pos = { 0.0f,0.0f,0.0f };
+	m_pArrowParam.color = { 1.0f,1.0f,1.0f,1.0f };
+	m_pArrowParam.rotate = { 0.0f,0.0f,0.0f };
+	m_pArrowParam.uvPos = { 0.0f,0.0f };
+	m_pArrowParam.size = { ARROW_SIZE ,ARROW_SIZE,ARROW_SIZE };
+	m_pArrowParam.uvSize = { 1.0f,1.0f };
+
+	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
+
+
+	g_pPlayerSound = new CSoundList(SE_WALK);
+	g_pPlayerSound->SetMasterVolume();
+	g_pWalkSe = g_pPlayerSound->GetSound(true);
 }
 
 void CPlayer::UpdateStop()
