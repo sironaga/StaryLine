@@ -16,7 +16,7 @@ public:
 	/// SplitY	スプライトシートの縦分割数
 	/// @param
 	/// Speed	エフェクトを何秒で完走するか
-	CEffectManager_sp(const char* pass, int SplitX, int SplitY, float Speed = 1.0f);
+	CEffectManager_sp(const char* pass, int SplitX, int SplitY, float Speed = 1.0f,DirectX::XMFLOAT3 defSize = { 10.0f,10.0f,0.0f });
 
 	/// @brief
 	/// 既に読み込み済みのエフェクトを流用するコンストラクタ

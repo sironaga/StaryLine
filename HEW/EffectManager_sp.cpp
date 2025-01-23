@@ -2,7 +2,7 @@
 #include "Sprite.h"
 #include "Main.h"
 
-CEffectManager_sp::CEffectManager_sp(const char* pass, int SplitX, int SplitY, float Speed)
+CEffectManager_sp::CEffectManager_sp(const char* pass, int SplitX, int SplitY, float Speed, DirectX::XMFLOAT3 defSize)
 	: m_pTexture(nullptr)
 	, m_tSplit{SplitX,SplitY}, m_tParam{}
 	, m_nCount(0), m_nPage(0)
@@ -10,7 +10,7 @@ CEffectManager_sp::CEffectManager_sp(const char* pass, int SplitX, int SplitY, f
 	, m_bPlay(false), m_bLoop(false)
 {
 	m_tParam.pos = { 0.0f,0.0f,0.0f };
-	m_tParam.size = { 1.0f,1.0f,1.0f };
+	m_tParam.size = defSize;
 	m_tParam.rotate = { 0.0f,0.0f,0.0f };
 	m_tParam.color = { 1.0f,1.0f,1.0f,1.0f };
 	m_tParam.uvPos =  { 0.0f / (float)SplitX, 0.0f / (float)SplitY };
