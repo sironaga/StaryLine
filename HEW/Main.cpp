@@ -47,6 +47,7 @@ HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
 int g_NowWide = 1920;
 int g_NowHeight = 1080;
+int g_scene=SCENE_TITLE;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -121,14 +122,13 @@ void Uninit()
 void Update()
 {
 	g_SceneType;
-	static int scene = SCENE_TITLE;
 	// --- 入力情報の更新
 	Controller_Update();
 	UpdateInput();
 	// --- カメラ情報の更新
 	g_Camera->Update();
 	//ポーズの更新
-	if (scene == SCENE_GAME) g_pPause->Update();
+	if (g_scene == SCENE_GAME) g_pPause->Update();
 	if (g_pPause->GetPause())
 	{
 		g_pScene->SetMasterVolume();
@@ -154,15 +154,15 @@ void Update()
 		
 		StageType stage = {};
 		// 次のシーンの情報を取得 
-		scene = g_pScene->NextScene();
-		if(scene == SCENE_GAME)stage = g_pScene->GetStage();
-		g_SceneType = (E_SCENE_TYPE)scene;
+		g_scene = g_pScene->NextScene();
+		if(g_scene == SCENE_GAME)stage = g_pScene->GetStage();
+		g_SceneType = (E_SCENE_TYPE)g_scene;
 		// 現在のシーンを削除 
 		delete g_pScene;
 
 
 		// シーンの切り替え 
-		switch (scene)
+		switch (g_scene)
 		{
 		case SCENE_TITLE:g_pScene = new CSceneTitle(g_pOption); break; // TITLE 
 		case STAGE_SELECT: 
@@ -381,7 +381,8 @@ void SetRender3D()
 }
 void InitResolusionMain()
 {
-	
+
+	if(g_scene==SCENE_GAME)g_pScene->InitResolusion(g_NowWide, g_NowHeight, g_pOption->GetIsFullScreen());
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();

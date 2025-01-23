@@ -309,9 +309,6 @@ void CPlayer::Reload()
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
 
-	g_pPlayerSound = new CSoundList(SE_WALK);
-	g_pPlayerSound->SetMasterVolume();
-	g_pWalkSe = g_pPlayerSound->GetSound(true);
 }
 
 void CPlayer::UpdateStop()
