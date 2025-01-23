@@ -381,8 +381,16 @@ void SetRender3D()
 }
 void InitResolusionMain()
 {
+	static int b =g_pOption->GetResolusion();
+	if (g_scene == SCENE_GAME && b != g_pOption->GetResolusion())
+	{
+		bool fullscreen ;
+		if (g_pOption->GetIsFullScreen() == 1) fullscreen = false;
+		else fullscreen = true;
 
-	if(g_scene==SCENE_GAME)g_pScene->InitResolusion(g_NowWide, g_NowHeight, g_pOption->GetIsFullScreen());
+		g_pScene->InitResolusion(g_NowWide, g_NowHeight, fullscreen);
+		b = g_pOption->GetResolusion();
+	}
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CFadeBlack();

@@ -424,5 +424,4 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	m_pBattle->ReLoadTexture();
 	
 	SetNowResolusion(wide, height);
-	InitResolusionMain();
 }
