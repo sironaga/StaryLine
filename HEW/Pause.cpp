@@ -80,6 +80,7 @@ CPause::~CPause()
 
 void CPause::Update()
 {
+
 	static int section = SEC_RETURN;//選択中のバーの場所
 	XAUDIO2_BUFFER buffer;
 	//ポーズボタンを押したか
@@ -275,6 +276,41 @@ void CPause::Update()
 			break;
 		}
 	}
+	static int b = m_pOption->GetIsFullScreen();
+	if (m_pOption->GetIsFullScreen() != b)
+	{
+
+		SetFullscreenSwap();
+		if (b == 1)b = 0;
+		else if (b == 0)b = 1;
+	}
+	static int Resolusion = m_pOption->GetResolusion();
+	static int OldResolusion = 1;
+	OldResolusion = Resolusion;
+	Resolusion = m_pOption->GetResolusion();
+	if (Resolusion != OldResolusion)
+	{
+
+		switch (Resolusion)
+		{
+		case SCREEN_1920:
+			SetNowResolusion(1920, 1080);
+			InitResolusionMain();
+			break;
+		case SCREEN_1600:
+			SetNowResolusion(1600, 900);
+			InitResolusionMain();
+			break;
+		case SCREEN_1280:
+			SetNowResolusion(1280, 720);
+			InitResolusionMain();
+			break;
+		case SCREEN_800:
+			SetNowResolusion(800, 600);
+			InitResolusionMain();
+			break;
+		}
+	}
 }
 
 void CPause::Draw()
@@ -437,4 +473,38 @@ bool CPause::GetSelect()
 bool CPause::GetReturn()
 {
 	return m_bReturn;
+}
+
+void CPause::InitReload()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
+	}
+	if (m_pBackGround)
+	{
+		SAFE_DELETE(m_pBackGround);
+	}
+
+	//テクスチャの読み込み
+	m_pPauseTex[0] = new SpriteEx(TEX_PASS("Pause/Pause_.png"));
+	m_pPauseTex[1] = new SpriteEx(TEX_PASS("Pause/Pause_Option.png"));
+	m_pPauseTex[2] = new SpriteEx(TEX_PASS("Pause/Pause_Option_Push.png"));
+	m_pPauseTex[3] = new SpriteEx(TEX_PASS("Pause/Pause_Retry.png"));
+	m_pPauseTex[4] = new SpriteEx(TEX_PASS("Pause/Pause_Retry_Push.png"));
+	m_pPauseTex[5] = new SpriteEx(TEX_PASS("Pause/Pause_Return.png"));
+	m_pPauseTex[6] = new SpriteEx(TEX_PASS("Pause/Pause_Return_Push.png"));
+	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
+	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
+	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
+
+	m_pBackGround = new CBackGround();
+
+	m_pSoundPause[0] = new CSoundList(SE_CANCEL);
+	m_pSoundPause[1] = new CSoundList(SE_DECISION);
+	m_pSoundPause[2] = new CSoundList(SE_SELECT);
+	for (int i = 0; i < 3; i++)
+	{
+		m_pSoundPauseSE[i] = m_pSoundPause[i]->GetSound(false);
+	}
 }
