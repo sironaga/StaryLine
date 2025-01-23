@@ -357,10 +357,10 @@ void CBattle::Update(void)
 						}
 					}
 
-				}
 					//移動処理
-				//if (!m_pEnemy[i]->m_bIsAttack)
-				Move(i, Enemy);
+					if (!m_pEnemy[i]->m_bIsAttack)
+					Move(i, Enemy);
+				}
 			}
 		}
 	}
@@ -717,6 +717,7 @@ void CBattle::Search(int i, Entity Entity)
 						{
 							//標的番号を指定
 							m_pAlly[i]->m_nTargetNumber = l;
+							m_pAlly[i]->SetTargetPos(m_pEnemy[l]->GetPos());
 						}
 					}
 					//保存していなかった場合は
@@ -724,6 +725,7 @@ void CBattle::Search(int i, Entity Entity)
 					{
 						//標的番号を指定
 						m_pAlly[i]->m_nTargetNumber = l;
+						m_pAlly[i]->SetTargetPos(m_pEnemy[l]->GetPos());
 					}
 				}
 			}
@@ -745,13 +747,14 @@ void CBattle::Search(int i, Entity Entity)
 					//標的番号がすでに保存済みかどうか
 					if (m_pEnemy[i]->m_nTargetNumber != -1)
 					{
-						/*((味方のX位置 - 敵のX位置)+(味方のY位置 - 敵のY位置)) < ((標的のX位置 - 敵のX位置)+(標的のY位置 - 敵のY位置))*/
-						if (((m_pAlly[l]->GetPos().x - m_pEnemy[i]->GetPos().x) + (m_pAlly[l]->GetPos().z - m_pEnemy[i]->GetPos().z))
+						/*(( 敵のX位置 - 味方のX位置)+(敵のY位置 - 味方のY位置)) < ((敵のX位置 - 標的のX位置)+(敵のY位置 - 標的のY位置))*/
+						if (((m_pEnemy[i]->GetPos().x - m_pAlly[l]->GetPos().x) + (m_pEnemy[i]->GetPos().z - m_pAlly[l]->GetPos().z))
 							<
-							((m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().x - m_pEnemy[i]->GetPos().x) + (m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().z - m_pEnemy[i]->GetPos().z)))
+							((m_pEnemy[i]->GetPos().x - m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().x) + (m_pEnemy[i]->GetPos().z - m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().z)))
 						{
 							//標的番号に指定
 							m_pEnemy[i]->m_nTargetNumber = l;
+							m_pEnemy[i]->SetTargetPos(m_pAlly[l]->GetPos());
 						}
 					}
 					//保存していなかった場合は
@@ -759,6 +762,7 @@ void CBattle::Search(int i, Entity Entity)
 					{
 						//標的番号に指定
 						m_pEnemy[i]->m_nTargetNumber = l;
+						m_pEnemy[i]->SetTargetPos(m_pAlly[l]->GetPos());
 					}
 				}
 			}
