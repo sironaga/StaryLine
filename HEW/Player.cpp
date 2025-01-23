@@ -280,23 +280,13 @@ void CPlayer::Reload()
 	};
 	for (int i = 0; i < Timer_Max; i++)
 	{
+		SAFE_DELETE(m_pTimerTex[i]);
 		m_pTimerTex[i] = new Texture();
 		m_pTimerTex[i]->Create(pass[i]);
 	}
-	for (int i = 0; i < Timer_Max; i++)
-	{
-		m_pTimerParam[i] = new SpriteParam();
-		m_pTimerParam[i]->size = { TIMER_OUTSIZE_X,TIMER_OUTSIZE_Y };
-		m_pTimerParam[i]->pos = { TIMER_BAR_OFFSET_X,TIMER_BAR_OFFSET_Y };
-		m_pTimerParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
-		m_pTimerParam[i]->uvPos = { 0.0f,0.0f };
-		m_pTimerParam[i]->uvSize = { 1.0f,1.0f };
-		m_pTimerParam[i]->world = Get2DWorld();
-		m_pTimerParam[i]->view = Get2DView();
-		m_pTimerParam[i]->proj = Get2DProj();
-	}
 	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
 
+	SAFE_DELETE(m_pArrowModel);
 	m_pArrowModel = new CModelEx(MODEL_PASS("Player/Board_Arrow.fbx"));
 	m_eArrowState = NONE_SELECT;
 	m_pArrowParam.pos = { 0.0f,0.0f,0.0f };
@@ -306,6 +296,7 @@ void CPlayer::Reload()
 	m_pArrowParam.size = { ARROW_SIZE ,ARROW_SIZE,ARROW_SIZE };
 	m_pArrowParam.uvSize = { 1.0f,1.0f };
 
+	SAFE_DELETE(m_pModel);
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
 
