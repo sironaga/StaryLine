@@ -1065,6 +1065,12 @@ void CFieldVertex::SubtractFeverPoint()
 	}
 }
 
+////=====ƒ‚ƒfƒ‹‚Ì‰Šú‰»‚ğ‚·‚éŠÖ”=====//
+void CFieldVertex::InitTextureModel()
+{
+
+}
+
 void CFieldVertex::InitSound()
 {
 	SAFE_DELETE(g_Fieldsound);
