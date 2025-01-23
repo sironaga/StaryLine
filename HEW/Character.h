@@ -8,7 +8,7 @@
 #include "Sprite.h"
 #include "SoundList.h"
 #include "Model.h"
-#include "EffectManager.h"
+#include "EffectManager_sp.h"
 #include "Main.h"
 
 #define MAX_ALLY  (200)	//味方情報の最大数
@@ -64,8 +64,8 @@ class CFighter
 public:
 	enum class FighterEffect
 	{
+		Create,
 		Attack,
-		Move,
 		Death,
 		MAX,
 	};
@@ -126,6 +126,7 @@ protected:
 	Collision m_tAtkCollision;		//攻撃当たり判定
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tFirstPos;	//初期位置座標
+	DirectX::XMFLOAT3 m_tTargetPos;	//標的の位置
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	int m_nCornerCount;				//属性
 	float m_fHp;					//体力
@@ -149,6 +150,10 @@ protected:
 	bool m_bReLoadFlag;
 	Model* m_pModel;
 	//EffectInfo m_tEffect[(int)FighterEffect::MAX];
+	CEffectManager_sp* m_pEffect[(int)FighterEffect::MAX];
+	bool IsCreateEffectPlay;
+	bool IsAttackEffectPlay;
+	bool IsDeathEffectPlay;
 
 	/*変数のSet&Get*/
 public:
@@ -184,6 +189,11 @@ public:
 	void SetPosZ(float InPosZ) { m_tPos.z = InPosZ; }
 	//位置座標のGet
 	DirectX::XMFLOAT3 GetPos(void) { return m_tPos; }
+
+	//標的の位置のSet
+	void SetTargetPos(DirectX::XMFLOAT3 InPos) { m_tTargetPos = InPos; }
+	//標的の位置のGet
+	DirectX::XMFLOAT3 GetTargetPos(void) { return m_tTargetPos; }
 
 	//初期位置のGet
 	DirectX::XMFLOAT3 GetFirstPos(void) { return m_tFirstPos; }
