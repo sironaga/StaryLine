@@ -23,6 +23,8 @@ public:
 	void Draw();	// •`‰æˆ—
 	void Reset();
 
+	void Reload();
+
 	/*“à•”ˆ—*/
 	/* ƒvƒŒƒCƒ„[ */
 private:
