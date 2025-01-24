@@ -1517,7 +1517,7 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 	{
 	case 0:
 		//•M‚ð—£‚·
-		if (IsEnd)
+		if (IsStart)
 		{
 			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
 			{
@@ -1531,7 +1531,7 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 			}
 		}
 		//•M‚ðŽ‚Â
-		if (IsStart)
+		if (IsEnd)
 		{
 			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
 			{
