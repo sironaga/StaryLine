@@ -287,7 +287,7 @@ void InitCharacterTexture(StageType StageType)
 	////g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("fire.efk"));
 	g_pCharacterEffects[(int)CharactersEffect::Aura] = new CEffectManager_sp(EFFECT_PASS("Sprite/Aura.png"), 4, 14, 3.0f);
 	g_pCharacterEffects[(int)CharactersEffect::Create] = new CEffectManager_sp(EFFECT_PASS("Sprite/warp.png"), 4, 8, 3.0f);
-	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/SwordAtk.png"), 4, 6,1.0f);
+	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/SwordAtk.png"), 4, 7,1.0f);
 	g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/BowAtk.png"), 4, 6, 1.0f);
 	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager_sp(EFFECT_PASS("Sprite/Death.png"), 4, 8, 3.0f);
 }
