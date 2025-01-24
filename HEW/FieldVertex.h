@@ -104,11 +104,15 @@ private:
 	int StartVertex;//今の始点
 	int GoalVertex;//たどり着いた最新の頂点
 
+	DirectX::XMFLOAT2 Effect_Shapes_Pos[MAX_ALLY];//Effectの座標保存用xy
+	int Effect_NowShapes;//今のEffectの開始番号
+	int Shapes_Vertex[MAX_ALLY][MAX_VERTEX];//多角形の頂点保存用
 	int NowShapes;//今の多角形の保存場所
 	int Shapes_Count[MAX_ALLY];//何角形か保存する配列
 	int Comparison_Shapes_Vertex_Save[MAX_ALLY][MAX_VERTEX];//比較用の図形の頂点保存
 	int Shapes_Vertex_Save[MAX_ALLY][MAX_VERTEX]; //頂点を描画順に並べた頂点情報保存
 	int Comparison[MAX_VERTEX];//できた図形の頂点を元々ある図形の頂点と比較
+	float Shapes_Size[MAX_ALLY];//できた図形の面積
 
 	int BreakVertex;//壊れる頂点情報
 
@@ -139,7 +143,8 @@ private:
 	Sprite* m_pSprite_Ally_Count[4];//召喚数
 	Sprite* m_pSprite_Ally_Number[10];//召喚Number
 
-	CEffectManager_sp* g_pLineEffects;
+	CEffectManager_sp* g_pLineEffects_Sprite;
+	CEffectManager_sp* g_pLineEffects[MAX_ALLY];
 	CModelEx* m_pStar_Model[3];//Starのモデル
 	
 };

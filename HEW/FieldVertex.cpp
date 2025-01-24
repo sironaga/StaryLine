@@ -65,6 +65,8 @@ CFieldVertex::CFieldVertex()
 	, OrderVertexCount(0)
 	, StartVertex()
 	, GoalVertex()
+	, Effect_Shapes_Pos{}
+	, Effect_NowShapes(0)
 	, NowShapes(0)
 	, Shapes_Count{}
 	, Comparison_Shapes_Vertex_Save{}
@@ -80,18 +82,19 @@ CFieldVertex::CFieldVertex()
 	, PlayerPos{}
 	, RoadStop(false)
 	, m_pBattle(nullptr)
-    , m_pPlayer(nullptr)
+	, m_pPlayer(nullptr)
 	, m_pTex_SuperStar_Number{ nullptr }
 	, m_pTex_Fever_Gage{ nullptr }
 	, m_pTex_Summon_Log{ nullptr }
-	, m_pTex_Ally_Number{nullptr}
+	, m_pTex_Ally_Number{ nullptr }
 	, m_pTex_Ally_Count{ nullptr }
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pSprite_Fever_Gage{ nullptr }
 	, m_pSprite_Summon_Log(nullptr)
-	, m_pSprite_Ally_Number{nullptr}
+	, m_pSprite_Ally_Number{ nullptr }
 	, m_pSprite_Ally_Count{ nullptr }
-	, g_pLineEffects(nullptr)
+	, g_pLineEffects_Sprite( nullptr)
+	, g_pLineEffects{nullptr}
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
 {
@@ -119,7 +122,7 @@ CFieldVertex::CFieldVertex()
 			m_pSprite_Ally_Number[i] = new Sprite();
 		}
 	}
-	
+
 	//-----テクスチャのメモリ確保-----//
 	{
 		m_pTex_Fever_Gage[0] = new Texture();
@@ -143,8 +146,13 @@ CFieldVertex::CFieldVertex()
 	}
 
 	m_pStarLine = new StarLine();
-
-	//g_pLineEffects = new CEffectManager_sp("", , , 1.0f);
+	
+	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/図形生成.png"), 4, 8, 1.0f);
+	
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		g_pLineEffects[i] = new CEffectManager_sp(g_pLineEffects_Sprite);
+	}
 
 	m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
@@ -156,7 +164,10 @@ CFieldVertex::CFieldVertex()
 
 	// 各配列を-1で初期化
 	Fill(OrderVertex, -1);
+	Fill(Shapes_Size, -1);
 	Fill(Comparison_Shapes_Vertex_Save, -1);
+	Fill(Shapes_Vertex, -1);
+	Fill(Effect_Shapes_Pos, -1.0f);
 	Fill(Shapes_Vertex_Save, -1);
 	Fill(Shapes_Count, -1);
 	Fill(Comparison, -1);
@@ -311,6 +322,8 @@ CFieldVertex::CFieldVertex()
 			}
 		}
 	}
+
+	
 }
 
 ////=====FieldVertexのデストラクタ=====//
@@ -320,6 +333,12 @@ CFieldVertex::~CFieldVertex()
 	g_FieldSe = nullptr;
 	delete g_Fieldsound;
 	g_FieldSe = nullptr;
+
+	SAFE_DELETE(g_pLineEffects_Sprite);
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		SAFE_DELETE(g_pLineEffects[i]);
+	}
 
 	SAFE_DELETE(m_pTex_Fever_Gage[0]);
 	SAFE_DELETE(m_pTex_Fever_Gage[1]);
@@ -604,11 +623,11 @@ void CFieldVertex::Draw()
 
 	//-----ステラの数描画-----//
 	{
-		DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
-		m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
-		m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
-		m_pSprite_SuperStar_Number->Draw();//描画
-		m_pSprite_SuperStar_Number->ReSetSprite();//スプライトのリセット
+		//DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
+		//m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
+		//m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
+		//m_pSprite_SuperStar_Number->Draw();//描画
+		//m_pSprite_SuperStar_Number->ReSetSprite();//スプライトのリセット
 	}
 
 	//-----フィーバーゲージ描画-----//
@@ -732,6 +751,25 @@ void CFieldVertex::Draw()
 			m_pSprite_Ally_Number[i]->ReSetSprite();//スプライトのリセット
 		}
 
+	}
+
+	//-----Effectの描画-----//
+	{
+		for (int i = Effect_NowShapes; i < MAX_ALLY; i++)
+		{
+			if (Shapes_Count[i] != -1)
+			{
+				g_pLineEffects[Effect_NowShapes]->SetSize({ 100.0f + Shapes_Size[Effect_NowShapes] * 20.0f,100.0f + Shapes_Size[Effect_NowShapes] * 20.0f, 0.0f });
+				g_pLineEffects[Effect_NowShapes]->SetPos({ Effect_Shapes_Pos[Effect_NowShapes].x - 0.766f, Effect_Shapes_Pos[Effect_NowShapes].y - 1.8f, 0.0f });
+				g_pLineEffects[Effect_NowShapes]->Play(false);
+				Effect_NowShapes++;
+			}
+		}
+		for (int i = 0; i < Effect_NowShapes; i++)
+		{
+			g_pLineEffects[i]->Update();
+			g_pLineEffects[i]->Draw();
+		}
 	}
 }
 
@@ -1030,10 +1068,14 @@ void CFieldVertex::InitFieldVertex()
 	{
 		StartVertex = GoalVertex;//始点を今の地点に初期化
 		NowShapes = 0;//格納した図形の数初期化
+		Effect_NowShapes = 0;
 
 		Fill(OrderVertex, -1);//配列-1で初期化
+		Fill(Shapes_Size, -1);
 		Fill(Comparison_Shapes_Vertex_Save, -1);
 		Fill(Shapes_Vertex_Save, -1);
+		Fill(Effect_Shapes_Pos, -1.0f);
+		Fill(Shapes_Vertex, -1);
 		Fill(Shapes_Count, -1);
 		Fill(Comparison, -1);
 		Fill(vtx_FieldLine, 0.0f);
@@ -1061,35 +1103,16 @@ void CFieldVertex::SetSuperStar()
 		Vertexp->SuperStar = false;
 		Vertexp->SuperStarUse = false;
 	}
-	if (!GetFeverMode())//フィーバーじゃないとき
+	
+	//新しいステラの設定//
+	for (int i = 0; i < 1;)
 	{
-		if (SuperStarCount < 5)//使ったステラが５個以下なら処理
+		int Vertex;//ステラの頂点保存用変数
+		Vertex = rand() % 25;//0～24でランダムにセット
+		if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
 		{
-			//新しいステラの設定//
-			for (int i = 0; i < 1;)
-			{
-				int Vertex;//ステラの頂点保存用変数
-				Vertex = rand() % 25;//0～24でランダムにセット
-				if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
-				{
-					m_tVertex[Vertex].SuperStar = true;
-					i++;
-				}
-			}
-		}
-	}
-	else//フィーバーの時
-	{
-		//新しいステラの設定//
-		for (int i = 0; i < 1;)
-		{
-			int Vertex;//ステラの頂点保存用変数
-			Vertex = rand() % 25;//0～24でランダムにセット
-			if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
-			{
-				m_tVertex[Vertex].SuperStar = true;
-				i++;
-			}
+			m_tVertex[Vertex].SuperStar = true;
+			i++;
 		}
 	}
 }
@@ -1349,6 +1372,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
+								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//角の頂点番号を保存
 								Count++;//辺が繋がってないとき角ができてる
 							}
 						}
@@ -1364,6 +1388,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
+								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//角の頂点番号を保存
 								Count++;//辺が繋がってないとき角ができてる	
 							}
 						}
@@ -1376,6 +1401,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x))
 							{
+								Shapes_Vertex[NowShapes][Count] = Comparison3[0];//角の頂点番号を保存
 								Count++;//辺が繋がってないとき角ができてる
 							}
 						}
@@ -1544,6 +1570,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (UpVertex && DownVertex && LeftVertex && RightVertex)InVertex++;//全方向に使っている頂点があれば囲まれているので内側の頂点
 						}
 					}
+					Shapes_Size[NowShapes] = InVertex + OutVertex / 2.0f - 1.0f;//ピックの定理から面積を導く
 					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
 					Ally_Count++;//召喚数増やす
 					//召喚ログセット
@@ -1554,6 +1581,17 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					SummonLog[NowSummonLog].Alpha = 0.0f;
 					SummonLog[NowSummonLog].MoveType = 1;
 					NowSummonLog++;//召喚ログを増やす
+
+					if (Shapes_Count[NowShapes] == 3)//三角形なら
+					{
+						Effect_Shapes_Pos[NowShapes].x = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.x) / 3.0f;
+						Effect_Shapes_Pos[NowShapes].y = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.y) / 3.0f;
+					}
+					else//四角形なら
+					{
+						Effect_Shapes_Pos[NowShapes].x = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][3]].Pos.x) / 4.0f;
+						Effect_Shapes_Pos[NowShapes].y = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][3]].Pos.y) / 4.0f;
+					}
 
 					//音を再生
 					g_FieldSe->Stop();
@@ -1574,11 +1612,14 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							SuperStarCount++;
 							if (GetFeverMode())
 							{
-								nFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
-								if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
 								fFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
-								if (fFeverPoint > MAX_FEVER_POINT)fFeverPoint = MAX_FEVER_POINT;
-								SetFeverStellaTime(((MAX_FEVER_POINT / FEVER_TIME)* FEVER_ADD_TIME) * 60.0f);
+								float PointAjust = 0.0f;
+								if (fFeverPoint > MAX_FEVER_POINT)
+								{
+									PointAjust = MAX_FEVER_POINT - fFeverPoint;
+									fFeverPoint = MAX_FEVER_POINT;
+								}
+								SetFeverStellaTime(FEVER_ADD_TIME * 60.0f - PointAjust);
 							}
 							SetSuperStar();
 							if (!GetFeverMode())
