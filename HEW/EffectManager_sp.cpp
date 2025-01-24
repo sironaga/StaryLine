@@ -61,8 +61,10 @@ void CEffectManager_sp::Update()
 
 void CEffectManager_sp::Draw(bool is3D)
 {
+
 	if (m_bPlay)
 	{
+		Sprite::ReSetSprite();
 		if (is3D)
 		{
 			SetRender3D();
@@ -99,6 +101,7 @@ void CEffectManager_sp::Draw(bool is3D)
 			Sprite::SetTexture(m_pTexture);
 			Sprite::Draw();
 		}
+		Sprite::ReSetSprite();
 	}
 }
 
