@@ -123,11 +123,14 @@ void CSceneGame::Update()
 	if (FadeTimeFlag)
 	{
 		FadeTime++;
+		m_pBattle->SetDrawingStart(true);
+		m_pBattle->SetDrawingEnd(false);
 	}
-	if (FadeTime > 2.5f * 60.0f)
+	if (FadeTime > 5.0f * 60.0f)
 	{
 		FadeTimeFlag = false;
 		g_tTime.GameTime++;//フェードタイム終わったらゲームのタイマースタート
+
 	}
 	if (m_pBattle->GetEnd() && !m_bEnd)
 	{
@@ -278,14 +281,14 @@ void CSceneGame::Update()
 			/*タイマー終了のSE*/
 		}
 
-		// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
-		//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
-		{
-			m_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
-		}
+		
 	}
-
-	m_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
+	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
+		//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
+	{
+		m_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+	}
+	//m_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
 	
 }
 
@@ -370,6 +373,11 @@ void CSceneGame::Draw()
 		m_bFever = false;
 	}
 	m_pEffect->Draw();
+}
+
+bool GetFade()
+{
+	return FadeTimeFlag;
 }
 
 bool GetFeverMode()
