@@ -749,7 +749,10 @@ void CAlly::BattleUpdate(void)
 		if (!m_pEffect[(int)FighterEffect::Attack]->IsPlay() && !IsAttackEffectPlay)
 		{
 			m_pEffect[(int)FighterEffect::Attack]->SetPos({ m_tTargetPos.x ,m_tTargetPos.y,m_tTargetPos.z });
-			m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,TORAD(180.0f) });
+			if (m_nCornerCount == 3)
+				m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,TORAD(180.0f),0.0f });
+			else
+				m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
 			m_pEffect[(int)FighterEffect::Attack]->SetSize({ 10.0f,10.0f,10.0f });
 			m_pEffect[(int)FighterEffect::Attack]->Play();
 			IsAttackEffectPlay = true;
@@ -812,7 +815,7 @@ void CAlly::DeathUpdate(void)
 	{
 		m_pEffect[(int)FighterEffect::Death]->SetPos(m_tPos);
 		m_pEffect[(int)FighterEffect::Death]->SetRotate({ 0.0f,0.0f,0.0f });
-		m_pEffect[(int)FighterEffect::Death]->SetSize({ 1.0f,1.0f,1.0f });
+		m_pEffect[(int)FighterEffect::Death]->SetSize({ 20.0f,20.0f,20.0f });
 		m_pEffect[(int)FighterEffect::Death]->Play();
 		IsDeathEffectPlay = true;
 	}
@@ -1054,7 +1057,10 @@ void CEnemy::BattleUpdate(void)
 		if (!m_pEffect[(int)FighterEffect::Attack]->IsPlay() && !IsAttackEffectPlay)
 		{
 			m_pEffect[(int)FighterEffect::Attack]->SetPos({ m_tTargetPos.x ,m_tTargetPos.y,m_tTargetPos.z });
-			m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,TORAD(180.0f),TORAD(180.0f) });
+			if (m_nCornerCount == 3)
+				m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
+			else
+				m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
 			m_pEffect[(int)FighterEffect::Attack]->SetSize({ 10.0f,10.0f,10.0f });
 			m_pEffect[(int)FighterEffect::Attack]->Play();
 			IsAttackEffectPlay = true;
@@ -1111,7 +1117,7 @@ void CEnemy::DeathUpdate(void)
 	{
 		m_pEffect[(int)FighterEffect::Death]->SetPos(m_tPos);
 		m_pEffect[(int)FighterEffect::Death]->SetRotate({ 0.0f,0.0f,0.0f });
-		m_pEffect[(int)FighterEffect::Death]->SetSize({ 15.0f,15.0f,15.0f });
+		m_pEffect[(int)FighterEffect::Death]->SetSize({ 20.0f,20.0f,20.0f });
 
 		m_pEffect[(int)FighterEffect::Death]->Play();
 		IsDeathEffectPlay = true;
