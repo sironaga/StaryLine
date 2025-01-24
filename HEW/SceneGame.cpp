@@ -126,7 +126,7 @@ void CSceneGame::Update()
 		m_pBattle->SetDrawingStart(true);
 		m_pBattle->SetDrawingEnd(false);
 	}
-	if (FadeTime > 5.0f * 60.0f)
+	if (FadeTime > 4.0f * 60.0f)
 	{
 		FadeTimeFlag = false;
 		g_tTime.GameTime++;//フェードタイム終わったらゲームのタイマースタート
