@@ -70,6 +70,7 @@
     <ClCompile Include="StartDirection.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Transition.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="StarLine.h" />
     <ClInclude Include="StartDirection.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Transition.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="_StructList.h" />
   </ItemGroup>

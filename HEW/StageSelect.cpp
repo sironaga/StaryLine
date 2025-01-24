@@ -88,6 +88,7 @@ CStageSelect::CStageSelect()
 	m_pWorldSelect = new SpriteEx("Assets/Texture/StageSelectBackGround/WORLDSELECT.png");
 
 	m_pStageSelected     = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Selected.png");
+	m_pLock = new SpriteEx("Assets/Texture/StageSelectBackGround/Lock.png");
 
     m_pRight_Select      = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Right.png");
     m_pLeft_Select       = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Left.png");
@@ -187,6 +188,11 @@ CStageSelect::~CStageSelect()
 		{
 			delete m_pStageSelect_Underbar;
 			m_pStageSelect_Underbar = nullptr;
+		}
+		if (m_pLock)
+		{
+			delete m_pLock;
+			m_pLock = nullptr;
 		}
 		if (m_pStageSelected)
 		{
