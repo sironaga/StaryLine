@@ -48,6 +48,7 @@ private:
 	
 };
 
+void SetFeverStellaTime(float time);
 bool GetFade();
 bool GetFeverMode();
 bool GetTimeStart();

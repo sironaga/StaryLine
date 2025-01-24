@@ -24,6 +24,7 @@ struct GAME_TIME
 	float GameSTimeSycleEnd;	// 一つのサイクルが終わった時の時間
 	float GameSTimePheseAjust;	// 行き止まりになった際の時間の補正(行き止まりにならなかった時は0)
 	float GameSTimeFeverAjust;  //フィーバー時の時間の補正
+	float GameSTimeFeverStellaAjust;//フィーバー中にステラを取った時の時間補正
 }g_tTime;
 
 struct ResultCheck
@@ -334,13 +335,14 @@ void CSceneGame::Draw()
 
 	// 一つのサイクルが終わった時
 	if (g_tTime.GamePhaseTime == (float)SHAPE_DRAW_RESTART * 60.0f + /*g_tTime.GameSTimeSycleEnd*/
-		- g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+		- g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		m_pBattle->SetDrawingStart(true);
 		m_pBattle->SetDrawingEnd(false);
 		m_pBattle->CharacterUpdate(true);
 		// 次のサイクルに向けて各処理を行う
 		// 時間の初期化処理
+		g_tTime.GameSTimeFeverStellaAjust = 0.0f;
 		g_tTime.GameSTimeFeverAjust = 0.0f;
 		g_tTime.GameSTimePheseAjust = 0.0f;				// 移動に詰んだ時の補正値を初期化
 		//g_tTime.GameSTimeSycleEnd = g_tTime.GameTime;	// 前回のサイクルが終了した時間を更新
@@ -373,6 +375,11 @@ void CSceneGame::Draw()
 		m_bFever = false;
 	}
 	m_pEffect->Draw();
+}
+
+void SetFeverStellaTime(float time)
+{
+	g_tTime.GameSTimeFeverStellaAjust += time;
 }
 
 bool GetFade()

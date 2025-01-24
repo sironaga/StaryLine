@@ -1576,7 +1576,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							{
 								nFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
 								if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
-								fFeverPoint = nFeverPoint;
+								fFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
+								if (fFeverPoint > MAX_FEVER_POINT)fFeverPoint = MAX_FEVER_POINT;
+								SetFeverStellaTime(((MAX_FEVER_POINT / FEVER_TIME)* FEVER_ADD_TIME) * 60.0f);
 							}
 							SetSuperStar();
 							if (!GetFeverMode())
