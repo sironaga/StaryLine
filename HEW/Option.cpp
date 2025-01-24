@@ -457,7 +457,7 @@ void COption::UpdateSound()
 		break;
 	case BGM:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = MASTER;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN))	m_nSelect = SE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) ||IsKeyTrigger('S'))	m_nSelect = SE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_BGM]->pos.y;
 		break;
 	case SE:
