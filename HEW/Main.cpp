@@ -183,7 +183,7 @@ void Update()
 			if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
 			g_pSourseTitleSE->Start();
 			break;
-		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(5.0f); break; // GAME 
+		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
@@ -266,13 +266,12 @@ void Draw()
 #endif
 	
 	
-	if (!g_pPause->GetPause())
-	{
+	
 		g_pScene->RootDraw();
 		LibEffekseer::Draw();
 		g_pDirection->Draw();
-	}
-	else
+	
+	if (g_pPause->GetPause())
 	{
 		g_pPause->Draw();
 	}
