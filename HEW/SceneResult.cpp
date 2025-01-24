@@ -17,7 +17,7 @@ bool CSceneResult::bClearState[8];
 
 
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{}
+	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false)
 {
 	// デバッグ
 	ResultGameData.bWin = 1;
@@ -225,9 +225,19 @@ void CSceneResult::InBestScore(int InScore, StageType InStage)
 	nBestScore[InStage.StageSubNumber] = InScore;
 }
 
-int CSceneResult::OutBestScore(StageType InStage)
+int  CSceneResult::OutBestScore(StageType InStage)
 {
 	return nBestScore[InStage.StageSubNumber];
+}
+
+bool CSceneResult::GetStageClear(int nStage)
+{
+	return bClearState[nStage];
+}
+
+void CSceneResult::SetStageClear(int nStage, bool bWin)
+{
+	bClearState[nStage] = bWin;
 }
 
 
@@ -421,12 +431,13 @@ void CSceneResult::AnimationManagemer(void)
 {
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
+		bAnimation = true;
 		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
 	else
 	{
-
+		bAnimation = false;
 	}
 }
 
@@ -481,12 +492,18 @@ void CSceneResult::SetCamData(void)
 // --- 描画アニメーション
 void CSceneResult::WinAnimation(void)
 {
+	if (bAnimation)
+	{
 
+	}
 }
 
 void CSceneResult::LoseAnimation(void)
 {
+	if (bAnimation)
+	{
 
+	}
 }
 
 // --- 描画
@@ -511,9 +528,8 @@ void CSceneResult::WinDisp(void)
 	m_pText->SetTexture();
 	m_pText->Disp();
 
-
-
-
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
 }
 
 void CSceneResult::LoseDisp(void)

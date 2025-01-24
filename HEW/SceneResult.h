@@ -19,6 +19,8 @@ public:
 	static void InStageLevel(StageType InLevel);
 	static void InBestScore(int InScore, StageType InStage);
 	static int OutBestScore(StageType InStage);
+	static bool GetStageClear(int nStage);
+	static void SetStageClear(int nStage, bool bWin);
 private:
 	void LoadTexture(void);
 	void DefaultSetPos(void);
@@ -57,6 +59,8 @@ private:
 	// --- ïœêî
 	int nAnimationTimer;
 	int nAnimationFrame;
+	bool bAnimation;
+
 	bool bWorldClear;
 	bool bScore;
 	bool bBestScore;
