@@ -2,7 +2,7 @@
 #include "Input.h"
 #include "Main.h"
 #include "Defines.h"
-
+#include "Easing.h"
 
 
 CPause::CPause()
@@ -12,6 +12,7 @@ CPause::CPause()
 ,m_bSelect(false)
 ,m_bReturn(false)
 ,m_pOption(nullptr)
+,m_ftime(0.0f)
 
 {
 	//テクスチャの読み込み
@@ -30,16 +31,16 @@ CPause::CPause()
 	m_pBackGround = new CBackGround();
 
 	//ポジションの初期化
-	m_fPos[0] ={285.0f,SCREEN_HEIGHT/2.0f,0.0f};
-	m_fPos[1] ={ 285.0f,625.0f,0.0f };
-	m_fPos[2] = { 285.0f,625.0f,0.0f };
-	m_fPos[3] = {285.0f,435,0.0f };
-	m_fPos[4] = { 285.0f,435.0f,0.0f };
-	m_fPos[5] = {285.0f,340.0f,0.0f };
-	m_fPos[6] = { 285.0f,340.0f,0.0f };
-	m_fPos[7] = {285.0f,530.0f,0.0f};
-	m_fPos[8] ={ 285.0f,530.0f,0.0f};
-	m_fPos[9] = { 290.0f,340.0f,0.0f };
+	m_fPos[0] ={-285.0f,SCREEN_HEIGHT/2.0f,0.0f};
+	m_fPos[1] ={-285.0f,625.0f,0.0f };
+	m_fPos[2] ={-285.0f,625.0f,0.0f };
+	m_fPos[3] ={-285.0f,435,0.0f };
+	m_fPos[4] ={-285.0f,435.0f,0.0f };
+	m_fPos[5] ={-285.0f,340.0f,0.0f };
+	m_fPos[6] ={-285.0f,340.0f,0.0f };
+	m_fPos[7] ={-285.0f,530.0f,0.0f};
+	m_fPos[8] ={-285.0f,530.0f,0.0f};
+	m_fPos[9] ={-290.0f,340.0f,0.0f };
 	m_fPos[10] = { SCREEN_WIDTH/2.0f,SCREEN_HEIGHT/2.0f,0.0f };
 
 	//サイズの初期化
@@ -53,7 +54,7 @@ CPause::CPause()
 	m_fSize[7] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[8] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[9] = { SCREEN_WIDTH * 0.304f,SCREEN_HEIGHT * 0.087f,0.0f };
-	m_fSize[10] = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };
+	m_fSize[10] = { SCREEN_WIDTH ,SCREEN_HEIGHT ,0.0f };
 
 	
 		m_pSoundPause[0] = new CSoundList(SE_CANCEL);
@@ -83,18 +84,39 @@ CPause::~CPause()
 
 void CPause::Update()
 {
-
+	static float t = 0.0f;
 	static int section = SEC_RETURN;//選択中のバーの場所
 	XAUDIO2_BUFFER buffer;
 	//ポーズボタンを押したか
-	if (IsKeyTrigger(VK_ESCAPE))
+	if (!m_bPause && IsKeyTrigger(VK_ESCAPE))
 	{
 		m_bPause = true;
+		m_ftime = 0.1f;
+		t = 0.0f;
 	}
 	if (!m_bPause) return;
 
+	if (m_bPause)
+	{
+		
+		// 毎フレーム判定 
+		if (m_ftime > 0.0f) {
+			m_ftime -= 1.0f / 60.0f;
+			t += 1.0f / 60.0f;
+			if (m_ftime < 0.0f)
+			{
+				m_ftime = 0.0f;
+				t = 0.1f;
+			}
+		}
+			for (int i = 0; i < 9; i++)
+			{
+				m_fPos[i].X = OutEasing(t, 0.0f, 285.0f+ 3000.0f, 1.0f)-300.0f;
+			}
+			m_fPos[9].X =	 OutEasing(t, 0.0f, 290.0f+  3000.0f, 1.0f) - 300.0f;
+
+	}
 	//バー選択
-	m_pOption->Update();
 	SetAllMasterVolume(m_pOption->GetMasterVoluem());
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
@@ -249,6 +271,7 @@ void CPause::Update()
 		{
 		case SEC_OPTION:
 			m_pBackGround->Update();
+			m_pOption->Update();
 			for (int i = 0; i < 3; i++)
 			{
 				m_pSoundPause[i]->SetMasterVolume();
@@ -322,7 +345,7 @@ void CPause::Draw()
 	Sprite::ReSetSprite();
 	SetRender2D();
 	//背景
-	m_pPauseTex[10]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pPauseTex[10]->Setcolor(1.0f, 1.0f, 1.0f, 0.5f);
 	m_pPauseTex[10]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 	m_pPauseTex[10]->SetTexture();
 	m_pPauseTex[10]->SetView(Get2DView());

@@ -56,7 +56,7 @@ private:
 
 	FLOAT3 m_fPos[11];
 	FLOAT3 m_fSize[11];
-
+	float m_ftime;
 	enum
 	{
 		SCREEN_800,
