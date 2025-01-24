@@ -393,7 +393,7 @@ void CBattle::Update(void)
 }
 
 //キャラクターの更新処理
-void CBattle::CharacterUpdate(void)
+void CBattle::CharacterUpdate(bool AnimationFlag)
 {
 	//味方の更新処理(アニメーション)
 	for (int i = 0; i < m_nAllyCount; i++)
@@ -419,6 +419,10 @@ void CBattle::CharacterUpdate(void)
 	if (m_pAllyLeader)
 	{
 		m_pAllyLeader->Update(m_bDrawingStart,m_bDrawingEnd);
+	}
+	if (AnimationFlag)
+	{
+		m_pAllyLeader->SetAnimationPlayFlag(false);
 	}
 }
 
