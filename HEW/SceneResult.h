@@ -29,18 +29,20 @@ private:
 
 	void WinAnimation(void);
 	void LoseAnimation(void);
+	void WinDisp(void);
+	void LoseDisp(void);
+
 
 	void NumberDisp(void);
 private:
-	// --- Ÿ”sŠÖŒW–³‚µ‚É•Ï‚í‚ç‚È‚¢‚â‚Â
+
 	SpriteEx* m_pHitPoint;
-	SpriteEx* m_pSelect[2];
+	SpriteEx* m_pSelect;
 	SpriteEx* m_pShadow;
 	SpriteEx* m_pStageSelect[2];
 	SpriteEx* m_pSummonData;
 	SpriteEx* m_pUnderBar;
 	SpriteEx* m_pBack;
-	// --- •Ï‚í‚é‚â‚Â
 	SpriteEx* m_pText;
 	SpriteEx* m_pCharacter;
 	SpriteEx* m_pLighting;
@@ -50,29 +52,18 @@ private:
 	SpriteEx* m_pStar;
 	SpriteEx* m_pScore;
 	SpriteEx* m_pBestScore;
+	CNumberUI* m_pNumber;
 
 	// --- •Ï”
 	int nAnimationTimer;
 	int nAnimationFrame;
-	bool bAnimation;
-
-	int nCAnimation;
-	bool bCAnimation;
-
+	bool bWorldClear;
 	bool bScore;
 	bool bBestScore;
+	int nSelect; 
 
-	int nSelect; // --- KeyBoard‚Ì“ü—Í”»’è—p
-
-	float CScle;
-	float nCount;
-	float fStarAngle;
-	float CPosY;
-	float StarPosY;
-	float LogoAngle;
-	float fTime;
-	float fCTime;
-
+	
+	int nPush[2]; // ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½
 
 
 
@@ -80,9 +71,10 @@ private:
 	IXAudio2SourceVoice* m_pResultBGM;
 	CSoundList* m_pResultSelectSound;
 	IXAudio2SourceVoice* m_pResultSelectSE;
-	CNumberUI* m_pNumber;
+
 
 	static StageType StageLevel; 
 	static ResultGameInfo ResultGameData;
 	static int nBestScore[8];
+	static bool bClearState[8];
 };
