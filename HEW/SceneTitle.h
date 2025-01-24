@@ -26,6 +26,8 @@ public:
 	virtual void Draw()override;
 private:
 	void SetResolusion(float wide, float height, bool fullscreen);
+	void TitleAnimation();
+	void OptionApply();
 private:
 	IXAudio2SourceVoice* g_pSourseTitleBGM;
 	CSoundList* g_TitleSound;
@@ -42,8 +44,15 @@ private:
 	SpriteEx* m_pTitleContinued[2];
 	SpriteEx* m_pTitleOption[2];
 	SpriteEx* m_pTitleEnd[2];
+	SpriteEx* m_pDecition;
 	DirectX::XMFLOAT2 m_SelectPos;
+	DirectX::XMFLOAT2 m_DecisionPos;
 	DirectX::XMFLOAT2 m_tLiniPos;
+	DirectX::XMFLOAT2 m_tTabPos[4];
+	DirectX::XMFLOAT2 m_tTabSize[4];
+	DirectX::XMFLOAT2 m_tStarPos;
+	float m_tTabAlpha[4];
+	float m_fSelectAlpha;
 	bool m_bSelected;
 	bool m_bChange;
 	int m_nAnimCount;
@@ -52,7 +61,6 @@ private:
 	enum class Effect
 	{
 		Star = 0,
-		Decision,
 		Choice,
 
 		Max
