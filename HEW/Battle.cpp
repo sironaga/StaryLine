@@ -721,7 +721,6 @@ void CBattle::Search(int i, Entity Entity)
 						{
 							//標的番号を指定
 							m_pAlly[i]->m_nTargetNumber = l;
-							m_pAlly[i]->SetTargetPos(m_pEnemy[l]->GetPos());
 						}
 					}
 					//保存していなかった場合は
@@ -729,7 +728,6 @@ void CBattle::Search(int i, Entity Entity)
 					{
 						//標的番号を指定
 						m_pAlly[i]->m_nTargetNumber = l;
-						m_pAlly[i]->SetTargetPos(m_pEnemy[l]->GetPos());
 					}
 				}
 			}
@@ -758,7 +756,6 @@ void CBattle::Search(int i, Entity Entity)
 						{
 							//標的番号に指定
 							m_pEnemy[i]->m_nTargetNumber = l;
-							m_pEnemy[i]->SetTargetPos(m_pAlly[l]->GetPos());
 						}
 					}
 					//保存していなかった場合は
@@ -766,7 +763,6 @@ void CBattle::Search(int i, Entity Entity)
 					{
 						//標的番号に指定
 						m_pEnemy[i]->m_nTargetNumber = l;
-						m_pEnemy[i]->SetTargetPos(m_pAlly[l]->GetPos());
 					}
 				}
 			}
@@ -794,6 +790,8 @@ void CBattle::Move(int i, Entity Entity)
 				//標的番号を設定済みだった場合
 				if (m_pAlly[i]->m_nTargetNumber != -1)
 				{
+					m_pAlly[i]->SetTargetPos(m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos());
+
 					//標的番号が現在生存数よりも数字が大きくないかどうか
 					if (m_pAlly[i]->m_nTargetNumber < m_nEnemyCount)
 					{
@@ -866,6 +864,8 @@ void CBattle::Move(int i, Entity Entity)
 					//相手のリーダーが生成されているか
 					if (m_pEnemyLeader)
 					{
+						m_pAlly[i]->SetTargetPos(m_pEnemyLeader->GetPos());
+
 						DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
 						DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
 
@@ -937,6 +937,8 @@ void CBattle::Move(int i, Entity Entity)
 				//標的番号を設定済みだった場合
 				if (m_pEnemy[i]->m_nTargetNumber != -1)
 				{
+					m_pEnemy[i]->SetTargetPos(m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos());
+
 					//標的番号が現在生存数よりも数字が大きくないかどうか
 					if (m_pEnemy[i]->m_nTargetNumber < m_nAllyCount)
 					{
@@ -1015,6 +1017,8 @@ void CBattle::Move(int i, Entity Entity)
 					//相手のリーダーが生成されているか
 					if (m_pAllyLeader)
 					{
+						m_pEnemy[i]->SetTargetPos(m_pAllyLeader->GetPos());
+
 						DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
 						DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
 
