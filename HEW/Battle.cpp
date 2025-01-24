@@ -839,7 +839,7 @@ void CBattle::Move(int i, Entity Entity)
 								{
 									if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
 									{
-										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);
+										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);			
 										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
 									}
 									else
@@ -1468,7 +1468,7 @@ void CBattle::FirstPosSetting()
 			}
 			else if (m_pAlly[i]->GetCornerCount() == 4)
 			{
-				m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 2);
+				m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 1.3f);
 			}
 			//Z座標をパターン別に設定
 			switch (m_nFirstPosPattern)
@@ -1627,7 +1627,7 @@ void CBattle::CreateLeader(void)
 		//Z座標を設定
 		InFirstPos.z = ALLYCORE_POSZ;
 		//味方のリーダーを生成
-		m_pAllyLeader = new CLeader(0.5f, InFirstPos, 0);
+		m_pAllyLeader = new CLeader(LeaderSize, InFirstPos, 0);
 	}
 	//敵のリーダーがnullptrだったら
 	if (m_pEnemyLeader == nullptr)
@@ -1659,13 +1659,13 @@ void CBattle::CreateLeader(void)
 		switch (m_nStageNum.StageMainNumber)
 		{
 		case 0://草原(クラッカー)
-			m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1, false);
+			m_pEnemyLeader = new CLeader(LeaderSize, BossFirstPos, 1, false);
 			break;
 		case 1://砂漠(ヌガー)
-			m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1, false);
+			m_pEnemyLeader = new CLeader(LeaderSize, BossFirstPos, 1, false);
 			break;
 		case 2://雪原(カヌレ＆ボルドー)
-			m_pEnemyLeader = new CLeader(0.5f, BossFirstPos, 1, true);
+			m_pEnemyLeader = new CLeader(LeaderSize, BossFirstPos, 1, true);
 			break;
 		}
 	}
