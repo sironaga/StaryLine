@@ -46,6 +46,7 @@ private:
 	SpriteEx* m_pGrassLandStage[3];
 	SpriteEx* m_pDesertStage[3];
 	SpriteEx* m_pSnowFieldStage[3];
+	SpriteEx* m_pLock;
 	SpriteEx* m_pRight_Select;
 	SpriteEx* m_pLeft_Select;
 	SpriteEx* m_pStageSelected;

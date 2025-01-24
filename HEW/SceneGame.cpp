@@ -277,18 +277,17 @@ void CSceneGame::Update()
 		{
 			m_pBattle->SetDrawingStart(false);
 			m_pBattle->SetDrawingEnd(true);
+			m_pBattle->CharacterUpdate(true);
 			m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
 			/*タイマー終了のSE*/
 		}
 
-		
+		m_pBattle->Update();
 	}
-	// バトルは１回目のCOOLTIMEが始まったらそれ以降常に更新する
-		//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
+	if (FadeTimeFlag)
 	{
-		m_pBattle->Update();	// 経過時間が1度目のクールタイム(本来の値 - 移動に詰んだ時の補正値)以上になった時
+		m_pBattle->CharacterUpdate(true);	// 生成されたキャラクターのアニメーションを行う
 	}
-	//m_pBattle->CharacterUpdate();	// 生成されたキャラクターのアニメーションを行う
 	
 }
 
@@ -339,6 +338,7 @@ void CSceneGame::Draw()
 	{
 		m_pBattle->SetDrawingStart(true);
 		m_pBattle->SetDrawingEnd(false);
+		m_pBattle->CharacterUpdate(true);
 		// 次のサイクルに向けて各処理を行う
 		// 時間の初期化処理
 		g_tTime.GameSTimeFeverAjust = 0.0f;
