@@ -336,6 +336,9 @@ void CSceneResult::DefaultSetPos(void)
 	m_pCharacter->SetSize(0.45f, 0.75f, 1.0f);
 	m_pCharacter->SetPositon(560.0f, 440.0f, 10.0f);
 	
+	m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pShadow->SetSize(0.24f, 0.15f, 1.0f);
+	m_pShadow->SetPositon(460.0f, 820.0f, 10.0f);
 }
 
 // --- 入力処理
@@ -501,22 +504,49 @@ void CSceneResult::WinAnimation(void)
 		nAnimationFrame++;
 
 		int nUvPos;
+		int nX, nY;
 		// --- アニメーション
-		if (nAnimationFrame > 64)
+		if (nAnimationFrame > 63)
 		{
-			nUvPos = 64;
+			static bool bLoopAnimation = true;
+			static int nLoopAnimation = 0;
+			nUvPos = 63;
+
+
+
+			if (bLoopAnimation)
+			{
+				nLoopAnimation++;
+				if (nLoopAnimation > 15)bLoopAnimation = false;
+			}
+			else
+			{
+				nLoopAnimation--;
+				if (nLoopAnimation < 1)bLoopAnimation = true;
+			}
+
+
+	
+			nX = nUvPos % 8;
+			nY = nUvPos / 8;
+
+			nX = nX - nLoopAnimation % 8;
+			nY = nY - nLoopAnimation / 8;
+
+
 		}
 		else
 		{
 			nUvPos = nAnimationFrame;
+	
+			nX = nUvPos % 8;
+			nY = nUvPos / 8;
 		}
 
 		float fUvSize;
 		fUvSize = 1.0f / 8.0f;
 		
-		int nX, nY;
-		nX = nAnimationFrame % 8;
-		nY = nAnimationFrame / 8;
+
 		
 		fUvPos.X = fUvSize * (float)nX;
 		fUvPos.Y = fUvSize * (float)nY;
@@ -555,6 +585,9 @@ void CSceneResult::WinDisp(void)
 
 	m_pText->SetTexture();
 	m_pText->Disp();
+
+	m_pShadow->SetTexture();
+	m_pShadow->Disp();
 
 	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
 	m_pCharacter->SetUvSize(1.0f / 8.0f, 1.0f / 8.0f);
