@@ -186,8 +186,8 @@ void CPlayer::Draw()
 	//	Sprite::Draw();
 	//}
 
-	if (m_bDrawing)m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
-	else m_pTimerParam[Timer_Gauge]->color.w = 0.1f;
+	if (m_bDrawing || GetTime() == -1.0f)m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+	else m_pTimerParam[Timer_Gauge]->color.w = 0.3f;
 	for (int i = 0; i < 3; i++)
 	{
 		Sprite::SetParam(m_pTimerParam[i]);
