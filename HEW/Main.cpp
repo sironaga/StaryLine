@@ -13,6 +13,7 @@
 
 #include "Camera.h"
 #include "CameraDebug.h"
+#include "CameraEvent.h"
 
 #include "LibEffekseer.h"
 #include "SoundList.h"
@@ -33,6 +34,8 @@
 //--- グローバル変数
 CStageSelect* g_pSceneSelect;
 Camera* g_Camera;
+CameraDebug* g_pDebugCamera;
+CCameraEvent* g_pEventCamera;
 IXAudio2SourceVoice* g_pSourseTitleSE;
 RenderTarget* pRTV;
 DepthStencil* pDSV;
@@ -48,6 +51,7 @@ E_SCENE_TYPE g_SceneType;
 int g_NowWide = 1920;
 int g_NowHeight = 1080;
 int g_scene=SCENE_TITLE;
+int g_nEvent = 0;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -58,7 +62,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	if (FAILED(hr)) { return hr; }
 	
 	// 他機能初期化
-	g_Camera = new CameraDebug();
+	g_pDebugCamera = new CameraDebug();
+	g_pEventCamera = new CCameraEvent();
+	g_Camera = g_pDebugCamera;
 	Geometory::Init();
 	Sprite::Init();
 	LibEffekseer::Init(GetDevice(), GetContext());
@@ -82,6 +88,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pScene = new CSceneTitle(g_pOption);
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 	g_pScene->SetGameDirection(g_pDirection);
+	g_nEvent = NOMAL_CAMERA;
 
 	g_mainsound = new CSoundList(SE_DECISION);
 	g_pSourseTitleSE = g_mainsound->GetSound(false);
@@ -319,6 +326,40 @@ DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose)
 DirectX::XMFLOAT3 GetCameraPos()
 {
 	return g_Camera->GetPos();
+}
+
+void SetCameraKind(CAMERA_KIND kind)
+{
+	SAFE_DELETE(g_Camera);
+	switch (kind)
+	{
+	case NOMAL_CAMERA:
+		g_Camera = g_pDebugCamera;
+		g_nEvent = NOMAL_CAMERA;
+		break;
+	case EVENT_CAMERA:
+		g_Camera = g_pEventCamera;
+		g_nEvent = EVENT_CAMERA;
+		break;
+	default:
+		MessageBox(NULL, "SetCameraKind out of range", "Main.cpp", MB_OK);
+		break;
+	}
+}
+
+void CameraEvent(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 endPos, float time, CCameraEvent::EASE_KIND kind)
+{
+	g_pEventCamera->SetEvent(startPos, endPos, time, kind);
+}
+
+bool GetIsEvent()
+{
+	return g_pEventCamera->IsEvent();
+}
+
+bool GetCameraEvent()
+{
+	return g_nEvent == EVENT_CAMERA;
 }
 
 
