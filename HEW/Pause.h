@@ -43,7 +43,7 @@ private:
 
 	};
 private:
-	SpriteEx* m_pPauseTex[10];
+	SpriteEx* m_pPauseTex[11];
 	COption* m_pOption;
 	CBackGround* m_pBackGround;
 	CSoundList* m_pSoundPause[3];
@@ -54,8 +54,8 @@ private:
 	bool m_bSelect;
 	bool m_bReturn;
 
-	FLOAT3 m_fPos[10];
-	FLOAT3 m_fSize[10];
+	FLOAT3 m_fPos[11];
+	FLOAT3 m_fSize[11];
 
 	enum
 	{
