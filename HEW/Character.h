@@ -16,11 +16,10 @@
 //#define NORMAL_SIZE (10)//キャラクターの基本サイズ
 enum class MODEL_DEFAULTSIZE
 {
-	Ally = 10,
-	Enemy = 10,
-	Linie = 10,
-	Boss = 10,
+	Ally = 13,
+	Enemy = 13,
 };
+#define LeaderSize (0.8)
 
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
@@ -71,6 +70,7 @@ class CFighter
 public:
 	enum class FighterEffect
 	{
+		Aura,
 		Create,
 		Attack,
 		Death,
@@ -144,6 +144,7 @@ protected:
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
+	bool m_bMoveUp;//上移動フラグ
 	bool m_bMoveFlag;//移動したか
 	DirectX::XMFLOAT3 m_tDestinationPos;//目的地
 
@@ -313,7 +314,7 @@ private:
 	float m_fHp;					//体力
 	float m_fMaxHp;					//最大体力
 
-
+	bool m_bAnimationPlay;
 	//int m_nStatusMode;
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
@@ -336,5 +337,6 @@ public:
 	//最大HpのGet
 	float GetMaxHp(void) { return m_fMaxHp; }
 
+	void SetAnimationPlayFlag(bool IsFlag) { m_bAnimationPlay = IsFlag; }
 	//void ChangePlayerMode(void) { m_nStatusMode ^= m_nStatusMode; }//プレイヤーのアニメーションの切り替え
 };

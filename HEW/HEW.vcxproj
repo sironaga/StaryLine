@@ -23,6 +23,7 @@
     <ClCompile Include="Battle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="CameraEvent.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Conection_Sys.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="Battle.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="CameraEvent.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Conection_Sys.h" />
     <ClInclude Include="Controller.h" />

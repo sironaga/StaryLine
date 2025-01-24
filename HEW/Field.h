@@ -24,6 +24,8 @@ enum class EStageType
 
 	void Draw();
 
+
+	void Reload(StageType StageNum);
 	//void ModelDraw(FieldModel*, int);
 
 	//void FieldModelUpdate(FieldModel*, int);

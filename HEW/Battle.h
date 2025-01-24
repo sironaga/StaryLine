@@ -32,7 +32,7 @@ public:
 	//更新処理
 	void Update(void);
 	//キャラクターたちの更新
-	void CharacterUpdate(void);
+	void CharacterUpdate(bool AnimationFlag = false);
 	//キャラクターたちの描画
 	void CharacterDraw(void);
 	//描画処理

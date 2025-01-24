@@ -46,7 +46,7 @@
 StageType g_Select_type;
 
 constexpr float STAGE_BETWEEN = 1100.0f;
-constexpr float MOVE_TIME = 100.0f;
+constexpr float MOVE_TIME = 30.0f;
 constexpr float FIRST_POS = 200.0f;
 
 CStageSelect::CStageSelect()
@@ -394,7 +394,21 @@ void CStageSelect::Update()
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 					subposX[0] = 0.0f; subposX[1] = 400.0f; subposX[2] = 800.0f;
 					MainStage ^= true;
-					m_ModelParam[WorldField].pos = { 0.0f - g_Select_type.StageMainNumber * STAGE_BETWEEN / 3.0f,0.0f,100.0f };
+					
+					m_ModelParam[WorldField].pos = { 0.0f,-66.0f,100.0f };
+					m_ModelParam[WorldField].size = { 1.8f,1.8f,1.8f };
+					switch (g_Select_type.StageMainNumber)
+					{
+					case(GRASSLAND):
+						m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X) ,DirectX::XMConvertToRadians(GRASS_ROTATE_Y) ,DirectX::XMConvertToRadians(GRASS_ROTATE_Z) };
+						break;
+					case(DESERT):
+						m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(DESERT_ROTATE_X) ,DirectX::XMConvertToRadians(DESERT_ROTATE_Y) ,DirectX::XMConvertToRadians(DESERT_ROTATE_Z) };
+						break;
+					case(SNOWFIELD):
+						m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(SNOW_ROTATE_X) ,DirectX::XMConvertToRadians(SNOW_ROTATE_Y) ,DirectX::XMConvertToRadians(SNOW_ROTATE_Z) };
+						break;
+					}
 
 				}
 			}//V[Ús

@@ -18,6 +18,16 @@
 //グローバル領域のクリーンアップ
 //全体のコメントアウト見直し
 
+#define VERTEX_POS_X (-30.0f)//星(頂点)の描画位置X
+#define VERTEX_POS_Y (95.0f)//星(頂点)の描画位置Y
+#define VERTEX_SPACE_X (15.0f)//星(頂点)間の間隔X
+#define VERTEX_SPACE_Y (15.0f)//星(頂点)間の間隔Y
+
+#define LINE_SIZE (0.1f)//線のサイズ
+#define STAR_SIZE (10.0f)//星(頂点)のサイズ
+
+#define FEVER_ADD_TIME (1.0f)//フィーバーのステラ取った時の追加時間
+#define FEVER_TIME (10.0f)//フィーバーの時間
 #define MAX_FEVER_POINT (30.0f)//フィーバーゲージの上限ポイント
 #define FEVER_GAGE_POS_X (-83.0f)//フィーバーゲージのX座標
 #define FEVER_GAGE_POS_Y (65.0f)//フィーバーゲージのY座標
@@ -37,6 +47,8 @@
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//線の四頂点座標保存用
 IXAudio2SourceVoice* g_FieldSe;//FieldVertexのサウンド音量
 CSoundList* g_Fieldsound;//FieldVertexのサウンドポインター
+
+
 
 int SubDeleteCount = 0;
 float MoveFlagStartTime = 0.0f;
@@ -79,7 +91,7 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_Summon_Log(nullptr)
 	, m_pSprite_Ally_Number{nullptr}
 	, m_pSprite_Ally_Count{ nullptr }
-	, m_pEffect(nullptr)
+	, g_pLineEffects(nullptr)
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
 {
@@ -131,6 +143,8 @@ CFieldVertex::CFieldVertex()
 	}
 
 	m_pStarLine = new StarLine();
+
+	//g_pLineEffects = new CEffectManager_sp("", , , 1.0f);
 
 	m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
@@ -1047,7 +1061,24 @@ void CFieldVertex::SetSuperStar()
 		Vertexp->SuperStar = false;
 		Vertexp->SuperStarUse = false;
 	}
-	if (SuperStarCount < 5)//使ったステラが５個以下なら処理
+	if (!GetFeverMode())//フィーバーじゃないとき
+	{
+		if (SuperStarCount < 5)//使ったステラが５個以下なら処理
+		{
+			//新しいステラの設定//
+			for (int i = 0; i < 1;)
+			{
+				int Vertex;//ステラの頂点保存用変数
+				Vertex = rand() % 25;//0～24でランダムにセット
+				if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
+				{
+					m_tVertex[Vertex].SuperStar = true;
+					i++;
+				}
+			}
+		}
+	}
+	else//フィーバーの時
 	{
 		//新しいステラの設定//
 		for (int i = 0; i < 1;)
@@ -1072,7 +1103,7 @@ void CFieldVertex::SoundStop()
 ////=====フィーバー中にフィーバーゲージを減らす関数=====//
 void CFieldVertex::SubtractFeverPoint()
 {
-	fFeverPoint -= (MAX_FEVER_POINT / 60.0f) / 10.0f;
+	fFeverPoint -= (MAX_FEVER_POINT / 60.0f) / FEVER_TIME;
 	if (fFeverPoint < 0.0f)//値の補正
 	{
 		nFeverPoint = 0;
@@ -1541,6 +1572,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						{
 							m_tVertex[Comparison2[m]].SuperStarUse = true;
 							SuperStarCount++;
+							if (GetFeverMode())
+							{
+								nFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
+								if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
+								fFeverPoint = nFeverPoint;
+							}
 							SetSuperStar();
 							if (!GetFeverMode())
 							{

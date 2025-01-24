@@ -140,7 +140,7 @@ void COption::SetAddPos(float x,float y)
 
 void COption::SetMulSize(float mul)
 {
-	m_fMul = mul;
+	m_fMul = 1 - mul;
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
 		OldPos[i].X = m_pParam[i]->pos.x;
@@ -152,6 +152,7 @@ void COption::SetMulSize(float mul)
 		if (m_pParam[i]->pos.y <SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y - m_pParam[i]->pos.y * m_fMul;
 		else if (m_pParam[i]->pos.y > SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y + m_pParam[i]->pos.y * m_fMul;
 	}
+	m_fMul = 1 - m_fMul;
 }
 
 bool COption::GetOption()
@@ -199,6 +200,22 @@ int COption::GetControllerSetting()
 	return  m_nValue[CONTROLLER];
 }
 
+WORD COption::GetTypeAB(int Type, WORD isTypeA)
+{
+	WORD out;
+	switch (Type)
+	{
+	case 0: out = isTypeA; break;
+	case 1:
+		if (isTypeA == XINPUT_GAMEPAD_A) out = XINPUT_GAMEPAD_B;
+		else if (isTypeA == XINPUT_GAMEPAD_B) out = XINPUT_GAMEPAD_A;
+		break;
+	default:
+		break;
+	}
+	return out;
+}
+
 void COption::InitResolusion()
 {
 	for (int i = 0; i < KINDMAX_OPTION; i++)
@@ -212,7 +229,7 @@ void COption::InitResolusion()
 
 void COption::ResetSize()
 {
-	
+	if (m_fMul == 1.0f)return;
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
 		m_pParam[i]->size.x /= m_fMul;
