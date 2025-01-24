@@ -346,6 +346,7 @@ void CPlayer::UpdateStop()
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 
 
+
 	// 移動方向が行き止まりではない　かつ　移動方向が今の位置と一緒ではない
 	if (!m_pFieldVtx->GetRoadStop(m_eDestination) && m_nNowVertex != m_nDestination)
 	{
@@ -431,14 +432,18 @@ void CPlayer::DrawModel()
 		}
 	}
 
+	static int count = 0;
+	count += 3;
+	float move = cosf(DirectX::XMConvertToRadians(count)) * 1.0f;
+
 
 	SetRender3D();		// 3D表現のセット
-	m_pModel->SetPostion(m_tBrushPos.x + BRUSH_AJUSTPOS_X + m_tAjustPos.x, m_tBrushPos.y + BRUSH_AJUSTPOS_Y + m_tAjustPos.y, m_tBrushPos.z);	// 座標のセット
+	m_pModel->SetPostion(m_tBrushPos.x + BRUSH_AJUSTPOS_X + m_tAjustPos.x, m_tBrushPos.y + BRUSH_AJUSTPOS_Y + m_tAjustPos.y + move, m_tBrushPos.z);	// 座標のセット
 	m_pModel->SetRotation(m_tBrushRotate.x, m_tBrushRotate.y, m_tBrushRotate.z);	// 回転のセット
 	m_pModel->SetScale(m_fBrushSize, m_fBrushSize, m_fBrushSize);	// サイズのセット
 	m_pModel->SetViewMatrix(GetView());			// View座標のセット
 	m_pModel->SetProjectionMatrix(GetProj());	// Projection座標のセット
-	m_pModel->Draw();	// モデルの描画
+	if(!GetFade())m_pModel->Draw();	// モデルの描画
 }
 
 void CPlayer::PlayerInput()

@@ -48,6 +48,7 @@ private:
 	
 };
 
+bool GetFade();
 bool GetFeverMode();
 bool GetTimeStart();
 float GetTime();
