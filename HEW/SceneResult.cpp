@@ -331,6 +331,11 @@ void CSceneResult::DefaultSetPos(void)
 	m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 	m_pLighting->SetSize(0.47f, 1.0f, 1.0f);
 	m_pLighting->SetPositon(460.0f, 440.0f, 10.0f);
+
+	m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pCharacter->SetSize(0.45f, 0.75f, 1.0f);
+	m_pCharacter->SetPositon(560.0f, 440.0f, 10.0f);
+	
 }
 
 // --- 入力処理
@@ -432,7 +437,6 @@ void CSceneResult::AnimationManagemer(void)
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
 		bAnimation = true;
-		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
 	else
@@ -494,6 +498,30 @@ void CSceneResult::WinAnimation(void)
 {
 	if (bAnimation)
 	{
+		nAnimationFrame++;
+
+		int nUvPos;
+		// --- アニメーション
+		if (nAnimationFrame > 64)
+		{
+			nUvPos = 64;
+		}
+		else
+		{
+			nUvPos = nAnimationFrame;
+		}
+
+		float fUvSize;
+		fUvSize = 1.0f / 8.0f;
+		
+		int nX, nY;
+		nX = nAnimationFrame % 8;
+		nY = nAnimationFrame / 8;
+		
+		fUvPos.X = fUvSize * (float)nX;
+		fUvPos.Y = fUvSize * (float)nY;
+
+
 
 	}
 }
@@ -528,8 +556,13 @@ void CSceneResult::WinDisp(void)
 	m_pText->SetTexture();
 	m_pText->Disp();
 
+	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
+	m_pCharacter->SetUvSize(1.0f / 8.0f, 1.0f / 8.0f);
 	m_pCharacter->SetTexture();
 	m_pCharacter->Disp();
+
+	m_pCharacter->SetUvSize(1.0f, 1.0f);
+	m_pCharacter->SetUvPos(0.0f, 0.0f);
 }
 
 void CSceneResult::LoseDisp(void)

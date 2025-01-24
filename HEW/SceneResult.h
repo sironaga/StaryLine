@@ -66,7 +66,7 @@ private:
 	bool bBestScore;
 	int nSelect; 
 
-	
+	FLOAT2 fUvPos;
 	int nPush[2]; // ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½Žž
 
 
