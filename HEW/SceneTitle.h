@@ -45,15 +45,17 @@ private:
 	DirectX::XMFLOAT2 m_SelectPos;
 	DirectX::XMFLOAT2 m_tLiniPos;
 	bool m_bSelected;
+	bool m_bChange;
 	int m_nAnimCount;
 	int m_nLiniYCount;
 	DirectX::XMFLOAT2 m_tCharaLogoTexPos[2];
 	enum class Effect
 	{
 		Star = 0,
+		Decision,
 
 		Max
 	};
 	CEffectManager_sp* m_pEffect[(int)Effect::Max];
-	CEffectManager_sp* m_pEffectArray[10];
+	CEffectManager_sp* m_pEffectDecision[10];
 };

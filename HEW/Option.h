@@ -72,12 +72,14 @@ public:
 	/// キーボードでの操作方法を取得する
 	/// @return
 	/// 0:タイプA	1:タイプB
-	int GetKeyboardSetting();
+	static int GetKeyboardSetting();
 	/// @brief
 	/// コントローラーでの操作方法を取得する
 	/// @return
 	/// 0:タイプA	1:タイプB
-	int GetControllerSetting();
+	static int GetControllerSetting();
+
+	static WORD GetTypeAB(int Type,WORD isTypeA);
 	/// @brief
 	// 解像度変更時に必要な初期化の呼び出し
 	void InitResolusion();

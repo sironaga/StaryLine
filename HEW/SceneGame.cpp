@@ -4,7 +4,8 @@
 #include "SceneResult.h"
 #include "InputEx.h"
 #include "SpriteDrawer.h"
-
+#include <future>
+#include <thread>
 
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
@@ -181,7 +182,11 @@ void CSceneGame::Update()
 		// フェーズごとの補正値(STimePheseAjust)に代入する
 		if (!m_bFever)
 		{
-			if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime) && ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime) <= 600.0f)
+			//if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime) && ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime) <= 600.0f)
+			//{
+			//	g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime;
+			//}
+			if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime) && ((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime))
 			{
 				g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GamePhaseTime;
 			}
@@ -227,8 +232,7 @@ void CSceneGame::Update()
 		if ((float)SHAPE_DRAW_START * 60.0f /* + g_tTime.GameSTimeSycleEnd */ == g_tTime.GamePhaseTime)
 		{
 			m_pStarLine->SetLineMode(0);
-			m_pBattle->SetDrawingStart(false);
-			m_pBattle->SetDrawingEnd(true);
+			
 			m_pEffect->Play({ m_pPlayer->GetPlayerPos().x, m_pPlayer->GetPlayerPos().y, m_pPlayer->GetPlayerPos().z });
 			//m_pFieldVertex->SetSuperStar();
 		}
@@ -268,8 +272,8 @@ void CSceneGame::Update()
 		// 描画時間終了時間または描画時間+フィーバーの終了時間
 		if (g_tTime.GamePhaseTime == (float)COOLTIME_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ -g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 		{
-			m_pBattle->SetDrawingStart(true);
-			m_pBattle->SetDrawingEnd(false);
+			m_pBattle->SetDrawingStart(false);
+			m_pBattle->SetDrawingEnd(true);
 			m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
 			/*タイマー終了のSE*/
 		}
@@ -311,13 +315,18 @@ void CSceneGame::Draw()
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
-		m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
+		std::thread Th_BattleCharacterDraw(&CBattle::CharacterDraw, m_pBattle);
+		Th_BattleCharacterDraw.join();
+
+		//m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 		if(!m_bFever)TimeStart = false;
 	}
 
 	//１回目のCOOLTIMEが始まったらそれ以降処理
 	//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
 	{
+		std::thread Th_BattleDraw(&CBattle::Draw, m_pBattle);
+		Th_BattleDraw.join();
 		m_pBattle->Draw();	// バトル全体の描画
 	}
 
@@ -325,6 +334,8 @@ void CSceneGame::Draw()
 	if (g_tTime.GamePhaseTime == (float)SHAPE_DRAW_RESTART * 60.0f + /*g_tTime.GameSTimeSycleEnd*/
 		- g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
+		m_pBattle->SetDrawingStart(true);
+		m_pBattle->SetDrawingEnd(false);
 		// 次のサイクルに向けて各処理を行う
 		// 時間の初期化処理
 		g_tTime.GameSTimeFeverAjust = 0.0f;

@@ -217,7 +217,7 @@ void CPause::Update()
 				m_pOption->SetOption();
 				m_pOption->ResetPos();
 				m_pOption->ResetSize();
-				m_pOption->SetMulSize(0.5f);
+				m_pOption->SetMulSize(0.8f);
 				m_pOption->SetAddPos(280.0f, 0.0f);
 				m_bOption = true;
 				break;

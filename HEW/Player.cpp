@@ -8,6 +8,7 @@
 #include "DirectXTex/TextureLoad.h"
 #include "SoundList.h"
 #include "Sprite.h"
+#include "Option.h"
 
 // defines
 #define BRUSH_SPEED (0.5f)	// 移動速度
@@ -350,7 +351,7 @@ void CPlayer::UpdateStop()
 	if (!m_pFieldVtx->GetRoadStop(m_eDestination) && m_nNowVertex != m_nDestination)
 	{
 		// ×ボタンorスペースキーで移動開始
-		if (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE))
+		if (CGetButtons(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyPress(VK_SPACE))
 		{
 			m_ePlayerState = MOVE;	// 動いている状態に変える
 		}
@@ -482,20 +483,31 @@ void CPlayer::PlayerInput()
 	// キー入力情報の取得
 	DIRECTION KeyData = WASDKeyBorad();
 
-	switch (KeyData)
+	if (COption::GetKeyboardSetting() == 0)
 	{
-	case D_above: m_eDestination = UP;				break; 
-	case D_upper_right:
-		m_eDestination = UPRIGHT;
-		m_pTimerTex[0]->GetWidth();
-		break; 
-	case D_upper_left: m_eDestination = UPLEFT;		break; 
-	case D_right: m_eDestination = RIGHT;			break; 
-	case D_left:m_eDestination = LEFT;				break;
-	case D_under: m_eDestination = DOWN;			break;
-	case D_under_right:m_eDestination = DOWNRIGHT;	break;
-	case D_under_left: m_eDestination = DOWNLEFT;	break;
-	case D_no:m_eDestination = DEFAULT; break;
+		switch (KeyData)
+		{
+		case D_above: m_eDestination = UP;				break;
+		case D_upper_right: m_eDestination = UPRIGHT;	break;
+		case D_upper_left: m_eDestination = UPLEFT;		break;
+		case D_right: m_eDestination = RIGHT;			break;
+		case D_left:m_eDestination = LEFT;				break;
+		case D_under: m_eDestination = DOWN;			break;
+		case D_under_right:m_eDestination = DOWNRIGHT;	break;
+		case D_under_left: m_eDestination = DOWNLEFT;	break;
+		case D_no:m_eDestination = DEFAULT; break;
+		}
+	}
+	else
+	{
+		if (IsKeyTrigger('E')) m_eDestination = UPRIGHT;
+		else if (IsKeyTrigger('C')) m_eDestination = DOWNRIGHT;
+		else if (IsKeyTrigger('Z')) m_eDestination = DOWNLEFT;
+		else if (IsKeyTrigger('Q')) m_eDestination = UPLEFT;
+		else if (IsKeyTrigger('W'))m_eDestination = UP;
+		else if (IsKeyTrigger('D')) m_eDestination = RIGHT;
+		else if (IsKeyTrigger('X')) m_eDestination = DOWN;
+		else if (IsKeyTrigger('A')) m_eDestination = LEFT;
 	}
 
 	// 目的地ごとに目的地の頂点を設定
