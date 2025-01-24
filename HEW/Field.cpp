@@ -91,3 +91,34 @@ void Field::Draw()
 
 	//ModelDraw(m_Field_Model, MAX_FIELD_MODEL);
 }
+
+void Field::Reload(StageType StageNum)
+{
+	if (m_pModel) {
+		delete m_pModel;
+		m_pModel = nullptr;
+	}
+	m_pModel = new Model();
+
+	switch (StageNum.StageMainNumber)
+	{
+	case (int)EStageType::STAGE_GRASSLAND:
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage1_Meadow.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		break;
+	case (int)EStageType::STAGE_DESERT:
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		break;
+	case (int)EStageType::STAGE_SNOWFIELD:
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage3_SnowField.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, 5.0f, 130.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(5), TORAD(180), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		break;
+	}
+}
