@@ -46,6 +46,8 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 	, m_nAnimCount(0), m_tCharaLogoTexPos{}
 	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
+	, m_pEffect(), m_pEffectDecision{}
+	,m_bChange(false)
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -67,6 +69,13 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	m_pTitleOption[1]	 = new SpriteEx("Assets/Texture/Title/Title_Option_push.png");
 	m_pTitleEnd[0]		 = new SpriteEx("Assets/Texture/Title/Title_Finish.png");
 	m_pTitleEnd[1]		 = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
+	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/Sparkling.png", 5, 5, 3.0f);
+	m_pEffect[(int)Effect::Decision] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_pEffectDecision[i] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
+	}
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -108,6 +117,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 
 CSceneTitle::~CSceneTitle()
 {
+
 	if (g_pSourseTitleBGM)
 	{
 		g_pSourseTitleBGM->Stop();
@@ -169,11 +179,27 @@ CSceneTitle::~CSceneTitle()
 	{
 		m_pOption = nullptr;
 	}
-
+	for (int i = 0; i < (int)Effect::Max; i++)
+	{
+		SAFE_DELETE(m_pEffect[i]);
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		SAFE_DELETE(m_pEffectDecision[i]);
+	}
 }
 
 void CSceneTitle::Update()
 {
+	for (int i = 0; i < (int)Effect::Max; i++)
+	{
+		m_pEffect[i]->Update();
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		m_pEffectDecision[i]->Update();
+	}
+
 	g_pTitleBG->Update();
 	g_TitleSound->SetMasterVolume();
 	//‰¹—Ê‚ðÝ’è
@@ -242,8 +268,8 @@ void CSceneTitle::Update()
 			}
 			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
+				if (!m_pEffectDecision[0]->IsPlay())m_pEffectDecision[0]->Play(false);
 				m_bSelected = true;
-				SetNext(STAGE_SELECT);
 			}
 			break;
 
@@ -302,6 +328,17 @@ void CSceneTitle::Update()
 			break;
 
 		default:break;
+		}
+	}
+	else
+	{
+		if (g_Title_type == GAMESTART && !m_bChange)
+		{
+			if (!m_pEffect[(int)Effect::Decision]->IsPlay())
+			{
+				SetNext(STAGE_SELECT);
+				m_bChange = true;
+			}
 		}
 	}
 	/*if (IsKeyTrigger(VK_TAB) || CGetButtons(XINPUT_GAMEPAD_X))
@@ -450,6 +487,11 @@ void CSceneTitle::Draw()
 	m_pTitleEnd[0]->SetSize(450.0f, -60.0f, 0.0f);
 	m_pTitleEnd[0]->Disp();
 
+
+
+
+
+
 	if (m_bSelected)
 	{
 		switch (g_Title_type)
@@ -501,6 +543,12 @@ void CSceneTitle::Draw()
 	m_pTitleFrame->SetPositon(CENTER_POS_X + m_SelectPos.x, CENTER_POS_Y + m_SelectPos.y, 0.0f);
 	m_pTitleFrame->SetSize(470.0f, -80, 0.0f);
 	m_pTitleFrame->Disp();
+	
+
+	m_pEffectDecision[0]->SetPos({ m_SelectPos.x - 205.0f,-m_SelectPos.y,0.0f });
+	m_pEffectDecision[0]->SetSize({ 100.0f,100.0f,100.0f });
+	m_pEffectDecision[0]->SetRotate({ 0.0f,0.0f,0.0f });
+	m_pEffectDecision[0]->Draw(false);
 
 	//Sprite::SetSize(m_pParam->size);
 	//Sprite::SetOffset(m_pParam->pos );
@@ -560,6 +608,16 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pLini[0] = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
 	SAFE_DELETE(m_pLini[1]);
 	m_pLini[1] = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
+	SAFE_DELETE(m_pEffect[(int)Effect::Star]);
+	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/Sparkling.png", 5, 5, 3.0f);
+	SAFE_DELETE(m_pEffect[(int)Effect::Decision]);
+	m_pEffect[(int)Effect::Decision] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
+	for (int i = 0; i < 4; i++)
+	{
+		SAFE_DELETE(m_pEffectDecision[i]);
+		m_pEffectDecision[i] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
+	}
+
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
