@@ -10,21 +10,13 @@
 #include "Sprite.h"
 #include "ModelEx.h"
 #include "StarLine.h" // ---- 3D用のやつ←これ
-#include "EffectManager.h"
+#include "EffectManager_sp.h"
 
 #define MAX_VERTEX (25)//星(頂点)数
 #define MAX_CENTER_VERTEX (16)//交点の数
 #define MAX_SHAPE_VERTEX (10)//このゲームでつくれる最大N角形
 #define MAX_LINE (300)//最大の線の本数
 #define MAX_LOG (300) //ログの最大数
-
-#define LINE_SIZE (2.0f)//線のサイズ
-#define STAR_SIZE (10.0f)//星(頂点)のサイズ
-
-#define VERTEX_POS_X (-30.0f)//星(頂点)の描画位置X
-#define VERTEX_POS_Y (95.0f)//星(頂点)の描画位置Y
-#define VERTEX_SPACE_X (15.0f)//星(頂点)間の間隔X
-#define VERTEX_SPACE_Y (15.0f)//星(頂点)間の間隔Y
 
 class CPlayer;//前方宣言(プレイヤーのアドレス保存用の変数を作成するため)
 
@@ -147,7 +139,7 @@ private:
 	Sprite* m_pSprite_Ally_Count[4];//召喚数
 	Sprite* m_pSprite_Ally_Number[10];//召喚Number
 
-	CEffectManager* m_pEffect;
+	CEffectManager_sp* g_pLineEffects;
 	CModelEx* m_pStar_Model[3];//Starのモデル
 	
 };
