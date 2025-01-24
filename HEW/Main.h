@@ -6,6 +6,7 @@
 #include "Defines.h"
 #include "_StructList.h"
 #include "Option.h"
+#include "CameraEvent.h"
 
 HRESULT Init(HWND hWnd, UINT width, UINT height);
 void Uninit();
@@ -17,7 +18,17 @@ DirectX::XMFLOAT4X4 Get2DWorld(bool isTranspose = true, DirectX::XMFLOAT3 rotate
 DirectX::XMFLOAT4X4 Get2DView(bool isTranspose = true);
 DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose = true);
 DirectX::XMFLOAT3 GetCameraPos();
+enum CAMERA_KIND
+{
+	NOMAL_CAMERA,
+	EVENT_CAMERA,
 
+	MAX_CAMERA
+};
+void SetCameraKind(CAMERA_KIND kind);
+void CameraEvent(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 endPos, float time, CCameraEvent::EASE_KIND kind);
+bool GetIsEvent();
+bool GetCameraEvent();
 
 //óÒãìå^êÈåæ
 enum E_SCENE_TYPE
