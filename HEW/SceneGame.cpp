@@ -4,7 +4,8 @@
 #include "SceneResult.h"
 #include "InputEx.h"
 #include "SpriteDrawer.h"
-
+#include <future>
+#include <thread>
 
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
@@ -311,13 +312,18 @@ void CSceneGame::Draw()
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f + /*g_tTime.GameSTimeSycleEnd*/ - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
-		m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
+		std::thread Th_BattleCharacterDraw(&CBattle::CharacterDraw, m_pBattle);
+		Th_BattleCharacterDraw.join();
+
+		//m_pBattle->CharacterDraw();	// 生成されたキャラクターの描画を行う
 		if(!m_bFever)TimeStart = false;
 	}
 
 	//１回目のCOOLTIMEが始まったらそれ以降処理
 	//if ((float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GameTime)
 	{
+		std::thread Th_BattleDraw(&CBattle::Draw, m_pBattle);
+		Th_BattleDraw.join();
 		m_pBattle->Draw();	// バトル全体の描画
 	}
 
