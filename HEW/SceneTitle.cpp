@@ -219,7 +219,7 @@ void CSceneTitle::Update()
 		switch (g_Title_type)
 		{
 		case(GAMESTART):
-			if (IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
+			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
 				g_Title_type = GAMECONTINUE;
 				m_SelectPos.y += SELECT_MOVE;
@@ -234,13 +234,13 @@ void CSceneTitle::Update()
 
 		case(GAMECONTINUE):
 
-			if (IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
+			if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 			{
 				g_Title_type = GAMEOPTION;
 				m_SelectPos.y += SELECT_MOVE;
 				m_DecisionPos.y += SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
+			else if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				g_Title_type = GAMESTART;
 				m_SelectPos.y -= SELECT_MOVE;
@@ -257,13 +257,13 @@ void CSceneTitle::Update()
 		case(GAMEOPTION):
 			if (!m_pOption->GetOption())
 			{
-				if (IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
+				if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 				{
 					g_Title_type = GAMEEND;
 					m_SelectPos.y += SELECT_MOVE;
 					m_DecisionPos.y += SELECT_MOVE;
 				}
-				else if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
+				else if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 				{
 					g_Title_type = GAMECONTINUE;
 					m_SelectPos.y -= SELECT_MOVE;
@@ -281,7 +281,7 @@ void CSceneTitle::Update()
 			break;
 
 		case(GAMEEND):
-			if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
+			if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				g_Title_type = GAMEOPTION;
 				m_SelectPos.y -= SELECT_MOVE;
