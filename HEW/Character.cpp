@@ -62,6 +62,7 @@ enum class HpTexture
 //Characterのエフェクトの列挙型
 enum class CharactersEffect
 {
+	Aura,
 	Create,
 	SwordAtk,
 	BowAtk,
@@ -284,10 +285,11 @@ void InitCharacterTexture(StageType StageType)
 	//g_pCharacterEffects[(int)CharactersEffect::Move] = new CEffectManager(EFFECT_PASS("MoveChara.efkefc"));
 	//g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("Death.efkefc"));
 	////g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager(EFFECT_PASS("fire.efk"));
+	g_pCharacterEffects[(int)CharactersEffect::Aura] = new CEffectManager_sp(EFFECT_PASS("Sprite/Aura.png"), 4, 14, 3.0f);
 	g_pCharacterEffects[(int)CharactersEffect::Create] = new CEffectManager_sp(EFFECT_PASS("Sprite/warp.png"), 4, 8, 3.0f);
 	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/SwordAtk.png"), 4, 6,1.0f);
 	g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/BowAtk.png"), 4, 6, 1.0f);
-	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager_sp(EFFECT_PASS("Sprite/BowAtk.png"), 4, 3.0f);
+	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager_sp(EFFECT_PASS("Sprite/Death.png"), 4, 8, 3.0f);
 }
 
 //事前読み込みで用意したもののポインタ破棄
@@ -589,11 +591,13 @@ CAlly::CAlly(int InCornerCount)
 		//モデル
 		m_pModel = g_pAllyModel[(int)Ally::Ally4];
 		//攻撃エフェクトのポインタ同期
-		m_pEffect[(int)FighterEffect::Attack] = g_pCharacterEffects[(int)CharactersEffect::BowAtk];
+		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
 		break;
 	}
 	m_pEffect[(int)FighterEffect::Create] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Create]);
+	m_pEffect[(int)FighterEffect::Aura] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Aura]);
 	m_pEffect[(int)FighterEffect::Death] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Death]);
+
 }
 
 //味方クラスのデストラクタ
@@ -605,6 +609,14 @@ CAlly::~CAlly()
 //味方クラスの更新処理
 void CAlly::Update(void)
 {
+	m_pEffect[(int)FighterEffect::Aura]->SetPos({ m_tPos.x,m_tPos.y,m_tPos.z });
+	if (!m_pEffect[(int)FighterEffect::Aura]->IsPlay())
+	{
+		m_pEffect[(int)FighterEffect::Aura]->SetRotate({ 0.0f,0.0f,0.0f });
+		m_pEffect[(int)FighterEffect::Aura]->SetSize({ 15.0f,10.0f,10.0f });
+		m_pEffect[(int)FighterEffect::Aura]->Play(true);
+	}
+
 	//モデルの再読み込みフラグが立っていたら読み込む
 	if (m_bReLoadFlag)
 	{
@@ -648,6 +660,15 @@ void CAlly::Draw(void)
 	//体力ゲージの描画
 	m_pHpGage->Draw(m_nCornerCount);
 
+	//エフェクトの描画
+	for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	{
+		if (m_pEffect[i])
+		{
+			m_pEffect[i]->Draw(true);
+		}
+	}
+
 	//キャラクターの描画
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
@@ -685,15 +706,6 @@ void CAlly::Draw(void)
 
 		if (m_pModel) {
 			m_pModel->Draw(i);
-		}
-	}
-
-	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-		{
-			m_pEffect[i]->Draw(true);
 		}
 	}
 }
@@ -1162,6 +1174,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	, m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
 	, m_bSubModelCreate(SubModelCreate)
+	, m_bAnimationPlay(false)
 {
 	switch (m_nTextureNumber)
 	{
@@ -1523,11 +1536,12 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 			{
 				m_pModel->Step(-0.01f);
 			}
-			else
+			else if(!m_bAnimationPlay)
 			{
 				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 				m_pModel->PlayAnime(g_pLeader_Anima, false);
 				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
+				m_bAnimationPlay = true;
 			}
 		}
 		//筆を持つ
@@ -1537,11 +1551,12 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 			{
 				m_pModel->Step(0.01f);
 			}
-			else
+			else if(!m_bAnimationPlay)
 			{
 				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 				m_pModel->PlayAnime(g_pLeader_Anima, false);
 				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+				m_bAnimationPlay = true;
 			}
 		}
 		break;

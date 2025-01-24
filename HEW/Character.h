@@ -70,6 +70,7 @@ class CFighter
 public:
 	enum class FighterEffect
 	{
+		Aura,
 		Create,
 		Attack,
 		Death,
@@ -313,7 +314,7 @@ private:
 	float m_fHp;					//体力
 	float m_fMaxHp;					//最大体力
 
-
+	bool m_bAnimationPlay;
 	//int m_nStatusMode;
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
@@ -336,5 +337,6 @@ public:
 	//最大HpのGet
 	float GetMaxHp(void) { return m_fMaxHp; }
 
+	void SetAnimationPlayFlag(bool IsFlag) { m_bAnimationPlay = IsFlag; }
 	//void ChangePlayerMode(void) { m_nStatusMode ^= m_nStatusMode; }//プレイヤーのアニメーションの切り替え
 };
