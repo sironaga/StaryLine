@@ -149,39 +149,43 @@ CFieldVertex::CFieldVertex()
 	Fill(vtx_FieldLine, 0.0f);
 
 	// 頂点２５個座標情報初期化
-	FieldVertex* Vertexp;
-	Vertexp = m_tVertex;
-	for (int j = 0; j < 5; j++)
 	{
-		for (int i = 0; i < 5; i++, Vertexp++)
+		FieldVertex* Vertexp;
+		Vertexp = m_tVertex;
+		for (int j = 0; j < 5; j++)
 		{
-			Vertexp->Pos.x = i * VERTEX_SPACE_X + VERTEX_POS_X;
-			Vertexp->Pos.y = -j * VERTEX_SPACE_Y + VERTEX_POS_Y;
-			Vertexp->Pos.z = 0;
-			Vertexp->Number = j * 5 + i;
-			Vertexp->Use = false;
-			Vertexp->SuperStar = false;
-			Vertexp->Angle[0] = 0.0f;
-			Vertexp->Angle[1] = 180.0f;
-			Vertexp->Angle[2] = 0.0f;
-			for (int k = 0; k < 8; k++)
+			for (int i = 0; i < 5; i++, Vertexp++)
 			{
-				Vertexp->Connect[k] = -1;
+				Vertexp->Pos.x = i * VERTEX_SPACE_X + VERTEX_POS_X;
+				Vertexp->Pos.y = -j * VERTEX_SPACE_Y + VERTEX_POS_Y;
+				Vertexp->Pos.z = 0;
+				Vertexp->Number = j * 5 + i;
+				Vertexp->Use = false;
+				Vertexp->SuperStar = false;
+				Vertexp->Angle[0] = 0.0f;
+				Vertexp->Angle[1] = 180.0f;
+				Vertexp->Angle[2] = 0.0f;
+				for (int k = 0; k < 8; k++)
+				{
+					Vertexp->Connect[k] = -1;
+				}
 			}
 		}
 	}
 
 	//センター頂点16個座標情報初期化
-	CenterVertex* CenterVertexp;
-	CenterVertexp = m_tCenter_Vertex;
-	for (int j = 0; j < 4; j++)
 	{
-		for (int i = 0; i < 4; i++, CenterVertexp++)
+		CenterVertex* CenterVertexp;
+		CenterVertexp = m_tCenter_Vertex;
+		for (int j = 0; j < 4; j++)
 		{
-			CenterVertexp->Pos.x = i * VERTEX_SPACE_X + VERTEX_POS_X + VERTEX_SPACE_X / 2.0f;
-			CenterVertexp->Pos.y = -j * VERTEX_SPACE_Y + VERTEX_POS_Y - VERTEX_SPACE_Y / 2.0f;
-			CenterVertexp->Pos.z = 0;
-			CenterVertexp->Use = false;
+			for (int i = 0; i < 4; i++, CenterVertexp++)
+			{
+				CenterVertexp->Pos.x = i * VERTEX_SPACE_X + VERTEX_POS_X + VERTEX_SPACE_X / 2.0f;
+				CenterVertexp->Pos.y = -j * VERTEX_SPACE_Y + VERTEX_POS_Y - VERTEX_SPACE_Y / 2.0f;
+				CenterVertexp->Pos.z = 0;
+				CenterVertexp->Use = false;
+			}
 		}
 	}
 
@@ -194,94 +198,105 @@ CFieldVertex::CFieldVertex()
 	SetSuperStar();
 
 	//召喚ログ初期化
-	HRESULT hrSummon_Log;
-	hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
-	if (FAILED(hrSummon_Log)) {
-		MessageBox(NULL, "Summon_Log_Triangular 画像", "Error", MB_OK);
-	}
-	hrSummon_Log = m_pTex_Summon_Log[1]->Create(TEX_PASS("Summon_Log/Log_Square.png"));
-	if (FAILED(hrSummon_Log)) {
-		MessageBox(NULL, "Summon_Log_Square 画像", "Error", MB_OK);
-	}
-
-	//スーパースター初期化
-	HRESULT hrSuperStar;
-	for (int i = 0; i < 6; i++)
 	{
-		switch (i)
-		{
-		case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
-		case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
-		case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
-		case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
-		case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
-		case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
-		default:
-			break;
+		HRESULT hrSummon_Log;
+		hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
+		if (FAILED(hrSummon_Log)) {
+			MessageBox(NULL, "Summon_Log_Triangular 画像", "Error", MB_OK);
 		}
-		if (FAILED(hrSuperStar)) {
-			MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
+		hrSummon_Log = m_pTex_Summon_Log[1]->Create(TEX_PASS("Summon_Log/Log_Square.png"));
+		if (FAILED(hrSummon_Log)) {
+			MessageBox(NULL, "Summon_Log_Square 画像", "Error", MB_OK);
 		}
 	}
 
-	HRESULT hrNumber;
-	for (int i = 0; i < 10; i++)
+	//スーパースタの数字初期化
 	{
-		switch (i)
+		HRESULT hrSuperStar;
+		for (int i = 0; i < 6; i++)
 		{
-		case 0:hrNumber = m_pTex_Ally_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
-		case 1:hrNumber = m_pTex_Ally_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
-		case 2:hrNumber = m_pTex_Ally_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
-		case 3:hrNumber = m_pTex_Ally_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
-		case 4:hrNumber = m_pTex_Ally_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
-		case 5:hrNumber = m_pTex_Ally_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
-		case 6:hrNumber = m_pTex_Ally_Number[6]->Create(TEX_PASS("Numbers/number_6.png")); break;
-		case 7:hrNumber = m_pTex_Ally_Number[7]->Create(TEX_PASS("Numbers/number_7.png")); break;
-		case 8:hrNumber = m_pTex_Ally_Number[8]->Create(TEX_PASS("Numbers/number_8.png")); break;
-		case 9:hrNumber = m_pTex_Ally_Number[9]->Create(TEX_PASS("Numbers/number_9.png")); break;
-		default:
-			break;
-		}
-		if (FAILED(hrNumber)) {
-			MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
+			switch (i)
+			{
+			case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
+			case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
+			case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
+			case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
+			case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
+			case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrSuperStar)) {
+				MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
+			}
 		}
 	}
 
-	//スーパースター初期化
-	HRESULT hrFeverStar;
-	for (int i = 0; i < 4; i++)
+	//召喚数の数字初期化
 	{
-		switch (i)
+		HRESULT hrNumber;
+		for (int i = 0; i < 10; i++)
 		{
-		case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
-		case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
-		case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/UI11.png")); break;
-		case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/UI10.png")); break;
-		default:
-			break;
-		}
-		if (FAILED(hrFeverStar)) {
-			MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
+			switch (i)
+			{
+			case 0:hrNumber = m_pTex_Ally_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
+			case 1:hrNumber = m_pTex_Ally_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
+			case 2:hrNumber = m_pTex_Ally_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
+			case 3:hrNumber = m_pTex_Ally_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
+			case 4:hrNumber = m_pTex_Ally_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
+			case 5:hrNumber = m_pTex_Ally_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
+			case 6:hrNumber = m_pTex_Ally_Number[6]->Create(TEX_PASS("Numbers/number_6.png")); break;
+			case 7:hrNumber = m_pTex_Ally_Number[7]->Create(TEX_PASS("Numbers/number_7.png")); break;
+			case 8:hrNumber = m_pTex_Ally_Number[8]->Create(TEX_PASS("Numbers/number_8.png")); break;
+			case 9:hrNumber = m_pTex_Ally_Number[9]->Create(TEX_PASS("Numbers/number_9.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrNumber)) {
+				MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
+			}
 		}
 	}
 
-	//スーパースター初期化
-	HRESULT hrBoard;
-	for (int i = 0; i < 4; i++)
+	//フィーバーの初期化
 	{
-		switch (i)
+		HRESULT hrFeverStar;
+		for (int i = 0; i < 4; i++)
 		{
-		case 0:hrBoard = m_pTex_Ally_Count[0]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_3.png")); break;
-		case 1:hrBoard = m_pTex_Ally_Count[1]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_4.png")); break;
-		case 2:hrBoard = m_pTex_Ally_Count[2]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_3.png")); break;
-		case 3:hrBoard = m_pTex_Ally_Count[3]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_4.png")); break;
-		default:
-			break;
+			switch (i)
+			{
+			case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
+			case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
+			case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/UI11.png")); break;
+			case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/UI10.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrFeverStar)) {
+				MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
+			}
 		}
-		if (FAILED(hrBoard)) {
-			MessageBox(NULL, "Summon_Count_Board 画像", "Error", MB_OK);
+	}
+
+	//召喚数のボード初期化
+	{
+		HRESULT hrBoard;
+		for (int i = 0; i < 4; i++)
+		{
+			switch (i)
+			{
+			case 0:hrBoard = m_pTex_Ally_Count[0]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_3.png")); break;
+			case 1:hrBoard = m_pTex_Ally_Count[1]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_4.png")); break;
+			case 2:hrBoard = m_pTex_Ally_Count[2]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_3.png")); break;
+			case 3:hrBoard = m_pTex_Ally_Count[3]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_4.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrBoard)) {
+				MessageBox(NULL, "Summon_Count_Board 画像", "Error", MB_OK);
+			}
 		}
-	}	
+	}
 }
 
 ////=====FieldVertexのデストラクタ=====//
@@ -1068,7 +1083,152 @@ void CFieldVertex::SubtractFeverPoint()
 ////=====モデルの初期化をする関数=====//
 void CFieldVertex::InitTextureModel()
 {
+	//-----スプライトのメモリ確保-----//
+	{
+		m_pSprite_SuperStar_Number = new Sprite();
+		m_pSprite_Fever_Gage[0] = new Sprite();
+		m_pSprite_Fever_Gage[1] = new Sprite();
+		m_pSprite_Fever_Gage[2] = new Sprite();
+		m_pSprite_Fever_Gage[3] = new Sprite();
+		m_pSprite_Summon_Log = new Sprite();
+		m_pSprite_Ally_Count[0] = new Sprite();
+		m_pSprite_Ally_Count[1] = new Sprite();
+		m_pSprite_Ally_Count[2] = new Sprite();
+		m_pSprite_Ally_Count[3] = new Sprite();
+		for (int i = 0; i < 10; i++)
+		{
+			m_pSprite_Ally_Number[i] = new Sprite();
+		}
+	}
 
+	//-----テクスチャのメモリ確保-----//
+	{
+		m_pTex_Fever_Gage[0] = new Texture();
+		m_pTex_Fever_Gage[1] = new Texture();
+		m_pTex_Fever_Gage[2] = new Texture();
+		m_pTex_Fever_Gage[3] = new Texture();
+		m_pTex_Summon_Log[0] = new Texture();
+		m_pTex_Summon_Log[1] = new Texture();
+		m_pTex_Ally_Count[0] = new Texture();
+		m_pTex_Ally_Count[1] = new Texture();
+		m_pTex_Ally_Count[2] = new Texture();
+		m_pTex_Ally_Count[3] = new Texture();
+		for (int i = 0; i < 10; i++)
+		{
+			m_pTex_Ally_Number[i] = new Texture();
+		}
+		for (int i = 0; i < 6; i++)
+		{
+			m_pTex_SuperStar_Number[i] = new Texture();
+		}
+
+		m_pStarLine = new StarLine();
+
+		m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
+		m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
+		m_pStar_Model[2] = new CModelEx(MODEL_PASS("Board_Star/Red/Board_Star_Red.fbx"));
+	}
+
+	//召喚ログ初期化
+	{
+		HRESULT hrSummon_Log;
+		hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
+		if (FAILED(hrSummon_Log)) {
+			MessageBox(NULL, "Summon_Log_Triangular 画像", "Error", MB_OK);
+		}
+		hrSummon_Log = m_pTex_Summon_Log[1]->Create(TEX_PASS("Summon_Log/Log_Square.png"));
+		if (FAILED(hrSummon_Log)) {
+			MessageBox(NULL, "Summon_Log_Square 画像", "Error", MB_OK);
+		}
+	}
+
+	//スーパースターの個数の数字初期化
+	{
+		HRESULT hrSuperStar;
+		for (int i = 0; i < 6; i++)
+		{
+			switch (i)
+			{
+			case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
+			case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
+			case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
+			case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
+			case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
+			case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrSuperStar)) {
+				MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
+			}
+		}
+	}
+
+	//召喚数の数字の初期化
+	{
+		HRESULT hrNumber;
+		for (int i = 0; i < 10; i++)
+		{
+			switch (i)
+			{
+			case 0:hrNumber = m_pTex_Ally_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
+			case 1:hrNumber = m_pTex_Ally_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
+			case 2:hrNumber = m_pTex_Ally_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
+			case 3:hrNumber = m_pTex_Ally_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
+			case 4:hrNumber = m_pTex_Ally_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
+			case 5:hrNumber = m_pTex_Ally_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
+			case 6:hrNumber = m_pTex_Ally_Number[6]->Create(TEX_PASS("Numbers/number_6.png")); break;
+			case 7:hrNumber = m_pTex_Ally_Number[7]->Create(TEX_PASS("Numbers/number_7.png")); break;
+			case 8:hrNumber = m_pTex_Ally_Number[8]->Create(TEX_PASS("Numbers/number_8.png")); break;
+			case 9:hrNumber = m_pTex_Ally_Number[9]->Create(TEX_PASS("Numbers/number_9.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrNumber)) {
+				MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
+			}
+		}
+	}
+
+	//フィーバーの初期化
+	{
+		HRESULT hrFeverStar;
+		for (int i = 0; i < 4; i++)
+		{
+			switch (i)
+			{
+			case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
+			case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
+			case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/UI11.png")); break;
+			case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/UI10.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrFeverStar)) {
+				MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
+			}
+		}
+	}
+
+	//召喚数のボード初期化
+	{
+		HRESULT hrBoard;
+		for (int i = 0; i < 4; i++)
+		{
+			switch (i)
+			{
+			case 0:hrBoard = m_pTex_Ally_Count[0]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_3.png")); break;
+			case 1:hrBoard = m_pTex_Ally_Count[1]->Create(TEX_PASS("Summon_Count_Board/UI_Ally_4.png")); break;
+			case 2:hrBoard = m_pTex_Ally_Count[2]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_3.png")); break;
+			case 3:hrBoard = m_pTex_Ally_Count[3]->Create(TEX_PASS("Summon_Count_Board/UI_Enemy_4.png")); break;
+			default:
+				break;
+			}
+			if (FAILED(hrBoard)) {
+				MessageBox(NULL, "Summon_Count_Board 画像", "Error", MB_OK);
+			}
+		}
+	}
 }
 
 void CFieldVertex::InitSound()

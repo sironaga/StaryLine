@@ -65,7 +65,7 @@ void CEffectManager_sp::Draw(bool is3D)
 	{
 		if (is3D)
 		{
-			SetRender3D();
+			SetRender2D();
 			DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_tParam.pos.x, m_tParam.pos.y, m_tParam.pos.z);
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tParam.size.x, m_tParam.size.y, m_tParam.size.z);
 			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(m_tParam.rotate.x, m_tParam.rotate.y, m_tParam.rotate.z, 0.0f));
