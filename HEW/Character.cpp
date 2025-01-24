@@ -322,7 +322,7 @@ CFighter::CFighter(int InCornerCount)
 	, m_tAtkCollision{ 0.0f,0.0f }
 	, m_tPos{ 0.0f, 0.0f, 0.0f }
 	, m_tFirstPos{ 0.0f,0.0f,0.0f }
-	, m_tSize{ NORMAL_SIZE ,NORMAL_SIZE ,NORMAL_SIZE }
+	, m_tSize{ 0.0f,0.0f,0.0f }
 	, m_nCornerCount(InCornerCount)
 	, m_fHp(0.0f)
 	, m_fAtk(0.0f)
@@ -567,6 +567,10 @@ void CFighter::Damage(CFighter* pFighter)
 CAlly::CAlly(int InCornerCount)
 	:CFighter(InCornerCount)
 {
+	m_tSize.x = (float)MODEL_DEFAULTSIZE::Ally;
+	m_tSize.y = (float)MODEL_DEFAULTSIZE::Ally;
+	m_tSize.z = (float)MODEL_DEFAULTSIZE::Ally;
+
 	//初期ステータス決め
 	SettingStatus();
 	//Hpのポインタの作成
@@ -868,6 +872,10 @@ void CAlly::SettingStatus(void)
 CEnemy::CEnemy(int InCornerCount)
 	:CFighter(InCornerCount)
 {
+	m_tSize.x = (float)MODEL_DEFAULTSIZE::Enemy;
+	m_tSize.y = (float)MODEL_DEFAULTSIZE::Enemy;
+	m_tSize.z = (float)MODEL_DEFAULTSIZE::Enemy;
+
 	SettingStatus();
 	m_pHpGage = new CHpUI(m_fHp,CHpUI::Enemy);
 
@@ -1149,10 +1157,18 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
+		m_tSize.x = (float)MODEL_DEFAULTSIZE::Linie;
+		m_tSize.y = (float)MODEL_DEFAULTSIZE::Linie;
+		m_tSize.z = (float)MODEL_DEFAULTSIZE::Linie;
+
 		m_pModel = g_pLeaderModel[(int)Leader::Linie];
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
 		break;
 	case 1://ボス
+		m_tSize.x = (float)MODEL_DEFAULTSIZE::Boss;
+		m_tSize.y = (float)MODEL_DEFAULTSIZE::Boss;
+		m_tSize.z = (float)MODEL_DEFAULTSIZE::Boss;
+
 		m_pModel = g_pLeaderModel[1];
 		if (m_bSubModelCreate)
 		{

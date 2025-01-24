@@ -13,7 +13,14 @@
 
 #define MAX_ALLY  (200)	//味方情報の最大数
 //#define MAX_ENEMY (200)	//敵の最大数
-#define NORMAL_SIZE (10)//キャラクターの基本サイズ
+//#define NORMAL_SIZE (10)//キャラクターの基本サイズ
+enum class MODEL_DEFAULTSIZE
+{
+	Ally = 10,
+	Enemy = 10,
+	Linie = 10,
+	Boss = 10,
+};
 
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
