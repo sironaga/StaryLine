@@ -199,6 +199,22 @@ int COption::GetControllerSetting()
 	return  m_nValue[CONTROLLER];
 }
 
+WORD COption::GetTypeAB(int Type, WORD isTypeA)
+{
+	WORD out;
+	switch (Type)
+	{
+	case 0: out = isTypeA; break;
+	case 1:
+		if (isTypeA == XINPUT_GAMEPAD_A) out = XINPUT_GAMEPAD_B;
+		else if (isTypeA == XINPUT_GAMEPAD_B) out = XINPUT_GAMEPAD_A;
+		break;
+	default:
+		break;
+	}
+	return out;
+}
+
 void COption::InitResolusion()
 {
 	for (int i = 0; i < KINDMAX_OPTION; i++)
