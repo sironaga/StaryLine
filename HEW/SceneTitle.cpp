@@ -46,7 +46,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 	, m_nAnimCount(0), m_tCharaLogoTexPos{}
 	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
-	, m_pEffect(), m_pEffectDecision{}
+	, m_pEffect()
 	,m_bChange(false)
 {
 	g_Title_type = GAMESTART;
@@ -71,11 +71,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	m_pTitleEnd[1]		 = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
 	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/Sparkling.png", 5, 5, 3.0f);
 	m_pEffect[(int)Effect::Decision] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
-
-	for (int i = 0; i < 4; i++)
-	{
-		m_pEffectDecision[i] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
-	}
+	m_pEffect[(int)Effect::Choice] = new CEffectManager_sp("Assets/Effect/Sprite/Choice.png", 4, 11, 0.5f);
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -183,10 +179,6 @@ CSceneTitle::~CSceneTitle()
 	{
 		SAFE_DELETE(m_pEffect[i]);
 	}
-	for (int i = 0; i < 4; i++)
-	{
-		SAFE_DELETE(m_pEffectDecision[i]);
-	}
 }
 
 void CSceneTitle::Update()
@@ -194,10 +186,6 @@ void CSceneTitle::Update()
 	for (int i = 0; i < (int)Effect::Max; i++)
 	{
 		m_pEffect[i]->Update();
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		m_pEffectDecision[i]->Update();
 	}
 
 	g_pTitleBG->Update();
@@ -266,9 +254,9 @@ void CSceneTitle::Update()
 				g_Title_type = GAMECONTINUE;
 				m_SelectPos.y += SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN)|| IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
-				if (!m_pEffectDecision[0]->IsPlay())m_pEffectDecision[0]->Play(false);
+				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
 			}
 			break;
@@ -279,12 +267,12 @@ void CSceneTitle::Update()
 				g_Title_type = GAMEOPTION;
 				m_SelectPos.y += SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
+			else if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 			{
 				g_Title_type = GAMESTART;
 				m_SelectPos.y -= SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				//コンティニューシーンへ切り替える処理
 				m_bSelected = true;
@@ -299,18 +287,18 @@ void CSceneTitle::Update()
 					g_Title_type = GAMEEND;
 					m_SelectPos.y += SELECT_MOVE;
 				}
-				if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
+				else if (IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP))
 				{
 					g_Title_type = GAMECONTINUE;
 					m_SelectPos.y -= SELECT_MOVE;
 				}
-			}
-			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
-			{
-				m_bSelected = true;
-				//オプションへ切り替える処理
-				m_pOption->SetOption();
+				else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				{
+					m_bSelected = true;
+					//オプションへ切り替える処理
+					m_pOption->SetOption();
 
+				}
 			}
 			break;
 
@@ -320,7 +308,7 @@ void CSceneTitle::Update()
 				g_Title_type = GAMEOPTION;
 				m_SelectPos.y -= SELECT_MOVE;
 			}
-			if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				m_bSelected = true;
 				SetGameEnd();
@@ -545,10 +533,15 @@ void CSceneTitle::Draw()
 	m_pTitleFrame->Disp();
 	
 
-	m_pEffectDecision[0]->SetPos({ m_SelectPos.x - 205.0f,-m_SelectPos.y,0.0f });
-	m_pEffectDecision[0]->SetSize({ 100.0f,100.0f,100.0f });
-	m_pEffectDecision[0]->SetRotate({ 0.0f,0.0f,0.0f });
-	m_pEffectDecision[0]->Draw(false);
+	m_pEffect[(int)Effect::Decision]->SetPos({ m_SelectPos.x - 205.0f,-m_SelectPos.y,0.0f });
+	m_pEffect[(int)Effect::Decision]->SetSize({ 100.0f,100.0f,100.0f });
+	m_pEffect[(int)Effect::Decision]->SetRotate({ 0.0f,0.0f,0.0f });
+	m_pEffect[(int)Effect::Decision]->Draw(false);
+
+	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 205.0f,-m_SelectPos.y,0.0f });
+	m_pEffect[(int)Effect::Choice]->SetSize({ 100.0f,100.0f,100.0f });
+	m_pEffect[(int)Effect::Choice]->SetRotate({ 0.0f,0.0f,0.0f });
+	m_pEffect[(int)Effect::Choice]->Draw(false);
 
 	//Sprite::SetSize(m_pParam->size);
 	//Sprite::SetOffset(m_pParam->pos );
@@ -612,11 +605,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/Sparkling.png", 5, 5, 3.0f);
 	SAFE_DELETE(m_pEffect[(int)Effect::Decision]);
 	m_pEffect[(int)Effect::Decision] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
-	for (int i = 0; i < 4; i++)
-	{
-		SAFE_DELETE(m_pEffectDecision[i]);
-		m_pEffectDecision[i] = new CEffectManager_sp("Assets/Effect/Sprite/Decision.png", 4, 10, 0.5f);
-	}
+	SAFE_DELETE(m_pEffect[(int)Effect::Choice]);
+	m_pEffect[(int)Effect::Choice] = new CEffectManager_sp("Assets/Effect/Sprite/Choice.png", 4, 11, 0.5f);
 
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)

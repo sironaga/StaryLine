@@ -53,9 +53,9 @@ private:
 	{
 		Star = 0,
 		Decision,
+		Choice,
 
 		Max
 	};
 	CEffectManager_sp* m_pEffect[(int)Effect::Max];
-	CEffectManager_sp* m_pEffectDecision[10];
 };
