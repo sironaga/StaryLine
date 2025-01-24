@@ -25,6 +25,7 @@ CPause::CPause()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
+	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/kuro.png"));
 
 	m_pBackGround = new CBackGround();
 
@@ -39,6 +40,7 @@ CPause::CPause()
 	m_fPos[7] = {285.0f,530.0f,0.0f};
 	m_fPos[8] ={ 285.0f,530.0f,0.0f};
 	m_fPos[9] = { 290.0f,340.0f,0.0f };
+	m_fPos[10] = { SCREEN_WIDTH/2.0f,SCREEN_HEIGHT/2.0f,0.0f };
 
 	//サイズの初期化
 	m_fSize[0] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT, 0.0f };
@@ -51,6 +53,7 @@ CPause::CPause()
 	m_fSize[7] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[8] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[9] = { SCREEN_WIDTH * 0.304f,SCREEN_HEIGHT * 0.087f,0.0f };
+	m_fSize[10] = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };
 
 	
 		m_pSoundPause[0] = new CSoundList(SE_CANCEL);
@@ -315,8 +318,18 @@ void CPause::Update()
 
 void CPause::Draw()
 {
-	m_pBackGround->Draw();
+	//m_pBackGround->Draw();
+	Sprite::ReSetSprite();
 	SetRender2D();
+	//背景
+	m_pPauseTex[10]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pPauseTex[10]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pPauseTex[10]->SetTexture();
+	m_pPauseTex[10]->SetView(Get2DView());
+	m_pPauseTex[10]->SetProjection(Get2DProj());
+	m_pPauseTex[10]->SetPositon(m_fPos[10].X, m_fPos[10].Y, m_fPos[10].Z);
+	m_pPauseTex[10]->SetSize(m_fSize[10].X, m_fSize[10].Y, m_fSize[10].Z);
+	m_pPauseTex[10]->Disp();
 	//ポーズ
 	m_pPauseTex[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pPauseTex[0]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
