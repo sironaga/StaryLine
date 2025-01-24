@@ -347,6 +347,7 @@ CFighter::CFighter(int InCornerCount)
 	, IsAttackEffectPlay(false)
 	, IsDeathEffectPlay(false)
 	, m_tTargetPos()
+	, m_bMoveUp(false)
 {
 	//サウンドの設定
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
@@ -718,7 +719,7 @@ void CAlly::CreateUpdate(void)
 }
 //戦闘更新処理
 void CAlly::BattleUpdate(void)
- {
+{
 	//攻撃していたら
 	if (m_bIsAttack)
 	{
@@ -775,6 +776,14 @@ void CAlly::BattleUpdate(void)
 	//戦闘アニメーション(攻撃範囲内に敵がいたら)
 	
 	//移動アニメーション(移動していたら)
+	if (m_bMoveUp)
+	{
+		m_tPos.y += 1.0f;
+	}
+	else
+	{
+
+	}
 
 	//待機アニメーション(移動していなかったら)
 
@@ -1157,18 +1166,10 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
-		m_tSize.x = (float)MODEL_DEFAULTSIZE::Linie;
-		m_tSize.y = (float)MODEL_DEFAULTSIZE::Linie;
-		m_tSize.z = (float)MODEL_DEFAULTSIZE::Linie;
-
 		m_pModel = g_pLeaderModel[(int)Leader::Linie];
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
 		break;
 	case 1://ボス
-		m_tSize.x = (float)MODEL_DEFAULTSIZE::Boss;
-		m_tSize.y = (float)MODEL_DEFAULTSIZE::Boss;
-		m_tSize.z = (float)MODEL_DEFAULTSIZE::Boss;
-
 		m_pModel = g_pLeaderModel[1];
 		if (m_bSubModelCreate)
 		{
@@ -1305,13 +1306,23 @@ void CLeader::Draw(int StageNum)
 				ShaderList::SetMaterial(material);
 
 				// ボーンの情報をシェーダーに送る
-				DirectX::XMFLOAT4X4 bones[200];
+				//DirectX::XMFLOAT4X4 bones[200];
 
-				for (int i = 0; i < tMesh.bones.size(); ++i) {
-					DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
-						tMesh.bones[i].invOffset * m_pModel->GetBoneMatrix(tMesh.bones[i].nodeIndex)
+				//for (int i = 0; i < tMesh.bones.size(); ++i) {
+				//	DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+				//		tMesh.bones[i].invOffset * m_pModel->GetBoneMatrix(tMesh.bones[i].nodeIndex)
+				//	));
+				//}
+
+				DirectX::XMFLOAT4X4 bones[200];
+				for (int j = 0; j < tMesh.bones.size(); ++j)
+				{
+					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+						tMesh.bones[j].invOffset * m_pModel->GetBoneMatrix(tMesh.bones[j].nodeIndex)
 					));
+					ShaderList::SetBones(bones);
 				}
+
 
 				if (m_pModel) {
 					m_pModel->Draw(i);
