@@ -30,6 +30,7 @@ public:
 	void LogUpdate();//ログの更新処理
 
 	void Draw();//FieldVertexのメイン描画処理
+	void FeverDraw();//フィーバー時の描画用関数
 
 	DirectX::XMFLOAT3 GetVertexPos(int);//引数の頂点番号の座標を返す関数
 	bool GetRoadStop(int);//引数でもらった方向が進めるかどうかの情報を渡す関数
@@ -137,12 +138,14 @@ private:
 
 	Texture* m_pTex_SuperStar_Number[6];
 	Texture* m_pTex_Fever_Gage[4];
+	Texture* m_pTex_Fever_Player;
 	Texture* m_pTex_Summon_Log[2];
 	Texture* m_pTex_Ally_Count[4];
 	Texture* m_pTex_Ally_Number[10];
 
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[4];//フィーバースター
+	Sprite* m_pSprite_Fever_Player;//フィーバー時のプレイヤー表示
 	Sprite* m_pSprite_Summon_Log;//召喚ログ
 	Sprite* m_pSprite_Ally_Count[4];//召喚数
 	Sprite* m_pSprite_Ally_Number[10];//召喚Number

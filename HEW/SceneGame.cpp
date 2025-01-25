@@ -337,6 +337,7 @@ void CSceneGame::Draw()
 		m_bFever = false;
 	}
 	m_pEffect->Draw();
+	m_pFieldVertex->FeverDraw();
 }
 
 void SetFeverStellaTime(float time)
