@@ -90,11 +90,13 @@ CFieldVertex::CFieldVertex()
 	, m_pPlayer(nullptr)
 	, m_pTex_SuperStar_Number{ nullptr }
 	, m_pTex_Fever_Gage{ nullptr }
+	, m_pTex_Fever_Player(nullptr)
 	, m_pTex_Summon_Log{ nullptr }
 	, m_pTex_Ally_Number{ nullptr }
 	, m_pTex_Ally_Count{ nullptr }
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pSprite_Fever_Gage{ nullptr }
+	, m_pSprite_Fever_Player (nullptr)
 	, m_pSprite_Summon_Log(nullptr)
 	, m_pSprite_Ally_Number{ nullptr }
 	, m_pSprite_Ally_Count{ nullptr }
@@ -117,6 +119,7 @@ CFieldVertex::CFieldVertex()
 		m_pSprite_Fever_Gage[1] = new Sprite();
 		m_pSprite_Fever_Gage[2] = new Sprite();
 		m_pSprite_Fever_Gage[3] = new Sprite();
+		m_pSprite_Fever_Player = new Sprite();
 		m_pSprite_Summon_Log = new Sprite();
 		m_pSprite_Ally_Count[0] = new Sprite();
 		m_pSprite_Ally_Count[1] = new Sprite();
@@ -134,6 +137,7 @@ CFieldVertex::CFieldVertex()
 		m_pTex_Fever_Gage[1] = new Texture();
 		m_pTex_Fever_Gage[2] = new Texture();
 		m_pTex_Fever_Gage[3] = new Texture();
+		m_pTex_Fever_Player = new Texture();
 		m_pTex_Summon_Log[0] = new Texture();
 		m_pTex_Summon_Log[1] = new Texture();
 		m_pTex_Ally_Count[0] = new Texture();
@@ -306,6 +310,11 @@ CFieldVertex::CFieldVertex()
 				MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
 			}
 		}
+		HRESULT hrFeverPlayer;
+		hrFeverPlayer = m_pTex_Fever_Player->Create(TEX_PASS("Fever_Star/FieldVertex_Player_UI.png"));
+		if (FAILED(hrFeverStar)) {
+			MessageBox(NULL, "Fever_Player 画像", "Error", MB_OK);
+		}
 	}
 
 	//召喚数のボード初期化
@@ -349,6 +358,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_Fever_Gage[1]);
 	SAFE_DELETE(m_pTex_Fever_Gage[2]);
 	SAFE_DELETE(m_pTex_Fever_Gage[3]);
+	SAFE_DELETE(m_pTex_Fever_Player);
 	SAFE_DELETE(m_pTex_Summon_Log[0]);
 	SAFE_DELETE(m_pTex_Summon_Log[1]);
 	SAFE_DELETE(m_pTex_Ally_Count[0]);
@@ -371,6 +381,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pSprite_Fever_Gage[1]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[2]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[3]);
+	SAFE_DELETE(m_pSprite_Fever_Player);
 	SAFE_DELETE(m_pSprite_Summon_Log);
 	SAFE_DELETE(m_pSprite_Ally_Count[0]);
 	SAFE_DELETE(m_pSprite_Ally_Count[1]);
@@ -732,6 +743,23 @@ void CFieldVertex::Draw()
 		{
 			g_pLineEffects[i]->Update();
 			g_pLineEffects[i]->Draw();
+		}
+	}
+
+	
+}
+
+void CFieldVertex::FeverDraw()
+{
+	//-----フィーバープレイヤーの描画-----//
+	{
+		if (GetFeverMode())
+		{
+			DrawSetting({ 0.0f,0.0f,0.0f }, { 100.0f,100.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
+			m_pSprite_Fever_Player->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+			m_pSprite_Fever_Player->SetTexture(m_pTex_Fever_Player);//星形の背景のテクスチャ設定
+			m_pSprite_Fever_Player->Draw();//描画
+			m_pSprite_Fever_Player->ReSetSprite();//スプライトのリセット
 		}
 	}
 }
