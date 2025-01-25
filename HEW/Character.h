@@ -126,6 +126,7 @@ protected:
 public:
 	int m_nTargetNumber;			//標的の選別番号
 	bool m_bIsAttack;				//攻撃しているかどうか
+	bool m_bTypeAttack;				//攻撃対象の相性がいいかどうか
 	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
 protected:
 	Status m_tStatus;				//ステータス状態
