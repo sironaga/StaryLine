@@ -318,7 +318,7 @@ void ReLoadCharacterTexture(StageType StageType)
 }
 
 //キャラクターの基底クラスのコンストラクタ
-CFighter::CFighter(int InCornerCount)
+CFighter::CFighter(int InCornerCount, bool IsStellaBuff)
 	: m_tStatus(St_Create)
 	, m_tSearchCollision{ 0.0f,0.0f }
 	, m_tAtkCollision{ 0.0f,0.0f }
@@ -344,12 +344,13 @@ CFighter::CFighter(int InCornerCount)
 	, m_pModel(nullptr)
 	, m_tDestinationPos()
 	, m_bReLoadFlag(false)
-	, m_pEffect{nullptr}
+	, m_pEffect{ nullptr }
 	, IsCreateEffectPlay(false)
 	, IsAttackEffectPlay(false)
 	, IsDeathEffectPlay(false)
 	, m_tTargetPos()
 	, m_bMoveUp(false)
+	, m_bStellaBuff(IsStellaBuff)
 {
 	//サウンドの設定
 	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
@@ -567,8 +568,8 @@ void CFighter::Damage(CFighter* pFighter)
 //}
 
 //味方クラスのコンストラクタ
-CAlly::CAlly(int InCornerCount)
-	:CFighter(InCornerCount)
+CAlly::CAlly(int InCornerCount,bool IsStellaBuff)
+	:CFighter(InCornerCount, IsStellaBuff)
 {
 	m_tSize.x = (float)MODEL_DEFAULTSIZE::Ally;
 	m_tSize.y = (float)MODEL_DEFAULTSIZE::Ally;
@@ -595,8 +596,15 @@ CAlly::CAlly(int InCornerCount)
 		break;
 	}
 	m_pEffect[(int)FighterEffect::Create] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Create]);
-	m_pEffect[(int)FighterEffect::Aura] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Aura]);
 	m_pEffect[(int)FighterEffect::Death] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Death]);
+	if (m_bStellaBuff)
+	{
+		m_pEffect[(int)FighterEffect::Aura] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Aura]);
+	}
+	else
+	{
+		m_pEffect[(int)FighterEffect::Aura] = nullptr;
+	}
 
 }
 
@@ -609,12 +617,15 @@ CAlly::~CAlly()
 //味方クラスの更新処理
 void CAlly::Update(void)
 {
-	m_pEffect[(int)FighterEffect::Aura]->SetPos({ m_tPos.x,m_tPos.y,m_tPos.z });
-	if (!m_pEffect[(int)FighterEffect::Aura]->IsPlay())
+	if (m_pEffect[(int)FighterEffect::Aura])
 	{
-		m_pEffect[(int)FighterEffect::Aura]->SetRotate({ 0.0f,0.0f,0.0f });
-		m_pEffect[(int)FighterEffect::Aura]->SetSize({ 15.0f,10.0f,10.0f });
-		m_pEffect[(int)FighterEffect::Aura]->Play(true);
+		m_pEffect[(int)FighterEffect::Aura]->SetPos({ m_tPos.x,m_tPos.y,m_tPos.z });
+		if (!m_pEffect[(int)FighterEffect::Aura]->IsPlay())
+		{
+			m_pEffect[(int)FighterEffect::Aura]->SetRotate({ 0.0f,0.0f,0.0f });
+			m_pEffect[(int)FighterEffect::Aura]->SetSize({ 15.0f,10.0f,10.0f });
+			m_pEffect[(int)FighterEffect::Aura]->Play(true);
+		}
 	}
 
 	//モデルの再読み込みフラグが立っていたら読み込む
