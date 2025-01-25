@@ -168,6 +168,7 @@ CBattle::CBattle()
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
 		m_tAllyData[i].nCornerCount = -1;
+		m_tAllyData[i].bStellaBuff = false;
 	}
 	//“Gƒf[ƒ^‚Ì‰Šú‰»
 	//for (int l = 0; l < MAX_PATTERN; l++)
@@ -628,9 +629,17 @@ void CBattle::CreateAlly(void)
 		//¢Š«‘”‚ð‰ÁŽZ
 		m_nSummonAllyCount++;
 		//¶¬‚ÉŽg—p‚µ‚½‚½‚ßî•ñ‚ðÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ð‘O‹l‚ß‚É‚·‚é
-		for (int i = 0; i + 1 < m_pAlly.size(); i++)
+		for (int i = 0; i + 1 <= m_nAllyDateCount; i++)
 		{
-			m_tAllyData[i] = m_tAllyData[i + 1];
+			if (i + 1 == m_nAllyDateCount)
+			{
+				m_tAllyData[i].nCornerCount = -1;
+				m_tAllyData[i].bStellaBuff = false;
+			}
+			else
+			{
+				m_tAllyData[i] = m_tAllyData[i + 1];
+			}
 		}
 		//•Û‘¶Ï‚Ý‚Ì‘”‚ðŒ¸‚ç‚·
 		m_nAllyDateCount--;
