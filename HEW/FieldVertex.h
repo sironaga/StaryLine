@@ -87,7 +87,7 @@ private:
 private:
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite);
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize ,DirectX::XMFLOAT3 InAngle, Sprite* InSprite);
 	void DrawStarModel(int color, int Vertex);//色と頂点番号を使って描画
 
 private:
@@ -126,6 +126,10 @@ private:
 	
 	DirectX::XMFLOAT3 PlayerPos;//プレイヤーの位置保存
 	bool RoadStop;//プレイヤーの行ける方向
+
+	DirectX::XMFLOAT3 Fever_Draw_Angle;//フィーバー時の回転させるための値保存用
+	float Fever_Draw_Angle_Count;//フィーバーの描画UIを何回転させるか
+	//float
 
 	CBattle* m_pBattle;//バトルクラスのポインター
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター

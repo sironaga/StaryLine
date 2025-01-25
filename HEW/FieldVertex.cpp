@@ -44,6 +44,9 @@
 #define BOARD_SIZE_X (20.0f)
 #define BOARD_SIZE_Y (20.0f)
 
+#define FEVER_DRAW_ANGLE_TIME (1.0f)//フィーバーの描画UIを何秒で1回転させるか
+#define FEVER_DRAW_ANGLE_COUNT (2.0f)//フィーバーの描画UIを何回転させるか
+
 Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//線の四頂点座標保存用
 IXAudio2SourceVoice* g_FieldSe;//FieldVertexのサウンド音量
 CSoundList* g_Fieldsound;//FieldVertexのサウンドポインター
@@ -77,6 +80,8 @@ CFieldVertex::CFieldVertex()
 	, nFeverPoint(0)
 	, fFeverPoint(0.0f)
 	, Partition(MAX_FEVER_POINT)
+	, Fever_Draw_Angle{}
+	, Fever_Draw_Angle_Count (FEVER_DRAW_ANGLE_COUNT)
 	, Ally_Count(0)
 	, NowLine(0)
 	, PlayerPos{}
@@ -337,7 +342,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(g_pLineEffects_Sprite);
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
-		SAFE_DELETE(g_pLineEffects[i]);
+		g_pLineEffects[i] = nullptr;
 	}
 
 	SAFE_DELETE(m_pTex_Fever_Gage[0]);
@@ -529,57 +534,6 @@ void CFieldVertex::Draw()
 			        0.0f
 		    });
 			m_pStarLine->DispLine();//線の描画
-
-			//m_pSprite_Line[i]->SetCenterPosAndRotation(
-			//	{
-			//		vtx_FieldLine[i][1].pos[0],
-			//		vtx_FieldLine[i][1].pos[1],
-			//		0.0f
-			//	},
-			//{
-			//	vtx_FieldLine[i][3].pos[0],
-			//	vtx_FieldLine[i][3].pos[1],
-			//	0.0f
-			//},
-			//	{ vtx_FieldLine[i][0].pos[0],
-			//		vtx_FieldLine[i][0].pos[1],
-			//		0.0f
-			//	},
-			//{
-			//	vtx_FieldLine[i][2].pos[0],
-			//	vtx_FieldLine[i][2].pos[1],
-			//	0.0f
-			//}
-			//);
-			//if (i == NowLine && !m_pPlayer->GetCanMove())
-			//{
-			//	m_pSprite_Line[i]->SetCenterPosAndRotation(
-			//		{
-			//			vtx_FieldLine[i - 1][1].pos[0],
-			//			vtx_FieldLine[i - 1][1].pos[1],
-			//			0.0f
-			//		},
-			//		{
-			//			vtx_FieldLine[i - 1][3].pos[0],
-			//			vtx_FieldLine[i - 1][3].pos[1],
-			//			0.0f
-			//		},
-			//		{
-			//			vtx_FieldLine[i - 1][0].pos[0],
-			//			vtx_FieldLine[i - 1][0].pos[1],
-			//			0.0f
-			//		},
-			//		{
-			//			vtx_FieldLine[i - 1][2].pos[0],
-			//			vtx_FieldLine[i - 1][2].pos[1],
-			//			0.0f
-			//		});
-			//}
-			////背景色の設定
-			//m_pSprite_Line[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-			////その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			//m_pSprite_Line[i]->SetTexture(m_pTex_FieldLine);
-			//m_pSprite_Line[i]->Draw();
 		}
 	}
 
@@ -600,19 +554,11 @@ void CFieldVertex::Draw()
 
 	SetRender2D();//2D描画準備
 
-	//-----召喚数表示-----//
-	{
-		if (Ally_Count % 10 == 0)
-		{
-			
-		}
-	}
-
 	//-----召喚ログ-----//
 	{
 		for (int i = 0; i < NowSummonLog; i++)
 		{
-			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, m_pSprite_Summon_Log);//座標と大きさの設定
+			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, {0.0f,0.0f,0.0f},m_pSprite_Summon_Log);//座標と大きさの設定
 			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//色と透明度の設定
 			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
 			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//四角形のテクスチャ設定ログ
@@ -633,17 +579,34 @@ void CFieldVertex::Draw()
 	//-----フィーバーゲージ描画-----//
 	{
 		//フィーバー背景//
+		if (GetFeverMode())
+		{
+			Fever_Draw_Angle.y += (360.0f / (60.0f * FEVER_DRAW_ANGLE_TIME));//1.0f秒で１回転
+			if (Fever_Draw_Angle.y >= 360.0f)
+			{
+				Fever_Draw_Angle.y = 0.0f;
+				Fever_Draw_Angle_Count++;
+			}
+			if (Fever_Draw_Angle_Count >= FEVER_DRAW_ANGLE_COUNT)
+			{
+				Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+			}
+		}
+		else
+		{
+			Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+		}
 		float Fever_Gage_Size = 50.0f;
 		if (GetFeverMode())//フィーバータイムの時、後の背景出現
 		{
-			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
+			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
 			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
 			m_pSprite_Fever_Gage[2]->Draw();//描画
 			m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
 		}
 
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[0]->Draw();//描画
@@ -652,7 +615,7 @@ void CFieldVertex::Draw()
 
 		if (!GetFeverMode())fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
 		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });//UVの座標設定
 		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UVの大きさ設定
 		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
@@ -660,7 +623,7 @@ void CFieldVertex::Draw()
 		m_pSprite_Fever_Gage[1]->Draw();//描画
 		m_pSprite_Fever_Gage[1]->ReSetSprite();//スプライトのリセット
 
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[3]->Draw();//描画
@@ -673,13 +636,13 @@ void CFieldVertex::Draw()
 		{
 			switch (i)
 			{
-			case 0:DrawSetting({ -107.0f, 52.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+			case 0:DrawSetting({ -107.0f, 52.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
 				break;
-			case 1:DrawSetting({ -107.0f, 78.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+			case 1:DrawSetting({ -107.0f, 78.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
 				break;
-			case 2:DrawSetting({ 107.0f, 55.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+			case 2:DrawSetting({ 107.0f, 55.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
 				break;
-			case 3:DrawSetting({ 107.0f, 75.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+			case 3:DrawSetting({ 107.0f, 75.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
 				break;
 			default:
 				break;
@@ -711,17 +674,17 @@ void CFieldVertex::Draw()
 			if (i == 2)M *= M;
 			if (Ally_Enemy_Count[i] / 100 >= 1)
 			{
-				DrawSetting({ 107.0f * M - 4.0f, Pos_Y[i],10.0f}, {10.0f,10.0f,1.0f}, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				DrawSetting({ 107.0f * M - 4.0f, Pos_Y[i],10.0f}, {10.0f,10.0f,1.0f}, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
 				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 100]);//星形の背景のテクスチャ設定
 				m_pSprite_Ally_Number[i]->Draw();//描画
 
-				DrawSetting({ 107.0f * M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				DrawSetting({ 107.0f * M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
 				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[(Ally_Enemy_Count[i] % 100) / 10]);//星形の背景のテクスチャ設定
 				m_pSprite_Ally_Number[i]->Draw();//描画
 
-				DrawSetting({ 107.0f * M + 3.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				DrawSetting({ 107.0f * M + 3.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
 				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
 				m_pSprite_Ally_Number[i]->Draw();//描画
@@ -730,19 +693,19 @@ void CFieldVertex::Draw()
 			{
 				if (Ally_Enemy_Count[i] / 10 >= 1)
 				{
-					DrawSetting({ 107.0f * M - 2.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					DrawSetting({ 107.0f * M - 2.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
 					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 10]);//星形の背景のテクスチャ設定
 					m_pSprite_Ally_Number[i]->Draw();//描画
 
-					DrawSetting({ 107.0f * M + 2.0f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					DrawSetting({ 107.0f * M + 2.0f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
 					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
 					m_pSprite_Ally_Number[i]->Draw();//描画
 				}
 				else
 				{
-					DrawSetting({ 107.0f * M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					DrawSetting({ 107.0f * M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
 					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
 					m_pSprite_Ally_Number[i]->Draw();//描画
@@ -1069,6 +1032,9 @@ void CFieldVertex::InitFieldVertex()
 		StartVertex = GoalVertex;//始点を今の地点に初期化
 		NowShapes = 0;//格納した図形の数初期化
 		Effect_NowShapes = 0;
+
+		Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+		Fever_Draw_Angle_Count = 0.0f;
 
 		Fill(OrderVertex, -1);//配列-1で初期化
 		Fill(Shapes_Size, -1);
@@ -1681,16 +1647,18 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 }
 
 ////=====描画時の座標と大きさをセットする関数=====//
-void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* InSprite)
+void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InAngle, Sprite* InSprite)
 {
 	//移動行列(Translation)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(InPos.x,InPos.y,InPos.z,0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(InPos.x,InPos.y,InPos.z);
 	//回転行列
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(0.0f,0.0f,0.0f,0.0f));
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(InAngle.x));
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(InAngle.y));
+	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(InAngle.z));
 	//拡大縮小行列
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
 
-	DirectX::XMMATRIX mat = S * R * T;//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T;//それぞれの行列を掛け合わせて格納
 
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
