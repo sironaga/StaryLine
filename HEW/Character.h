@@ -24,6 +24,7 @@ enum class MODEL_DEFAULTSIZE
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
+void ReLoadSound();//音の再読み込み
 
 //ステータス情報
 enum Status
@@ -154,6 +155,7 @@ protected:
 
 protected:
 	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
+	
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;
 

@@ -92,6 +92,10 @@ Texture* g_pHpGageTex[(int)HpTexture::MAX];
 //CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
 //攻撃音
 CSoundList* g_AttackSound;
+CSoundList* g_SummonSound;
+CSoundList* g_wandonoffSound;
+IXAudio2SourceVoice* g_pSourceSummon;//スピーカー
+IXAudio2SourceVoice* g_pSourceWandonoff;//スピーカー
 
 //事前読み込み用関数
 void InitCharacterTexture(StageType StageType)
@@ -278,6 +282,12 @@ void InitCharacterTexture(StageType StageType)
 	/*サウンドの読み込み*/
 	g_AttackSound = new CSoundList(SE_ATTACK);
 	g_AttackSound->SetMasterVolume();
+	g_SummonSound = new CSoundList(SE_SUMMON);
+	g_SummonSound->SetMasterVolume();
+	g_pSourceSummon = g_SummonSound->GetSound(false);
+	g_wandonoffSound = new CSoundList(SE_WANDONOFF);
+	g_wandonoffSound->SetMasterVolume();
+	g_pSourceWandonoff = g_wandonoffSound->GetSound(false);
 	/*エフェクトの読み込み*/
 	//g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("SwordAtk.efkefc"));
 	////g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager(EFFECT_PASS("fire.efk"));
@@ -307,6 +317,8 @@ void UnInitCharacterTexture()
 	for (int i = 0; i < (int)HpTexture::MAX; i++)SAFE_DELETE(g_pHpGageTex[i]);
 	//サウンドの破棄
 	SAFE_DELETE(g_AttackSound);
+	SAFE_DELETE(g_SummonSound);
+	SAFE_DELETE(g_wandonoffSound);
 	//エフェクトの破棄
 	for (int i = 0; i < (int)CharactersEffect::MAX; i++)SAFE_DELETE(g_pCharacterEffects[i]);
 }
@@ -315,6 +327,22 @@ void ReLoadCharacterTexture(StageType StageType)
 {
 	UnInitCharacterTexture();
 	InitCharacterTexture(StageType);
+}
+
+void ReLoadSound()
+{
+	SAFE_DELETE(g_AttackSound);
+	SAFE_DELETE(g_SummonSound);
+	SAFE_DELETE(g_wandonoffSound);
+	/*サウンドの読み込み*/
+	g_AttackSound = new CSoundList(SE_ATTACK);
+	g_AttackSound->SetMasterVolume();
+	g_SummonSound = new CSoundList(SE_SUMMON);
+	g_SummonSound->SetMasterVolume();
+	g_pSourceSummon = g_SummonSound->GetSound(false);
+	g_wandonoffSound = new CSoundList(SE_WANDONOFF);
+	g_wandonoffSound->SetMasterVolume();
+	g_pSourceWandonoff = g_wandonoffSound->GetSound(false);
 }
 
 //キャラクターの基底クラスのコンストラクタ
@@ -732,6 +760,12 @@ void CAlly::CreateUpdate(void)
 		m_pEffect[(int)FighterEffect::Create]->SetSize({ 15.0f,15.0f,15.0f });
 		m_pEffect[(int)FighterEffect::Create]->SetRotate({ 0.0f,0.0f,0.0f });
 		m_pEffect[(int)FighterEffect::Create]->Play();
+		g_pSourceSummon->FlushSourceBuffers();
+		XAUDIO2_BUFFER buffer;
+		buffer = g_SummonSound->GetBuffer(false);
+		g_pSourceSummon->SubmitSourceBuffer(&buffer);
+		SetVolumeSE(g_pSourceSummon);
+		g_pSourceSummon->Start();
 		IsCreateEffectPlay = true;
 	}
 	//生成アニメーションが終わったら
@@ -854,9 +888,9 @@ void CAlly::SettingStatus(void)
 	{
 	default:
 		//体力
-		m_fHp = 50.0f;
+		m_fHp = 2500.0f;
 		//攻撃力
-		m_fAtk = 1.0f;
+		m_fAtk = 150.0f;
 		//攻撃アニメーションの時間
 		m_fAtkAnimationMaxTime = 0.0f;
 		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
@@ -873,9 +907,9 @@ void CAlly::SettingStatus(void)
 	/*三角形*/
 	case Triangle:
 		//体力
-		m_fHp = 50.0f;
+		m_fHp = 2500.0f;
 		//攻撃力
-		m_fAtk = 3.0f;
+		m_fAtk = 150.0f;
 		//攻撃アニメーションの時間
 		m_fAtkAnimationMaxTime = 0.0f;
 		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
@@ -892,9 +926,9 @@ void CAlly::SettingStatus(void)
 	/*四角形*/
 	case Square:
 		//体力
-		m_fHp = 50.0f;
+		m_fHp = 2500.0f;
 		//攻撃力
-		m_fAtk = 3.0f;
+		m_fAtk = 150.0f;
 		//攻撃アニメーションの時間
 		m_fAtkAnimationMaxTime = 0.0f;
 		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
@@ -1160,8 +1194,8 @@ void CEnemy::SettingStatus(void)
 	switch (m_nCornerCount)
 	{
 	default:
-		m_fHp = 50.0f;
-		m_fAtk = 3.0f;
+		m_fHp = 2500.0f;
+		m_fAtk = 150.0f;
 		m_fAtkAnimationMaxTime = 0.0f;
 		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
@@ -1170,8 +1204,8 @@ void CEnemy::SettingStatus(void)
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Triangle:
-		m_fHp = 50.0f;
-		m_fAtk = 3.0f;
+		m_fHp = 2500.0f;
+		m_fAtk = 150.0f;
 		m_fAtkAnimationMaxTime = 0.0f;
 		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
@@ -1180,8 +1214,8 @@ void CEnemy::SettingStatus(void)
 		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);	//キャラクターの中心からの横の索敵当たり判定
 		break;
 	case Square:
-		m_fHp = 50.0f;
-		m_fAtk = 3.0f;
+		m_fHp = 2500.0f;
+		m_fAtk = 150.0f;
 		m_fAtkAnimationMaxTime = 0.0f;
 		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
@@ -1200,7 +1234,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	, m_pSubModel(nullptr)
 	, m_tSubPos()
 	, m_tSubSize()
-	, m_fHp(300.0f)
+	, m_fHp(15000.0f)
 	, m_fMaxHp(m_fHp)
 	, m_nTextureNumber(InTextureNumber)
 	, m_pHpGage(nullptr)
@@ -1567,11 +1601,18 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 			{
 				m_pModel->Step(-0.01f);
 			}
-			else if(!m_bAnimationPlay)
+			else if (!m_bAnimationPlay)
 			{
+				g_pSourceWandonoff->Stop();
 				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 				m_pModel->PlayAnime(g_pLeader_Anima, false);
 				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
+				g_pSourceWandonoff->FlushSourceBuffers();
+				XAUDIO2_BUFFER buffer;
+				buffer = g_wandonoffSound->GetBuffer(false);
+				g_pSourceWandonoff->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(g_pSourceWandonoff);
+				g_pSourceWandonoff->Start();
 				m_bAnimationPlay = true;
 			}
 		}
@@ -1584,9 +1625,16 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 			}
 			else if(!m_bAnimationPlay)
 			{
+				g_pSourceWandonoff->Stop();
 				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 				m_pModel->PlayAnime(g_pLeader_Anima, false);
 				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+				g_pSourceWandonoff->FlushSourceBuffers();
+				XAUDIO2_BUFFER buffer;
+				buffer = g_wandonoffSound->GetBuffer(false);
+				g_pSourceWandonoff->SubmitSourceBuffer(&buffer);
+				SetVolumeSE(g_pSourceWandonoff);
+				g_pSourceWandonoff->Start();
 				m_bAnimationPlay = true;
 			}
 		}
