@@ -13,6 +13,7 @@ CPause::CPause()
 ,m_bReturn(false)
 ,m_pOption(nullptr)
 ,m_ftime(0.0f)
+,m_bClose(false)
 
 {
 	//テクスチャの読み込み
@@ -28,7 +29,6 @@ CPause::CPause()
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
 	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/kuro.png"));
 
-	m_pBackGround = new CBackGround();
 
 	//ポジションの初期化
 	m_fPos[0] ={-285.0f,SCREEN_HEIGHT/2.0f,0.0f};
@@ -76,10 +76,7 @@ CPause::~CPause()
 	{
 		m_pOption=nullptr;
 	}
-	if (m_pBackGround)
-	{
-		SAFE_DELETE(m_pBackGround);
-	}
+	
 }
 
 void CPause::Update()
@@ -96,7 +93,7 @@ void CPause::Update()
 	}
 	if (!m_bPause) return;
 
-	if (m_bPause)
+	if (m_bPause && !m_bClose)
 	{
 		
 		// 毎フレーム判定 
@@ -111,9 +108,9 @@ void CPause::Update()
 		}
 			for (int i = 0; i < 9; i++)
 			{
-				m_fPos[i].X = OutEasing(t, 0.0f, 285.0f+ 3000.0f, 1.0f)-300.0f;
+				m_fPos[i].X = OutEasing(t, 0.0f, 285.0f+ 2800.0f, 1.0f)-300.0f;
 			}
-			m_fPos[9].X =	 OutEasing(t, 0.0f, 290.0f+  3000.0f, 1.0f) - 300.0f;
+			m_fPos[9].X =	 OutEasing(t, 0.0f, 290.0f+ 2800.0f, 1.0f) - 300.0f;
 
 	}
 	//バー選択
@@ -251,8 +248,8 @@ void CPause::Update()
 				m_bRetry = true;
 				break;
 			case SEC_RETURN:
-				m_bPause = false;
-				//m_bReturn = true;
+				m_bClose = true;
+				m_ftime = 0.1f;
 				break;
 			case SEC_STAGESELECT:
 				m_bPause = false;
@@ -270,7 +267,6 @@ void CPause::Update()
 		switch (section)
 		{
 		case SEC_OPTION:
-			m_pBackGround->Update();
 			m_pOption->Update();
 			for (int i = 0; i < 3; i++)
 			{
@@ -336,6 +332,28 @@ void CPause::Update()
 			InitResolusionMain();
 			break;
 		}
+	}
+	//ゲームに戻る戻るとき
+	if (m_bPause && m_bClose)
+	{
+		// 毎フレーム判定 
+		if (m_ftime > 0.0f) {
+			m_ftime -= 1.0f / 60.0f;
+			if (m_ftime < 0.0f)
+			{
+				m_ftime = 0.0f;
+			}
+		}
+		else
+		{
+			m_bPause = false;
+			m_bClose = false;
+		}
+		for (int i = 0; i < 9; i++)
+		{
+			m_fPos[i].X = OutEasing(m_ftime, 0.0f, 285.0f + 2800.0f, 1.0f) - 300.0f;
+		}
+		m_fPos[9].X = OutEasing(m_ftime, 0.0f, 290.0f + 2800.0f, 1.0f) - 300.0f;
 	}
 }
 
@@ -464,6 +482,7 @@ void CPause::Draw()
 	m_pPauseTex[9]->SetPositon(m_fPos[9].X, m_fPos[9].Y, m_fPos[9].Z);
 	m_pPauseTex[9]->SetSize(m_fSize[9].X, m_fSize[9].Y, m_fSize[9].Z);
 	m_pPauseTex[9]->Disp();
+	//オプション画面
 	if (m_pOption->GetOption())
 	{
 		m_pOption->Draw();
@@ -517,10 +536,6 @@ void CPause::InitReload()
 	{
 		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
 	}
-	if (m_pBackGround)
-	{
-		SAFE_DELETE(m_pBackGround);
-	}
 
 	//テクスチャの読み込み
 	m_pPauseTex[0] = new SpriteEx(TEX_PASS("Pause/Pause_.png"));
@@ -533,8 +548,6 @@ void CPause::InitReload()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
-
-	m_pBackGround = new CBackGround();
 
 	m_pSoundPause[0] = new CSoundList(SE_CANCEL);
 	m_pSoundPause[1] = new CSoundList(SE_DECISION);

@@ -34,6 +34,7 @@ public:
 	//textureの再読み込み
 	void InitReload();
 private:
+	//大項目
 	enum SECTION_KIND
 	{
 		SEC_OPTION,
@@ -43,20 +44,21 @@ private:
 
 	};
 private:
-	SpriteEx* m_pPauseTex[11];
-	COption* m_pOption;
-	CBackGround* m_pBackGround;
-	CSoundList* m_pSoundPause[3];
-	IXAudio2SourceVoice* m_pSoundPauseSE[3];
-	bool m_bPause;
-	bool m_bOption;
-	bool m_bRetry;
-	bool m_bSelect;
-	bool m_bReturn;
+	SpriteEx* m_pPauseTex[11];//texture情報
+	COption* m_pOption;//オプション
+	CSoundList* m_pSoundPause[3];//音データ
+	IXAudio2SourceVoice* m_pSoundPauseSE[3];//スピーカー
+	bool m_bPause;//ポーズ画面判定
+	bool m_bOption;//オプション画面判定
+	bool m_bRetry;//リトライ判定
+	bool m_bSelect;//ステータス選択判定
+	bool m_bReturn;//ゲームに戻る判定
+	bool m_bClose;//画面を閉じる
 
-	FLOAT3 m_fPos[11];
-	FLOAT3 m_fSize[11];
-	float m_ftime;
+	FLOAT3 m_fPos[11];//ポジション
+	FLOAT3 m_fSize[11];//サイズ
+	float m_ftime;//計算用
+	//画面のサイズ
 	enum
 	{
 		SCREEN_800,

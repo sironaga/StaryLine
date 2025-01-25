@@ -16,8 +16,15 @@ enum NAME
 	,SE_COMPLETE
 	//各星に着いた時SE
 	,SE_ARRIVAL
-	//攻撃音
-	,SE_ATTACK
+	//攻撃音(通常)
+	, SE_ATTACK
+	//,SE_NORMALATTACK
+	//攻撃音(弱点)
+	, SE_WEAKNESSATTACK
+	//筆の出し入れ
+	,SE_WANDONOFF
+	//召喚
+	, SE_SUMMON
 	//タイトルBGM
 	,BGM_TITLE
 	//バトルBGM

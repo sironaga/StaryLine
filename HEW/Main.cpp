@@ -36,10 +36,8 @@ CStageSelect* g_pSceneSelect;
 Camera* g_Camera;
 CameraDebug* g_pDebugCamera;
 CCameraEvent* g_pEventCamera;
-IXAudio2SourceVoice* g_pSourseTitleSE;
 RenderTarget* pRTV;
 DepthStencil* pDSV;
-CSoundList* g_mainsound;
 bool IsGame = true;
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
@@ -90,8 +88,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pScene->SetGameDirection(g_pDirection);
 	g_nEvent = NOMAL_CAMERA;
 
-	g_mainsound = new CSoundList(SE_DECISION);
-	g_pSourseTitleSE = g_mainsound->GetSound(false);
+	
 	
 	g_pPause = new CPause();
 	g_pPause->SetOption(g_pOption);
@@ -114,8 +111,7 @@ void Uninit()
 	UninitInput();
 
 	
-	SAFE_DELETE(g_mainsound);
-	g_pSourseTitleSE = nullptr;
+	
 	LibEffekseer::Uninit();
 	Sprite::Uninit();
 	Geometory::Uninit();
@@ -175,13 +171,7 @@ void Update()
 		case STAGE_SELECT: 
 			g_pScene = new CStageSelect(); 
 			g_hWnd = g_pScene->GethWnd();
-			g_mainsound->SetMasterVolume();
-			g_pSourseTitleSE->FlushSourceBuffers();
-			XAUDIO2_BUFFER buffer;
-			buffer = g_mainsound->GetBuffer(false);
-			g_pSourseTitleSE->SubmitSourceBuffer(&buffer);
-			if (g_pSourseTitleSE)SetVolumeSE(g_pSourseTitleSE);
-			g_pSourseTitleSE->Start();
+			
 			break;
 		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
@@ -436,10 +426,6 @@ void InitResolusionMain()
 	g_pFade = new CFadeBlack();
 	SAFE_DELETE(g_pDirection);
 	g_pDirection = new CStartDirection();
-	SAFE_DELETE(g_mainsound);
-	g_mainsound = new CSoundList(SE_DECISION);
-	g_mainsound->SetMasterVolume();
-	g_pSourseTitleSE = g_mainsound->GetSound(false);
 	SAFE_DELETE(g_pPause);
 	g_pPause = new CPause();
 	g_pPause->SetOption(g_pOption);
