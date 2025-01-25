@@ -269,6 +269,14 @@ void CBattle::Update(void)
 								{
 									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğtrue‚É‚·‚é
 									m_pAlly[i]->m_bIsAttack = true;
+									if (m_pAlly[i]->GetCornerCount() == m_pEnemy[l]->GetCornerCount())
+									{
+										m_pAlly[i]->m_bTypeAttack = true;
+									}
+									else
+									{
+										m_pAlly[i]->m_bTypeAttack = false;
+									}
 									//UŒ‚ˆ—
 									Battle(i, l, Enemy);
 									break;
@@ -290,6 +298,8 @@ void CBattle::Update(void)
 								{
 									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğtrue‚É‚·‚é
 									m_pAlly[i]->m_bIsAttack = true;
+									m_pAlly[i]->m_bTypeAttack = true;
+
 									//UŒ‚ˆ—
 									Battle(i, -1, EnemyLeader);
 								}
@@ -329,6 +339,15 @@ void CBattle::Update(void)
 								{
 									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğtrue‚É‚·‚é
 									m_pEnemy[i]->m_bIsAttack = true;
+									if (m_pEnemy[i]->GetCornerCount() == m_pAlly[l]->GetCornerCount())
+									{
+										m_pEnemy[i]->m_bTypeAttack = true;
+									}
+									else
+									{
+										m_pEnemy[i]->m_bTypeAttack = false;
+									}
+
 									//UŒ‚ˆ—
 									Battle(i, l, Ally);
 
@@ -351,6 +370,8 @@ void CBattle::Update(void)
 								{
 									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’è‚ğtrue‚É‚·‚é
 									m_pEnemy[i]->m_bIsAttack = true;
+									m_pEnemy[i]->m_bTypeAttack = false;
+
 									//UŒ‚ˆ—
 									Battle(i, -1, AllyLeader);
 								}
