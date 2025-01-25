@@ -5,7 +5,7 @@
 float InEasing(float Time, float StartValue, float ValueDifference, float Tween)
 {
 	Time /= Tween;
-	return ValueDifference * Time * Time + Tween;
+	return ValueDifference * Time * Time + StartValue;
 }
 
 float OutEasing(float Time, float StartValue, float ValueDifference, float Tween)
