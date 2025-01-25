@@ -868,11 +868,11 @@ void CAlly::SettingStatus(void)
 		//体力
 		m_fHp = 50.0f;
 		//攻撃力
-		m_fAtk = 1.0f;
+		m_fAtk = 3.0f;
 		//攻撃アニメーションの時間
 		m_fAtkAnimationMaxTime = 0.0f;
 		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
 		//キャラクターの中心からの縦の攻撃当たり判定
@@ -887,11 +887,11 @@ void CAlly::SettingStatus(void)
 		//体力
 		m_fHp = 50.0f;
 		//攻撃力
-		m_fAtk = 1.0f;
+		m_fAtk = 3.0f;
 		//攻撃アニメーションの時間
 		m_fAtkAnimationMaxTime = 0.0f;
 		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
 		//キャラクターの中心からの縦の攻撃当たり判定
@@ -1147,9 +1147,9 @@ void CEnemy::SettingStatus(void)
 	{
 	default:
 		m_fHp = 50.0f;
-		m_fAtk = 1.0f;
+		m_fAtk = 3.0f;
 		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
@@ -1157,9 +1157,9 @@ void CEnemy::SettingStatus(void)
 		break;
 	case Triangle:
 		m_fHp = 50.0f;
-		m_fAtk = 1.0f;
+		m_fAtk = 3.0f;
 		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
@@ -1167,9 +1167,9 @@ void CEnemy::SettingStatus(void)
 		break;
 	case Square:
 		m_fHp = 50.0f;
-		m_fAtk = 1.0f;
+		m_fAtk = 3.0f;
 		m_fAtkAnimationMaxTime = 0.0f;
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
+		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
 		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);			//キャラクターの中心からの横の攻撃当たり判定
 		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);			//キャラクターの中心からの縦の攻撃当たり判定
 		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);		//キャラクターの中心からの横の索敵当たり判定
