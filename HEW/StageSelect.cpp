@@ -268,8 +268,14 @@ void CStageSelect::Update()
 					posX[0] = 0.0f;
 					posX[1] = 400.0f;
 					posX[2] = 800.0f;
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; m_rotate.z = GRASS_ROTATE_Z2; }
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { 
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					{
+						g_Select_type.StageMainNumber = DESERT;
+						m_bMoving = true; 
+						m_rotate.z = GRASS_ROTATE_Z2; 
+					}
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
+					{ 
 						g_Select_type.StageMainNumber = SNOWFIELD;	
 						m_bMoving = true; 
 						m_rotate.z = GRASS_ROTATE_Z;
@@ -282,7 +288,7 @@ void CStageSelect::Update()
 					posX[1] = 0.0f;
 					posX[2] = 400.0f;
 					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageMainNumber = SNOWFIELD; m_bMoving = true; }
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; }
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; }
 					g_Select_type.StageSubNumber = DESERT_STAGE1;
 					break;
 				case(SNOWFIELD):
@@ -290,7 +296,7 @@ void CStageSelect::Update()
 					posX[1] = -400.0f;
 					posX[2] = 0.0f;
 					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { 
+					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageMainNumber = GRASSLAND; 
 						m_bMoving = true; 
 						posX[0] = 400.0f;
@@ -308,7 +314,7 @@ void CStageSelect::Update()
 					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
 
 				}
-				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
 					SetNext(SCENE_TITLE, g_Select_type);
 					m_bEnd = true;
@@ -328,7 +334,7 @@ void CStageSelect::Update()
 					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE3; m_bMoving = true;
 					}
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE1; m_bMoving = true;
 					}
 					break;
@@ -352,7 +358,7 @@ void CStageSelect::Update()
 					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageSubNumber = DESERT_STAGE3; m_bMoving = true;
 					}
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = DESERT_STAGE1; m_bMoving = true;
 					}
 					break;
@@ -376,7 +382,7 @@ void CStageSelect::Update()
 					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3; m_bMoving = true;
 					}
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE1; m_bMoving = true;
 					}
 					break;
@@ -394,7 +400,7 @@ void CStageSelect::Update()
 					SetNext(SCENE_GAME, g_Select_type);
 					m_bEnd = true;
 				}
-				if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
 					//StartFade();
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
@@ -422,7 +428,7 @@ void CStageSelect::Update()
 			{
 				bRight = true;
 			}
-			if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
+			else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
 			{
 				bRight = false;
 			}
@@ -430,11 +436,10 @@ void CStageSelect::Update()
 			m_rotate.y = m_ModelParam[WorldField].rotate.y;
 			if(g_Select_type.StageMainNumber != GRASSLAND)m_rotate.z = m_ModelParam[WorldField].rotate.z;
 		}
-	}
-	static int moveCnt = 0;
-	if (m_bMoving)
-	{
-		moveCnt++;
+		else if (m_bMoving)
+		{
+			static int moveCnt = 0;
+			moveCnt++;
 			switch (g_Select_type.StageMainNumber)
 			{
 			case(GRASSLAND):
@@ -457,52 +462,53 @@ void CStageSelect::Update()
 				break;
 			}
 
-		for (int i = 0; i < 3; i++)
-		{
-			if (!MainStage)
+			for (int i = 0; i < 3; i++)
 			{
-				if (bRight)
+				if (!MainStage)
 				{
-					m_ModelParam[i].pos.x -= STAGE_BETWEEN / 3.0f / MOVE_TIME;
+					if (bRight)
+					{
+						m_ModelParam[i].pos.x -= STAGE_BETWEEN / 3.0f / MOVE_TIME;
+					}
+					else
+					{
+						m_ModelParam[i].pos.x += STAGE_BETWEEN / 3.0f / MOVE_TIME;
+					}
+				}
+			}
+			for (int i = 0; i < 3; i++)
+			{
+				if (MainStage)
+				{
+					if (bRight)
+					{
+						posX[i] -= 400.0f / MOVE_TIME;
+					}
+					else
+					{
+						posX[i] += 400.0f / MOVE_TIME;
+					}
 				}
 				else
 				{
-					m_ModelParam[i].pos.x += STAGE_BETWEEN / 3.0f / MOVE_TIME;
+					if (bRight)
+					{
+						subposX[i] -= 400.0f / MOVE_TIME;
+					}
+					else
+					{
+						subposX[i] += 400.0f / MOVE_TIME;
+					}
 				}
 			}
-		}
-		for (int i = 0; i < 3; i++)
-		{
-			if (MainStage)
+			if (moveCnt >= MOVE_TIME)
 			{
-				if (bRight)
-				{
-					posX[i] -= 400.0f / MOVE_TIME;
-				}
-				else
-				{
-					posX[i] += 400.0f / MOVE_TIME;
-				}
+				m_bMoving = false;
+				moveCnt = 0;
 			}
-			else
-			{
-				if (bRight)
-				{
-					subposX[i] -= 400.0f / MOVE_TIME;
-				}
-				else
-				{
-					subposX[i] += 400.0f / MOVE_TIME;
-				}
-			}
-		}
-		if (moveCnt >= MOVE_TIME)
-
-		{
-			m_bMoving = false;
-			moveCnt = 0;
 		}
 	}
+
 	//m_bMoving = false;
 }
 
