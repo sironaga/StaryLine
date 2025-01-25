@@ -3,7 +3,7 @@
 #include "iostream"
 #include "vector"
 
-#define MAX_SOUND (12)
+#define MAX_SOUND (15)
 
 #define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
 #define FILENAME_SELECTSE (L"Assets/Sound/select.wav")
@@ -12,6 +12,9 @@
 #define FILENAME_COMPLETESE (L"Assets/Sound/complete.wav")
 #define FILENAME_ARRIVALSE (L"Assets/Sound/star.wav")
 #define FILENAME_ATTACKSE (L"Assets/Sound/Attack.wav") 
+#define FILENAME_WEAKNESSATTACKSE (L"Assets/Sound/Attack.wav") 
+#define FILENAME_WANDONOFFSE (L"Assets/Sound/wandonoff.wav") 
+#define FILENAME_SUMMONSE (L"Assets/Sound/summon.wav") 
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
 #define FILENAME_BATTLEBGM (L"Assets/Sound/battle.wav")
@@ -45,6 +48,15 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case SE_ATTACK:
 		m_sound = new CSound(FILENAME_ATTACKSE);
+		break;
+	case SE_WEAKNESSATTACK:
+		m_sound = new CSound(FILENAME_WEAKNESSATTACKSE);
+		break;
+	case SE_WANDONOFF:
+		m_sound = new CSound(FILENAME_WANDONOFFSE);
+		break;
+	case SE_SUMMON:
+		m_sound = new CSound(FILENAME_SUMMONSE);
 		break;
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);

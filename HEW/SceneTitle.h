@@ -33,7 +33,8 @@ private:
 	CSoundList* g_TitleSound;
 	CBackGround* g_pTitleBG;
 	COption* m_pOption;
-
+	CSoundList* m_pSelectsound;
+	IXAudio2SourceVoice* m_pSourseSelectSE;
 private:
 	SpriteEx* m_pTitleLogo;
 	SpriteEx* m_pTitleBack;

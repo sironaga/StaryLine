@@ -121,7 +121,8 @@ CSceneTitle::CSceneTitle(COption* pOption)
 		m_tTabPos[i] = { CENTER_POS_X + 735.0f, CENTER_POS_Y + 130.0f + i * SELECT_MOVE };
 		m_tTabSize[i] = { 450.0f,-60.0f };
 	}
-
+	m_pSelectsound = new CSoundList(SE_DECISION);
+	m_pSourseSelectSE = m_pSelectsound->GetSound(false);
 }
 
 CSceneTitle::~CSceneTitle()
@@ -192,6 +193,12 @@ CSceneTitle::~CSceneTitle()
 	{
 		SAFE_DELETE(m_pEffect[i]);
 	}
+	if (m_pSelectsound)
+	{
+		m_pSourseSelectSE->Stop();
+		SAFE_DELETE(m_pSelectsound);
+		m_pSourseSelectSE = nullptr;
+	}
 }
 
 void CSceneTitle::Update()
@@ -228,7 +235,11 @@ void CSceneTitle::Update()
 			else if (IsKeyTrigger(VK_RETURN)|| IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
+				m_pSelectsound->SetMasterVolume();
+				if (m_pSourseSelectSE)SetVolumeSE(m_pSourseSelectSE);
+				m_pSourseSelectSE->Start();
 				m_bSelected = true;
+
 			}
 			break;
 
@@ -608,12 +619,18 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pOption->InitResolusion();
 	//m_pOption->SetAddPos(1000.0f, 0.0f);
 
+
 	if(g_pTitleBG)delete g_pTitleBG;
 	g_pTitleBG = new CBackGround();
 
 	if (m_pFade)delete m_pFade;
 	m_pFade = new CFadeBlack();
 	m_pFade->SetFade(0.5f, true);
+
+	SAFE_DELETE(m_pSelectsound);
+	m_pSelectsound = new CSoundList(SE_DECISION);
+	m_pSelectsound->SetMasterVolume();
+	m_pSourseSelectSE = m_pSelectsound->GetSound(false);
 
 }
 
