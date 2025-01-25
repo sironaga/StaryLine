@@ -22,6 +22,8 @@ private:
 	{
 		//角数番号
 		int nCornerCount;
+		//ステラフラグ
+		bool bStellaBuff;
 	};
 
 public:
@@ -127,7 +129,7 @@ public:
 	//味方の種類別カウントのGet
 	int GetAllyTypeCount(int Num) { return m_nAllyTypes[Num]; }
 	//味方要素保存
-	void SaveAllyData(int InCornerCount);
+	void SaveAllyData(int InCornerCount, bool IsStella = false);
 public:
 	//味方作成
 	void CreateAlly(void);

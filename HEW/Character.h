@@ -109,7 +109,7 @@ protected:
 
 	
 public:
-	CFighter(int InCornerCount);	//コンストラクタ
+	CFighter(int InCornerCount, bool IsStellaBuff = false);	//コンストラクタ
 	virtual ~CFighter();						//デストラクタ
 
 	virtual void Update(void) = 0;	//更新処理
@@ -136,6 +136,7 @@ protected:
 	DirectX::XMFLOAT3 m_tTargetPos;	//標的の位置
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	int m_nCornerCount;				//属性
+	bool m_bStellaBuff;				//ステラ判定
 	float m_fHp;					//体力
 	float m_fAtk;					//攻撃力
 	float m_fAtkCharge;				//攻撃チャージ(チャージがたまっていたら攻撃可能)
@@ -173,6 +174,8 @@ public:
 	//ステータスのget
 	Status GetStatus(void) { return m_tStatus; }
 
+	//ステラ判定のSet
+	void SetStellaBuffFlag(bool IsBuff) { m_bStellaBuff = IsBuff; }
 	//死亡エフェクトの再生
 	//void PlayDeathEffect(void);
 
@@ -249,7 +252,7 @@ public:
 class CAlly : public CFighter
 {
 public:
-	CAlly(int InCornerCount);		//コンストラクタ
+	CAlly(int InCornerCount, bool IsStellaBuff);		//コンストラクタ
 	~CAlly();						//デストラクタ
 
 	void Update(void)	override;	//更新処理

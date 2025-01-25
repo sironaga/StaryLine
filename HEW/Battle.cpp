@@ -529,11 +529,14 @@ void CBattle::ReLoadTexture(void)
 }
 
 //–¡•û‚Ìî•ñ•Û‘¶ˆ—
-void CBattle::SaveAllyData(int InCornerCount)
+void CBattle::SaveAllyData(int InCornerCount,bool IsStella)
 {
 	//Šp”î•ñ‚ÌŠi”[
 	m_tAllyData[m_nAllyDateCount].nCornerCount = InCornerCount;
 	
+	//ƒXƒeƒ‰î•ñ
+	m_tAllyData[m_nAllyDateCount].bStellaBuff = IsStella;
+
 	//•Û‘¶”‚ğ‰ÁZ
 	m_nAllyDateCount++;
 }
@@ -617,7 +620,7 @@ void CBattle::CreateAlly(void)
 	while (m_nAllyDateCount)
 	{
 		//¶¬‚·‚é
-		m_pAlly.push_back(new CAlly(m_tAllyData[0].nCornerCount));
+		m_pAlly.push_back(new CAlly(m_tAllyData[0].nCornerCount,m_tAllyData[0].bStellaBuff));
 		//m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount);
 		
 		//¶¬”‚ğ‰ÁZ

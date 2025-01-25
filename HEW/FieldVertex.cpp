@@ -1625,7 +1625,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (!GetFeverMode())
 							{
 								nFeverPoint += 1.0f;
-								m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//}Œ`‚Ì’¸“_‚ÆŠp”‚ğ“n‚·
+								m_pBattle->SaveAllyData(Shapes_Count[NowShapes],true);//}Œ`‚Ì’¸“_‚ÆŠp”‚ğ“n‚·
 								Ally_Count++;//¢Š«”‘‚â‚·
 								SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
 								SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
