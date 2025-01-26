@@ -63,6 +63,9 @@ CStageSelect::CStageSelect()
 	, posX{ 0.0f,400.0f,800.0f }
 	, subposX{ 0.0f,400.0f,800.0f }
 	, m_rotate{}
+	, m_pDecition(nullptr)
+	, m_pEffect{}, m_pStarEfc{}
+	, m_tBGRotateZ(0.0f)
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -87,6 +90,7 @@ CStageSelect::CStageSelect()
 	m_pStageSelect = new SpriteEx("Assets/Texture/StageSelectBackGround/STAGESELECT.png");
 	m_pWorldSelect = new SpriteEx("Assets/Texture/StageSelectBackGround/WORLDSELECT.png");
 
+	m_pDecition = new SpriteEx("Assets/Effect/Sprite/Decision.png");
 	m_pStageSelected     = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Selected.png");
 	m_pLock = new SpriteEx("Assets/Texture/StageSelectBackGround/Lock.png");
 
@@ -98,6 +102,12 @@ CStageSelect::CStageSelect()
 	m_pModel[DesertField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage02_Desert.fbx"), false);
 	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
 	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), false,Model::ZFlip);
+
+	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/BackGround_ShootginStars.png", 8, 8, 3.0f);
+	for (int i = 0; i < SELECT_MAX_STAR; i++)
+	{
+		m_pStarEfc[i] = new CEffectManager_sp(m_pEffect[(int)Effect::Star]);
+	}
 
 	g_StageSelectSound = new CSoundList(BGM_TITLE);
 	m_pSourseStageSelectBGM = g_StageSelectSound->GetSound(true);
@@ -148,6 +158,9 @@ CStageSelect::CStageSelect()
 	m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X),DirectX::XMConvertToRadians(GRASS_ROTATE_Y),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
 	m_pBackGround = new CBackGround();
 
+
+	m_tDecitionPos[0] = { -375.0f, -55.0f };
+	m_tDecitionPos[1] = {  375.0f, -385.0f };
 }
 
 CStageSelect::~CStageSelect()
@@ -246,6 +259,17 @@ CStageSelect::~CStageSelect()
 		}
 
 		SAFE_DELETE(m_pBackGround);
+	}
+
+	SAFE_DELETE(m_pDecition);
+
+	for (int i = 0; i < (int)Effect::Max; i++)
+	{
+		SAFE_DELETE(m_pEffect[i]);
+	}
+	for (int i = 0; i < SELECT_MAX_STAR; i++)
+	{
+		m_pStarEfc[i] = nullptr;
 	}
 }
 
@@ -440,6 +464,10 @@ void CStageSelect::Update()
 		{
 			static int moveCnt = 0;
 			moveCnt++;
+
+			if (bRight)m_tBGRotateZ += 120.0f / MOVE_TIME;
+			else m_tBGRotateZ -= 120.0f / MOVE_TIME;
+
 			switch (g_Select_type.StageMainNumber)
 			{
 			case(GRASSLAND):
@@ -509,6 +537,7 @@ void CStageSelect::Update()
 		}
 	}
 
+	SelectAnimation();
 	//m_bMoving = false;
 }
 
@@ -690,15 +719,6 @@ void CStageSelect::Draw()
 				m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
 				m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 				m_pRight_Select->Disp();
-
-				SetRender2D();
-				Sprite::ReSetSprite();
-				m_pStageSelected->SetProjection(GetProj());
-				m_pStageSelected->SetView(GetView());
-				m_pStageSelected->SetTexture();
-				m_pStageSelected->SetPositon(posX[0], 103.0f, 140.0f);
-				m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
-				m_pStageSelected->Disp();
 			}
 			break;
 		case(DESERT):
@@ -751,15 +771,6 @@ void CStageSelect::Draw()
 				m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
 				m_pRight_Select->SetSize(ArrowSize1,ArrowSize1, 100.0f);
 				m_pRight_Select->Disp();
-
-				SetRender2D();
-				Sprite::ReSetSprite();
-				m_pStageSelected->SetProjection(GetProj());
-				m_pStageSelected->SetView(GetView());
-				m_pStageSelected->SetTexture();
-				m_pStageSelected->SetPositon(posX[1], 103.0f, 140.0f);
-				m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
-				m_pStageSelected->Disp();
 			}
 			break;
 		case(SNOWFIELD):
@@ -814,16 +825,36 @@ void CStageSelect::Draw()
 				m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 				m_pRight_Select->Disp();
 
-				SetRender2D();
-				Sprite::ReSetSprite();
-				m_pStageSelected->SetProjection(GetProj());
-				m_pStageSelected->SetView(GetView());
-				m_pStageSelected->SetTexture();
-				m_pStageSelected->SetPositon(posX[2], 103.0f, 140.0f);
-				m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
-				m_pStageSelected->Disp();
 			}
 			break;
+		}
+
+		if (m_bMoving == false)
+		{
+			SetRender2D();
+
+			//m_pDecition->SetView(Get2DView());
+			//m_pDecition->SetProjection(Get2DProj());
+			//m_pDecition->SetPositon(CENTER_POS_X + m_tDecitionPos[0].x, CENTER_POS_Y + m_tDecitionPos[0].y, 0.0f);
+			//m_pDecition->SetSize(100.0f, 100.0f, 100.0f);
+			//m_pDecition->SetRotation(0.0f, 0.0f, 0.0f);
+			//m_pDecition->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+			//m_pDecition->SetUvPos(2.0f / 4.0f, 3.0f / 10.0f);
+			//m_pDecition->SetUvSize(1.0f / 4.0f, 1.0f / 10.0f);
+			//m_pDecition->SetTexture();
+			//m_pDecition->Disp();
+
+			//m_pDecition->SetPositon(CENTER_POS_X + m_tDecitionPos[1].x, CENTER_POS_Y + m_tDecitionPos[1].y, 0.0f);
+			//m_pDecition->Disp();
+
+			Sprite::ReSetSprite();
+			m_pStageSelected->SetProjection(GetProj());
+			m_pStageSelected->SetView(GetView());
+			m_pStageSelected->SetTexture();
+			m_pStageSelected->SetPositon(posX[g_Select_type.StageMainNumber], 103.0f, 140.0f);
+			m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
+			m_pStageSelected->Disp();
+
 		}
 	}
 	else
@@ -1244,6 +1275,11 @@ void CStageSelect::Draw()
 			}
 		}
 	}
+}
+
+void CStageSelect::SelectAnimation()
+{
+	m_pBackGround->MultiScrollRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(m_tBGRotateZ) });
 }
 
 //int CStageSelect::GetStageNum()
