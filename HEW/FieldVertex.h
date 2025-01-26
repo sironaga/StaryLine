@@ -130,6 +130,10 @@ private:
 
 	DirectX::XMFLOAT3 Fever_Draw_Angle;//フィーバー時の回転させるための値保存用
 	float Fever_Draw_Angle_Count;//フィーバーの描画UIを何回転させるか
+
+	DirectX::XMFLOAT3 Fever_Player_Draw_Pos;//フィーバー時のプレイヤーの座標
+	int Mode_Player_Move;//フィーバー時のプレイヤーの動き方
+	float Fever_Stop_Player_time; //フィーバー時のプレイヤーの止まっている時間
 	//float
 
 	CBattle* m_pBattle;//バトルクラスのポインター

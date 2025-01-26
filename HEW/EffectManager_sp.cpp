@@ -126,6 +126,11 @@ void CEffectManager_sp::SetRotate(DirectX::XMFLOAT3 rotate)
 	m_tParam.rotate = rotate;
 }
 
+void CEffectManager_sp::SetColor(DirectX::XMFLOAT4 color)
+{
+	m_tParam.color = color;
+}
+
 bool CEffectManager_sp::IsPlay()
 {
 	return m_bPlay;

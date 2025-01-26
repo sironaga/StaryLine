@@ -32,6 +32,10 @@
 #define FEVER_GAGE_POS_X (-83.0f)//フィーバーゲージのX座標
 #define FEVER_GAGE_POS_Y (65.0f)//フィーバーゲージのY座標
 
+#define FEVER_PLAYER_DRAW_POS_X (0.0f)
+#define FEVER_PLAYER_DRAW_POS_Y (-87.0f)//下限-63.0f 中限-30.0f　上限-27.0f
+#define FEVER_STOP_PLAYER_TIME (1.0f)//フィーバー中プレイヤーが止まっている時間
+
 #define SUMMON_LOG_SIZE_X (40.0f)//ログのXサイズ
 #define SUMMON_LOG_SIZE_Y (10.0f)//ログのYサイズ
 #define MAX_DRAW_LOG (15)//ログの描画数
@@ -82,6 +86,9 @@ CFieldVertex::CFieldVertex()
 	, Partition(MAX_FEVER_POINT)
 	, Fever_Draw_Angle{}
 	, Fever_Draw_Angle_Count (FEVER_DRAW_ANGLE_COUNT)
+	, Fever_Player_Draw_Pos{}
+	, Fever_Stop_Player_time(0.0f)
+	, Mode_Player_Move(0)
 	, Ally_Count(0)
 	, NowLine(0)
 	, PlayerPos{}
@@ -315,6 +322,8 @@ CFieldVertex::CFieldVertex()
 		if (FAILED(hrFeverStar)) {
 			MessageBox(NULL, "Fever_Player 画像", "Error", MB_OK);
 		}
+
+		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f};
 	}
 
 	//召喚数のボード初期化
@@ -735,6 +744,8 @@ void CFieldVertex::Draw()
 			{
 				g_pLineEffects[Effect_NowShapes]->SetSize({ 100.0f + Shapes_Size[Effect_NowShapes] * 20.0f,100.0f + Shapes_Size[Effect_NowShapes] * 20.0f, 0.0f });
 				g_pLineEffects[Effect_NowShapes]->SetPos({ Effect_Shapes_Pos[Effect_NowShapes].x - 0.766f, Effect_Shapes_Pos[Effect_NowShapes].y - 1.8f, 0.0f });
+				if (Shapes_Count[i] == 3)g_pLineEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+				else g_pLineEffects[i]->SetColor({ 0.0f,0.3f,1.0f,1.0f });
 				g_pLineEffects[Effect_NowShapes]->Play(false);
 				Effect_NowShapes++;
 			}
@@ -755,7 +766,45 @@ void CFieldVertex::FeverDraw()
 	{
 		if (GetFeverMode())
 		{
-			DrawSetting({ 0.0f,0.0f,0.0f }, { 100.0f,100.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
+			
+			switch (Mode_Player_Move)
+			{
+			case 0:
+				Fever_Player_Draw_Pos.y += 240.0f / 60.0f;
+				if (Fever_Player_Draw_Pos.y > -27.0f)Mode_Player_Move = 1;
+				break;
+
+			case 1:
+				Fever_Stop_Player_time += 1.0f / 60.0f;
+				Fever_Player_Draw_Pos.y -= 240.0f / 60.0f;
+				if (Fever_Player_Draw_Pos.y < -30.0f)
+				{
+					Fever_Player_Draw_Pos.y = -30.0f;
+				}
+				if (Fever_Stop_Player_time >= FEVER_STOP_PLAYER_TIME)
+				{
+					Fever_Stop_Player_time = 0.0f;
+					Mode_Player_Move = 2;
+				}
+				break;
+
+			case 2:
+				Fever_Player_Draw_Pos.y -= 360.0f / 60.0f;
+				if (Fever_Player_Draw_Pos.y < FEVER_PLAYER_DRAW_POS_Y)
+				{
+					Fever_Player_Draw_Pos.y = FEVER_PLAYER_DRAW_POS_Y;
+					Mode_Player_Move = 3;
+				}
+				break;
+
+			case 3:break;
+			default:
+				break;
+			}
+			
+
+
+			DrawSetting( Fever_Player_Draw_Pos , { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
 			m_pSprite_Fever_Player->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 			m_pSprite_Fever_Player->SetTexture(m_pTex_Fever_Player);//星形の背景のテクスチャ設定
 			m_pSprite_Fever_Player->Draw();//描画
@@ -1057,6 +1106,9 @@ void CFieldVertex::InitFieldVertex()
 
 	//-----その他必要な初期化処理-----//
 	{
+		Fever_Stop_Player_time = 0.0f;
+		Mode_Player_Move = 0;
+		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f };
 		StartVertex = GoalVertex;//始点を今の地点に初期化
 		NowShapes = 0;//格納した図形の数初期化
 		Effect_NowShapes = 0;
