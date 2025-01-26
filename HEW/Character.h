@@ -52,8 +52,6 @@ public:
 	void Update(float InHp, DirectX::XMFLOAT3 InPos,float InSizeY);
 	void Draw(int nCornerCount = 0);
 private:
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
-private:
 	float m_fNowHp;
 	float m_fFullHp;
 	float m_fAnchorPoint;
@@ -120,8 +118,8 @@ public:
 	bool SearchCollisionCheck(DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InPos);	//当たり判定の中に敵がいるかの判定
 	bool OverlapCheck(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize);	//重なっていないか判定
 	void Damage(CFighter* pFighter);
-
 protected:
+	void DamageLogDraw(int nCornerCount, bool Type);
 	virtual void SettingStatus(void) = 0;		//ステータス決め
 	/*変数*/
 public:
@@ -129,6 +127,11 @@ public:
 	bool m_bIsAttack;				//攻撃しているかどうか
 	bool m_bTypeAttack;				//攻撃対象の相性がいいかどうか
 	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
+	/*ダメージログ関係*/
+
+	bool m_bDamageLogDraw[3];		//ダメージログ描画関連のフラグ　[0]..描画フラグ,[1]..移動変数初期化フラグ,[2]..相性のフラグ
+	DirectX::XMFLOAT3 m_tDamageLogPos;
+	/*================*/
 protected:
 	Status m_tStatus;				//ステータス状態
 	Collision m_tSearchCollision;	//索敵当たり判定
@@ -147,11 +150,15 @@ protected:
 	float m_fAtkAnimationMaxTime;	//攻撃アニメーションの最大時間
 	bool m_bIsHit;					//攻撃を受けたかの判定
 
-	bool m_bMoveUp;//上移動フラグ
-	bool m_bMoveFlag;//移動したか
+	float m_fDamageLogMoveY;
+
+	bool m_bMoveUp;					//上移動フラグ
+	bool m_bMoveFlag;				//移動したか
 	DirectX::XMFLOAT3 m_tDestinationPos;//目的地
 
-	CHpUI* m_pHpGage;	//体力ゲージ
+	CHpUI* m_pHpGage;				//体力ゲージ
+	Sprite* m_pSprite;
+
 
 protected:
 	IXAudio2SourceVoice* m_pSourceNormalAttack;//スピーカー

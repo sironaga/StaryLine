@@ -70,6 +70,14 @@ enum class CharactersEffect
 	MAX,
 };
 
+enum class DamageDraw
+{
+	NormalBlue,
+	NormalRed,
+	NotQuite,
+	MAX,
+};
+
 /*事前読み込み用のポインタ*/
 //味方
 Model* g_pAllyModel[(int)Ally::MAX];
@@ -82,14 +90,15 @@ Model::AnimeNo g_pLeader_Anima;
 //ボスの車
 Model* g_pBosCar;
 
+//キャラクターのエフェクト
 CEffectManager_sp* g_pCharacterEffects[(int)CharactersEffect::MAX];
 
 //Hpのテクスチャ
 Texture* g_pHpGageTex[(int)HpTexture::MAX];
-//Texture* g_pHpGageTex[2][2];
 
-//キャラクターのエフェクト
-//CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
+//ダメージログのテクスチャ
+Texture* g_pDamageTex[(int)DamageDraw::MAX];
+
 //攻撃音
 CSoundList* g_NormalAttackSound;
 CSoundList* g_WeaknessAttackSound;
@@ -97,6 +106,8 @@ CSoundList* g_SummonSound;
 CSoundList* g_wandonoffSound;
 IXAudio2SourceVoice* g_pSourceSummon[2];//スピーカー
 IXAudio2SourceVoice* g_pSourceWandonoff;//スピーカー
+
+void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 
 //事前読み込み用関数
 void InitCharacterTexture(StageType StageType)
@@ -128,6 +139,13 @@ void InitCharacterTexture(StageType StageType)
 	g_pLeaderModel[(int)Leader::Linie] = new Model();
 	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"), 1.0f, Model::None);
 	g_pLeader_Anima = g_pLeaderModel[(int)Leader::Linie]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"));
+
+	g_pDamageTex[(int)DamageDraw::NormalBlue] = new Texture();
+	g_pDamageTex[(int)DamageDraw::NormalBlue]->Create(TEX_PASS("DamageLog/Battle_Damage_Blue.png"));
+	g_pDamageTex[(int)DamageDraw::NormalRed] = new Texture();
+	g_pDamageTex[(int)DamageDraw::NormalRed]->Create(TEX_PASS("DamageLog/Battle_Damage_Pink.png"));
+	g_pDamageTex[(int)DamageDraw::NotQuite] = new Texture();
+	g_pDamageTex[(int)DamageDraw::NotQuite]->Create(TEX_PASS("DamageLog/Battle_Damage_Gray.png"));
 
 	//ステージ別に読み込みを変える
 	switch (StageType.StageMainNumber)
@@ -323,6 +341,8 @@ void UnInitCharacterTexture()
 	for (int i = 0; i < (int)Leader::MAX; i++)SAFE_DELETE(g_pLeaderModel[i]);
 	//Hpテクスチャの破棄
 	for (int i = 0; i < (int)HpTexture::MAX; i++)SAFE_DELETE(g_pHpGageTex[i]);
+	//ダメーログジテクスチャの破棄
+	for (int i = 0; i < (int)DamageDraw::MAX; i++)SAFE_DELETE(g_pDamageTex[i]);
 	//サウンドの破棄
 	SAFE_DELETE(g_NormalAttackSound);
 	SAFE_DELETE(g_WeaknessAttackSound);
@@ -417,6 +437,7 @@ CFighter::CFighter(int InCornerCount, bool IsStellaBuff)
 	, m_tTargetPos()
 	, m_bMoveUp(false)
 	, m_bStellaBuff(IsStellaBuff)
+	, m_bDamageLogDraw{false}
 {
 	//サウンドの設定
 	m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
@@ -627,6 +648,12 @@ void CFighter::Damage(CFighter* pFighter)
 		m_fHp -= pFighter->GetAtk();
 		//当たった判定をオンにする
 		m_bIsHit = true;
+		pFighter->m_bDamageLogDraw[0] = true;
+		pFighter->m_bDamageLogDraw[1] = true;
+		pFighter->m_bDamageLogDraw[2] = true;
+		pFighter->m_tDamageLogPos.x = m_tPos.x;
+		pFighter->m_tDamageLogPos.y = m_tPos.y - 1.0f;
+		pFighter->m_tDamageLogPos.z = m_tPos.z;
 	}
 	else
 	{
@@ -634,7 +661,45 @@ void CFighter::Damage(CFighter* pFighter)
 		m_fHp -= pFighter->GetAtk() * 0.3f;
 		//当たった判定をオンにする
 		m_bIsHit = true;
+		pFighter->m_bDamageLogDraw[0] = true;
+		pFighter->m_bDamageLogDraw[1] = true;
+		pFighter->m_bDamageLogDraw[2] = false;
+		pFighter->m_tDamageLogPos.x = m_tPos.x;
+		pFighter->m_tDamageLogPos.y = m_tPos.y - 1.0f;
+		pFighter->m_tDamageLogPos.z = m_tPos.z;
 	}
+}
+
+void CFighter::DamageLogDraw(int nCornerCount,bool Type)
+{
+	SetRender2D();
+
+	if (Type)
+	{
+		switch (nCornerCount)
+		{
+		case 3:
+			m_pSprite->SetTexture(g_pDamageTex[(int)DamageDraw::NormalRed]);
+			break;
+		case 4:
+			m_pSprite->SetTexture(g_pDamageTex[(int)DamageDraw::NormalBlue]);
+			break;
+		}
+	}
+	else
+		m_pSprite->SetTexture(g_pDamageTex[(int)DamageDraw::NotQuite]);
+
+	m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	m_pSprite->SetUVPos({ 0.0f, 0.0f });
+	m_pSprite->SetUVScale({ 1.0f ,1.0f }); 
+
+	DrawSetting({ m_tDamageLogPos.x ,m_tDamageLogPos.y + m_fDamageLogMoveY,m_tDamageLogPos.z + 0.2f }, { 5.0f,5.0f,5.0f }, m_pSprite);
+
+	m_pSprite->Draw();
+
+	m_pSprite->ReSetSprite();
+
 }
 
 //void CFighter::PlayDeathEffect(void)
@@ -744,6 +809,27 @@ void CAlly::Update(void)
 
 void CAlly::Draw(void)
 {
+	//ダメージログの描画
+	if (m_bDamageLogDraw[0])
+	{
+		if (m_bDamageLogDraw[1])
+		{
+			m_fDamageLogMoveY = 0.0f;
+			m_bDamageLogDraw[1] = false;
+		}
+		DamageLogDraw(m_nCornerCount, m_bDamageLogDraw[2]);
+		if (m_fDamageLogMoveY <  5.0f)
+		{
+			m_fDamageLogMoveY += 5.0f / 120.0f;
+		}
+		else
+		{
+			m_bDamageLogDraw[0] = false;
+			m_bDamageLogDraw[1] = false;
+			m_bDamageLogDraw[2] = false;
+		}
+	}
+
 	//体力ゲージの描画
 	m_pHpGage->Draw(m_nCornerCount);
 
@@ -1074,6 +1160,27 @@ void CEnemy::Update(void)
 
 void CEnemy::Draw(void)
 {
+	//ダメージログの描画
+	if (m_bDamageLogDraw[0])
+	{
+		if (m_bDamageLogDraw[1])
+		{
+			m_fDamageLogMoveY = 0.0f;
+			m_bDamageLogDraw[1] = false;
+		}
+		DamageLogDraw(m_nCornerCount, m_bDamageLogDraw[2]);
+		if (m_fDamageLogMoveY < 5.0f)
+		{
+			m_fDamageLogMoveY += 5.0f / 120.0f;
+		}
+		else
+		{
+			m_bDamageLogDraw[0] = false;
+			m_bDamageLogDraw[1] = false;
+			m_bDamageLogDraw[2] = false;
+		}
+	}
+
 	//体力ゲージの描画
 	m_pHpGage->Draw(m_nCornerCount);
 
@@ -1641,6 +1748,12 @@ void CLeader::HpDraw(void)
 void CLeader::Damage(CFighter* pFighter)
 {
 	m_fHp -= pFighter->GetAtk();
+	pFighter->m_bDamageLogDraw[0] = true;
+	pFighter->m_bDamageLogDraw[1] = true;
+	pFighter->m_bDamageLogDraw[2] = false;
+	pFighter->m_tDamageLogPos.x = m_tPos.x;
+	pFighter->m_tDamageLogPos.y = m_tPos.y - 1.0f;
+	pFighter->m_tDamageLogPos.z = m_tPos.z;
 }
 
 void CLeader::CreateUpdate(void)
@@ -1910,7 +2023,7 @@ void CHpUI::Draw(int nCornerCount)
 	}
 }
 
-void CHpUI::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize,Sprite* Sprite)
+void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize,Sprite* Sprite)
 {
 	//移動行列(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
