@@ -14,13 +14,14 @@
 #include "FadeBlack.h"
 #include "Transition.h"
 
-#define SELECT_MOVE (80.0f)
+#define SELECT_MOVE (70.0f)
 #define CENTER_POS_X SCREEN_WIDTH / 2.0f
 #define CENTER_POS_Y SCREEN_HEIGHT / 2.0f
 #define STAR_SPEED 2.0f
 #define DECISION_SPEED 1.0f
 #define SELECT_POW 1.2f
 #define STAR_AJUSTPOS_X SCREEN_WIDTH / 2.0f
+#define SELECT_JUST_Y 20.0f
 
 enum
 {
@@ -54,8 +55,8 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
 	, m_pEffect()
 	,m_bChange(false)
-	, m_tTabPos{}, m_tTabSize{}, m_tTabAlpha{1.0f,1.0f,1.0f,1.0f}
-	, m_fSelectAlpha(1.0f), m_tStarPos{0.0f,SCREEN_HEIGHT / 2.0f}
+	, m_tTabPos{}, m_tTabSize{}
+	, m_fSelectScale(1.0f), m_tStarPos{0.0f,SCREEN_HEIGHT / 2.0f}
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -378,13 +379,6 @@ void CSceneTitle::Draw()
 	m_pEffect[(int)Effect::Star]->SetRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(225.0f)});
 	m_pEffect[(int)Effect::Star]->Draw(false);
 
-	m_pTitleBack->SetTexture();
-	m_pTitleBack->SetProjection(Get2DProj());
-	m_pTitleBack->SetView(Get2DView());
-	m_pTitleBack->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
-	m_pTitleBack->SetSize(1920.0f, -1080.0f, 0.0f);
-	m_pTitleBack->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
-	m_pTitleBack->Disp();
 
 	m_pLini[0]->SetTexture();
 	m_pLini[0]->SetProjection(Get2DProj());
@@ -404,6 +398,14 @@ void CSceneTitle::Draw()
 	m_pLini[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[1]->Disp();
 
+	m_pTitleBack->SetTexture();
+	m_pTitleBack->SetProjection(Get2DProj());
+	m_pTitleBack->SetView(Get2DView());
+	m_pTitleBack->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
+	m_pTitleBack->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pTitleBack->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pTitleBack->Disp();
+
 	m_pTitleLogo->SetTexture();
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
@@ -412,43 +414,36 @@ void CSceneTitle::Draw()
 	m_pTitleLogo->SetUvSize(1.0f, 1.0f);
 	m_pTitleLogo->Disp();
 
-	m_pTitleUnderbar->SetTexture();
-	m_pTitleUnderbar->SetProjection(Get2DProj());
-	m_pTitleUnderbar->SetView(Get2DView());
-	m_pTitleUnderbar->SetPositon(CENTER_POS_X, CENTER_POS_Y + 510, 0.0f);
-	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
-	m_pTitleUnderbar->Disp();
-
 	m_pTitleStart[0]->SetTexture();
 	m_pTitleStart[0]->SetProjection(Get2DProj());
 	m_pTitleStart[0]->SetView(Get2DView());
-	m_pTitleStart[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 130, 0.0f);
+	m_pTitleStart[0]->SetPositon(m_tTabPos[0].x, m_tTabPos[0].y, 0.0f);
 	m_pTitleStart[0]->SetSize(m_tTabSize[0].x, m_tTabSize[0].y, 0.0f);
-	m_pTitleStart[0]->Setcolor(1.0f, 1.0f, 1.0f, m_tTabAlpha[0]);
+	m_pTitleStart[0]->Setcolor(1.0f, 1.0f, 1.0f,1.0f);
 	m_pTitleStart[0]->Disp();
 
 	m_pTitleContinued[0]->SetTexture();
 	m_pTitleContinued[0]->SetProjection(Get2DProj());
 	m_pTitleContinued[0]->SetView(Get2DView());
-	m_pTitleContinued[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 210, 0.0f);
+	m_pTitleContinued[0]->SetPositon(m_tTabPos[1].x, m_tTabPos[1].y, 0.0f);
 	m_pTitleContinued[0]->SetSize(m_tTabSize[1].x, m_tTabSize[1].y, 0.0f);
-	m_pTitleContinued[0]->Setcolor(1.0f, 1.0f, 1.0f, m_tTabAlpha[1]);
+	m_pTitleContinued[0]->Setcolor(1.0f, 1.0f, 1.0f,1.0f);
 	m_pTitleContinued[0]->Disp();
 
 	m_pTitleOption[0]->SetTexture();
 	m_pTitleOption[0]->SetProjection(Get2DProj());
 	m_pTitleOption[0]->SetView(Get2DView());
-	m_pTitleOption[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 290, 0.0f);
+	m_pTitleOption[0]->SetPositon(m_tTabPos[2].x, m_tTabPos[2].y, 0.0f);
 	m_pTitleOption[0]->SetSize(m_tTabSize[2].x, m_tTabSize[2].y, 0.0f);
-	m_pTitleOption[0]->Setcolor(1.0f, 1.0f, 1.0f, m_tTabAlpha[2]);
+	m_pTitleOption[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pTitleOption[0]->Disp();
 
 	m_pTitleEnd[0]->SetTexture();
 	m_pTitleEnd[0]->SetProjection(Get2DProj());
 	m_pTitleEnd[0]->SetView(Get2DView());
-	m_pTitleEnd[0]->SetPositon(CENTER_POS_X + 735, CENTER_POS_Y + 370, 0.0f);
+	m_pTitleEnd[0]->SetPositon(m_tTabPos[3].x, m_tTabPos[3].y, 0.0f);
 	m_pTitleEnd[0]->SetSize(m_tTabSize[3].x, m_tTabSize[3].y , 0.0f);
-	m_pTitleEnd[0]->Setcolor(1.0f, 1.0f, 1.0f, m_tTabAlpha[3]);
+	m_pTitleEnd[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pTitleEnd[0]->Disp();
 
 
@@ -505,21 +500,28 @@ void CSceneTitle::Draw()
 	m_pTitleFrame->SetProjection(Get2DProj());
 	m_pTitleFrame->SetView(Get2DView());
 	m_pTitleFrame->SetPositon(CENTER_POS_X + m_SelectPos.x, CENTER_POS_Y + m_SelectPos.y, 0.0f);
-	m_pTitleFrame->SetSize(m_tTabSize[g_Title_type].x + 10.0f, m_tTabSize[g_Title_type].y - 10.0f, 0.0f);
-	m_pTitleFrame->Setcolor(1.0f,1.0f,1.0f, m_fSelectAlpha);
+	m_pTitleFrame->SetSize(m_tTabSize[g_Title_type].x + 25.0f * m_fSelectScale, m_tTabSize[g_Title_type].y - 25.0f * m_fSelectScale, 0.0f);
+	m_pTitleFrame->Setcolor(1.0f,1.0f,1.0f, 1.0f);
 	m_pTitleFrame->Disp();
-	
+	//
+	//m_pDecition->SetTexture();
+	//m_pDecition->SetPositon(CENTER_POS_X + m_DecisionPos.x,CENTER_POS_Y + m_DecisionPos.y,0.0f);
+	//m_pDecition->SetSize(100.0f,100.0f,100.0f );
+	//m_pDecition->SetRotation( 0.0f,0.0f,0.0f );
+	//m_pDecition->SetUvPos(2.0f / 4.0f, 3.0f / 10.0f);
+	//m_pDecition->SetUvSize(1.0f / 4.0f, 1.0f / 10.0f);
+	//m_pDecition->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+	//m_pDecition->SetProjection(Get2DProj());
+	//m_pDecition->SetView(Get2DView());
+	//m_pDecition->Disp();
 
-	m_pDecition->SetTexture();
-	m_pDecition->SetPositon(CENTER_POS_X + m_DecisionPos.x,CENTER_POS_Y + m_DecisionPos.y,0.0f);
-	m_pDecition->SetSize(100.0f,100.0f,100.0f );
-	m_pDecition->SetRotation( 0.0f,0.0f,0.0f );
-	m_pDecition->SetUvPos(2.0f / 4.0f, 3.0f / 10.0f);
-	m_pDecition->SetUvSize(1.0f / 4.0f, 1.0f / 10.0f);
-	m_pDecition->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_pDecition->SetProjection(Get2DProj());
-	m_pDecition->SetView(Get2DView());
-	m_pDecition->Disp();
+	m_pTitleUnderbar->SetTexture();
+	m_pTitleUnderbar->SetProjection(Get2DProj());
+	m_pTitleUnderbar->SetView(Get2DView());
+	m_pTitleUnderbar->SetPositon(CENTER_POS_X, CENTER_POS_Y + 510, 0.0f);
+	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
+	m_pTitleUnderbar->Disp();
+
 
 	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 245.0f,-m_SelectPos.y,0.0f });
 	m_pEffect[(int)Effect::Choice]->SetSize({ 100.0f,100.0f,100.0f });
@@ -716,21 +718,22 @@ void CSceneTitle::TitleAnimation()
 	{
 		if (g_Title_type == i)
 		{
+			m_tTabPos[i] = { CENTER_POS_X + 735.0f, CENTER_POS_Y + 130.0f + i * SELECT_MOVE };
 			m_tTabSize[i] = { 450.0f * SELECT_POW,-60.0f * SELECT_POW };
 		}
 		else
 		{
+			if(i < g_Title_type)m_tTabPos[i].y = CENTER_POS_Y + 130.0f + i * SELECT_MOVE - SELECT_JUST_Y;
+			else m_tTabPos[i].y = CENTER_POS_Y + 130.0f + i * SELECT_MOVE + SELECT_JUST_Y;
 			m_tTabSize[i] = { 450.0f,-60.0f };
 		}
 	}
-
-	static bool up = false;
-	static float alphaSpd = -0.025f;
-	m_fSelectAlpha += alphaSpd;
-	if (m_fSelectAlpha >= 1.0f || m_fSelectAlpha <= 0.2f)
-	{
-		alphaSpd *= -1;
-	}
+	static float deg = 0.0f;    //度数
+	deg += 4.0f;    // 度数を増やし続ける
+	rad = DirectX::XMConvertToRadians(deg);    //ラジアンに変換する
+	float cosAngle = cosf(rad);
+	cosAngle /= 5.0f;
+	m_fSelectScale = cosAngle + 1.0f;
 
 	if (m_nAnimCount % 240 == 0)
 	{

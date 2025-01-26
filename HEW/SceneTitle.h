@@ -52,8 +52,7 @@ private:
 	DirectX::XMFLOAT2 m_tTabPos[4];
 	DirectX::XMFLOAT2 m_tTabSize[4];
 	DirectX::XMFLOAT2 m_tStarPos;
-	float m_tTabAlpha[4];
-	float m_fSelectAlpha;
+	float m_fSelectScale;
 	bool m_bSelected;
 	bool m_bChange;
 	int m_nAnimCount;

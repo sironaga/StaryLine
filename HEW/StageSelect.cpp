@@ -1279,7 +1279,7 @@ void CStageSelect::Draw()
 
 void CStageSelect::SelectAnimation()
 {
-	m_pBackGround->MultiScrollRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(m_tBGRotateZ) });
+	if(MainStage)m_pBackGround->MultiScrollRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(m_tBGRotateZ) });
 }
 
 //int CStageSelect::GetStageNum()
