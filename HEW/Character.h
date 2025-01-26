@@ -154,7 +154,8 @@ protected:
 	CHpUI* m_pHpGage;	//体力ゲージ
 
 protected:
-	IXAudio2SourceVoice* m_pSourceAttack;//スピーカー
+	IXAudio2SourceVoice* m_pSourceNormalAttack;//スピーカー
+	IXAudio2SourceVoice* m_pSourceWeaknessAttack;//スピーカー
 	
 	float m_fTimeSound;
 	bool m_bTimeSoundStart;

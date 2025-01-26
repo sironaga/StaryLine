@@ -11,8 +11,8 @@
 #define FILENAME_CANCELSE (L"Assets/Sound/cancel.wav")
 #define FILENAME_COMPLETESE (L"Assets/Sound/complete.wav")
 #define FILENAME_ARRIVALSE (L"Assets/Sound/star.wav")
-#define FILENAME_ATTACKSE (L"Assets/Sound/Attack.wav") 
-#define FILENAME_WEAKNESSATTACKSE (L"Assets/Sound/Attack.wav") 
+#define FILENAME_NORMALATTACKSE (L"Assets/Sound/normalAttack.wav") 
+#define FILENAME_WEAKNESSATTACKSE (L"Assets/Sound/wwaknessAttack.wav") 
 #define FILENAME_WANDONOFFSE (L"Assets/Sound/wandonoff.wav") 
 #define FILENAME_SUMMONSE (L"Assets/Sound/summon.wav") 
 
@@ -46,8 +46,8 @@ CSoundList::CSoundList(NAME inName)
 	case SE_ARRIVAL:
 		m_sound = new CSound(FILENAME_ARRIVALSE);
 		break;
-	case SE_ATTACK:
-		m_sound = new CSound(FILENAME_ATTACKSE);
+	case SE_NORMALATTACK:
+		m_sound = new CSound(FILENAME_NORMALATTACKSE);
 		break;
 	case SE_WEAKNESSATTACK:
 		m_sound = new CSound(FILENAME_WEAKNESSATTACKSE);
