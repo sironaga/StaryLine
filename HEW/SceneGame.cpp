@@ -4,6 +4,7 @@
 #include "SceneResult.h"
 #include "InputEx.h"
 #include "SpriteDrawer.h"
+#include "FadeBlack.h"
 #include <future>
 #include <thread>
 
@@ -399,7 +400,8 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	ShaderList::Init();
 	UninitSpriteDrawer();
 	InitSpriteDrawer(GetDevice(), GetContext(), wide, height);
-
+	
+	//音の再読み込み
 	SAFE_DELETE(m_pBackGround);
 	m_pBackGround = new CBackGround();
 	SAFE_DELETE(g_GameSound);
@@ -411,7 +413,14 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	g_FeverSound->SetMasterVolume();
 	m_pFieldVertex->InitSound();
 	m_pPlayer->InitSound();
+	m_pBattle->ReloadSound();
+	ReLoadSound();
 
+	//テクスチャ、モデルの再読み込み
+	m_pField->Reload(m_pBattle->m_nStageNum);
+	m_pFieldVertex->InitTextureModel();
+	SAFE_DELETE(m_pFade);
+	m_pFade = new CFadeBlack();
 	m_pPlayer->Reload();
 	ReLoadCharacterTexture(m_pBattle->m_nStageNum);
 	m_pBattle->ReLoadTexture();

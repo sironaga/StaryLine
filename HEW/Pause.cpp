@@ -63,6 +63,7 @@ CPause::CPause()
 		m_pSoundPause[2] = new CSoundList(SE_SELECT);
 		for (int i = 0; i < 3; i++)
 		{
+			m_pSoundPause[i]->SetMasterVolume();
 			m_pSoundPauseSE[i] = m_pSoundPause[i]->GetSound(false);
 		}
 }
