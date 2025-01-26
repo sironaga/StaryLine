@@ -3,6 +3,7 @@
 #include "Main.h"
 #include "Defines.h"
 #include "Easing.h"
+#include "InputEx.h"
 
 
 CPause::CPause()
@@ -85,7 +86,7 @@ void CPause::Update()
 	static int section = SEC_RETURN;//選択中のバーの場所
 	XAUDIO2_BUFFER buffer;
 	//ポーズボタンを押したか
-	if (!m_bPause && IsKeyTrigger(VK_ESCAPE))
+	if (!m_bPause && WithGetKeyTriger(XINPUT_GAMEPAD_START, VK_ESCAPE))
 	{
 		m_bPause = true;
 		m_ftime = 0.1f;
@@ -119,7 +120,7 @@ void CPause::Update()
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
 	{
-		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
 		{
 			
 			
@@ -163,7 +164,7 @@ void CPause::Update()
 				break;
 			}
 		}
-		if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN,VK_DOWN) || IsKeyTrigger('S'))
 		{
 			
 			switch (section)
@@ -222,10 +223,10 @@ void CPause::Update()
 		default:
 			break;
 		}
+
 		//決定ボタン
-		if (IsKeyTrigger(VK_RETURN))
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN))
 		{
-			//se
 			//se
 			m_pSoundPauseSE[1]->Stop();
 			m_pSoundPauseSE[1]->FlushSourceBuffers();
@@ -239,8 +240,8 @@ void CPause::Update()
 				m_pOption->SetOption();
 				m_pOption->ResetPos();
 				m_pOption->ResetSize();
-				m_pOption->SetMulSize(0.8f);
-				m_pOption->SetAddPos(280.0f, 0.0f);
+				//m_pOption->SetMulSize(0.8f);
+				//m_pOption->SetAddPos(280.0f, 0.0f);
 				m_bOption = true;
 				break;
 			case SEC_RETRY:
@@ -275,7 +276,7 @@ void CPause::Update()
 			}
 			if (!m_pOption->GetOption())
 			{
-				if (IsKeyTrigger(VK_ESCAPE))
+				if (WithGetKeyTriger(XINPUT_GAMEPAD_START, VK_ESCAPE))
 				{
 					//se
 					m_pSoundPauseSE[0]->Stop();
