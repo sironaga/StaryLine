@@ -5,6 +5,7 @@
 #include "InputEx.h"
 #include "SpriteDrawer.h"
 #include "FadeBlack.h"
+#include "Transition.h"
 #include <future>
 #include <thread>
 
@@ -420,7 +421,7 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	m_pField->Reload(m_pBattle->m_nStageNum);
 	m_pFieldVertex->InitTextureModel();
 	SAFE_DELETE(m_pFade);
-	m_pFade = new CFadeBlack();
+	m_pFade = new CTransition();
 	m_pPlayer->Reload();
 	ReLoadCharacterTexture(m_pBattle->m_nStageNum);
 	m_pBattle->ReLoadTexture();
