@@ -10,6 +10,9 @@
 #include  "_StructList.h"
 #include "BackGround.h"
 #include "SoundList.h"
+#include "EffectManager_sp.h"
+
+#define SELECT_MAX_STAR 4
 
 enum E_SELECT_STAGETYPE
 {
@@ -40,6 +43,8 @@ public:
 
 	//int GetStageNum();
 private:
+	void SelectAnimation();
+
 	SpriteEx* m_pGrassLand;
 	SpriteEx* m_pDesert;
 	SpriteEx* m_pSnowField;
@@ -54,6 +59,7 @@ private:
 	SpriteEx* m_pStageSelect;
 	SpriteEx* m_pWorldSelect;
 	SpriteEx* m_pWorld[3];
+	SpriteEx* m_pDecition;
 
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* g_StageSelectSound;
@@ -74,12 +80,24 @@ private:
 	ObjectParam m_ModelSubParam[StageKindMax];
 	CBackGround* m_pBackGround;
 
+
+	enum class Effect
+	{
+		Star,
+
+		Max
+	};
+	CEffectManager_sp* m_pEffect[(int)Effect::Max];
+	CEffectManager_sp* m_pStarEfc[SELECT_MAX_STAR];
+
 	float f_Rotation;
 	float f_Rad;
 	float f_SelectX;
 	float f_SelectY;
 	float posX[3];
 	float subposX[3];
+	DirectX::XMFLOAT2 m_tDecitionPos[2];
+	float m_tBGRotateZ;
 	bool MainStage;
 	bool m_bEnd;
 	bool m_bMoving;
