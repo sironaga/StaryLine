@@ -27,12 +27,12 @@ CStartDirection::CStartDirection()
 	m_tPos[4] = { 1020.0f,-50.0f, 0.0f };
 	m_tPos[5] = { 1120.0f,-50.0f, 0.0f };
 	m_tPos[6] = { 1210.0f,-50.0f, 0.0f };
-	m_tSize[1] = { 0.07f,0.1f, 1.0f };
-	m_tSize[2] = { 0.07f,0.1f, 1.0f };
-	m_tSize[3] = { 0.07f,0.1f, 1.0f };
-	m_tSize[4] = { 0.07f,0.1f, 1.0f };
-	m_tSize[5] = { 0.07f,0.1f, 1.0f };
-	m_tSize[6] = { 0.07f,0.1f, 1.0f };
+	m_tSize[1] = { 100.0f ,100.0f, 1.0f };
+	m_tSize[2] = { 100.0f,100.0f, 1.0f };
+	m_tSize[3] = { 100.0f,100.0f, 1.0f };
+	m_tSize[4] = { 100.0f,100.0f, 1.0f };
+	m_tSize[5] = { 100.0f,100.0f, 1.0f };
+	m_tSize[6] = { 100.0f,100.0f, 1.0f };
 	//èoåªéûä‘ÇÃèâä˙âª
 	for (int i = 0; i < 7; i++)
 	{
