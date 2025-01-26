@@ -771,6 +771,29 @@ void CAlly::Update(void)
 	if (m_bReLoadFlag)
 	{
 		if (m_pModel)m_pModel = nullptr;
+		//サウンドの破棄
+		if (m_pSourceNormalAttack)
+		{
+			m_pSourceNormalAttack->ExitLoop();
+			m_pSourceNormalAttack->Stop();
+			m_pSourceNormalAttack->DestroyVoice();
+			m_pSourceNormalAttack = nullptr;
+		}
+		if (m_pSourceWeaknessAttack)
+		{
+			m_pSourceWeaknessAttack->ExitLoop();
+			m_pSourceWeaknessAttack->Stop();
+			m_pSourceWeaknessAttack->DestroyVoice();
+			m_pSourceWeaknessAttack = nullptr;
+		}
+
+		//サウンドの設定
+		m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
+		XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
+		m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
+		m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
+		buffer = g_WeaknessAttackSound->GetBuffer(false);
+		m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
 		switch (m_nCornerCount)
 		{
 		case 3:
@@ -1122,6 +1145,29 @@ void CEnemy::Update(void)
 	if (m_bReLoadFlag)
 	{
 		if (m_pModel)m_pModel = nullptr;
+		//サウンドの破棄
+		if (m_pSourceNormalAttack)
+		{
+			m_pSourceNormalAttack->ExitLoop();
+			m_pSourceNormalAttack->Stop();
+			m_pSourceNormalAttack->DestroyVoice();
+			m_pSourceNormalAttack = nullptr;
+		}
+		if (m_pSourceWeaknessAttack)
+		{
+			m_pSourceWeaknessAttack->ExitLoop();
+			m_pSourceWeaknessAttack->Stop();
+			m_pSourceWeaknessAttack->DestroyVoice();
+			m_pSourceWeaknessAttack = nullptr;
+		}
+
+		//サウンドの設定
+		m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
+		XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
+		m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
+		m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
+		buffer = g_WeaknessAttackSound->GetBuffer(false);
+		m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
 		switch (m_nCornerCount)
 		{
 		case 3:
