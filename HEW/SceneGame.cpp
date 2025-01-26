@@ -220,6 +220,7 @@ void CSceneGame::Update()
 					m_bFever = true;
 					g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
 					m_pFieldVertex->InitFieldVertex();	// ŽŸ‚Ìì}‚É•K—p‚È‰Šú‰»ˆ—	
+					m_pFieldVertex->SetFeverPoint();
 					m_pPlayer->SetMoveStop();
 				}
 			}
