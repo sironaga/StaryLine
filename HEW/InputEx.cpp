@@ -94,3 +94,85 @@ DIRECTION WASDKeyBorad()
 	}
 	return Info;
 }
+
+WORD GetControllerLStickTriggerForeDirection()
+{
+	static WORD direction = NULL;
+	static WORD oldDirection = NULL;
+	DirectX::XMFLOAT2 pow = CGetLStick();
+	
+	oldDirection = direction;
+
+	if (pow.x < DEADZONE && pow.x > -DEADZONE &&
+		pow.y < DEADZONE && pow.y > -DEADZONE)
+	{
+		direction = NULL;
+		return direction;
+	}
+
+	if (pow.x >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_RIGHT;
+	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_LEFT;
+	else if (pow.y >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_UP;
+	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
+
+	if (oldDirection == direction)
+	{
+		direction = NULL;
+		return direction;
+	}
+
+	return direction;
+}
+
+WORD GetControllerLStickPressForeDirection()
+{
+	static WORD direction = NULL;
+	static WORD oldDirection = NULL;
+	static float count = 0.0f;
+	static float limit = 1.5f;
+	DirectX::XMFLOAT2 pow = CGetLStick();
+
+	oldDirection = direction;
+
+	if (pow.x < DEADZONE && pow.x > -DEADZONE &&
+		pow.y < DEADZONE && pow.y > -DEADZONE)
+	{
+		direction = NULL;
+		count = 0.0f;
+		limit = 1.5f;
+		return direction;
+	}
+
+	if (pow.x >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_RIGHT;
+	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_LEFT;
+	else if (pow.y >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_UP;
+	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
+
+	if (oldDirection == direction)
+	{
+		count += 1.0f;
+		if(count >= limit * 60.0f)
+		{
+			if (limit <= 0.1f)
+			{
+				limit = 0.1f;
+			}
+			else
+			{
+				limit *= 0.5f;
+			}
+			count = 0.0f;
+		}
+		else
+		{
+			direction = NULL;
+		}
+	}
+	else
+	{
+		count = 0.0f;
+		limit = 1.5f;
+	}
+
+	return direction;
+}
