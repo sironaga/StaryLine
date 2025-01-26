@@ -178,6 +178,10 @@ CBattle::CBattle()
 	//		m_tEnemyData[l][i].nCornerCount = -1;
 	//	}
 	//}
+	//音の初期化
+	m_pSound = new CSoundList(SE_DEATH);
+	m_pSound->SetMasterVolume();
+	m_pDeathSE = m_pSound->GetSound(false);
 }
 
 //デストラクタ
@@ -222,6 +226,13 @@ CBattle::~CBattle()
 	{
 		delete m_pEnemyLeader;
 		m_pEnemyLeader = nullptr;
+	}
+	//音の解放
+	if(m_pSound)
+	{
+		m_pDeathSE->Stop();;
+		SAFE_DELETE(m_pSound);
+		m_pDeathSE = nullptr;
 	}
 }
 
@@ -408,6 +419,8 @@ void CBattle::Update(void)
 		//味方のリーダーがnullptrになっていたら
 		if (m_pAllyLeader == nullptr)
 		{
+			SetVolumeSE(m_pDeathSE);
+			m_pDeathSE->Start();
 			m_bWin = false;
 			m_bEnd = true;
 		}
@@ -2130,6 +2143,19 @@ void CBattle::SaveAllyLogDraw(void)
 void CBattle::RandomSelectPattern(void)
 {
  	m_nSelectPattern = rand() % m_nMaxPattern;
+}
+
+void CBattle::ReloadSound()
+{
+	if (m_pSound)
+	{
+		SAFE_DELETE(m_pSound);
+		m_pDeathSE = nullptr;
+	}
+	//音の初期化
+	m_pSound = new CSoundList(SE_DEATH);
+	m_pSound->SetMasterVolume();
+	m_pDeathSE = m_pSound->GetSound(false);
 }
 
 //移動方向計算関数

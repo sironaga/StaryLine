@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "SoundList.h"
 #include <vector>
 
 //パターンの最大数
@@ -210,5 +211,10 @@ public:
 	void SetMaxPattern(int InMaxPattern) { m_nMaxPattern = InMaxPattern; }
 	//最大パターン数のGet
 	int GetMaxPattern(void) { return m_nMaxPattern; }
-
+	/*＝＝＝＝＝＝＝＝＝＝＝＝＝音関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+	public:
+		void ReloadSound();
+	private:
+		CSoundList* m_pSound;
+		IXAudio2SourceVoice* m_pDeathSE;
 };
