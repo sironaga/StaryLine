@@ -50,4 +50,5 @@ void CFadeBlack::DrawFade(float alpha)
 	//m_pPS->SetTexture(0,m_pTexture);
 
 	Sprite::Draw();
+	Sprite::ReSetSprite();
 }

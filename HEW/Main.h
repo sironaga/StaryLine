@@ -65,6 +65,7 @@ void SetNowResolusion(int wide,int height);
 int GetNowWide();
 int GetNowHeight();
 void StartFade();
+bool IsFadeFinish();
 
 void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color,  DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize,bool isModel = false);
 void SpriteDebug(ObjectParam* param ,bool isModel = false);

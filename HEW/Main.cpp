@@ -20,6 +20,7 @@
 
 #include "Fade.h"
 #include "FadeBlack.h"
+#include "Transition.h"
 
 #include "Scene.h"
 #include "SceneTitle.h"
@@ -78,7 +79,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pDirection = new CStartDirection();
 
 	// フェード作成 
-	g_pFade = new CFadeBlack();
+	g_pFade = new CTransition();
 	g_pFade->SetFade(1.0f, true);
 
 	g_pOption = new COption();
@@ -186,7 +187,10 @@ void Update()
 		
 		g_pScene->SetGameDirection(g_pDirection);
 	}
-	g_pDirection->Update();
+	if (g_pFade->IsFinish())
+	{
+		g_pDirection->Update();
+	}
 }
 
 void Draw()
@@ -254,13 +258,16 @@ void Draw()
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
-	
-	
-	
-		g_pScene->RootDraw();
-		LibEffekseer::Draw();
+
+
+
+	g_pScene->RootDraw();
+	LibEffekseer::Draw();
+	if (g_pFade->IsFinish())
+	{
 		g_pDirection->Draw();
-	
+	}
+
 	if (g_pPause->GetPause())
 	{
 		g_pPause->Draw();
@@ -423,7 +430,7 @@ void InitResolusionMain()
 	}
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
-	g_pFade = new CFadeBlack();
+	g_pFade = new CTransition();
 	SAFE_DELETE(g_pDirection);
 	g_pDirection = new CStartDirection();
 	SAFE_DELETE(g_pPause);
@@ -447,6 +454,10 @@ void StartFade()
 {
 	g_pFade->Start(true);   // フェード開始 
 	g_pFade->SetFade(1.0f, true);
+}
+bool IsFadeFinish()
+{
+	return g_pFade->IsFinish();
 }
 void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color, DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize, bool isModel)
 {

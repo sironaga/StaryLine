@@ -12,6 +12,7 @@
 #include "LibEffekseer.h"
 #include "Geometory.h"
 #include "FadeBlack.h"
+#include "Transition.h"
 
 #define SELECT_MOVE (80.0f)
 #define CENTER_POS_X SCREEN_WIDTH / 2.0f
@@ -624,8 +625,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	g_pTitleBG = new CBackGround();
 
 	if (m_pFade)delete m_pFade;
-	m_pFade = new CFadeBlack();
-	m_pFade->SetFade(0.5f, true);
+	m_pFade = new CTransition();
+	m_pFade->SetFade(1.0f, true);
 
 	SAFE_DELETE(m_pSelectsound);
 	m_pSelectsound = new CSoundList(SE_DECISION);
