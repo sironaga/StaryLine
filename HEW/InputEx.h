@@ -19,3 +19,5 @@ enum  DIRECTION
 bool WithGetKeyTriger(WORD ControllerKey, BYTE KeyboardKey);
 bool WihtGetKeyPress(WORD ControllerKey, BYTE KeyboardKey);
 DIRECTION WASDKeyBorad();
+WORD GetControllerLStickTriggerForeDirection();
+WORD GetControllerLStickPressForeDirection();
