@@ -348,9 +348,12 @@ void UnInitCharacterTexture()
 	SAFE_DELETE(g_WeaknessAttackSound);
 	for (int i = 0; i < 2; i++)
 	{
-		g_pSourceSummon[i]->Stop();
-		g_pSourceSummon[i]->DestroyVoice();
-		g_pSourceSummon[i] = nullptr;
+		if (g_pSourceSummon[i])
+		{
+			g_pSourceSummon[i]->Stop();
+			g_pSourceSummon[i]->DestroyVoice();
+			g_pSourceSummon[i] = nullptr;
+		}
 	}
 	SAFE_DELETE(g_SummonSound);
 	
@@ -377,14 +380,9 @@ void ReLoadSound()
 		g_pSourceSummon[i] = nullptr;
 	}
 	SAFE_DELETE(g_SummonSound);
+	g_pSourceWandonoff->Stop();
+	g_pSourceWandonoff = nullptr;
 	SAFE_DELETE(g_wandonoffSound);
-	for (int i = 0; i < 2; i++)
-	{
-		g_pSourceSummon[i]->ExitLoop();
-		g_pSourceSummon[i]->Stop();
-		g_pSourceSummon[i]->DestroyVoice();
-		g_pSourceSummon[i] = nullptr;
-	}
 	/*ƒTƒEƒ“ƒh‚Ì“Ç‚Ýž‚Ý*/
 	g_NormalAttackSound = new CSoundList(SE_NORMALATTACK);
 	g_NormalAttackSound->SetMasterVolume();
