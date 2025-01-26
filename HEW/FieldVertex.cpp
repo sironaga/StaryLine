@@ -1052,6 +1052,11 @@ bool CFieldVertex::GetRoadStop(int Direction)
 	return RoadStop;//いけるかいけないかを返す
 }
 
+void CFieldVertex::SetFeverPoint()
+{
+	fFeverPoint = nFeverPoint;
+}
+
 ////=====CBattleクラスのアドレス情報をセットする関数=====//
 void CFieldVertex::SetBattleAddress(CBattle* InAddress)
 {
