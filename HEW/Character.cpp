@@ -91,7 +91,8 @@ Texture* g_pHpGageTex[(int)HpTexture::MAX];
 //キャラクターのエフェクト
 //CEffectManager* g_pCharacterEffects[(int)CharactersEffect::MAX];
 //攻撃音
-CSoundList* g_AttackSound;
+CSoundList* g_NormalAttackSound;
+CSoundList* g_WeaknessAttackSound;
 CSoundList* g_SummonSound;
 CSoundList* g_wandonoffSound;
 IXAudio2SourceVoice* g_pSourceSummon;//スピーカー
@@ -280,8 +281,10 @@ void InitCharacterTexture(StageType StageType)
 	}
 
 	/*サウンドの読み込み*/
-	g_AttackSound = new CSoundList(SE_ATTACK);
-	g_AttackSound->SetMasterVolume();
+	g_NormalAttackSound = new CSoundList(SE_NORMALATTACK);
+	g_NormalAttackSound->SetMasterVolume();
+	g_WeaknessAttackSound = new CSoundList(SE_WEAKNESSATTACK);
+	g_WeaknessAttackSound->SetMasterVolume();
 	g_SummonSound = new CSoundList(SE_SUMMON);
 	g_SummonSound->SetMasterVolume();
 	g_pSourceSummon = g_SummonSound->GetSound(false);
@@ -316,7 +319,8 @@ void UnInitCharacterTexture()
 	//Hpテクスチャの破棄
 	for (int i = 0; i < (int)HpTexture::MAX; i++)SAFE_DELETE(g_pHpGageTex[i]);
 	//サウンドの破棄
-	SAFE_DELETE(g_AttackSound);
+	SAFE_DELETE(g_NormalAttackSound);
+	SAFE_DELETE(g_WeaknessAttackSound);
 	SAFE_DELETE(g_SummonSound);
 	SAFE_DELETE(g_wandonoffSound);
 	//エフェクトの破棄
@@ -331,12 +335,15 @@ void ReLoadCharacterTexture(StageType StageType)
 
 void ReLoadSound()
 {
-	SAFE_DELETE(g_AttackSound);
+	SAFE_DELETE(g_NormalAttackSound);
+	SAFE_DELETE(g_WeaknessAttackSound);
 	SAFE_DELETE(g_SummonSound);
 	SAFE_DELETE(g_wandonoffSound);
 	/*サウンドの読み込み*/
-	g_AttackSound = new CSoundList(SE_ATTACK);
-	g_AttackSound->SetMasterVolume();
+	g_NormalAttackSound = new CSoundList(SE_NORMALATTACK);
+	g_NormalAttackSound->SetMasterVolume();
+	g_WeaknessAttackSound = new CSoundList(SE_WEAKNESSATTACK);
+	g_WeaknessAttackSound->SetMasterVolume();
 	g_SummonSound = new CSoundList(SE_SUMMON);
 	g_SummonSound->SetMasterVolume();
 	g_pSourceSummon = g_SummonSound->GetSound(false);
@@ -366,7 +373,7 @@ CFighter::CFighter(int InCornerCount, bool IsStellaBuff)
 	, m_bIsAttack(false)
 	, m_bFirstBattlePosSetting(false)
 	, m_bMoveFlag(false)
-	, m_pSourceAttack(nullptr)
+	, m_pSourceNormalAttack(nullptr)
 	, m_fTimeSound(0)
 	, m_bTimeSoundStart(false)
 	, m_pModel(nullptr)
@@ -381,9 +388,12 @@ CFighter::CFighter(int InCornerCount, bool IsStellaBuff)
 	, m_bStellaBuff(IsStellaBuff)
 {
 	//サウンドの設定
-	m_pSourceAttack = g_AttackSound->m_sound->CreateSourceVoice(m_pSourceAttack);
-	XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
-	m_pSourceAttack->SubmitSourceBuffer(&buffer);
+	m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
+	XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
+	m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
+	m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
+	XAUDIO2_BUFFER buffer2 = g_WeaknessAttackSound->GetBuffer(false);
+	m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer2);
 }
 
 //キャラクターの基底クラスのデストラクタ
@@ -397,12 +407,19 @@ CFighter::~CFighter()
 	}
 
 	//サウンドの破棄
-	if (m_pSourceAttack)
+	if (m_pSourceNormalAttack)
 	{
-		m_pSourceAttack->ExitLoop();
-		m_pSourceAttack->Stop();
-		m_pSourceAttack->DestroyVoice();
-		m_pSourceAttack = nullptr;
+		m_pSourceNormalAttack->ExitLoop();
+		m_pSourceNormalAttack->Stop();
+		m_pSourceNormalAttack->DestroyVoice();
+		m_pSourceNormalAttack = nullptr;
+	}
+	if (m_pSourceWeaknessAttack)
+	{
+		m_pSourceWeaknessAttack->ExitLoop();
+		m_pSourceWeaknessAttack->Stop();
+		m_pSourceWeaknessAttack->DestroyVoice();
+		m_pSourceWeaknessAttack = nullptr;
 	}
 
 	//モデルの破棄
@@ -807,16 +824,21 @@ void CAlly::BattleUpdate(void)
 		{
 			if (m_bTypeAttack)
 			{
-				XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
-				m_pSourceAttack->FlushSourceBuffers();
-				m_pSourceAttack->SubmitSourceBuffer(&buffer);
-				if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
-				m_pSourceAttack->Start();
+				XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
+				m_pSourceNormalAttack->FlushSourceBuffers();
+				m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
+				if (m_pSourceNormalAttack)SetVolumeSE(m_pSourceNormalAttack);
+				m_pSourceNormalAttack->Start();
 				m_bTimeSoundStart = true;
 			}
 			else
 			{
-
+				XAUDIO2_BUFFER buffer = g_WeaknessAttackSound->GetBuffer(false);
+				m_pSourceWeaknessAttack->FlushSourceBuffers();
+				m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
+				if (m_pSourceWeaknessAttack)SetVolumeSE(m_pSourceWeaknessAttack);
+				m_pSourceWeaknessAttack->Start();
+				m_bTimeSoundStart = true;
 			}
 		}
 	}
@@ -835,7 +857,7 @@ void CAlly::BattleUpdate(void)
 	}
 	if (m_fTimeSound>30)
 	{
-		m_pSourceAttack->Stop();
+		m_pSourceNormalAttack->Stop();
 		m_bTimeSoundStart = false;
 		m_fTimeSound = 0;
 	}
@@ -1122,17 +1144,22 @@ void CEnemy::BattleUpdate(void)
 		{
 			if (m_bTypeAttack)
 			{
-				XAUDIO2_BUFFER buffer = g_AttackSound->GetBuffer(false);
-				m_pSourceAttack->FlushSourceBuffers();
-				m_pSourceAttack->SubmitSourceBuffer(&buffer);
-				if (m_pSourceAttack)SetVolumeSE(m_pSourceAttack);
-				m_pSourceAttack->SetVolume(1.0f);
-				m_pSourceAttack->Start();
+				XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
+				m_pSourceNormalAttack->FlushSourceBuffers();
+				m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
+				if (m_pSourceNormalAttack)SetVolumeSE(m_pSourceNormalAttack);
+				m_pSourceNormalAttack->SetVolume(1.0f);
+				m_pSourceNormalAttack->Start();
 				m_bTimeSoundStart = true;
 			}
 			else
 			{
-
+				XAUDIO2_BUFFER buffer = g_WeaknessAttackSound->GetBuffer(false);
+				m_pSourceWeaknessAttack->FlushSourceBuffers();
+				m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
+				if (m_pSourceWeaknessAttack)SetVolumeSE(m_pSourceWeaknessAttack);
+				m_pSourceWeaknessAttack->Start();
+				m_bTimeSoundStart = true;
 			}
 		}
 	}
@@ -1152,7 +1179,7 @@ void CEnemy::BattleUpdate(void)
 	}
 	if(m_fTimeSound > 30)
 	{
-		m_pSourceAttack->Stop();
+		m_pSourceNormalAttack->Stop();
 		m_bTimeSoundStart = false;
 		m_fTimeSound = 0;
 	}
