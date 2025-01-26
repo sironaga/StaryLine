@@ -17,10 +17,10 @@ bool CSceneResult::bClearState[8];
 
 
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false)
+	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f)
 {
 	// デバッグ
-	ResultGameData.bWin = 1;
+	ResultGameData.bWin = 0;
 
 	// --- テクスチャの読み込み
 	LoadTexture();
@@ -252,7 +252,7 @@ void CSceneResult::LoadTexture(void)
 	m_pSummonData = new SpriteEx("Assets/Texture/Result/Result_Summon.png");
 	m_pUnderBar = new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
 	m_pBack = new SpriteEx("Assets/Texture/Result/B.png");
-
+	m_pPiyo = new SpriteEx("Assets/Texture/Result/piyo.png");
 	// -- 分岐読み込み
 	if (ResultGameData.bWin)
 	{
@@ -319,26 +319,57 @@ void CSceneResult::DefaultSetPos(void)
 	m_pSummonData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 	m_pSummonData->SetSize(0.3f, 0.14f, 1.0f);
 	m_pSummonData->SetPositon(1632.0f, 610.0f, 10.0f);
-
-	m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pTextShadow->SetSize(0.4f, 0.05f, 1.0f);
-	m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
-
-	m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pText->SetSize(0.4f, 0.125f, 1.0f);
-	m_pText->SetPositon(920.0f, 140.0f, 10.0f);
-
-	m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pLighting->SetSize(0.47f, 1.0f, 1.0f);
-	m_pLighting->SetPositon(460.0f, 440.0f, 10.0f);
-
-	m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pCharacter->SetSize(0.45f, 0.75f, 1.0f);
-	m_pCharacter->SetPositon(560.0f, 440.0f, 10.0f);
 	
-	m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pShadow->SetSize(0.24f, 0.15f, 1.0f);
-	m_pShadow->SetPositon(460.0f, 820.0f, 10.0f);
+	m_pPiyo->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pPiyo->SetSize(0.15f, 0.14f, 1.0f);
+	m_pPiyo->SetPositon(600.0f, 590.0f, 10.0f);
+
+	if (ResultGameData.bWin)
+	{
+
+		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pTextShadow->SetSize(0.4f, 0.05f, 1.0f);
+		m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
+
+		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pText->SetSize(0.4f, 0.125f, 1.0f);
+		m_pText->SetPositon(920.0f, 140.0f, 10.0f);
+
+		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pLighting->SetSize(0.47f, 1.0f, 1.0f);
+		m_pLighting->SetPositon(460.0f, 440.0f, 10.0f);
+
+		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacter->SetSize(0.45f, 0.75f, 1.0f);
+		m_pCharacter->SetPositon(560.0f, 440.0f, 10.0f);
+
+		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pShadow->SetSize(0.24f, 0.15f, 1.0f);
+		m_pShadow->SetPositon(460.0f, 820.0f, 10.0f);
+	}
+	else
+	{
+		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pTextShadow->SetSize(0.4f, 0.05f, 1.0f);
+		m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
+
+		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(190.0f));
+		m_pText->SetSize(0.4f, 0.125f, 1.0f);
+		m_pText->SetPositon(920.0f, 140.0f, 10.0f);
+
+		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pLighting->SetSize(0.47f, 0.6, 1.0f);
+		m_pLighting->SetPositon(460.0f, 640.0f, 10.0f);
+
+		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacter->SetSize(0.3f, 0.3f, 1.0f);
+		m_pCharacter->SetPositon(490.0f, 700.0f, 10.0f);
+
+		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pShadow->SetSize(0.3f, 0.15f, 1.0f);
+		m_pShadow->SetPositon(470.0f, 800.0f, 10.0f);
+
+	}
 }
 
 // --- 入力処理
@@ -494,6 +525,8 @@ void CSceneResult::SetCamData(void)
 	m_pBack->SetView(Get2DView());
 	m_pStar->SetProjection(Get2DProj());
 	m_pStar->SetView(Get2DView());
+	m_pPiyo->SetProjection(Get2DProj());
+	m_pPiyo->SetView(Get2DView());
 }
 
 // --- 描画アニメーション
@@ -560,6 +593,40 @@ void CSceneResult::LoseAnimation(void)
 {
 	if (bAnimation)
 	{
+		
+		static float fFream = 0;
+		fFream += 0.05f;
+		if (fFream > 1)
+		{
+			float Pos = Easing39(1.0f);
+			Pos = Pos * 100.0f;
+			m_pCharacter->SetPositon(490.0f, 800.0f - Pos, 10.0f);
+			
+			fPiyoA = fFream - 1.0f;
+			if (fPiyoA < 0.0f)fPiyoA = 0.0f;
+
+			if (fFream > 2.0f)fFream = 2.0f;
+		}
+		else
+		{
+
+			float Pos = Easing39(fFream);
+			Pos = Pos * 100.0f;
+			m_pCharacter->SetPositon(490.0f, 800.0f - Pos, 10.0f);
+		}
+
+		nAnimationFrame++;
+		static int PiyoF = 0;
+		if (nAnimationFrame > 1)
+		{
+			nAnimationFrame = 0;
+			PiyoF++;
+		}
+
+		int nF;
+		nF = PiyoF % 5;
+		fUvPos.X = (1.0f / 5.0f) * (float)nF;
+		fUvPos.Y = 0.0f;
 
 	}
 }
@@ -600,6 +667,29 @@ void CSceneResult::WinDisp(void)
 
 void CSceneResult::LoseDisp(void)
 {
+	m_pTextShadow->SetTexture();
+	m_pTextShadow->Disp();
+
+	m_pText->SetTexture();
+	m_pText->Disp();
+
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
+
+	m_pShadow->SetTexture();
+	m_pShadow->Disp();
+
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+
+	m_pPiyo->Setcolor(1.0f, 1.0f, 1.0f, fPiyoA);
+	m_pPiyo->SetUvPos(fUvPos.X, fUvPos.Y);
+	m_pPiyo->SetUvSize(1.0f / 5.0f, 1.0f);
+	m_pPiyo->SetTexture();
+	m_pPiyo->Disp();
+	m_pPiyo->SetUvSize(1.0f, 1.0f);
+	m_pPiyo->SetUvPos(0.0f, 0.0f);
+	m_pPiyo->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void CSceneResult::NumberDisp(void)
