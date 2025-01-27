@@ -70,7 +70,7 @@ CPause::CPause()
 
 CPause::~CPause()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
 	}
@@ -502,6 +502,11 @@ void CPause::SetRetry()
 	m_bRetry = false;
 }
 
+void CPause::SetPause()
+{
+	m_bPause = true;
+}
+
 void CPause::SetSelect()
 {
 	m_bSelect = false;
@@ -534,7 +539,7 @@ bool CPause::GetReturn()
 
 void CPause::InitReload()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
 	}
@@ -550,6 +555,7 @@ void CPause::InitReload()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
+	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/kuro.png"));
 
 	m_pSoundPause[0] = new CSoundList(SE_CANCEL);
 	m_pSoundPause[1] = new CSoundList(SE_DECISION);
