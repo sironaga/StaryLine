@@ -405,7 +405,7 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	//音の再読み込み
 	SAFE_DELETE(m_pBackGround);
 	m_pBackGround = new CBackGround();
-	SAFE_DELETE(g_GameSound);
+	/*SAFE_DELETE(g_GameSound);
 	g_GameSound = new CSoundList(BGM_BATTLE);
 	g_GameSound->SetMasterVolume();
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
@@ -415,7 +415,7 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	m_pFieldVertex->InitSound();
 	m_pPlayer->InitSound();
 	m_pBattle->ReloadSound();
-	ReLoadSound();
+	ReLoadSound();*/
 
 	//テクスチャ、モデルの再読み込み
 	m_pField->Reload(m_pBattle->m_nStageNum);
