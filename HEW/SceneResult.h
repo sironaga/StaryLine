@@ -64,6 +64,7 @@ private:
 
 	bool bWorldClear;
 	bool bScore;
+	int nScore;
 	bool bBestScore;
 	int nSelect; 
 
