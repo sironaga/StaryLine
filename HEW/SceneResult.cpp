@@ -195,12 +195,19 @@ void CSceneResult::Draw()
 		LoseDisp();
 	}
 
-	if (!bWorldClear)
+	if (ResultGameData.bWin)
+	{
+		if (!bWorldClear)
+		{
+			m_pNextUI[nPush[1]]->SetTexture();
+			m_pNextUI[nPush[1]]->Disp();
+		}
+	}
+	else
 	{
 		m_pNextUI[nPush[1]]->SetTexture();
 		m_pNextUI[nPush[1]]->Disp();
 	}
-
 	m_pStageSelect[nPush[0]]->SetTexture();
 	m_pStageSelect[nPush[0]]->Disp();
 
@@ -386,7 +393,46 @@ void CSceneResult::DefaultSetPos(void)
 // --- “ü—Íˆ—
 void CSceneResult::KeyProsess(void)
 {
-	if (!bWorldClear)
+	if (ResultGameData.bWin)
+	{
+		if (!bWorldClear)
+		{
+			if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S'))
+			{
+				// SE
+				if (nSelect != 0)
+				{
+					m_pResultSelectSE->Stop();
+					m_pResultSelectSE->FlushSourceBuffers();
+					XAUDIO2_BUFFER buffer;
+					buffer = m_pResultSelectSound->GetBuffer(false);
+					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
+					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+					m_pResultSelectSE->Start();
+					m_pSelect->SetPositon(1630.0f, 940.0f, 10.0f);
+				}
+				nSelect = 0;
+			}
+
+			if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyPress('W'))
+			{
+				// SE
+				if (nSelect != 1)
+				{
+					m_pResultSelectSE->Stop();
+					m_pResultSelectSE->FlushSourceBuffers();
+					XAUDIO2_BUFFER buffer;
+					buffer = m_pResultSelectSound->GetBuffer(false);
+					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
+					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+					m_pResultSelectSE->Start();
+					m_pSelect->SetPositon(1630.0f, 840.0f, 10.0f);
+				}
+				nSelect = 1;
+			}
+		}
+	}
+	else
 	{
 		if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S'))
 		{
@@ -422,6 +468,8 @@ void CSceneResult::KeyProsess(void)
 			nSelect = 1;
 		}
 	}
+
+
 	if (nSelect == 0)
 	{
 		// StageSelect
