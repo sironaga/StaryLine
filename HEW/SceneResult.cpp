@@ -327,6 +327,14 @@ void CSceneResult::DefaultSetPos(void)
 	m_pPiyo->SetSize(300.0f, 100.0f, 1.0f);
 	m_pPiyo->SetPositon(600.0f, 600.0f, 10.0f);
 
+	m_pBestScore->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pBestScore->SetSize(300.0f, 100.0f, 1.0f);
+	m_pBestScore->SetPositon(1400.0f, 300.0f, 10.0f);
+
+	m_pScore->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pScore->SetSize(300.0f, 100.0f, 1.0f);
+	m_pScore->SetPositon(1400.0f, 300.0f, 10.0f);
+
 	if (ResultGameData.bWin)
 	{
 
@@ -707,11 +715,11 @@ void CSceneResult::NumberDisp(void)
 {
 	if (ResultGameData.nAverageSpwn <= 0 || ResultGameData.nDrawCount <= 0 || ResultGameData.nHitPoint <= 0 || ResultGameData.nSpawnCount <= 0 || ResultGameData.nTime <= 0)
 	{
-		ResultGameData.nAverageSpwn = 999;
-		ResultGameData.nTime = 999;
-		ResultGameData.nHitPoint = 999;
-		ResultGameData.nSpawnCount = 999;
-		ResultGameData.nDrawCount = 999;
+		ResultGameData.nAverageSpwn = 114;
+		ResultGameData.nTime = 114;
+		ResultGameData.nHitPoint = 114;
+		ResultGameData.nSpawnCount = 114;
+		ResultGameData.nDrawCount = 114;
 	}
 
 
@@ -836,7 +844,19 @@ void CSceneResult::NumberDisp(void)
 	nScore = ResultGameData.nHitPoint * ResultGameData.nSpawnCount * ResultGameData.nAverageSpwn / ResultGameData.nTime;
 	static  int nnScore = 0;
 
-	nnScore++;
+	if (nBestScore[StageLevel.StageSubNumber] < nScore)
+	{
+		nBestScore[StageLevel.StageSubNumber] = nScore;
+		m_pBestScore->SetTexture();
+		m_pBestScore->Disp();
+	}
+	else
+	{
+		m_pScore->SetTexture();
+		m_pScore->Disp();
+	}
+
+	nnScore += 100;
 	if (nnScore >= nScore)
 	{
 		nnScore = nScore;
