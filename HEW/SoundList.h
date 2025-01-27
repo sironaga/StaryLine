@@ -6,6 +6,12 @@ enum NAME
 {
 	//プレイヤーが歩くSE
 	SE_WALK
+	//プレイヤーが歩く(草原)SE
+	, SE_WALKGRASS
+	//プレイヤーが歩く(砂漠)SE
+	, SE_WALKDESERT
+	//プレイヤーが歩く(雪)SE
+	, SE_WALKSNOW
 	//選択SE
 	,SE_SELECT
 	//決定SE
@@ -17,7 +23,7 @@ enum NAME
 	//各星に着いた時SE
 	,SE_ARRIVAL
 	//攻撃音(通常)
-	, SE_ATTACK
+	, SE_NORMALATTACK
 	//,SE_NORMALATTACK
 	//攻撃音(弱点)
 	, SE_WEAKNESSATTACK
@@ -25,6 +31,8 @@ enum NAME
 	,SE_WANDONOFF
 	//召喚
 	, SE_SUMMON
+	//敗北音
+	,SE_DEATH
 	//タイトルBGM
 	,BGM_TITLE
 	//バトルBGM

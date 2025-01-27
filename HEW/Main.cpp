@@ -20,6 +20,7 @@
 
 #include "Fade.h"
 #include "FadeBlack.h"
+#include "Transition.h"
 
 #include "Scene.h"
 #include "SceneTitle.h"
@@ -50,7 +51,7 @@ int g_NowWide = 1920;
 int g_NowHeight = 1080;
 int g_scene=SCENE_TITLE;
 int g_nEvent = 0;
-
+bool g_bResolution = false;
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
 
@@ -78,7 +79,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pDirection = new CStartDirection();
 
 	// フェード作成 
-	g_pFade = new CFadeBlack();
+	g_pFade = new CTransition();
 	g_pFade->SetFade(1.0f, true);
 
 	g_pOption = new COption();
@@ -135,7 +136,11 @@ void Update()
 	if (g_pPause->GetPause())
 	{
 		g_pScene->SetMasterVolume();
-		return;
+		if (!g_bResolution)
+		{
+			return;
+		}
+		g_bResolution = false;
 	}
 	if (g_pPause->GetRetry())
 	{
@@ -186,7 +191,10 @@ void Update()
 		
 		g_pScene->SetGameDirection(g_pDirection);
 	}
-	g_pDirection->Update();
+	if (g_pFade->IsFinish())
+	{
+		g_pDirection->Update();
+	}
 }
 
 void Draw()
@@ -196,71 +204,74 @@ void Draw()
 
 	// 軸線の表示
 #ifdef _DEBUG
-	// グリッド
-	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
-	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
-	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
-	{
-		float grid = i * DEBUG_GRID_MARGIN;
-		DirectX::XMFLOAT3 pos[2] = {
-			DirectX::XMFLOAT3(grid, 0.0f, size),
-			DirectX::XMFLOAT3(grid, 0.0f,-size),
-		};
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-		pos[0].x = pos[1].x = -grid;
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-		pos[0].x = size;
-		pos[1].x = -size;
-		pos[0].z = pos[1].z = grid;
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-		pos[0].z = pos[1].z = -grid;
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-	}
-	// 軸
-	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
+	//// グリッド
+	//DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
+	//float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
+	//for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
+	//{
+	//	float grid = i * DEBUG_GRID_MARGIN;
+	//	DirectX::XMFLOAT3 pos[2] = {
+	//		DirectX::XMFLOAT3(grid, 0.0f, size),
+	//		DirectX::XMFLOAT3(grid, 0.0f,-size),
+	//	};
+	//	Geometory::AddLine(pos[0], pos[1], lineColor);
+	//	pos[0].x = pos[1].x = -grid;
+	//	Geometory::AddLine(pos[0], pos[1], lineColor);
+	//	pos[0].x = size;
+	//	pos[1].x = -size;
+	//	pos[0].z = pos[1].z = grid;
+	//	Geometory::AddLine(pos[0], pos[1], lineColor);
+	//	pos[0].z = pos[1].z = -grid;
+	//	Geometory::AddLine(pos[0], pos[1], lineColor);
+	//}
+	//// 軸
+	//Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(size, 0, 0), DirectX::XMFLOAT4(1, 0, 0, 1));
+	//Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, size, 0), DirectX::XMFLOAT4(0, 1, 0, 1));
+	//Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, size), DirectX::XMFLOAT4(0, 0, 1, 1));
+	//Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(-size, 0, 0), DirectX::XMFLOAT4(0, 0, 0, 1));
+	//Geometory::AddLine(DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, -size), DirectX::XMFLOAT4(0, 0, 0, 1));
 
-	Geometory::DrawLines();
+	//Geometory::DrawLines();
 
-	// カメラの値
-	static bool camPosSwitch = false;
-	if (IsKeyTrigger(VK_RETURN)) {
-		camPosSwitch ^= true;
-	}
+	//// カメラの値
+	//static bool camPosSwitch = false;
+	//if (IsKeyTrigger(VK_RETURN)) {
+	//	camPosSwitch ^= true;
+	//}
 
-	DirectX::XMVECTOR camPos;
-	if (camPosSwitch) {
-		camPos = DirectX::XMVectorSet(2.5f, 30.5f, -40.0f, 0.0f);
-	}
-	else {
-		camPos = DirectX::XMVectorSet(2.5f, 3.5f, -4.0f, 0.0f);
-	}
+	//DirectX::XMVECTOR camPos;
+	//if (camPosSwitch) {
+	//	camPos = DirectX::XMVectorSet(2.5f, 30.5f, -40.0f, 0.0f);
+	//}
+	//else {
+	//	camPos = DirectX::XMVectorSet(2.5f, 3.5f, -4.0f, 0.0f);
+	//}
 
-	// ジオメトリ用カメラ初期化
-	DirectX::XMFLOAT4X4 mat[2];
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixLookAtLH(
-			camPos,
-			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-		)));
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixPerspectiveFovLH(
-			DirectX::XMConvertToRadians(60.0f), (float)SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 100.0f)
-	));
-	Geometory::SetView(mat[0]);
-	Geometory::SetProjection(mat[1]);
+	//// ジオメトリ用カメラ初期化
+	//DirectX::XMFLOAT4X4 mat[2];
+	//DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
+	//	DirectX::XMMatrixLookAtLH(
+	//		camPos,
+	//		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+	//		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	//	)));
+	//DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
+	//	DirectX::XMMatrixPerspectiveFovLH(
+	//		DirectX::XMConvertToRadians(60.0f), (float)SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 100.0f)
+	//));
+	//Geometory::SetView(mat[0]);
+	//Geometory::SetProjection(mat[1]);
 #endif
-	
-	
-	
-		g_pScene->RootDraw();
-		LibEffekseer::Draw();
+
+
+
+	g_pScene->RootDraw();
+	LibEffekseer::Draw();
+	if (g_pFade->IsFinish())
+	{
 		g_pDirection->Draw();
-	
+	}
+
 	if (g_pPause->GetPause())
 	{
 		g_pPause->Draw();
@@ -411,10 +422,10 @@ void SetRender3D()
 }
 void InitResolusionMain()
 {
-	static int b =g_pOption->GetResolusion();
+	static int b = g_pOption->GetResolusion();
 	if (g_scene == SCENE_GAME && b != g_pOption->GetResolusion())
 	{
-		bool fullscreen ;
+		bool fullscreen;
 		if (g_pOption->GetIsFullScreen() == 1) fullscreen = false;
 		else fullscreen = true;
 
@@ -423,12 +434,13 @@ void InitResolusionMain()
 	}
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
-	g_pFade = new CFadeBlack();
+	g_pFade = new CTransition();
 	SAFE_DELETE(g_pDirection);
 	g_pDirection = new CStartDirection();
-	SAFE_DELETE(g_pPause);
-	g_pPause = new CPause();
+	g_pPause->InitReload();
+	g_pOption->InitResolusion();
 	g_pPause->SetOption(g_pOption);
+	if(g_scene == SCENE_GAME)g_bResolution = true;
 }
 void SetNowResolusion(int wide, int height)
 {
@@ -447,6 +459,10 @@ void StartFade()
 {
 	g_pFade->Start(true);   // フェード開始 
 	g_pFade->SetFade(1.0f, true);
+}
+bool IsFadeFinish()
+{
+	return g_pFade->IsFinish();
 }
 void SpriteDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, DirectX::XMFLOAT4* color, DirectX::XMFLOAT2* uvPos, DirectX::XMFLOAT2* uvSize, bool isModel)
 {

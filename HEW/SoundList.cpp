@@ -3,18 +3,22 @@
 #include "iostream"
 #include "vector"
 
-#define MAX_SOUND (15)
+#define MAX_SOUND (19)
 
 #define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
+#define FILENAME_WALKGRASSSE (L"Assets/Sound/walkgrass.wav")
+#define FILENAME_WALKDESERTSE (L"Assets/Sound/walkdesert.wav")
+#define FILENAME_WALKSNOWSE (L"Assets/Sound/walksnow.wav")
 #define FILENAME_SELECTSE (L"Assets/Sound/select.wav")
 #define FILENAME_DECISIONSE (L"Assets/Sound/decision.wav")
 #define FILENAME_CANCELSE (L"Assets/Sound/cancel.wav")
 #define FILENAME_COMPLETESE (L"Assets/Sound/complete.wav")
 #define FILENAME_ARRIVALSE (L"Assets/Sound/star.wav")
-#define FILENAME_ATTACKSE (L"Assets/Sound/Attack.wav") 
-#define FILENAME_WEAKNESSATTACKSE (L"Assets/Sound/Attack.wav") 
+#define FILENAME_NORMALATTACKSE (L"Assets/Sound/normalAttack.wav") 
+#define FILENAME_WEAKNESSATTACKSE (L"Assets/Sound/wwaknessAttack.wav") 
 #define FILENAME_WANDONOFFSE (L"Assets/Sound/wandonoff.wav") 
 #define FILENAME_SUMMONSE (L"Assets/Sound/summon.wav") 
+#define FILENAME_DEATHSE (L"Assets/Sound/death.wav") 
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
 #define FILENAME_BATTLEBGM (L"Assets/Sound/battle.wav")
@@ -31,6 +35,15 @@ CSoundList::CSoundList(NAME inName)
 	case SE_WALK:
 		m_sound = new CSound(FILENAME_WALKSE);
 		break;
+	case SE_WALKGRASS:
+		m_sound = new CSound(FILENAME_WALKGRASSSE);
+		break;
+	case SE_WALKDESERT:
+		m_sound = new CSound(FILENAME_WALKDESERTSE);
+		break;
+	case SE_WALKSNOW:
+		m_sound = new CSound(FILENAME_WALKSNOWSE);
+		break;
 	case SE_SELECT:
 		m_sound = new CSound(FILENAME_SELECTSE);
 		break;
@@ -46,8 +59,8 @@ CSoundList::CSoundList(NAME inName)
 	case SE_ARRIVAL:
 		m_sound = new CSound(FILENAME_ARRIVALSE);
 		break;
-	case SE_ATTACK:
-		m_sound = new CSound(FILENAME_ATTACKSE);
+	case SE_NORMALATTACK:
+		m_sound = new CSound(FILENAME_NORMALATTACKSE);
 		break;
 	case SE_WEAKNESSATTACK:
 		m_sound = new CSound(FILENAME_WEAKNESSATTACKSE);
@@ -57,6 +70,9 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case SE_SUMMON:
 		m_sound = new CSound(FILENAME_SUMMONSE);
+		break;
+	case SE_DEATH:
+		m_sound = new CSound(FILENAME_DEATHSE);
 		break;
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);

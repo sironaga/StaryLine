@@ -69,6 +69,12 @@ public:
 	void SetRotate(DirectX::XMFLOAT3 rotate);
 
 	/// @brief
+	/// 色の設定
+	///	@param
+	/// color	色(DirectX::XMFLOAT4)
+	void SetColor(DirectX::XMFLOAT4 color);
+
+	/// @brief
 	/// 再生されているか取得
 	///	@brief
 	/// Play関数と同時に使う(再生されてない時に再生処理を呼び出す)

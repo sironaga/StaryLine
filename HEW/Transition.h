@@ -1,39 +1,23 @@
 #pragma once
 
 #include "SpriteEX.h"
+#include "Scene.h"
 
-
-class CTransition
+class CTransition : public CFade
 {
 public:
 	CTransition();
 	virtual ~CTransition();
-	void Update();
-	void Draw();
+	// フェードイン・フェードアウト共に同じ処理で実装 
+	void DrawFadeIn(float alpha) final;
+	void DrawFadeOut(float alpha) final;
+	void DrawFade(float alpha);
 
 	void Reset();
-	void Start(bool isIn);
-	void SetTransition(float time, bool isIn);
-	bool IsTransition() { return m_time <= 0.0f; }
-	bool IsTransitionIn() { return m_isTransitionIn; }
-	bool IsTransitionOut() { return !m_isTransitionIn; }
-
-	float GetRate();
-	float GetAlpha();
-protected:
-	virtual void DrawTransitionIn(float alpha);
-	virtual void DrawTransitionOut(float alpha);
-
 private:
 	SpriteEx* m_pTransitionA;
 	SpriteEx* m_pTransitionB;
 
-	bool m_isTransitionIn;
-	float m_time;   
-	float m_maxTime;
-
-	FLOAT3 m_fPosA[11];
-	FLOAT3 m_fPosB[11];
 
 	float StartPosY_A;
 	float StartPosY_B;

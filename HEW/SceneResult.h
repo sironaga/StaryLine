@@ -54,6 +54,7 @@ private:
 	SpriteEx* m_pStar;
 	SpriteEx* m_pScore;
 	SpriteEx* m_pBestScore;
+	SpriteEx* m_pPiyo;
 	CNumberUI* m_pNumber;
 
 	// --- •Ï”
@@ -63,9 +64,20 @@ private:
 
 	bool bWorldClear;
 	bool bScore;
+	int nScore;
 	bool bBestScore;
 	int nSelect; 
 
+
+	int nMM = 0;
+	int nSS = 0;
+	int nHp = 0;
+	int nSpawn = 0;
+	int nAvS = 0;
+	int nDisp = 0;
+	int nnScore = 0;
+
+	float fPiyoA;
 	FLOAT2 fUvPos;
 	int nPush[2]; // ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½
 

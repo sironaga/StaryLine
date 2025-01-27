@@ -294,7 +294,7 @@ void COption::LoadPass()
 	m_pTexture[FPS_30]->Create(TEX_PASS("Option/Option_Mark_Text_30fps.png"));
 	m_pTexture[FPS_60]->Create(TEX_PASS("Option/Option_Mark_Text_60fps.png"));
 	m_pTexture[SECTION_SELECT]->Create(TEX_PASS("Option/Option_Section_Frame.png"));
-	m_pTexture[SECTION_BAR]->Create(TEX_PASS("Option/Option_Section_Bar.png"));
+	//m_pTexture[SECTION_BAR]->Create(TEX_PASS("Option/Option_Section_Bar.png"));
 	m_pTexture[SECTION_LEFT]->Create(TEX_PASS("Option/Option_Section_L1.png"));
 	m_pTexture[SECTION_RIGHT]->Create(TEX_PASS("Option/Option_Section_R1.png"));
 	m_pTexture[TAB_SELECT]->Create(TEX_PASS("Option/Option_Tab_Frame.png"));
@@ -310,8 +310,8 @@ void COption::LoadPass()
 
 void COption::InitParam()
 {
-	m_pParam[BACKBOARD]->pos =			{ 0.0f,0.0f };
-	m_pParam[BACKBOARD]->size =			{ 1600.0f,900.0f };
+	m_pParam[BACKBOARD]->pos =			{ -5.0f,0.0f };
+	m_pParam[BACKBOARD]->size =			{ 1500.0f,1000.0f };
 	m_pParam[DEFAULT]->pos =			{ -480.0f,-230.0f };
 	m_pParam[DEFAULT]->size =			{ 430.0f,70.0f };
 	m_pParam[DEFAULT_PUSH]->pos =		{ -480.0f,-230.0f };
@@ -347,9 +347,9 @@ void COption::InitParam()
 	m_pParam[BAR_FRAME]->pos =			{ 300.0f,300.0f };
 	m_pParam[BAR_FRAME]->size =			{ 700.0f,60.0f };
 	m_pParam[BAR_GAGE]->pos =			{ 300.0f,300.0f };
-	m_pParam[BAR_GAGE]->size =			{ 700.0f,60.0f };
+	m_pParam[BAR_GAGE]->size =			{ 700.0f,30.0f };
 	m_pParam[BAR_HANDLE]->pos =			{ 300.0f,300.0f };
-	m_pParam[BAR_HANDLE]->size =		{ 40.0f,70.0f };
+	m_pParam[BAR_HANDLE]->size =		{ 30.0f,50.0f };
 	m_pParam[OFF_NOT_SELECTED]->pos =	{ -90.0f,300.0f };
 	m_pParam[OFF_NOT_SELECTED]->size =	{ 70.0f,70.0f };
 	m_pParam[OFF_SELECTED]->pos =		{ -90.0f,300.0f };
@@ -380,13 +380,13 @@ void COption::InitParam()
 	m_pParam[INPUT_TIPE_A]->size =		{ 440.0f,70.0f };
 	m_pParam[INPUT_TIPE_B]->pos =		{ 180.0f,300.0f };
 	m_pParam[INPUT_TIPE_B]->size =		{ 440.0f,70.0f };
-	m_pParam[SECTION_SELECT]->pos =		{ 380.0f,460.0f };
+	m_pParam[SECTION_SELECT]->pos =		{ 380.0f,450.0f };
 	m_pParam[SECTION_SELECT]->size =	{ 510.0f,110.0f };
 	m_pParam[SECTION_BAR]->pos =		{ 0.0f,460.0f };
 	m_pParam[SECTION_BAR]->size =		{ 1400.0f,100.0f };
-	m_pParam[SECTION_LEFT]->pos =		{ -600.0f,460.0f };
+	m_pParam[SECTION_LEFT]->pos =		{ -570.0f,450.0f };
 	m_pParam[SECTION_LEFT]->size =		{ 90.0f,70.0f };
-	m_pParam[SECTION_RIGHT]->pos =		{ 600.0f,460.0f };
+	m_pParam[SECTION_RIGHT]->pos =		{ 570.0f,450.0f };
 	m_pParam[SECTION_RIGHT]->size =		{ 90.0f,70.0f };
 	m_pParam[TAB_SELECT]->pos =			{ -485.0f,300.0f };
 	m_pParam[TAB_SELECT]->size =		{ 440.0f,70.0f };
@@ -572,7 +572,7 @@ void COption::SetValue(int kind)
 		AJUST_MINMAX(m_nTempValue[SCREEN_MODE], 0, 1);
 		break;
 	case COption::RESOLUSION:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))m_nTempValue[RESOLUSION]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[RESOLUSION]++;
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[RESOLUSION]--;
 		AJUST_MINMAX(m_nTempValue[RESOLUSION], 0, 3);
 		break;
@@ -621,16 +621,16 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[TAB_MASTERVOLUME]);
 	Sprite::SetTexture(m_pTexture[TAB_MASTERVOLUME]);
 	Sprite::Draw();	
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[MASTER] * 70.0f * m_fMul;
-	m_pParam[BAR_GAGE]->pos = { ((300.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f)+MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_GAGE]->size.x = 60.0f * m_nTempValue[MASTER] * m_fMul;
+	m_pParam[BAR_GAGE]->pos = { (263.0f * m_fMul - (m_pParam[BAR_FRAME]->size.x/2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { (300.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_FRAME]->pos = { (150.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { ((m_nTempValue[MASTER] * 70.0f - 50.0f) * m_fMul) + MovePos.X ,(300.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_HANDLE]->pos = { (((60.0f*m_nTempValue[MASTER] - 60.0f)-30.0f) * m_fMul) + MovePos.X ,(300.0f * m_fMul) + MovePos.Y};
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
@@ -638,16 +638,16 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[TAB_BGM]);
 	Sprite::SetTexture(m_pTexture[TAB_BGM]);
 	Sprite::Draw();
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[BGM] * 70.0f * m_fMul;
-	m_pParam[BAR_GAGE]->pos = { ((300.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_GAGE]->size.x = m_nTempValue[BGM] * 60.0f * m_fMul;
+	m_pParam[BAR_GAGE]->pos = { ((263.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { (300.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_FRAME]->pos = { (150.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { ((m_nTempValue[BGM] * 70.0f - 50.0f) * m_fMul) + MovePos.X ,(200.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_HANDLE]->pos = { (((m_nTempValue[BGM] * 60.0f - 60.0f)-30.0f) * m_fMul) + MovePos.X ,(200.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
@@ -655,16 +655,16 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[TAB_SE]);
 	Sprite::SetTexture(m_pTexture[TAB_SE]);
 	Sprite::Draw();
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[SE] * 70.0f * m_fMul;
-	m_pParam[BAR_GAGE]->pos = { ((300.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_GAGE]->size.x = m_nTempValue[SE] * 60.0f * m_fMul;
+	m_pParam[BAR_GAGE]->pos = { ((263.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { (300.0f * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_FRAME]->pos = { (150.0f * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { ((m_nTempValue[SE] * 70.0f - 50.0f) * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
+	m_pParam[BAR_HANDLE]->pos = { (((m_nTempValue[SE] * 60.0f - 60.0f)-30.0f) * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();

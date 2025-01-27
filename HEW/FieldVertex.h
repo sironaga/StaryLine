@@ -35,6 +35,7 @@ public:
 	DirectX::XMFLOAT3 GetVertexPos(int);//引数の頂点番号の座標を返す関数
 	bool GetRoadStop(int);//引数でもらった方向が進めるかどうかの情報を渡す関数
 	float GetFeverPoint() { return nFeverPoint; }//フィーバーポイントを取得する関数
+	void SetFeverPoint();//フィーバーポイント同期
 
 	void SetBattleAddress(CBattle*);//CBattleクラスのアドレス情報をセットする関数
 	void SetPlayerAddress(CPlayer*);//CPlayerクラスのアドレス情報をセットする関数
@@ -130,6 +131,11 @@ private:
 
 	DirectX::XMFLOAT3 Fever_Draw_Angle;//フィーバー時の回転させるための値保存用
 	float Fever_Draw_Angle_Count;//フィーバーの描画UIを何回転させるか
+
+	DirectX::XMFLOAT3 Fever_Player_Draw_Pos;//フィーバー時のプレイヤーの座標
+	int Mode_Player_Move;//フィーバー時のプレイヤーの動き方
+	float Fever_Stop_Player_time; //フィーバー時のプレイヤーの止まっている時間
+	float Fever_Effects_Alpha;//フィーバーEffectの透明度
 	//float
 
 	CBattle* m_pBattle;//バトルクラスのポインター
@@ -152,6 +158,10 @@ private:
 
 	CEffectManager_sp* g_pLineEffects_Sprite;
 	CEffectManager_sp* g_pLineEffects[MAX_ALLY];
+
+	CEffectManager_sp* g_pFeverEffects_Sprite;
+	CEffectManager_sp* g_pFeverEffects[32];
+
 	CModelEx* m_pStar_Model[3];//Starのモデル
 	
 };

@@ -19,6 +19,7 @@ public:
 	//オプションの情報を設定
 	void SetOption(COption* InOption);
 	void SetRetry();
+	void SetPause();
 	void SetSelect();
 	//====ゲッター====
 	//ポーズ画面の判定

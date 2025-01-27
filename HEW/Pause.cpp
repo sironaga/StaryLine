@@ -3,6 +3,7 @@
 #include "Main.h"
 #include "Defines.h"
 #include "Easing.h"
+#include "InputEx.h"
 
 
 CPause::CPause()
@@ -62,13 +63,14 @@ CPause::CPause()
 		m_pSoundPause[2] = new CSoundList(SE_SELECT);
 		for (int i = 0; i < 3; i++)
 		{
+			m_pSoundPause[i]->SetMasterVolume();
 			m_pSoundPauseSE[i] = m_pSoundPause[i]->GetSound(false);
 		}
 }
 
 CPause::~CPause()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
 	}
@@ -85,7 +87,7 @@ void CPause::Update()
 	static int section = SEC_RETURN;//選択中のバーの場所
 	XAUDIO2_BUFFER buffer;
 	//ポーズボタンを押したか
-	if (!m_bPause && IsKeyTrigger(VK_ESCAPE))
+	if (!m_bPause && WithGetKeyTriger(XINPUT_GAMEPAD_START, VK_ESCAPE))
 	{
 		m_bPause = true;
 		m_ftime = 0.1f;
@@ -119,7 +121,7 @@ void CPause::Update()
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
 	{
-		if (IsKeyTrigger(VK_UP) || IsKeyTrigger('W'))
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
 		{
 			
 			
@@ -163,7 +165,7 @@ void CPause::Update()
 				break;
 			}
 		}
-		if (IsKeyTrigger(VK_DOWN) || IsKeyTrigger('S'))
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN,VK_DOWN) || IsKeyTrigger('S'))
 		{
 			
 			switch (section)
@@ -222,10 +224,10 @@ void CPause::Update()
 		default:
 			break;
 		}
+
 		//決定ボタン
-		if (IsKeyTrigger(VK_RETURN))
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN))
 		{
-			//se
 			//se
 			m_pSoundPauseSE[1]->Stop();
 			m_pSoundPauseSE[1]->FlushSourceBuffers();
@@ -239,8 +241,8 @@ void CPause::Update()
 				m_pOption->SetOption();
 				m_pOption->ResetPos();
 				m_pOption->ResetSize();
-				m_pOption->SetMulSize(0.8f);
-				m_pOption->SetAddPos(280.0f, 0.0f);
+				//m_pOption->SetMulSize(0.8f);
+				//m_pOption->SetAddPos(280.0f, 0.0f);
 				m_bOption = true;
 				break;
 			case SEC_RETRY:
@@ -275,7 +277,7 @@ void CPause::Update()
 			}
 			if (!m_pOption->GetOption())
 			{
-				if (IsKeyTrigger(VK_ESCAPE))
+				if (WithGetKeyTriger(XINPUT_GAMEPAD_START, VK_ESCAPE))
 				{
 					//se
 					m_pSoundPauseSE[0]->Stop();
@@ -500,6 +502,11 @@ void CPause::SetRetry()
 	m_bRetry = false;
 }
 
+void CPause::SetPause()
+{
+	m_bPause = true;
+}
+
 void CPause::SetSelect()
 {
 	m_bSelect = false;
@@ -532,7 +539,7 @@ bool CPause::GetReturn()
 
 void CPause::InitReload()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (m_pPauseTex[i]) SAFE_DELETE(m_pPauseTex[i]);
 	}
@@ -548,6 +555,7 @@ void CPause::InitReload()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
+	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/kuro.png"));
 
 	m_pSoundPause[0] = new CSoundList(SE_CANCEL);
 	m_pSoundPause[1] = new CSoundList(SE_DECISION);

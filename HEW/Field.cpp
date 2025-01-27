@@ -13,13 +13,13 @@ Field::Field(StageType StageNum)
 	{
 	case (int)EStageType::STAGE_GRASSLAND:
 		if (!m_pModel->Load(MODEL_PASS("Stage/Stage1_Meadow.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
-		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
+		m_Pos = DirectX::XMFLOAT3(30.0f, -3.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(0.0f), TORAD(180), TORAD(0));
 		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 		break;
 	case (int)EStageType::STAGE_DESERT:
 		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
-		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -8.0f, 40.0f);
 		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
 		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
 		break;
