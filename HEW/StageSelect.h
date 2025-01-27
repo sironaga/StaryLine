@@ -70,12 +70,13 @@ private:
 		GrassField = 0,
 		DesertField,
 		SnowField,
-		WorldField,
 
 		StageKindMax
 	};
 
 	CModelEx* m_pModel[StageKindMax];
+	Model* m_pWorldModel;
+	ObjectParam m_ModelWorldParam;
 	ObjectParam m_ModelParam[StageKindMax];
 	ObjectParam m_ModelSubParam[StageKindMax];
 	CBackGround* m_pBackGround;
