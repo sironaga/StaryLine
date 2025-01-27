@@ -211,3 +211,19 @@ bool CStartDirection::GetDraw()
 {
 	return m_NowDraw;
 }
+
+void CStartDirection::ReloadTexture()
+{
+	for (int i = 0; i < 7; i++)
+	{
+		SAFE_DELETE(m_StratSprite[i]);
+	}
+	//テクスチャーの読み込み
+	m_StratSprite[0] = new SpriteEx(TEX_PASS("Start/Battle_Start.png"));
+	m_StratSprite[1] = new SpriteEx(TEX_PASS("Start/Battle_Start_B.png"));
+	m_StratSprite[2] = new SpriteEx(TEX_PASS("Start/Battle_Start_A.png"));
+	m_StratSprite[3] = new SpriteEx(TEX_PASS("Start/Battle_Start_T.png"));
+	m_StratSprite[4] = new SpriteEx(TEX_PASS("Start/Battle_Start_T.png"));
+	m_StratSprite[5] = new SpriteEx(TEX_PASS("Start/Battle_Start_L.png"));
+	m_StratSprite[6] = new SpriteEx(TEX_PASS("Start/Battle_Start_E.png"));
+}

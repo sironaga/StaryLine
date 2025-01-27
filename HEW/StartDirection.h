@@ -20,6 +20,8 @@ public:
 	void SetTimer(float InTime);
 	//現在のDraw状態
 	bool GetDraw();
+
+	void ReloadTexture();
 private:
 	FLOAT3 m_tPos[7];//各文字のポジション
 	FLOAT3 m_tSize[7];//各文字のサイズ

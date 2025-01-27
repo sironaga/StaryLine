@@ -166,6 +166,7 @@ void Update()
 		if(g_scene == SCENE_GAME)stage = g_pScene->GetStage();
 		g_SceneType = (E_SCENE_TYPE)g_scene;
 		// 現在のシーンを削除 
+		g_hWnd = g_pScene->GethWnd();
 		delete g_pScene;
 
 
@@ -175,8 +176,6 @@ void Update()
 		case SCENE_TITLE:g_pScene = new CSceneTitle(g_pOption); break; // TITLE 
 		case STAGE_SELECT: 
 			g_pScene = new CStageSelect(); 
-			g_hWnd = g_pScene->GethWnd();
-			
 			break;
 		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
@@ -435,8 +434,10 @@ void InitResolusionMain()
 	pRTV = GetDefaultRTV();
 	pDSV = GetDefaultDSV();
 	g_pFade = new CTransition();
-	SAFE_DELETE(g_pDirection);
-	g_pDirection = new CStartDirection();
+	/*SAFE_DELETE(g_pDirection);
+	g_pDirection = new CStartDirection();*/
+	g_pDirection->ReloadTexture();
+	g_pScene->SetGameDirection(g_pDirection);
 	g_pPause->InitReload();
 	g_pOption->InitResolusion();
 	g_pPause->SetOption(g_pOption);
