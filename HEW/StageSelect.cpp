@@ -8,6 +8,7 @@
 #include "InputEx.h"
 #include "SoundList.h"
 #include"SceneResult.h"
+#include "Geometory.h"
 
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
@@ -99,6 +100,9 @@ CStageSelect::CStageSelect()
 	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
 	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), false,Model::ZFlip);
 
+	m_pStageLinie = new Model();
+	m_pStageLinie->Load(MODEL_PASS("Leader/Linie/Char_Main_Linie.fbx"), 1.0f, Model::ZFlip);
+
 	g_StageSelectSound = new CSoundList(BGM_TITLE);
 	m_pSourseStageSelectBGM = g_StageSelectSound->GetSound(true);
 	m_pSourseStageSelectBGM->Start();
@@ -146,6 +150,7 @@ CStageSelect::CStageSelect()
 	m_ModelParam[WorldField].pos    = { 0.0f,-66.0f,100.0f };
 	m_ModelParam[WorldField].size   = { 1.8f,1.8f,1.8f };
 	m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X),DirectX::XMConvertToRadians(GRASS_ROTATE_Y),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
+
 	m_pBackGround = new CBackGround();
 
 }
@@ -157,6 +162,7 @@ CStageSelect::~CStageSelect()
 		m_pSourseStageSelectBGM->Stop();
 		m_pSourseStageSelectBGM = nullptr;
 	}
+	SAFE_DELETE(m_pStageLinie);
 	if (g_StageSelectSound)
 	{
 		delete g_StageSelectSound;
@@ -549,6 +555,13 @@ void CStageSelect::Draw()
 	m_pStageSelect_Underbar->SetSize(1920.0f, -60.0f, 0.0f);
 	m_pStageSelect_Underbar->Disp();
 
+	//m_pStageLinie->SetPostion(0.0f, -66.0f, 100.0f);
+	//m_pStageLinie->SetRotation(m_ModelParam[WorldField].rotate.x, m_ModelParam[WorldField].rotate.y, m_ModelParam[WorldField].rotate.z);
+	//m_pStageLinie->SetScale(100.0f, 100.0f, 0.0f);
+	//m_pStageLinie->SetViewMatrix(GetView());
+	//m_pStageLinie->SetProjectionMatrix(GetProj());
+	//m_pStageLinie->Draw();
+
 	//if (g_Select_type.StageSubNumber == GRASSLAND_STAGE1)
 	//{
 	//Sprite::ReSetSprite();
@@ -627,6 +640,8 @@ void CStageSelect::Draw()
 	SetRender3D();
 	if (MainStage)
 	{
+		LinieDraw();
+
 		SetRender2D;
 		Sprite::ReSetSprite();
 		m_pWorldSelect->SetProjection(Get2DProj());
@@ -1244,6 +1259,69 @@ void CStageSelect::Draw()
 			}
 		}
 	}
+}
+
+void CStageSelect::LinieDraw()
+{
+	SetRender3D();
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f,25.0f,0.0f, 0.0f));
+	//拡大縮小行列(Scaling)
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f,1.5f,1.5f);
+	//回転行列(Rotation)
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * R * T;
+
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
+
+	Geometory::SetView(wvp[1]);
+	Geometory::SetProjection(wvp[2]);
+
+	ShaderList::SetWVP(wvp);
+
+	m_pStageLinie->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pStageLinie->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+	for (int i = 0; i < m_pStageLinie->GetMeshNum(); ++i)
+	{
+		Model::Mesh tMesh = *m_pStageLinie->GetMesh(i);
+		Model::Material material = *m_pStageLinie->GetMaterial(tMesh.materialID);
+		material.ambient.x = 0.85f; // x (r) 
+		material.ambient.y = 0.85f; // y (g) 
+		material.ambient.z = 0.85f; // z (b) 
+		ShaderList::SetMaterial(material);
+
+		// ボーンの情報をシェーダーに送る
+		//DirectX::XMFLOAT4X4 bones[200];
+
+		//for (int i = 0; i < tMesh.bones.size(); ++i) {
+		//	DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
+		//		tMesh.bones[i].invOffset * m_pStageLinie->GetBoneMatrix(tMesh.bones[i].nodeIndex)
+		//	));
+		//}
+
+		DirectX::XMFLOAT4X4 bones[200];
+		for (int j = 0; j < tMesh.bones.size(); ++j)
+		{
+			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+				tMesh.bones[j].invOffset * m_pStageLinie->GetBoneMatrix(tMesh.bones[j].nodeIndex)
+			));
+			ShaderList::SetBones(bones);
+		}
+
+
+		if (m_pStageLinie) {
+			m_pStageLinie->Draw(i);
+		}
+	}
+
+
 }
 
 //int CStageSelect::GetStageNum()

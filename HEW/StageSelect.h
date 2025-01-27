@@ -40,6 +40,8 @@ public:
 
 	//int GetStageNum();
 private:
+	void LinieDraw();
+
 	SpriteEx* m_pGrassLand;
 	SpriteEx* m_pDesert;
 	SpriteEx* m_pSnowField;
@@ -70,6 +72,7 @@ private:
 	};
 
 	CModelEx* m_pModel[StageKindMax];
+	Model* m_pStageLinie;
 	ObjectParam m_ModelParam[StageKindMax];
 	ObjectParam m_ModelSubParam[StageKindMax];
 	CBackGround* m_pBackGround;
