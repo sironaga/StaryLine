@@ -52,8 +52,8 @@ enum class HpTexture
 	Linie,
 	Boss,
 	Frame,
-	Ally1,
-	Ally2,
+	Ally3,
+	Ally4,
 	Enemy1,
 	Enemy2,
 	MAX,
@@ -122,10 +122,10 @@ void InitCharacterTexture(StageType StageType)
 	}
 	g_pAllyModel[(int)Ally::Ally3]->Load(MODEL_PASS("Character/Triangle/Triangle.fbx"), 0.05f, Model::None);
 	g_pAllyModel[(int)Ally::Ally4]->Load(MODEL_PASS("Character/Square/Square.fbx"), 0.05f, Model::None);
-	g_pHpGageTex[(int)HpTexture::Ally1] = new Texture();
-	g_pHpGageTex[(int)HpTexture::Ally1]->Create(TEX_PASS("HpGage/Battle_HP_Gage_LinieS.png"));
-	g_pHpGageTex[(int)HpTexture::Ally2] = new Texture();
-	g_pHpGageTex[(int)HpTexture::Ally2]->Create(TEX_PASS("HpGage/Battle_HP_Gage_LinieS.png"));
+	g_pHpGageTex[(int)HpTexture::Ally3] = new Texture();
+	g_pHpGageTex[(int)HpTexture::Ally3]->Create(TEX_PASS("HpGage/Battle_HP_Gage_LinieS.png"));
+	g_pHpGageTex[(int)HpTexture::Ally4] = new Texture();
+	g_pHpGageTex[(int)HpTexture::Ally4]->Create(TEX_PASS("HpGage/Battle_HP_Gage_LinieS.png"));
 	/*LinieŠÖ˜A‚ÌModel“Ç‚Ýž‚Ý*/
 	//HpƒQ[ƒW
 	g_pHpGageTex[(int)HpTexture::Linie] = new Texture();
@@ -1507,6 +1507,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	, m_pHpGage(nullptr)
 	, m_bSubModelCreate(SubModelCreate)
 	, m_bAnimationPlay(false)
+	, m_bReLoadFlag(false)
 {
 	switch (m_nTextureNumber)
 	{
@@ -2022,11 +2023,11 @@ void CHpUI::Draw(int nCornerCount)
 			//ƒQ[ƒW‚Ì•`‰æ
 			if (nCornerCount == 3)
 			{
-				m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Ally1]);
+				m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Ally3]);
 			}
 			else if (nCornerCount == 4)
 			{
-				m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Ally2]);
+				m_pSprite->SetTexture(g_pHpGageTex[(int)HpTexture::Ally4]);
 			}
 			m_pSprite->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 
