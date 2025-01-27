@@ -19,7 +19,7 @@ bool CSceneResult::bClearState[8];
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),nScore(0)
 {
-	ResultGameData.bWin = 1;
+	//ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
