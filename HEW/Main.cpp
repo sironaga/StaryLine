@@ -52,6 +52,8 @@ int g_NowHeight = 1080;
 int g_scene=SCENE_TITLE;
 int g_nEvent = 0;
 bool g_bResolution = false;
+StageType g_stage = {};
+
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
 
@@ -145,7 +147,7 @@ void Update()
 	if (g_pPause->GetRetry())
 	{
 		g_pPause->SetRetry();
-		g_pScene->SetNext(SCENE_GAME, g_pScene->GetStage());
+		g_pScene->SetNext(SCENE_GAME, g_stage);
 	}
 	if (g_pPause->GetSelect())
 	{
@@ -160,10 +162,10 @@ void Update()
 	{
 		
 		
-		StageType stage = {};
+		
 		// 次のシーンの情報を取得 
 		g_scene = g_pScene->NextScene();
-		if(g_scene == SCENE_GAME)stage = g_pScene->GetStage();
+		if(g_scene == SCENE_GAME)g_stage = g_pScene->GetStage();
 		g_SceneType = (E_SCENE_TYPE)g_scene;
 		// 現在のシーンを削除 
 		delete g_pScene;
@@ -178,7 +180,7 @@ void Update()
 			g_hWnd = g_pScene->GethWnd();
 			
 			break;
-		case SCENE_GAME:g_pScene = new CSceneGame(stage);g_pDirection->SetTimer(4.5f); break; // GAME 
+		case SCENE_GAME:g_pScene = new CSceneGame(g_stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
