@@ -19,9 +19,7 @@ bool CSceneResult::bClearState[8];
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f)
 {
-	// デバッグ
-	ResultGameData.bWin = 0;
-
+	//ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
@@ -64,6 +62,8 @@ CSceneResult::CSceneResult()
 
 	m_pResultSelectSound    = new CSoundList(SE_SELECT);
 	m_pResultSelectSE = m_pResultSelectSound->GetSound(false);
+
+	m_pNumber = new CNumberUI();
 
 }
 
@@ -288,85 +288,85 @@ void CSceneResult::DefaultSetPos(void)
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
 		m_pStageSelect[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStageSelect[nLoop]->SetSize(0.3f, 0.07f, 1.0f);
+		m_pStageSelect[nLoop]->SetSize(600.0f, 80.0f, 1.0f);
 		m_pStageSelect[nLoop]->SetPositon(1630.0f, 940.0f, 10.0f);
 
 		m_pNextUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pNextUI[nLoop]->SetSize(0.3f, 0.07f, 1.0f);
+		m_pNextUI[nLoop]->SetSize(600.0f, 80.0f, 1.0f);
 		m_pNextUI[nLoop]->SetPositon(1630.0f, 840.0f, 10.0f);
 	}
-
+	m_pBack->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pBack->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pBack->SetSize(1.0f, 1.0f, 1.0f);
+	m_pBack->SetSize(2000.0f, 2000.0f, 1.0f);
 	m_pBack->SetPositon(960.0f, 540.0f, 10.0f);
 
 	m_pSelect->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pSelect->SetSize(0.315f, 0.09f, 1.0f);
+	m_pSelect->SetSize(620.0f, 105.0f, 1.0f);
 	m_pSelect->SetPositon(1630.0f, 940.0f, 10.0f);
 
 	m_pUnderBar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pUnderBar->SetSize(1.0f, 0.05f, 1.0f);
+	m_pUnderBar->SetSize(2000.0f, 50.0f, 1.0f);
 	m_pUnderBar->SetPositon(960.0f, 1050.0f, 10.0f);
 
 	m_pClearTime->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pClearTime->SetSize(0.3f, 0.07f, 1.0f);
+	m_pClearTime->SetSize(600.0f, 70.0f, 1.0f);
 	m_pClearTime->SetPositon(1632.0f, 434.0f, 10.0f);
 
 	m_pHitPoint->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pHitPoint->SetSize(0.3f, 0.07f, 1.0f);
+	m_pHitPoint->SetSize(600.0f, 70.0f, 1.0f);
 	m_pHitPoint->SetPositon(1632.0f, 504.0f, 10.0f);
 
 	m_pSummonData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pSummonData->SetSize(0.3f, 0.14f, 1.0f);
+	m_pSummonData->SetSize(600.0f, 140.0f, 1.0f);
 	m_pSummonData->SetPositon(1632.0f, 610.0f, 10.0f);
 	
 	m_pPiyo->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pPiyo->SetSize(0.15f, 0.14f, 1.0f);
+	m_pPiyo->SetSize(300.0f, 150.0f, 1.0f);
 	m_pPiyo->SetPositon(600.0f, 590.0f, 10.0f);
 
 	if (ResultGameData.bWin)
 	{
 
 		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pTextShadow->SetSize(0.4f, 0.05f, 1.0f);
+		m_pTextShadow->SetSize(700.0f, 50.0f, 1.0f);
 		m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
 
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pText->SetSize(0.4f, 0.125f, 1.0f);
+		m_pText->SetSize(700.0f, 123.0f, 1.0f);
 		m_pText->SetPositon(920.0f, 140.0f, 10.0f);
 
 		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pLighting->SetSize(0.47f, 1.0f, 1.0f);
+		m_pLighting->SetSize(940.0f, 1000.0f, 1.0f);
 		m_pLighting->SetPositon(460.0f, 440.0f, 10.0f);
 
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pCharacter->SetSize(0.45f, 0.75f, 1.0f);
+		m_pCharacter->SetSize(800.0f, 750.0f, 1.0f);
 		m_pCharacter->SetPositon(560.0f, 440.0f, 10.0f);
 
 		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pShadow->SetSize(0.24f, 0.15f, 1.0f);
+		m_pShadow->SetSize(400.0f, 150.0f, 1.0f);
 		m_pShadow->SetPositon(460.0f, 820.0f, 10.0f);
 	}
 	else
 	{
 		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pTextShadow->SetSize(0.4f, 0.05f, 1.0f);
+		m_pTextShadow->SetSize(700.0f, 50.0f, 1.0f);
 		m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
 
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(190.0f));
-		m_pText->SetSize(0.4f, 0.125f, 1.0f);
+		m_pText->SetSize(700.0f, 123.0f, 1.0f);
 		m_pText->SetPositon(920.0f, 140.0f, 10.0f);
 
 		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pLighting->SetSize(0.47f, 0.6, 1.0f);
+		m_pLighting->SetSize(940.0f, 600.0f, 1.0f);
 		m_pLighting->SetPositon(460.0f, 640.0f, 10.0f);
 
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pCharacter->SetSize(0.3f, 0.3f, 1.0f);
+		m_pCharacter->SetSize(600.0f, 300.0f, 1.0f);
 		m_pCharacter->SetPositon(490.0f, 700.0f, 10.0f);
 
 		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pShadow->SetSize(0.3f, 0.15f, 1.0f);
+		m_pShadow->SetSize(600.0f, 150.0f, 1.0f);
 		m_pShadow->SetPositon(470.0f, 800.0f, 10.0f);
 
 	}
