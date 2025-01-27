@@ -256,6 +256,8 @@ void CSceneResult::LoadTexture(void)
 	m_pUnderBar = new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
 	m_pBack = new SpriteEx("Assets/Texture/Result/B.png");
 	m_pPiyo = new SpriteEx("Assets/Texture/Result/stan.png");
+	m_pScore = new SpriteEx("Assets/Texture/Result/Score.png");
+	m_pBestScore = new SpriteEx("Assets/Texture/Result/BestScore.png");
 	// -- ï™äÚì«Ç›çûÇ›
 	if (ResultGameData.bWin)
 	{
@@ -268,8 +270,6 @@ void CSceneResult::LoadTexture(void)
 		m_pNextUI[0] = new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
 		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
 		m_pStar = new SpriteEx("Assets/Texture/Star/star.png");
-		m_pScore = new SpriteEx("Assets/Texture/Result/Score.png");
-		m_pBestScore = new SpriteEx("Assets/Texture/Result/BestScore.png");
 	}
 	else
 	{
