@@ -43,6 +43,8 @@ public:
 
 	//int GetStageNum();
 private:
+
+	void LinieDraw();
 	void SelectAnimation();
 
 	SpriteEx* m_pGrassLand;
@@ -75,6 +77,7 @@ private:
 	};
 
 	CModelEx* m_pModel[StageKindMax];
+	Model* m_pStageLinie;
 	Model* m_pWorldModel;
 	ObjectParam m_ModelWorldParam;
 	ObjectParam m_ModelParam[StageKindMax];
