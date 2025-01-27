@@ -164,8 +164,6 @@ CStageSelect::CStageSelect()
 
 	m_pBackGround = new CBackGround();
 
-	m_pModel[World] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), false, Model::ZFlip);
-
 	m_tDecitionPos[0] = { -375.0f, -55.0f };
 	m_tDecitionPos[1] = {  375.0f, -385.0f };
 }
@@ -178,6 +176,7 @@ CStageSelect::~CStageSelect()
 		m_pSourseStageSelectBGM = nullptr;
 	}
 	SAFE_DELETE(m_pStageLinie);
+	SAFE_DELETE(m_pWorldModel);
 	if (g_StageSelectSound)
 	{
 		delete g_StageSelectSound;
@@ -304,7 +303,8 @@ void CStageSelect::Update()
 					{
 						g_Select_type.StageMainNumber = DESERT;
 						m_bMoving = true; 
-						m_rotate.z = GRASS_ROTATE_Z2; 
+						m_rotate.z = GRASS_ROTATE_Z2;
+						bRight = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
 					{ 
@@ -312,6 +312,7 @@ void CStageSelect::Update()
 						m_bMoving = true; 
 						m_rotate.z = GRASS_ROTATE_Z;
 						posX[2] = -400.0f;
+						bRight = false;
 					}
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 					break;
@@ -319,19 +320,34 @@ void CStageSelect::Update()
 					posX[0] = -400.0f;
 					posX[1] = 0.0f;
 					posX[2] = 400.0f;
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageMainNumber = SNOWFIELD; m_bMoving = true; }
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					{
+						g_Select_type.StageMainNumber = SNOWFIELD; 
+						m_bMoving = true;
+						bRight = true;
+					}
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
+					{ 
+						g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; 
+						bRight = false;
+					}
 					g_Select_type.StageSubNumber = DESERT_STAGE1;
 					break;
 				case(SNOWFIELD):
 					posX[0] = -800.0f;
 					posX[1] = -400.0f;
 					posX[2] = 0.0f;
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) { g_Select_type.StageMainNumber = DESERT; m_bMoving = true; }
-					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
+					{
+						g_Select_type.StageMainNumber = DESERT; m_bMoving = true; 
+						bRight = false;
+					}
+					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					{
 						g_Select_type.StageMainNumber = GRASSLAND; 
 						m_bMoving = true; 
 						posX[0] = 400.0f;
+						bRight = true;
 					};
 					g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
 					break;
@@ -359,21 +375,32 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(GRASSLAND_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageSubNumber = GRASSLAND_STAGE2; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					{
+						g_Select_type.StageSubNumber = GRASSLAND_STAGE2;
+						m_bMoving = true;
+						bRight = true;
+					}
 					break;
 
 				case(GRASSLAND_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
-						g_Select_type.StageSubNumber = GRASSLAND_STAGE3; m_bMoving = true;
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					{
+						g_Select_type.StageSubNumber = GRASSLAND_STAGE3;
+						m_bMoving = true;
+						bRight = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE1; m_bMoving = true;
+						bRight = false;
 					}
 					break;
 
 				case(GRASSLAND_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
+					{
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE2; m_bMoving = true;
+						bRight = false;
 					}
 					break;
 				}
@@ -383,21 +410,33 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(DESERT_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageSubNumber = DESERT_STAGE2; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					{
+						g_Select_type.StageSubNumber = DESERT_STAGE2; 
+						m_bMoving = true;
+						bRight = true;
+					}
 					break;
 
 				case(DESERT_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
-						g_Select_type.StageSubNumber = DESERT_STAGE3; m_bMoving = true;
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					{
+						g_Select_type.StageSubNumber = DESERT_STAGE3; 
+						m_bMoving = true;
+						bRight = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
 						g_Select_type.StageSubNumber = DESERT_STAGE1; m_bMoving = true;
+						bRight = false;
 					}
 					break;
 
 				case(DESERT_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
-						g_Select_type.StageSubNumber = DESERT_STAGE2; m_bMoving = true;
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
+					{
+						g_Select_type.StageSubNumber = DESERT_STAGE2;
+						m_bMoving = true;
+						bRight = false;
 					}
 					break;
 				}
@@ -407,21 +446,35 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(SNOWFIELD_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) { g_Select_type.StageSubNumber = SNOWFIELD_STAGE2; m_bMoving = true; }
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					{
+						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2;
+						m_bMoving = true;
+						bRight = true;
+					}
 					break;
 
 				case(SNOWFIELD_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) {
-						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3; m_bMoving = true;
+					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					{
+						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3;
+						m_bMoving = true;
+						bRight = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
-						g_Select_type.StageSubNumber = SNOWFIELD_STAGE1; m_bMoving = true;
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
+					{
+						g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
+						m_bMoving = true;
+						bRight = false;
 					}
 					break;
 
 				case(SNOWFIELD_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
-						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2; m_bMoving = true;
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
+					{
+						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2;
+						bRight = false;
+						m_bMoving = true;
 					}
 					break;
 				}
@@ -455,14 +508,6 @@ void CStageSelect::Update()
 					}
 
 				}
-			}//V[Ús
-			if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
-			{
-				bRight = true;
-			}
-			else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
-			{
-				bRight = false;
 			}
 			m_rotate.x = m_ModelWorldParam.rotate.x;
 			m_rotate.y = m_ModelWorldParam.rotate.y;
@@ -642,33 +687,31 @@ void CStageSelect::Draw()
 		wvp[2] = GetProj();
 
 
-		m_pModel[World]->SetWorldMatrix(wvp[0]);
-		m_pModel[World]->Draw();
-		//Geometory::SetView(wvp[1]);
-		//Geometory::SetProjection(wvp[2]);
-		//ShaderList::SetWVP(wvp);	//引数にはXMFLOAT4x4型の、要素数３の配列のアドレスを渡すこと
+		Geometory::SetView(wvp[1]);
+		Geometory::SetProjection(wvp[2]);
+		ShaderList::SetWVP(wvp);	//引数にはXMFLOAT4x4型の、要素数３の配列のアドレスを渡すこと
 
-		////モデルに使用する頂点シェーダー、ピクセルシェーダーを設
-		//m_pWorldModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-		//m_pWorldModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+		//モデルに使用する頂点シェーダー、ピクセルシェーダーを設
+		m_pWorldModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+		m_pWorldModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
 
-		////複数のメッシュで構成されている場合ある部分は金属的な表現、ある部分は非金属的な表現と
-		////分ける場合がある前回の表示は同じマテリアルで一括表示していたため、メッシュごとにマテリアルを
-		////切り替える
-		//for (int i = 0; i < m_pWorldModel->GetMeshNum(); ++i)
-		//{
-		//	//メッシュに割り当てられているマテリアルを取得
-		//	Model::Material material = *m_pWorldModel->GetMaterial(m_pWorldModel->GetMesh(i)->materialID);
-		//	material.ambient.x = 0.85f; // x (r) 
-		//	material.ambient.y = 0.85f; // y (g) 
-		//	material.ambient.z = 0.85f; // z (b) 
-		//	//シェーダーへマテリアルを設定
-		//	ShaderList::SetMaterial(material);
+		//複数のメッシュで構成されている場合ある部分は金属的な表現、ある部分は非金属的な表現と
+		//分ける場合がある前回の表示は同じマテリアルで一括表示していたため、メッシュごとにマテリアルを
+		//切り替える
+		for (int i = 0; i < m_pWorldModel->GetMeshNum(); ++i)
+		{
+			//メッシュに割り当てられているマテリアルを取得
+			Model::Material material = *m_pWorldModel->GetMaterial(m_pWorldModel->GetMesh(i)->materialID);
+			material.ambient.x = 0.85f; // x (r) 
+			material.ambient.y = 0.85f; // y (g) 
+			material.ambient.z = 0.85f; // z (b) 
+			//シェーダーへマテリアルを設定
+			ShaderList::SetMaterial(material);
 
-		//	//モデルの描画
-		//	m_pWorldModel->Draw(i);
-		//}
+			//モデルの描画
+			m_pWorldModel->Draw(i);
+		}
 	}
 	else
 	{
@@ -1335,9 +1378,9 @@ void CStageSelect::LinieDraw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f,25.0f,0.0f, 0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 25.0f, 0.0f, 0.0f));
 	//拡大縮小行列(Scaling)
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f,1.5f,1.5f);
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	//それぞれの行列を掛け合わせて格納
@@ -1389,6 +1432,7 @@ void CStageSelect::LinieDraw()
 			m_pStageLinie->Draw(i);
 		}
 	}
+}
 
 
 void CStageSelect::SelectAnimation()
