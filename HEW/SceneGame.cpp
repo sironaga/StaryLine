@@ -422,9 +422,11 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	m_pFieldVertex->InitTextureModel();
 	SAFE_DELETE(m_pFade);
 	m_pFade = new CTransition();
+	m_pFade->SetFade(1.0f, true);
 	m_pPlayer->Reload();
 	ReLoadCharacterTexture(m_pBattle->m_nStageNum);
 	m_pBattle->ReLoadTexture();
-	
+	m_pBattle->Update();
+
 	SetNowResolusion(wide, height);
 }

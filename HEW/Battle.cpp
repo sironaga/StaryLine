@@ -558,9 +558,9 @@ void CBattle::ReLoadTexture(void)
 		m_pEnemy[i]->SetReLoadFlag();
 	}
 	//味方リーダーポインタの解放
-	m_pAllyLeader->SetReLoadFlag();
+	if(m_pAllyLeader)m_pAllyLeader->SetReLoadFlag();
 	//敵リーダーポインタの解放
-	m_pEnemyLeader->SetReLoadFlag();
+	if (m_pEnemyLeader)m_pEnemyLeader->SetReLoadFlag();
 }
 
 //味方の情報保存処理

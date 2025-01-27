@@ -51,7 +51,7 @@ int g_NowWide = 1920;
 int g_NowHeight = 1080;
 int g_scene=SCENE_TITLE;
 int g_nEvent = 0;
-
+bool g_bResolution = false;
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
 
@@ -136,7 +136,11 @@ void Update()
 	if (g_pPause->GetPause())
 	{
 		g_pScene->SetMasterVolume();
-		return;
+		if (!g_bResolution)
+		{
+			return;
+		}
+		g_bResolution = false;
 	}
 	if (g_pPause->GetRetry())
 	{
@@ -418,10 +422,10 @@ void SetRender3D()
 }
 void InitResolusionMain()
 {
-	static int b =g_pOption->GetResolusion();
+	static int b = g_pOption->GetResolusion();
 	if (g_scene == SCENE_GAME && b != g_pOption->GetResolusion())
 	{
-		bool fullscreen ;
+		bool fullscreen;
 		if (g_pOption->GetIsFullScreen() == 1) fullscreen = false;
 		else fullscreen = true;
 
@@ -433,9 +437,10 @@ void InitResolusionMain()
 	g_pFade = new CTransition();
 	SAFE_DELETE(g_pDirection);
 	g_pDirection = new CStartDirection();
-	SAFE_DELETE(g_pPause);
-	g_pPause = new CPause();
+	g_pPause->InitReload();
+	g_pOption->InitResolusion();
 	g_pPause->SetOption(g_pOption);
+	if(g_scene == SCENE_GAME)g_bResolution = true;
 }
 void SetNowResolusion(int wide, int height)
 {

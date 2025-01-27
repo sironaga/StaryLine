@@ -399,6 +399,14 @@ void ReLoadSound()
 	g_wandonoffSound = new CSoundList(SE_WANDONOFF);
 	g_wandonoffSound->SetMasterVolume();
 	g_pSourceWandonoff = g_wandonoffSound->GetSound(false);
+
+	for (int i = 0; i < (int)CharactersEffect::MAX; i++)SAFE_DELETE(g_pCharacterEffects[i]);
+
+	g_pCharacterEffects[(int)CharactersEffect::Aura] = new CEffectManager_sp(EFFECT_PASS("Sprite/Aura.png"), 4, 14, 3.0f);
+	g_pCharacterEffects[(int)CharactersEffect::Create] = new CEffectManager_sp(EFFECT_PASS("Sprite/warp.png"), 4, 8, 3.0f);
+	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/SwordAtk.png"), 4, 7, 1.0f);
+	g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/BowAtk.png"), 4, 6, 1.0f);
+	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager_sp(EFFECT_PASS("Sprite/Death.png"), 4, 8, 3.0f);
 }
 
 //キャラクターの基底クラスのコンストラクタ
@@ -794,16 +802,38 @@ void CAlly::Update(void)
 		m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
 		buffer = g_WeaknessAttackSound->GetBuffer(false);
 		m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
+		//エフェクトの破棄
+		for (int i = 0; i < (int)FighterEffect::MAX; i++)
+		{
+			if (m_pEffect[i])
+			{
+				m_pEffect[i] = nullptr;
+			}
+		}
 		switch (m_nCornerCount)
 		{
 		case 3:
 			//モデル
 			m_pModel = g_pAllyModel[(int)Ally::Ally3];
+			//攻撃エフェクトのポインタ同期
+			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::SwordAtk]);
 			break;
 		case 4:
 			//モデル
 			m_pModel = g_pAllyModel[(int)Ally::Ally4];
+			//攻撃エフェクトのポインタ同期
+			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
 			break;
+		}
+		m_pEffect[(int)FighterEffect::Create] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Create]);
+		m_pEffect[(int)FighterEffect::Death] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Death]);
+		if (m_bStellaBuff)
+		{
+			m_pEffect[(int)FighterEffect::Aura] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Aura]);
+		}
+		else
+		{
+			m_pEffect[(int)FighterEffect::Aura] = nullptr;
 		}
 		m_bReLoadFlag = false;
 	}
@@ -1168,16 +1198,38 @@ void CEnemy::Update(void)
 		m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
 		buffer = g_WeaknessAttackSound->GetBuffer(false);
 		m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
+		//エフェクトの破棄
+		for (int i = 0; i < (int)FighterEffect::MAX; i++)
+		{
+			if (m_pEffect[i])
+			{
+				m_pEffect[i] = nullptr;
+			}
+		}
 		switch (m_nCornerCount)
 		{
 		case 3:
 			//モデル
-			m_pModel = g_pEnemyModel[(int)Enemy::Enemy1];
+			m_pModel = g_pAllyModel[(int)Ally::Ally3];
+			//攻撃エフェクトのポインタ同期
+			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::SwordAtk]);
 			break;
 		case 4:
 			//モデル
-			m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
+			m_pModel = g_pAllyModel[(int)Ally::Ally4];
+			//攻撃エフェクトのポインタ同期
+			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
 			break;
+		}
+		m_pEffect[(int)FighterEffect::Create] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Create]);
+		m_pEffect[(int)FighterEffect::Death] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Death]);
+		if (m_bStellaBuff)
+		{
+			m_pEffect[(int)FighterEffect::Aura] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::Aura]);
+		}
+		else
+		{
+			m_pEffect[(int)FighterEffect::Aura] = nullptr;
 		}
 		m_bReLoadFlag = false;
 	}
