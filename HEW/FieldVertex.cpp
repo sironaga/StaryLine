@@ -107,10 +107,13 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_Summon_Log(nullptr)
 	, m_pSprite_Ally_Number{ nullptr }
 	, m_pSprite_Ally_Count{ nullptr }
+	, g_pFeverEffects_Sprite(nullptr)
+	, g_pFeverEffects{nullptr}
 	, g_pLineEffects_Sprite( nullptr)
 	, g_pLineEffects{nullptr}
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
+	, Fever_Effects_Alpha(1.0f)
 {
 	//-----サウンドの初期化-----//
 	{
@@ -163,8 +166,12 @@ CFieldVertex::CFieldVertex()
 
 	m_pStarLine = new StarLine();
 	
+	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
 	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/図形生成.png"), 4, 8, 1.0f);
-	
+	for (int i = 0; i < 32; i++)
+	{
+		g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
+	}
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
 		g_pLineEffects[i] = new CEffectManager_sp(g_pLineEffects_Sprite);
@@ -357,6 +364,11 @@ CFieldVertex::~CFieldVertex()
 	delete g_Fieldsound;
 	g_FieldSe = nullptr;
 
+	SAFE_DELETE(g_pFeverEffects_Sprite);
+	for (int i = 0; i < 32; i++)
+	{
+		g_pFeverEffects[i] = nullptr;
+	}
 	SAFE_DELETE(g_pLineEffects_Sprite);
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
@@ -811,6 +823,26 @@ void CFieldVertex::FeverDraw()
 			m_pSprite_Fever_Player->ReSetSprite();//スプライトのリセット
 		}
 	}
+
+	if (GetFeverMode())
+	{
+		
+		for (int i = 0; i < 32; i++)
+		{
+			if (!g_pFeverEffects[i]->IsPlay())
+			{
+				g_pFeverEffects[i]->SetPos({ -100.0f + 30.0f*(i%8),90.0f - 30.0f*(i/8),0.0f });
+				g_pFeverEffects[i]->SetSize({ 50.0f,50.0f,0.0f });
+				
+				g_pFeverEffects[i]->Play(true);
+			}
+			g_pFeverEffects[i]->SetColor({ 1.0f,1.0f,1.0f,Fever_Effects_Alpha });
+			g_pFeverEffects[i]->Update();
+			g_pFeverEffects[i]->Draw();
+		}
+		Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
+		if (Fever_Effects_Alpha < 0.0f)Fever_Effects_Alpha = 0.0f;
+	}
 }
 
 ////=====ログの更新処理の関数=====//
@@ -1117,6 +1149,7 @@ void CFieldVertex::InitFieldVertex()
 		StartVertex = GoalVertex;//始点を今の地点に初期化
 		NowShapes = 0;//格納した図形の数初期化
 		Effect_NowShapes = 0;
+		Fever_Effects_Alpha = 1.0f;
 
 		Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
 		Fever_Draw_Angle_Count = 0.0f;
@@ -1228,6 +1261,9 @@ void CFieldVertex::InitTextureModel()
 		}
 
 		m_pStarLine = new StarLine();
+
+		g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
+		g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/図形生成.png"), 4, 8, 1.0f);
 
 		m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 		m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));

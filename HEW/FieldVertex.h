@@ -135,6 +135,7 @@ private:
 	DirectX::XMFLOAT3 Fever_Player_Draw_Pos;//フィーバー時のプレイヤーの座標
 	int Mode_Player_Move;//フィーバー時のプレイヤーの動き方
 	float Fever_Stop_Player_time; //フィーバー時のプレイヤーの止まっている時間
+	float Fever_Effects_Alpha;//フィーバーEffectの透明度
 	//float
 
 	CBattle* m_pBattle;//バトルクラスのポインター
@@ -157,6 +158,10 @@ private:
 
 	CEffectManager_sp* g_pLineEffects_Sprite;
 	CEffectManager_sp* g_pLineEffects[MAX_ALLY];
+
+	CEffectManager_sp* g_pFeverEffects_Sprite;
+	CEffectManager_sp* g_pFeverEffects[32];
+
 	CModelEx* m_pStar_Model[3];//Starのモデル
 	
 };
