@@ -30,7 +30,7 @@ HRESULT Texture::Create(const char* fileName)
 	if (strstr(fileName, ".tga"))
 		hr = DirectX::LoadFromTGAFile(wPath, &mdata, image);
 	else
-		hr = DirectX::LoadFromWICFile(wPath, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &mdata, image);
+		hr = DirectX::LoadFromWICFile(wPath, DirectX::WIC_FLAGS::WIC_FLAGS_IGNORE_SRGB, &mdata, image);
 	if (FAILED(hr)) {
 		return E_FAIL;
 	}
