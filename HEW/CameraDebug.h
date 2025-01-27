@@ -7,7 +7,8 @@ class CameraDebug :public Camera
 public:
 	CameraDebug();
 	~CameraDebug() {};
-	void Update();
+	virtual void Update()override;
+	virtual void SetCameraPos(DirectX::XMFLOAT3 look)override;
 
 private:
 	float m_radXZ; /* ƒJƒƒ‰‚Ì‰¡‰ñ“] */

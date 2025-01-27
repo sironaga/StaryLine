@@ -61,3 +61,8 @@ DirectX::XMMATRIX Camera::GetProjection()
 {
 	return DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_near, m_far);
 }
+
+void Camera::SetCameraPos(DirectX::XMFLOAT3 look)
+{
+
+}

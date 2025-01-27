@@ -36,3 +36,9 @@ void CameraDebug::Update()
 	m_pos.y = sinf(m_radY) * m_radius + m_look.y;
 	m_pos.z = cosf(m_radY) * cosf(m_radXZ) * m_radius + m_look.z;
 }
+
+void CameraDebug::SetCameraPos(DirectX::XMFLOAT3 look)
+{
+	//ƒJƒƒ‰ˆÊ’u‚ÌŒvZ
+	m_look = look;
+}
