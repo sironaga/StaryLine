@@ -1221,6 +1221,7 @@ void CFieldVertex::SubtractFeverPoint()
 ////=====モデルの初期化をする関数=====//
 void CFieldVertex::InitTextureModel()
 {
+
 	//-----スプライトのメモリ確保-----//
 	{
 		m_pSprite_SuperStar_Number = new Sprite();
@@ -1233,6 +1234,7 @@ void CFieldVertex::InitTextureModel()
 		m_pSprite_Ally_Count[1] = new Sprite();
 		m_pSprite_Ally_Count[2] = new Sprite();
 		m_pSprite_Ally_Count[3] = new Sprite();
+		m_pSprite_Fever_Player = new Sprite();
 		for (int i = 0; i < 10; i++)
 		{
 			m_pSprite_Ally_Number[i] = new Sprite();
@@ -1264,6 +1266,14 @@ void CFieldVertex::InitTextureModel()
 
 		g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
 		g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/図形生成.png"), 4, 8, 1.0f);
+		for (int i = 0; i < 32; i++)
+		{
+			g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
+		}
+		for (int i = 0; i < MAX_ALLY; i++)
+		{
+			g_pLineEffects[i] = new CEffectManager_sp(g_pLineEffects_Sprite);
+		}
 
 		m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 		m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
@@ -1349,6 +1359,7 @@ void CFieldVertex::InitTextureModel()
 				MessageBox(NULL, "Fever_Star 画像", "Error", MB_OK);
 			}
 		}
+		m_pTex_Fever_Player->Create(TEX_PASS("Fever_Star/FieldVertex_Player_UI.png"));
 	}
 
 	//召喚数のボード初期化
