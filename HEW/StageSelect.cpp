@@ -8,6 +8,7 @@
 #include "InputEx.h"
 #include "SoundList.h"
 #include"SceneResult.h"
+#include "Geometory.h"
 
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
@@ -66,6 +67,7 @@ CStageSelect::CStageSelect()
 	, m_pDecition(nullptr)
 	, m_pEffect{}, m_pStarEfc{}
 	, m_tBGRotateZ(0.0f)
+	, m_ModelWorldParam{}
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -101,8 +103,8 @@ CStageSelect::CStageSelect()
 	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
 	m_pModel[DesertField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage02_Desert.fbx"), false);
 	m_pModel[SnowField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage03_SnowField.fbx"), false);
-	m_pModel[WorldField] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), false,Model::ZFlip);
-
+	m_pWorldModel = new Model(); 
+	m_pWorldModel->Load(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), 1.0f, Model::ZFlip);
 	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/BackGround_ShootginStars.png", 8, 8, 3.0f);
 	for (int i = 0; i < SELECT_MAX_STAR; i++)
 	{
@@ -153,11 +155,12 @@ CStageSelect::CStageSelect()
 
 	}
 
-	m_ModelParam[WorldField].pos    = { 0.0f,-66.0f,100.0f };
-	m_ModelParam[WorldField].size   = { 1.8f,1.8f,1.8f };
-	m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X),DirectX::XMConvertToRadians(GRASS_ROTATE_Y),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
+	m_ModelWorldParam.pos    = { 0.0f,-66.0f,100.0f };
+	m_ModelWorldParam.size   = { 1.8f,1.8f,1.8f };
+	m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X),DirectX::XMConvertToRadians(GRASS_ROTATE_Y),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
 	m_pBackGround = new CBackGround();
 
+	m_pModel[World] = new CModelEx(MODEL_PASS("StageSelect/WorldSelect_World.fbx"), false, Model::ZFlip);
 
 	m_tDecitionPos[0] = { -375.0f, -55.0f };
 	m_tDecitionPos[1] = {  375.0f, -385.0f };
@@ -431,18 +434,18 @@ void CStageSelect::Update()
 					subposX[0] = 0.0f; subposX[1] = 400.0f; subposX[2] = 800.0f;
 					MainStage ^= true;
 					
-					m_ModelParam[WorldField].pos = { 0.0f,-66.0f,100.0f };
-					m_ModelParam[WorldField].size = { 1.8f,1.8f,1.8f };
+					m_ModelWorldParam.pos = { 0.0f,-66.0f,100.0f };
+					m_ModelWorldParam.size = { 1.8f,1.8f,1.8f };
 					switch (g_Select_type.StageMainNumber)
 					{
 					case(GRASSLAND):
-						m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X) ,DirectX::XMConvertToRadians(GRASS_ROTATE_Y) ,DirectX::XMConvertToRadians(GRASS_ROTATE_Z) };
+						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(GRASS_ROTATE_X) ,DirectX::XMConvertToRadians(GRASS_ROTATE_Y) ,DirectX::XMConvertToRadians(GRASS_ROTATE_Z) };
 						break;
 					case(DESERT):
-						m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(DESERT_ROTATE_X) ,DirectX::XMConvertToRadians(DESERT_ROTATE_Y) ,DirectX::XMConvertToRadians(DESERT_ROTATE_Z) };
+						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(DESERT_ROTATE_X) ,DirectX::XMConvertToRadians(DESERT_ROTATE_Y) ,DirectX::XMConvertToRadians(DESERT_ROTATE_Z) };
 						break;
 					case(SNOWFIELD):
-						m_ModelParam[WorldField].rotate = { DirectX::XMConvertToRadians(SNOW_ROTATE_X) ,DirectX::XMConvertToRadians(SNOW_ROTATE_Y) ,DirectX::XMConvertToRadians(SNOW_ROTATE_Z) };
+						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(SNOW_ROTATE_X) ,DirectX::XMConvertToRadians(SNOW_ROTATE_Y) ,DirectX::XMConvertToRadians(SNOW_ROTATE_Z) };
 						break;
 					}
 
@@ -456,9 +459,9 @@ void CStageSelect::Update()
 			{
 				bRight = false;
 			}
-			m_rotate.x = m_ModelParam[WorldField].rotate.x;
-			m_rotate.y = m_ModelParam[WorldField].rotate.y;
-			if(g_Select_type.StageMainNumber != GRASSLAND)m_rotate.z = m_ModelParam[WorldField].rotate.z;
+			m_rotate.x = m_ModelWorldParam.rotate.x;
+			m_rotate.y = m_ModelWorldParam.rotate.y;
+			if(g_Select_type.StageMainNumber != GRASSLAND)m_rotate.z = m_ModelWorldParam.rotate.z;
 		}
 		else if (m_bMoving)
 		{
@@ -471,22 +474,22 @@ void CStageSelect::Update()
 			switch (g_Select_type.StageMainNumber)
 			{
 			case(GRASSLAND):
-				m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(GRASS_ROTATE_X) - m_rotate.x) / MOVE_TIME;
-				m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(GRASS_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (bRight)m_ModelParam[WorldField].rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
-				else m_ModelParam[WorldField].rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
+				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(GRASS_ROTATE_X) - m_rotate.x) / MOVE_TIME;
+				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(GRASS_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
+				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
+				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
 				break;
 			case(DESERT):
-				m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(DESERT_ROTATE_X) - m_rotate.x) / MOVE_TIME;
-				m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(DESERT_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (bRight)m_ModelParam[WorldField].rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z2)) / MOVE_TIME;
-				else m_ModelParam[WorldField].rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
+				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(DESERT_ROTATE_X) - m_rotate.x) / MOVE_TIME;
+				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(DESERT_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
+				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z2)) / MOVE_TIME;
+				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
 				break;
 			case(SNOWFIELD):
-				m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(SNOW_ROTATE_X) - m_rotate.x) / MOVE_TIME;
-				m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(SNOW_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (bRight)m_ModelParam[WorldField].rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
-				else m_ModelParam[WorldField].rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z)) / MOVE_TIME;
+				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(SNOW_ROTATE_X) - m_rotate.x) / MOVE_TIME;
+				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(SNOW_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
+				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
+				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z)) / MOVE_TIME;
 				break;
 			}
 
@@ -612,12 +615,48 @@ void CStageSelect::Draw()
 	SetRender3D();
 	if (MainStage)
 	{
-		m_pModel[WorldField]->SetPostion(m_ModelParam[WorldField].pos.x, m_ModelParam[WorldField].pos.y, m_ModelParam[WorldField].pos.z);
-		m_pModel[WorldField]->SetRotation(m_ModelParam[WorldField].rotate.x, m_ModelParam[WorldField].rotate.y, m_ModelParam[WorldField].rotate.z);
-		m_pModel[WorldField]->SetScale(m_ModelParam[WorldField].size.x, m_ModelParam[WorldField].size.y, m_ModelParam[WorldField].size.z);
-		m_pModel[WorldField]->SetViewMatrix(GetView());
-		m_pModel[WorldField]->SetProjectionMatrix(GetProj());
-		m_pModel[WorldField]->Draw();
+		SetRender3D();
+		//シェーダーへ変換行列を設定
+		DirectX::XMFLOAT4X4 wvp[3];
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_ModelWorldParam.pos.x, m_ModelWorldParam.pos.y, m_ModelWorldParam.pos.z);
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(m_ModelWorldParam.rotate.x, m_ModelWorldParam.rotate.y, m_ModelWorldParam.rotate.z, 0.0f));
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_ModelWorldParam.size.x, m_ModelWorldParam.size.y, m_ModelWorldParam.size.z);
+		DirectX::XMMATRIX mat = S * R * T;
+		mat = DirectX::XMMatrixTranspose(mat);
+		DirectX::XMFLOAT4X4 world;
+		DirectX::XMStoreFloat4x4(&world, mat);
+		wvp[0] = world;
+		wvp[1] = GetView();
+		wvp[2] = GetProj();
+
+
+		m_pModel[World]->SetWorldMatrix(wvp[0]);
+		m_pModel[World]->Draw();
+		//Geometory::SetView(wvp[1]);
+		//Geometory::SetProjection(wvp[2]);
+		//ShaderList::SetWVP(wvp);	//引数にはXMFLOAT4x4型の、要素数３の配列のアドレスを渡すこと
+
+		////モデルに使用する頂点シェーダー、ピクセルシェーダーを設
+		//m_pWorldModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+		//m_pWorldModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+
+		////複数のメッシュで構成されている場合ある部分は金属的な表現、ある部分は非金属的な表現と
+		////分ける場合がある前回の表示は同じマテリアルで一括表示していたため、メッシュごとにマテリアルを
+		////切り替える
+		//for (int i = 0; i < m_pWorldModel->GetMeshNum(); ++i)
+		//{
+		//	//メッシュに割り当てられているマテリアルを取得
+		//	Model::Material material = *m_pWorldModel->GetMaterial(m_pWorldModel->GetMesh(i)->materialID);
+		//	material.ambient.x = 0.85f; // x (r) 
+		//	material.ambient.y = 0.85f; // y (g) 
+		//	material.ambient.z = 0.85f; // z (b) 
+		//	//シェーダーへマテリアルを設定
+		//	ShaderList::SetMaterial(material);
+
+		//	//モデルの描画
+		//	m_pWorldModel->Draw(i);
+		//}
 	}
 	else
 	{
