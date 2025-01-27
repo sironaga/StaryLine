@@ -19,7 +19,7 @@ bool CSceneResult::bClearState[8];
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),nScore(0)
 {
-	//ResultGameData.bWin = 1;
+	ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
@@ -738,8 +738,6 @@ void CSceneResult::NumberDisp(void)
 
 
 	// 秒数Animation
-	static int nMM = 0;
-	static int nSS = 0;
 	bool bTime = false;
 
 	nSS++;
@@ -773,7 +771,7 @@ void CSceneResult::NumberDisp(void)
 
 	// 体力Animation
 	bool bHp = false;
-	static int nHp = 0;
+	
 	if (bTime)
 	{
 		nHp++;
@@ -791,7 +789,7 @@ void CSceneResult::NumberDisp(void)
 
 	// 召喚合計
 	bool bSpawn = false;
-	static int nSpawn = 0;
+
 	if (bHp)
 	{
 		nSpawn++;
@@ -808,14 +806,14 @@ void CSceneResult::NumberDisp(void)
 
 	// 平均賞関数
 	bool bAvSpawn = false;
-	static int nAvS = 0;
+	
 	if (bSpawn)
 	{
 		nAvS++;
-		if (nAvS >= ResultGameData.nAverageSpwn)
+		if (nAvS >= ResultGameData.nAverageSpwn / ResultGameData.nDrawCount)
 		{
 			bAvSpawn = true;
-			nAvS = ResultGameData.nAverageSpwn;
+			nAvS = ResultGameData.nAverageSpwn / ResultGameData.nDrawCount;
 		}
 	}
 	m_pNumber->SetNumber(nAvS);
@@ -825,7 +823,7 @@ void CSceneResult::NumberDisp(void)
 
 
 	// 描画回数
-	static int nDisp = 0;
+	
 	if (bAvSpawn)
 	{
 		nDisp++;
@@ -834,7 +832,7 @@ void CSceneResult::NumberDisp(void)
 			nDisp = ResultGameData.nDrawCount;
 		}
 	}
-	m_pNumber->SetNumber(nAvS);
+	m_pNumber->SetNumber(nDisp);
 	m_pNumber->SetScale({ 40.0f,40.0f,0.0f });
 	m_pNumber->SetPos({ 1840.0f,645.0f,0.0f });
 	m_pNumber->Draw();
@@ -842,11 +840,24 @@ void CSceneResult::NumberDisp(void)
 	// SCORE
 	int nScore;
 	nScore = ResultGameData.nHitPoint * ResultGameData.nSpawnCount * ResultGameData.nAverageSpwn / ResultGameData.nTime;
-	static  int nnScore = 0;
+	
 
-	if (nBestScore[StageLevel.StageSubNumber] < nScore)
+	if (bScore)
 	{
-		nBestScore[StageLevel.StageSubNumber] = nScore;
+		if (nBestScore[StageLevel.StageSubNumber] < nScore)
+		{
+			nBestScore[StageLevel.StageSubNumber] = nScore;
+			bBestScore = true;
+		}
+		else
+		{
+			bBestScore = false;
+		}
+		bScore = false;
+	}
+	
+	if (bBestScore)
+	{
 		m_pBestScore->SetTexture();
 		m_pBestScore->Disp();
 	}
@@ -855,6 +866,8 @@ void CSceneResult::NumberDisp(void)
 		m_pScore->SetTexture();
 		m_pScore->Disp();
 	}
+
+
 
 	nnScore += 100;
 	if (nnScore >= nScore)
