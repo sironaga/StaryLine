@@ -160,7 +160,7 @@ CStageSelect::CStageSelect()
 
 	m_ModelWorldParam.pos    = { 0.0f,-66.0f,100.0f };
 	m_ModelWorldParam.size   = { 1.8f,1.8f,1.8f };
-	m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
+	m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(21.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
 
 	m_pBackGround = new CBackGround();
 
@@ -497,13 +497,13 @@ void CStageSelect::Update()
 					switch (g_Select_type.StageMainNumber)
 					{
 					case(GRASSLAND):
-						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
+						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(21.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) };
 						break;
 					case(DESERT):
-						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(DESERT_ROTATE_Z) };
+						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(21.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(DESERT_ROTATE_Z) };
 						break;
 					case(SNOWFIELD):
-						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(SNOW_ROTATE_Z) };
+						m_ModelWorldParam.rotate = { DirectX::XMConvertToRadians(21.0f),DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(SNOW_ROTATE_Z) };
 						break;
 					}
 
