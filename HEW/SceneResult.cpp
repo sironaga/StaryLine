@@ -891,7 +891,7 @@ void CSceneResult::NumberDisp(void)
 
 	// SCORE
 	int nScore;
-	nScore = ResultGameData.nHitPoint * ResultGameData.nSpawnCount * ResultGameData.nAverageSpwn / ResultGameData.nTime;
+	nScore = ResultGameData.nHitPoint * ResultGameData.nSpawnCount * ResultGameData.nAverageSpwn / (ResultGameData.nTime * 5.0f);
 	
 
 	if (bScore)
