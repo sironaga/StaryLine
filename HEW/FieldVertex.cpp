@@ -166,7 +166,7 @@ CFieldVertex::CFieldVertex()
 
 	m_pStarLine = new StarLine();
 	
-	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
+	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 10, 2.0f);
 	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/図形生成.png"), 4, 8, 1.0f);
 	for (int i = 0; i < 32; i++)
 	{
@@ -187,7 +187,7 @@ CFieldVertex::CFieldVertex()
 
 	// 各配列を-1で初期化
 	Fill(OrderVertex, -1);
-	Fill(Shapes_Size, -1);
+	Fill(Shapes_Size, -1.0f);
 	Fill(Comparison_Shapes_Vertex_Save, -1);
 	Fill(Shapes_Vertex, -1);
 	Fill(Effect_Shapes_Pos, -1.0f);
@@ -841,7 +841,7 @@ void CFieldVertex::FeverDraw()
 			g_pFeverEffects[i]->Draw();
 		}
 		Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
-		if (Fever_Effects_Alpha < 0.0f)Fever_Effects_Alpha = 0.0f;
+		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
 	}
 }
 
@@ -1155,7 +1155,7 @@ void CFieldVertex::InitFieldVertex()
 		Fever_Draw_Angle_Count = 0.0f;
 
 		Fill(OrderVertex, -1);//配列-1で初期化
-		Fill(Shapes_Size, -1);
+		Fill(Shapes_Size, -1.0f);
 		Fill(Comparison_Shapes_Vertex_Save, -1);
 		Fill(Shapes_Vertex_Save, -1);
 		Fill(Effect_Shapes_Pos, -1.0f);
