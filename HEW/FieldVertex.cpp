@@ -55,7 +55,8 @@ Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//線の四頂点座標保存用
 IXAudio2SourceVoice* g_FieldSe;//FieldVertexのサウンド音量
 CSoundList* g_Fieldsound;//FieldVertexのサウンドポインター
 
-
+float Xx = 0.0f;
+float Yy = 0.0f;
 
 int SubDeleteCount = 0;
 float MoveFlagStartTime = 0.0f;
@@ -124,7 +125,7 @@ CFieldVertex::CFieldVertex()
 
 	//-----スプライトのメモリ確保-----//
 	{
-		m_pSprite_SuperStar_Number = new Sprite();
+		/*m_pSprite_SuperStar_Number = new Sprite();*/
 		m_pSprite_Fever_Gage[0] = new Sprite();
 		m_pSprite_Fever_Gage[1] = new Sprite();
 		m_pSprite_Fever_Gage[2] = new Sprite();
@@ -158,10 +159,10 @@ CFieldVertex::CFieldVertex()
 		{
 			m_pTex_Ally_Number[i] = new Texture();
 		}
-		for (int i = 0; i < 6; i++)
+		/*for (int i = 0; i < 6; i++)
 		{
 			m_pTex_SuperStar_Number[i] = new Texture();
-		}
+		}*/
 	}
 
 	m_pStarLine = new StarLine();
@@ -260,7 +261,7 @@ CFieldVertex::CFieldVertex()
 
 	//スーパースタの数字初期化
 	{
-		HRESULT hrSuperStar;
+		/*HRESULT hrSuperStar;
 		for (int i = 0; i < 6; i++)
 		{
 			switch (i)
@@ -277,7 +278,7 @@ CFieldVertex::CFieldVertex()
 			if (FAILED(hrSuperStar)) {
 				MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
 			}
-		}
+		}*/
 	}
 
 	//召喚数の数字初期化
@@ -353,7 +354,8 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
-	
+	Xx = 0.0f;
+	Yy = 0.0f;
 }
 
 ////=====FieldVertexのデストラクタ=====//
@@ -390,14 +392,14 @@ CFieldVertex::~CFieldVertex()
 	{
 		SAFE_DELETE(m_pTex_Ally_Number[i]);
 	}
-	for (int i = 0; i < 6; i++)
+	/*for (int i = 0; i < 6; i++)
 	{
 		SAFE_DELETE(m_pTex_SuperStar_Number[i]);
-	}
+	}*/
 
 	SAFE_DELETE(m_pStarLine);
 
-	SAFE_DELETE(m_pSprite_SuperStar_Number);
+	/*SAFE_DELETE(m_pSprite_SuperStar_Number);*/
 	SAFE_DELETE(m_pSprite_Fever_Gage[0]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[1]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[2]);
@@ -491,6 +493,14 @@ void CFieldVertex::Update()
 
 			//コネクト処理が終わったので終点を今の地点に設定
 			GoalVertex = Vertexp->Number;
+
+			for (int i = 0; i < MAX_LINE + 1; i++)
+			{
+				if (OrderVertex[i] > 24)
+				{
+					MessageBox(NULL, "存在しない頂点をたどっています!", "Error", MB_OK);
+				}
+			}
 
 			//多角形判定
 			if (OrderVertex[3] != -1 && Vertexp->Use)//たどってきた頂点が４つ以上ならかつ今の頂点が過去に使われた時、多角形判定
@@ -745,7 +755,6 @@ void CFieldVertex::Draw()
 			}
 			m_pSprite_Ally_Number[i]->ReSetSprite();//スプライトのリセット
 		}
-
 	}
 
 	//-----Effectの描画-----//
@@ -764,12 +773,13 @@ void CFieldVertex::Draw()
 		}
 		for (int i = 0; i < Effect_NowShapes; i++)
 		{
-			g_pLineEffects[i]->Update();
-			g_pLineEffects[i]->Draw();
+			if (g_pLineEffects[i]->IsPlay())
+			{
+				g_pLineEffects[i]->Update();
+				g_pLineEffects[i]->Draw();
+			}
 		}
-	}
-
-	
+	}	
 }
 
 void CFieldVertex::FeverDraw()
@@ -840,11 +850,11 @@ void CFieldVertex::FeverDraw()
 			g_pFeverEffects[i]->Update();
 			g_pFeverEffects[i]->Draw();
 		}
-		/*float X, Y;
-		X = -log(Y) + 1.0f;
-		Y += 0.1;
-		Fever_Effects_Alpha = */
-		Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
+		
+		Xx = powf(2.71828, 1.0f - Yy);
+		Yy += (15.0f / (60.0f * 10.0f));
+		Fever_Effects_Alpha = Xx;
+		//Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
 		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
 	}
 }
@@ -1175,6 +1185,9 @@ void CFieldVertex::InitFieldVertex()
 		NowLine = 0;//線の情報を初期化
 
 		SuperStarCount = 0;//ステラのカウントを初期化
+
+		Xx = 0.0f;
+		Yy = 0.0f;
 	}
 }
 
@@ -1203,6 +1216,7 @@ void CFieldVertex::SetSuperStar()
 			i++;
 		}
 	}
+
 }
 
 ////=====音を止める関数=====//
@@ -1228,7 +1242,7 @@ void CFieldVertex::InitTextureModel()
 
 	//-----スプライトのメモリ確保-----//
 	{
-		m_pSprite_SuperStar_Number = new Sprite();
+	  /*m_pSprite_SuperStar_Number = new Sprite();*/
 		m_pSprite_Fever_Gage[0] = new Sprite();
 		m_pSprite_Fever_Gage[1] = new Sprite();
 		m_pSprite_Fever_Gage[2] = new Sprite();
@@ -1261,10 +1275,10 @@ void CFieldVertex::InitTextureModel()
 		{
 			m_pTex_Ally_Number[i] = new Texture();
 		}
-		for (int i = 0; i < 6; i++)
+	  /*for (int i = 0; i < 6; i++)
 		{
 			m_pTex_SuperStar_Number[i] = new Texture();
-		}
+		}*/
 
 		m_pStarLine = new StarLine();
 
@@ -1299,7 +1313,7 @@ void CFieldVertex::InitTextureModel()
 
 	//スーパースターの個数の数字初期化
 	{
-		HRESULT hrSuperStar;
+		/*HRESULT hrSuperStar;
 		for (int i = 0; i < 6; i++)
 		{
 			switch (i)
@@ -1316,7 +1330,7 @@ void CFieldVertex::InitTextureModel()
 			if (FAILED(hrSuperStar)) {
 				MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
 			}
-		}
+		}*/
 	}
 
 	//召喚数の数字の初期化
@@ -1420,6 +1434,10 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 	{
 		if (Comparison[k] == VertexNumber.Number)//過去に自分と同じ頂点が格納されていたら図形としてみなし格納する	
 		{
+			if (NowShapes == 14)
+			{
+				NowShapes = NowShapes;
+			}
 			int Comparison2[MAX_VERTEX];//過去に自分と同じ頂点が格納されている場所から今の場所までの頂点を保存する//降順に並び替える
 			int Comparison3[MAX_VERTEX];//降順にする前の頂点情報
 			for (int l = k; l < MAX_VERTEX; l++)
@@ -1617,7 +1635,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 				}
 				if (Count > 4)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
-
+				if (BadShapes)//ダメな図形を保存しない（消去する)
+				{
+					Fill(Shapes_Vertex[NowShapes], -1);
+					Fill(Comparison_Shapes_Vertex_Save[NowShapes], -1);
+					Fill(Shapes_Vertex_Save[NowShapes], -1);
+				}
 				if (!BadShapes)
 				{
 					Shapes_Count[NowShapes] = Count;
@@ -1745,9 +1768,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
 					
-					
+					NowShapes++;//保存場所を次の場所にする
 				}
-				NowShapes++;//保存場所を次の場所にする
+				
 			}
 			ShapesSaveFalg = true;//重複した図形または認めない図形は保存はしないが保存したとしてみなしtrueにする
 			ShapesFlag = false;//初期化
