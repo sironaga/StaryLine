@@ -225,6 +225,12 @@
     <ClCompile Include="CameraEvent.cpp">
       <Filter>ソース ファイル\Systems\DirectX\Plus</Filter>
     </ClCompile>
+    <ClCompile Include="Transition.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SaverMode.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -379,6 +385,12 @@
     </ClInclude>
     <ClInclude Include="CameraEvent.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
+    </ClInclude>
+    <ClInclude Include="Transition.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SaverMode.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

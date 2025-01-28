@@ -83,7 +83,7 @@ private:
 	float fPiyoA;
 	FLOAT2 fUvPos;
 	int nPush[2]; // ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½Žž
-
+	bool bEnter;
 
 
 	CSoundList* m_pResultSound;

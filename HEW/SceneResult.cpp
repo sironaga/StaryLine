@@ -18,7 +18,7 @@ bool CSceneResult::bClearState[8];
 
 
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),nScore(0)
+	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),nScore(0),bEnter(false)
 {
 	//ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
@@ -474,8 +474,9 @@ void CSceneResult::KeyProsess(void)
 	if (nSelect == 0)
 	{
 		// StageSelect
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) && !bEnter)
 		{
+			bEnter = true;
 			nPush[nSelect] = 1;
 			SetNext(STAGE_SELECT);
 		}
@@ -486,8 +487,9 @@ void CSceneResult::KeyProsess(void)
 		if (ResultGameData.bWin)
 		{
 			// Next
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) && !bEnter)
 			{
+				bEnter = true;
 				StageLevel.StageSubNumber++;
 				if (StageLevel.StageSubNumber < 3)
 				{
@@ -515,8 +517,9 @@ void CSceneResult::KeyProsess(void)
 		else
 		{
 			// Retry
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN && !bEnter))
 			{
+				bEnter = true;
 				SetNext(SCENE_GAME, StageLevel);
 			}
 		}

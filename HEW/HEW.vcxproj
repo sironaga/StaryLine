@@ -53,6 +53,7 @@
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="SaverMode.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneDebug.cpp" />
     <ClCompile Include="SceneGame.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SaverMode.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneDebug.h" />
     <ClInclude Include="SceneGame.h" />
