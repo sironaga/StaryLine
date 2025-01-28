@@ -11,6 +11,7 @@ COption::COption()
 	, m_pTexture{}, m_pParam{}
 	, m_nTempValue{}
 	, m_bOptionMode(false), m_bSetValue(false)
+	, m_pNumberUI()
 	, NowResolusion(1)
 	, m_fMul(1.0f)
 	, MovePos({0.0f,0.0f})
@@ -23,6 +24,7 @@ COption::COption()
 		OldPos[i].X = m_pParam[i]->pos.x;
 		OldPos[i].Y = m_pParam[i]->pos.y;
 	}
+	m_pNumberUI = new CNumberUI();
 }
 
 COption::~COption()
@@ -32,6 +34,11 @@ COption::~COption()
 		SAFE_DELETE(m_pTexture[i]);
 		SAFE_DELETE(m_pParam[i]);
 	}
+	if (m_pNumberUI)
+	{
+		SAFE_DELETE(m_pNumberUI);
+	}
+
 }
 
 void COption::Update()
@@ -92,9 +99,6 @@ void COption::Draw()
 	Sprite::SetParam(m_pParam[BACKBOARD]);
 	Sprite::SetTexture(m_pTexture[BACKBOARD]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SECTION_BAR]);
-	Sprite::SetTexture(m_pTexture[SECTION_BAR]);
-	Sprite::Draw();
 	Sprite::SetParam(m_pParam[SECTION_SELECT]);
 	Sprite::SetTexture(m_pTexture[SECTION_SELECT]);
 	Sprite::Draw();
@@ -108,6 +112,8 @@ void COption::Draw()
 	Sprite::SetTexture(m_pTexture[DEFAULT]);
 	Sprite::Draw();
 
+
+
 	switch (m_nSection)
 	{
 	case SEC_SOUND:DrawSound(); break;
@@ -115,6 +121,8 @@ void COption::Draw()
 	case SEC_INPUT:DrawInput(); break;
 	default:break;
 	}
+
+
 
 	Sprite::SetParam(m_pParam[TAB_SELECT]);
 	Sprite::SetTexture(m_pTexture[TAB_SELECT]);
@@ -381,9 +389,7 @@ void COption::InitParam()
 	m_pParam[INPUT_TIPE_B]->pos =		{ 180.0f,300.0f };
 	m_pParam[INPUT_TIPE_B]->size =		{ 440.0f,70.0f };
 	m_pParam[SECTION_SELECT]->pos =		{ 380.0f,450.0f };
-	m_pParam[SECTION_SELECT]->size =	{ 510.0f,110.0f };
-	m_pParam[SECTION_BAR]->pos =		{ 0.0f,460.0f };
-	m_pParam[SECTION_BAR]->size =		{ 1400.0f,100.0f };
+	m_pParam[SECTION_SELECT]->size = { 510.0f,110.0f };
 	m_pParam[SECTION_LEFT]->pos =		{ -570.0f,450.0f };
 	m_pParam[SECTION_LEFT]->size =		{ 90.0f,70.0f };
 	m_pParam[SECTION_RIGHT]->pos =		{ 570.0f,450.0f };
@@ -613,6 +619,15 @@ void COption::SetValue(int kind)
 	{
 		m_nTempValue[kind] = m_nValue[kind];
 		m_bSetValue = false;
+
+		m_pParam[TAB_MASTERVOLUME]->color.w = 1.0f;
+		m_pParam[TAB_BGM]->color.w = 1.0f;
+		m_pParam[TAB_SE]->color.w = 1.0f;
+		m_pParam[TAB_WINDOWMODE]->color.w = 1.0f;
+		m_pParam[TAB_RESOLUSION]->color.w = 1.0f;
+		m_pParam[TAB_FPS]->color.w = 1.0f;
+		m_pParam[TAB_KEYBOARD]->color.w = 1.0f;
+		m_pParam[TAB_CONTROLLER]->color.w = 1.0f;
 	}
 }
 
