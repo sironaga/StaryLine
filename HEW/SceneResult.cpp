@@ -896,17 +896,18 @@ void CSceneResult::NumberDisp(void)
 
 	if (bScore)
 	{
+		if (StageLevel.StageSubNumber == 8)
+		{
+			SetIP(SAVER_IP);
+			char cScore[255];
+			sprintf(cScore, "%d", nScore);
+			SendData(cScore);
+		}
+
 		if (nBestScore[StageLevel.StageSubNumber] < nScore)
 		{
 			nBestScore[StageLevel.StageSubNumber] = nScore;
 			bBestScore = true;
-			if (StageLevel.StageSubNumber == 8)
-			{
-				SetIP(SAVER_IP);
-				char cScore[255];
-				sprintf(cScore, "%d", nScore);
-				SendData(cScore);
-			}
 		}
 		else
 		{
