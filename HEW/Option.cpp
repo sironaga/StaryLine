@@ -24,7 +24,6 @@ COption::COption()
 		OldPos[i].X = m_pParam[i]->pos.x;
 		OldPos[i].Y = m_pParam[i]->pos.y;
 	}
-	m_pNumberUI = new CNumberUI();
 }
 
 COption::~COption()
@@ -314,6 +313,7 @@ void COption::LoadPass()
 	m_pTexture[TAB_BGM]->Create(TEX_PASS("Option/Option_Tab_BGM.png"));
 	m_pTexture[TAB_SE]->Create(TEX_PASS("Option/Option_Tab_SE.png"));
 	m_pTexture[TAB_WINDOWMODE]->Create(TEX_PASS("Option/Option_Tab_Viewmode.png"));
+	m_pNumberUI = new CNumberUI();
 }
 
 void COption::InitParam()
@@ -650,6 +650,8 @@ void COption::DrawSound()
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
 
+	
+
 	Sprite::SetParam(m_pParam[TAB_BGM]);
 	Sprite::SetTexture(m_pTexture[TAB_BGM]);
 	Sprite::Draw();
@@ -683,6 +685,32 @@ void COption::DrawSound()
 	Sprite::SetParam(m_pParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
+	Sprite::ReSetSprite();
+	float pos[3] = { -165.0f ,-165.0f ,-165.0f };
+	for (int i = MASTER; i <= SE; i++)
+	{
+		if (m_nTempValue[i] == 10)
+		{
+			pos[i] = -180.0f;
+		}
+	}
+
+	m_pNumberUI->SetNumber(m_nTempValue[MASTER]);
+	m_pNumberUI->SetScale({ 50.0f,50.0f,0.0f });
+	m_pNumberUI->SetPos({ SCREEN_CENTER.x + pos[MASTER],SCREEN_CENTER.y - 300,0.0f });
+	m_pNumberUI->Draw();
+
+	m_pNumberUI->SetNumber(m_nTempValue[BGM]);
+	m_pNumberUI->SetScale({ 50.0f,50.0f,0.0f });
+	m_pNumberUI->SetPos({ SCREEN_CENTER.x + pos[BGM],SCREEN_CENTER.y - 200,0.0f });
+	m_pNumberUI->Draw();
+
+	m_pNumberUI->SetNumber(m_nTempValue[SE]);
+	m_pNumberUI->SetScale({ 50.0f,50.0f,0.0f });
+	m_pNumberUI->SetPos({ SCREEN_CENTER.x + pos[SE],SCREEN_CENTER.y - 100,0.0f });
+	m_pNumberUI->Draw();
+
+
 
 	switch (m_nSelect)
 	{

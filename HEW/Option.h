@@ -201,7 +201,7 @@ private:
 	int m_nSection;							// 大項目の選択
 	int m_nSelect;							// 小項目の選択
 	static int m_nValue[TAB_MAX];					// 各小項目の物量(確定)
-	int m_nTempValue[TAB_MAX];				// 各小項目の物量(推定)
+	int m_nTempValue[TAB_MAX];				// 各小項目の物量(推定) 
 
 	bool m_bOptionMode;						// オプション画面を開いているかどうか
 	bool m_bSetValue;						// 小項目を操作しているかどうか
