@@ -27,7 +27,7 @@ void SetIP(const char* IP)
 	addr.sin_addr.S_un.S_addr = inet_addr(IP);
 }
 
-void SendData(int nData)
+void SendData(char *nData)
 {
-	sendto(sock, (char*)nData, sizeof(nData), 0, (struct sockaddr*)&addr, sizeof(addr));//addr‚É•¶š—ñ‘—M
+	sendto(sock,nData, sizeof(nData), 0, (struct sockaddr*)&addr, sizeof(addr));//addr‚É•¶š—ñ‘—M
 }

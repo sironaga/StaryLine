@@ -8,7 +8,7 @@
 
 // 変数きれいにする！！！！！！！！！！！！！！！！！
 
-#define SAVER_IP ("000.000.000.000")
+#define SAVER_IP ("10.128.77.4")
 
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
@@ -899,8 +899,10 @@ void CSceneResult::NumberDisp(void)
 			bBestScore = true;
 			if (StageLevel.StageSubNumber == 8)
 			{
-				SetIP(SAVER_IP);
-				SendData(nScore);
+				//SetIP(SAVER_IP);
+				char cScore[255];
+				sprintf(cScore, "%d", nScore);
+				SendData(cScore);
 			}
 		}
 		else
