@@ -835,30 +835,6 @@ void CAlly::Update(void)
 	if (m_bReLoadFlag)
 	{
 		if (m_pModel)m_pModel = nullptr;
-		
-		//サウンドの破棄
-		if (m_pSourceNormalAttack)
-		{
-			m_pSourceNormalAttack->ExitLoop();
-			m_pSourceNormalAttack->Stop();
-			m_pSourceNormalAttack->DestroyVoice();
-			m_pSourceNormalAttack = nullptr;
-		}
-		if (m_pSourceWeaknessAttack)
-		{
-			m_pSourceWeaknessAttack->ExitLoop();
-			m_pSourceWeaknessAttack->Stop();
-			m_pSourceWeaknessAttack->DestroyVoice();
-			m_pSourceWeaknessAttack = nullptr;
-		}
-
-		//サウンドの設定
-		m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
-		XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
-		m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
-		m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
-		buffer = g_WeaknessAttackSound->GetBuffer(false);
-		m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
 		//エフェクトの破棄
 		for (int i = 0; i < (int)FighterEffect::MAX; i++)
 		{
@@ -1000,8 +976,8 @@ void CAlly::Draw(void)
 			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
 				tMesh->bones[j].invOffset * m_pModel->GetBoneMatrix(tMesh->bones[j].nodeIndex)
 			));
-			ShaderList::SetBones(bones);
 		}
+		ShaderList::SetBones(bones);
 
 
 		if (m_pModel) {
@@ -1283,29 +1259,6 @@ void CEnemy::Update(void)
 	if (m_bReLoadFlag)
 	{
 		if (m_pModel)m_pModel = nullptr;
-		//サウンドの破棄
-		if (m_pSourceNormalAttack)
-		{
-			m_pSourceNormalAttack->ExitLoop();
-			m_pSourceNormalAttack->Stop();
-			m_pSourceNormalAttack->DestroyVoice();
-			m_pSourceNormalAttack = nullptr;
-		}
-		if (m_pSourceWeaknessAttack)
-		{
-			m_pSourceWeaknessAttack->ExitLoop();
-			m_pSourceWeaknessAttack->Stop();
-			m_pSourceWeaknessAttack->DestroyVoice();
-			m_pSourceWeaknessAttack = nullptr;
-		}
-
-		//サウンドの設定
-		m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
-		XAUDIO2_BUFFER buffer = g_NormalAttackSound->GetBuffer(false);
-		m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
-		m_pSourceWeaknessAttack = g_WeaknessAttackSound->m_sound->CreateSourceVoice(m_pSourceWeaknessAttack);
-		buffer = g_WeaknessAttackSound->GetBuffer(false);
-		m_pSourceWeaknessAttack->SubmitSourceBuffer(&buffer);
 		//エフェクトの破棄
 		for (int i = 0; i < (int)FighterEffect::MAX; i++)
 		{
@@ -1751,11 +1704,12 @@ void CLeader::Draw(int StageNum)
 
 			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-
+			
+			const Model::Mesh* tMesh;
 			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 			{
-				Model::Mesh tMesh = * m_pModel->GetMesh(i);
-				Model::Material material = *m_pModel->GetMaterial(tMesh.materialID);
+				tMesh = m_pModel->GetMesh(i);
+				Model::Material material = *m_pModel->GetMaterial(tMesh->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
@@ -1763,13 +1717,13 @@ void CLeader::Draw(int StageNum)
 
 				// ボーンの情報をシェーダーに送る
 				DirectX::XMFLOAT4X4 bones[200];
-				for (int j = 0; j < tMesh.bones.size(); ++j)
+				for (int j = 0; j < tMesh->bones.size(); ++j)
 				{
 					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-						tMesh.bones[j].invOffset * m_pModel->GetBoneMatrix(tMesh.bones[j].nodeIndex)
+						tMesh->bones[j].invOffset * m_pModel->GetBoneMatrix(tMesh->bones[j].nodeIndex)
 					));
-					ShaderList::SetBones(bones);
 				}
+				ShaderList::SetBones(bones);
 
 
 				if (m_pModel) {
