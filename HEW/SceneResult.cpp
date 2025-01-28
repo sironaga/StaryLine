@@ -8,7 +8,7 @@
 
 // 変数きれいにする！！！！！！！！！！！！！！！！！
 
-#define SAVER_IP ("10.128.77.4")
+#define SAVER_IP ("10.130.21.36")
 
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
@@ -517,7 +517,7 @@ void CSceneResult::KeyProsess(void)
 		else
 		{
 			// Retry
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN && !bEnter))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN ) && !bEnter)
 			{
 				bEnter = true;
 				SetNext(SCENE_GAME, StageLevel);
