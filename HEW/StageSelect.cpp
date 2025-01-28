@@ -69,6 +69,7 @@ CStageSelect::CStageSelect()
 	, m_pEffect{}, m_pStarEfc{}
 	, m_tBGRotateZ(0.0f)
 	, m_ModelWorldParam{}
+	, LinieRotationY{180.0f}
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -318,6 +319,7 @@ void CStageSelect::Update()
 					posX[0] = 0.0f;
 					posX[1] = 400.0f;
 					posX[2] = 800.0f;
+					LinieRotationY = 180.0f;
 					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
 					{
 						g_OldSelect_type = g_Select_type;
@@ -341,6 +343,7 @@ void CStageSelect::Update()
 					posX[0] = -400.0f;
 					posX[1] = 0.0f;
 					posX[2] = 400.0f;
+					LinieRotationY = 180.0f;
 					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
 					{
 						g_OldSelect_type = g_Select_type;
@@ -360,6 +363,7 @@ void CStageSelect::Update()
 					posX[0] = -800.0f;
 					posX[1] = -400.0f;
 					posX[2] = 0.0f;
+					LinieRotationY = 180.0f;
 					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
 					{
 						g_OldSelect_type = g_Select_type;
@@ -598,19 +602,48 @@ void CStageSelect::Update()
 			case(GRASSLAND):
 				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(GRASS_ROTATE_X) - m_rotate.x) / MOVE_TIME;
 				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(GRASS_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
+				if (m_bMoving) {
+					if (bRight) {
+						LinieRotationY = -90.0f;
+					}
+					else
+					{
+						LinieRotationY = 90.0f;
+					}
+				}
 				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
 				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
 				break;
 			case(DESERT):
 				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(DESERT_ROTATE_X) - m_rotate.x) / MOVE_TIME;
 				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(DESERT_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
+				if (m_bMoving == true) {
+					if (bRight) {
+						LinieRotationY = -90.0f;
+					}
+					else
+					{
+						LinieRotationY = 90.0f;
+					}
+				}
 				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z2)) / MOVE_TIME;
 				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
 				break;
 			case(SNOWFIELD):
 				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(SNOW_ROTATE_X) - m_rotate.x) / MOVE_TIME;
 				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(SNOW_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
+				if (m_bMoving) {
+					if (bRight) {
+						LinieRotationY = -90.0f;
+					}
+					else
+					{
+						LinieRotationY = 90.0f;
+					}
+				}
+				if (bRight) {
+					m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
+				}
 				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z)) / MOVE_TIME;
 				break;
 			}
@@ -1454,7 +1487,7 @@ void CStageSelect::LinieDraw()
 	//拡大縮小行列(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(LinieRotationY), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	//それぞれの行列を掛け合わせて格納
 	DirectX::XMMATRIX mat = S * R * T;
 
