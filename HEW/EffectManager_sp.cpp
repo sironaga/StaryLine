@@ -7,7 +7,7 @@ CEffectManager_sp::CEffectManager_sp(const char* pass, int SplitX, int SplitY, f
 	, m_tSplit{SplitX,SplitY}, m_tParam{}
 	, m_nCount(0), m_nPage(0)
 	, m_nSplitNum(SplitX * SplitY),m_fSpeed(Speed)
-	, m_bPlay(false), m_bLoop(false)
+	, m_bPlay(false), m_bLoop(false), isCopy(false)
 {
 	m_tParam.pos = { 0.0f,0.0f,0.0f };
 	m_tParam.size = defSize;
@@ -25,9 +25,9 @@ CEffectManager_sp::CEffectManager_sp(CEffectManager_sp* InData)
 	, m_tSplit(InData->m_tSplit), m_tParam(InData->m_tParam)
 	, m_nCount(0), m_nPage(0)
 	, m_nSplitNum(InData->m_nSplitNum),m_fSpeed(InData->m_fSpeed)
-	, m_bPlay(false),m_bLoop(false)
+	, m_bPlay(false),m_bLoop(false), isCopy(false)
 {
-
+	InData->SetIsCopy();
 }
 
 CEffectManager_sp::~CEffectManager_sp()
@@ -134,4 +134,14 @@ void CEffectManager_sp::SetColor(DirectX::XMFLOAT4 color)
 bool CEffectManager_sp::IsPlay()
 {
 	return m_bPlay;
+}
+
+bool CEffectManager_sp::IsCopy()
+{
+	return false;
+}
+
+void CEffectManager_sp::SetIsCopy()
+{
+	isCopy = true;
 }
