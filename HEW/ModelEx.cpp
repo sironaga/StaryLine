@@ -9,7 +9,6 @@ CModelEx::CModelEx(const char *ModelFile, bool isAnime,Model::Flip flip)
 	, ViewMatrix{}, ProjectionMatrix{}
 	, CModel(nullptr), m_bAnime(isAnime)
 {
-
 	CModel = new Model();
 	if (!CModel->Load(ModelFile,1.0f,flip))MessageBox(NULL, ModelFile, "読み込みエラー", MB_OK);
 	if (isAnime)
@@ -36,9 +35,21 @@ CModelEx::CModelEx(const char *ModelFile, bool isAnime,Model::Flip flip)
 	wvp[2] = ProjectionMatrix;
 }
 
-CModelEx::CModelEx(Model* InData)
+CModelEx::CModelEx(const char* ModelFile, const char** AnimeDataArray, int AnimeArraySize, Model::Flip flip, float size)
+	: T{}, S{}, R{}, mat{}
+	, world{}, view{}, proj{}, wvp{}
+	, tX(0.0f), tY(0.0f), tZ(0.0f)
+	, sX(1.0f), sY(1.0f), sZ(1.0f)
+	, ViewMatrix{}, ProjectionMatrix{}
+	, CModel(nullptr), m_bAnime(true)
 {
-	CModel = InData;
+	CModel = new Model();
+	if (!CModel->Load(ModelFile, size, flip))MessageBox(NULL, ModelFile, "読み込みエラー", MB_OK);
+
+	for (int i = 0; i < AnimeArraySize; i++)
+	{
+		CModel->AddAnimation(AnimeDataArray[i]);
+	}
 }
 
 CModelEx::~CModelEx()
@@ -48,6 +59,11 @@ CModelEx::~CModelEx()
 		delete CModel;
 		CModel = nullptr;
 	}
+}
+
+Model* CModelEx::GetModelData()
+{
+	return CModel;
 }
 
 void CModelEx::Draw()
@@ -136,4 +152,24 @@ void CModelEx::SetRotation(float X, float Y, float Z)
 void CModelEx::SetWorldMatrix(DirectX::XMFLOAT4X4 InWorld)
 {
 	wvp[0] = InWorld;
+}
+
+bool CModelEx::IsAnimePlay(Model::AnimeNo PlayAnimeNo)
+{
+	return CModel->IsAnimePlay(PlayAnimeNo);
+}
+
+void CModelEx::PlayAnime(Model::AnimeNo PlayAnimeNo, bool isLoop, float speed)
+{
+	CModel->PlayAnime(PlayAnimeNo, isLoop, speed);
+}
+
+void CModelEx::Step(float tick)
+{
+	CModel->Step(tick);
+}
+
+void CModelEx::SetAnimeTime(Model::AnimeNo PlayAnimeNo, float SetTime)
+{
+	CModel->SetAnimeTime(PlayAnimeNo, SetTime);
 }
