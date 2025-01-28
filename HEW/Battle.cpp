@@ -474,10 +474,10 @@ void CBattle::CharacterUpdate(bool AnimationFlag)
 void CBattle::CharacterDraw(void)
 {
 	//–¡•û‚Ì•`‰æ
-	for (int i = 0; i < m_nAllyCount; i++)
-	{
-		m_pAlly[i]->Draw();
-	}
+	//for (int i = 0; i < m_nAllyCount; i++)
+	//{
+	//	m_pAlly[i]->Draw();
+	//}
 }
 
 //•`‰æˆ—
