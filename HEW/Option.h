@@ -2,6 +2,7 @@
 
 #include "Texture.h"
 #include "_StructList.h"
+#include "NumberUI.h"
 
 /// <summary>
 /// セクションを選択してからタブを選択する二段階式に
@@ -148,7 +149,6 @@ private:
 
 		// 大項目
 		SECTION_SELECT,
-		SECTION_BAR,
 		SECTION_LEFT,
 		SECTION_RIGHT,
 
@@ -194,6 +194,7 @@ private:
 	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
 	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
 
+	CNumberUI* m_pNumberUI;
 	FLOAT2 OldPos[KINDMAX_OPTION];
 	FLOAT2 MovePos;
 	float m_fMul;
@@ -221,5 +222,5 @@ private:
 	void DrawScreen();						// 画面設定の描画
 	void DrawInput();						// 操作方法設定の描画
 
-	
+
 };
