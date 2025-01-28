@@ -81,7 +81,17 @@ public:
 	/// @return
 	/// 再生されているかどうか(true:再生中,false:再生されていない)
 	bool IsPlay();
+
+	/// @brief 
+	/// このポインタがコピー元であるかどうか取得する
+	/// @brief
+	/// for文でUpdate関数やDraw関数を行う場合、この関数を使いコピー元の処理を飛ばす
+	/// @return
+	/// コピー元になっているかどうか(true:コピー元 false:このポインタを使ってコピーを行っていない)
+	bool IsCopy();
 private:
+	void SetIsCopy();
+
 	Texture* m_pTexture;
 	struct Split
 	{
@@ -94,5 +104,6 @@ private:
 	float m_fSpeed;
 	bool m_bPlay;
 	bool m_bLoop;
+	bool isCopy;
 	ObjectParam m_tParam;
 };

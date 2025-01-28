@@ -56,7 +56,8 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	, m_pEffect()
 	,m_bChange(false)
 	, m_tTabPos{}, m_tTabSize{}
-	, m_fSelectScale(1.0f), m_tStarPos{0.0f,SCREEN_HEIGHT / 2.0f}
+	, m_fSelectScale(1.0f), m_tStarPos{ {0.0f,SCREEN_HEIGHT / 2.0f} }
+	, m_pStarEfc{}, m_tStarRotate{}
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -79,7 +80,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	m_pTitleEnd[0]		 = new SpriteEx("Assets/Texture/Title/Title_Finish.png");
 	m_pTitleEnd[1]		 = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
 	m_pDecition = new SpriteEx("Assets/Effect/Sprite/Decision.png");
-	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/BackGround_ShootginStars.png", 8, 8, STAR_SPEED);
+	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/BackGround_ShootginStars_2.png", 8, 8, STAR_SPEED);
 	m_pEffect[(int)Effect::Choice] = new CEffectManager_sp("Assets/Effect/Sprite/Choice.png", 4, 11, 0.5f);
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
@@ -125,6 +126,11 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	}
 	m_pSelectsound = new CSoundList(SE_DECISION);
 	m_pSourseSelectSE = m_pSelectsound->GetSound(false);
+
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		m_pStarEfc[i] = new CEffectManager_sp(m_pEffect[(int)Effect::Star]);
+	}
 }
 
 CSceneTitle::~CSceneTitle()
@@ -200,6 +206,10 @@ CSceneTitle::~CSceneTitle()
 		m_pSourseSelectSE->Stop();
 		SAFE_DELETE(m_pSelectsound);
 		m_pSourseSelectSE = nullptr;
+	}
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		m_pStarEfc[i] = nullptr;
 	}
 }
 
@@ -374,10 +384,13 @@ void CSceneTitle::Draw()
 
 	g_pTitleBG->Draw();
 	
-	m_pEffect[(int)Effect::Star]->SetPos({m_tStarPos.x,0.0f,0.0f });
-	m_pEffect[(int)Effect::Star]->SetSize({ 1000.0f,1000.0f,100.0f });
-	m_pEffect[(int)Effect::Star]->SetRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(225.0f)});
-	m_pEffect[(int)Effect::Star]->Draw(false);
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		m_pStarEfc[i]->SetPos({ m_tStarPos[i].x + CENTER_POS_X,0.0f,0.0f});
+		m_pStarEfc[i]->SetSize({ 1000.0f,1000.0f,100.0f });
+		m_pStarEfc[i]->SetRotate(m_tStarRotate[i]);
+		m_pStarEfc[i]->Draw(false);
+	}
 
 
 	m_pLini[0]->SetTexture();
@@ -522,7 +535,6 @@ void CSceneTitle::Draw()
 	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
 	m_pTitleUnderbar->Disp();
 
-
 	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 245.0f,-m_SelectPos.y,0.0f });
 	m_pEffect[(int)Effect::Choice]->SetSize({ 100.0f,100.0f,100.0f });
 	m_pEffect[(int)Effect::Choice]->SetRotate({ 0.0f,0.0f,0.0f });
@@ -589,12 +601,15 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	SAFE_DELETE(m_pLini[1]);
 	m_pLini[1] = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 	SAFE_DELETE(m_pEffect[(int)Effect::Star]);
-	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/BackGround_ShootginStars.png", 8, 8, STAR_SPEED);
+	m_pEffect[(int)Effect::Star] = new CEffectManager_sp("Assets/Effect/Sprite/BackGround_ShootginStars_2.png", 8, 8, STAR_SPEED);
 	SAFE_DELETE(m_pDecition);
 	m_pDecition = new SpriteEx("Assets/Effect/Sprite/Decision.png");
 	SAFE_DELETE(m_pEffect[(int)Effect::Choice]);
 	m_pEffect[(int)Effect::Choice] = new CEffectManager_sp("Assets/Effect/Sprite/Choice.png", 4, 11, 0.5f);
-
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		m_pStarEfc[i] = new CEffectManager_sp(m_pEffect[(int)Effect::Star]);
+	}
 
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
@@ -642,6 +657,10 @@ void CSceneTitle::TitleAnimation()
 	for (int i = 0; i < (int)Effect::Max; i++)
 	{
 		m_pEffect[i]->Update();
+	}
+	for (int i = 0; i < MAX_STAR; i++)
+	{
+		m_pStarEfc[i]->Update();
 	}
 
 	if (g_eTitleAnim == LogoToBar)m_nLiniYCount += 2;
@@ -737,13 +756,31 @@ void CSceneTitle::TitleAnimation()
 
 	if (m_nAnimCount % 240 == 0)
 	{
-		m_tStarPos.x = 0.0f - (rand() % 20 * 100.0f);
-		if (!m_pEffect[(int)Effect::Star]->IsPlay())m_pEffect[(int)Effect::Star]->Play(false);
+		m_tStarPos[0].x = 0.0f - (rand() % 20 * 100.0f);
+		if (!m_pStarEfc[0]->IsPlay())m_pStarEfc[0]->Play(false);
+	}
+	if (m_nAnimCount % 300 == 0)
+	{
+		m_tStarPos[1].x = 0.0f - (rand() % 20 * 100.0f);
+		if (!m_pStarEfc[1]->IsPlay())m_pStarEfc[1]->Play(false);
+	}
+	if (m_nAnimCount % 420 == 0)
+	{
+		m_tStarPos[2].x = 0.0f - (rand() % 20 * 100.0f);
+		if (!m_pStarEfc[2]->IsPlay())m_pStarEfc[2]->Play(false);
+	}
+	if (m_nAnimCount % 540 == 0)
+	{
+		m_tStarPos[3].x = 0.0f - (rand() % 20 * 100.0f);
+		if (!m_pStarEfc[2]->IsPlay())m_pStarEfc[2]->Play(false);
 	}
 
-	if (m_pEffect[(int)Effect::Star]->IsPlay())
+	for (int i = 0; i < MAX_STAR; i++)
 	{
- 	}
+		if (!m_pStarEfc[i]->IsPlay()) m_tStarRotate[i].z = DirectX::XMConvertToRadians(240.0f);
+		else  m_tStarRotate[i].z += DirectX::XMConvertToRadians(-0.1f);
+	}
+
 
 	m_nAnimCount++;
 }

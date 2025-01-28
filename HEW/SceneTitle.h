@@ -16,6 +16,8 @@
 #include "_StructList.h"
 #include "EffectManager_sp.h"
 
+#define MAX_STAR 4
+
 //プロトタイプ宣言
 class CSceneTitle : public CScene
 {
@@ -51,7 +53,6 @@ private:
 	DirectX::XMFLOAT2 m_tLiniPos;
 	DirectX::XMFLOAT2 m_tTabPos[4];
 	DirectX::XMFLOAT2 m_tTabSize[4];
-	DirectX::XMFLOAT2 m_tStarPos;
 	float m_fSelectScale;
 	bool m_bSelected;
 	bool m_bChange;
@@ -66,4 +67,7 @@ private:
 		Max
 	};
 	CEffectManager_sp* m_pEffect[(int)Effect::Max];
+	CEffectManager_sp* m_pStarEfc[MAX_STAR];
+	DirectX::XMFLOAT2 m_tStarPos[MAX_STAR];
+	DirectX::XMFLOAT3 m_tStarRotate[MAX_STAR];
 };
