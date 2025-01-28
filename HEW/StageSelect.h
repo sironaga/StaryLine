@@ -64,7 +64,16 @@ private:
 	SpriteEx* m_pDecition;
 
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
-	CSoundList* g_StageSelectSound;
+	CSoundList* m_BGMSound;
+	IXAudio2SourceVoice* m_pSourseStageSelectSE[4];
+	CSoundList* m_pSESound[4];
+	enum Sound
+	{
+		DECISION_SE
+		, GRASS_SE
+		, DESERT_SE
+		, SNOW_SE
+	};
 
 	DirectX::XMFLOAT3 m_rotate;
 		enum StageKind
