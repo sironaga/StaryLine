@@ -840,6 +840,10 @@ void CFieldVertex::FeverDraw()
 			g_pFeverEffects[i]->Update();
 			g_pFeverEffects[i]->Draw();
 		}
+		/*float X, Y;
+		X = -log(Y) + 1.0f;
+		Y += 0.1;
+		Fever_Effects_Alpha = */
 		Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
 		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
 	}
