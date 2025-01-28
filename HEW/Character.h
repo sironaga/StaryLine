@@ -21,6 +21,16 @@ enum class MODEL_DEFAULTSIZE
 };
 #define LeaderSize (0.8)
 
+enum class CharacterAnimation
+{
+	None,
+	Walk,
+	Attack_Advantage,
+	Attack_Disadvantage,
+	Death,
+	MAX,
+};
+
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
@@ -34,7 +44,6 @@ enum Status
 	St_Death,	//死亡
 	St_Delete,	//削除
 };
-
 
 class CHpUI
 {
@@ -127,8 +136,9 @@ public:
 	bool m_bIsAttack;				//攻撃しているかどうか
 	bool m_bTypeAttack;				//攻撃対象の相性がいいかどうか
 	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
-	/*ダメージログ関係*/
 
+	bool m_bIsAnimationFlag[(int)CharacterAnimation::MAX];
+	/*ダメージログ関係*/
 	bool m_bDamageLogDraw[3];		//ダメージログ描画関連のフラグ　[0]..描画フラグ,[1]..移動変数初期化フラグ,[2]..相性のフラグ
 	DirectX::XMFLOAT3 m_tDamageLogPos;
 	/*================*/
@@ -161,6 +171,7 @@ protected:
 
 
 protected:
+	Model* m_pModel;
 	IXAudio2SourceVoice* m_pSourceNormalAttack;//スピーカー
 	IXAudio2SourceVoice* m_pSourceWeaknessAttack;//スピーカー
 	
@@ -168,7 +179,6 @@ protected:
 	bool m_bTimeSoundStart;
 
 	bool m_bReLoadFlag;
-	Model* m_pModel;
 	//EffectInfo m_tEffect[(int)FighterEffect::MAX];
 	CEffectManager_sp* m_pEffect[(int)FighterEffect::MAX];
 	bool IsCreateEffectPlay;
@@ -275,6 +285,7 @@ private:
 	void DeathUpdate(void)  override;
 	
 	void SettingStatus(void) override;
+
 };
 
 //敵キャラクタークラス
@@ -293,6 +304,7 @@ private:
 	void DeathUpdate(void)  override;
 
 	void SettingStatus(void) override;
+
 };
 
 //リーダークラス

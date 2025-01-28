@@ -280,6 +280,15 @@ void CBattle::Update(void)
 								{
 									//攻撃しているかの判断をtrueにする
 									m_pAlly[i]->m_bIsAttack = true;
+									if (m_pEnemy[l]->GetCornerCount() == m_pAlly[i]->GetCornerCount())
+									{
+										m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Advantage] = true;
+									}
+									else
+									{
+										m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Disadvantage] = true;
+									}
+
 									if (m_pAlly[i]->GetCornerCount() == m_pEnemy[l]->GetCornerCount())
 									{
 										m_pAlly[i]->m_bTypeAttack = true;
@@ -849,6 +858,7 @@ void CBattle::Move(int i, Entity Entity)
 						{
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
 							m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
+							m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 						}
 						else
 						{
@@ -856,11 +866,13 @@ void CBattle::Move(int i, Entity Entity)
 							{
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyPos.x,EnemyPos.y, m_pAlly[i]->GetFirstPos().z }).x);
 								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyPos.x,EnemyPos.y, m_pAlly[i]->GetFirstPos().z }).z);
+								m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 							}
 							else
 							{
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
 								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
+								m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 							}
 						}
 					}
@@ -879,6 +891,7 @@ void CBattle::Move(int i, Entity Entity)
 								//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+								m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 							}
 							//そこより手前だったら
 							else
@@ -889,16 +902,19 @@ void CBattle::Move(int i, Entity Entity)
 									{
 										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);			
 										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
+										m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 									}
 									else
 									{
 										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+										m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 									}
 								}
 								else
 								{
 									m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+									m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 								}
 							}
 						}
@@ -922,6 +938,7 @@ void CBattle::Move(int i, Entity Entity)
 							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+							m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 						}
 						//そこより手前だったら
 						else
@@ -932,16 +949,19 @@ void CBattle::Move(int i, Entity Entity)
 								{
 									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);
 									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
+									m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 								}
 								else
 								{
 									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+									m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 								}
 							}
 							else
 							{
 								m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+								m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 							}
 
 						}
@@ -956,6 +976,7 @@ void CBattle::Move(int i, Entity Entity)
 
 			m_pAlly[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
 			m_pAlly[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
+			m_pAlly[i]->m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = true;
 			//目的地の+-1.0fの範囲内に入ったら移動フラグをfalseにする
 			if (DestinationPos.x + 1.0f < m_pAlly[i]->GetPos().x && DestinationPos.x - 1.0f > m_pAlly[i]->GetPos().x)
 			{
@@ -1306,6 +1327,7 @@ void CBattle::Battle(int i, int l, Entity Entity)
 			//攻撃チャージがたまっているかどうか
 			if (m_pEnemy[i]->GetAtkCharge() >= m_pEnemy[i]->GetCoolTime())
 			{
+				
 				//相手の体力を減らす
 				m_pAllyLeader->Damage(m_pEnemy[i]);
 				//攻撃したのでチャージをリセットする
@@ -1387,6 +1409,7 @@ void CBattle::Alive(void)
 			//味方の体力が残っているかどうか
 			if (m_pAlly[l]->GetHp() <= 0.0f)
 			{
+				m_pAlly[l]->m_bIsAnimationFlag[(int)CharacterAnimation::Death] = true;
 				//ステータスを死亡状態にする
 				m_pAlly[l]->SetStatus(St_Death);
 				//m_pAlly[l]->PlayDeathEffect();
@@ -1402,6 +1425,7 @@ void CBattle::Alive(void)
 			//敵の体力が残っているかどうか
 			if (m_pEnemy[l]->GetHp() <= 0.0f)
 			{
+				m_pAlly[l]->m_bIsAnimationFlag[(int)CharacterAnimation::Death] = true;
 				//ステータスを死亡状態にする
 				m_pEnemy[l]->SetStatus(St_Death);
 				//m_pEnemy[l]->PlayDeathEffect();
@@ -1516,14 +1540,15 @@ void CBattle::FirstPosSetting()
 			//初期X位置を設定
 			m_pAlly[i]->SetPosX(ALLYCREATE_POSX - PosX);
 			//初期Y位置を設定
-			if (m_pAlly[i]->GetCornerCount() == 3)
-			{
-				m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
-			}
-			else if (m_pAlly[i]->GetCornerCount() == 4)
-			{
-				m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 1.3f);
-			}
+			m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
+			//if (m_pAlly[i]->GetCornerCount() == 3)
+			//{
+			//	m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
+			//}
+			//else if (m_pAlly[i]->GetCornerCount() == 4)
+			//{
+			//	m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 1.3f);
+			//}
 			//Z座標をパターン別に設定
 			switch (m_nFirstPosPattern)
 			{
@@ -1611,7 +1636,7 @@ void CBattle::FirstPosSetting()
 			}
 			else if (m_pEnemy[i]->GetCornerCount() == 4)
 			{
-				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y * 2);
+				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y * 1.3);
 			}
 
 			//Z座標をパターン別に設定
