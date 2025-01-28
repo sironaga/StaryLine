@@ -6,6 +6,7 @@
 #include"Main.h"
 #include"NumberUI.h"
 #include "SoundList.h"
+#include"Conection_Sys.h"
 
 class CSceneResult : public CScene
 {
@@ -56,6 +57,8 @@ private:
 	SpriteEx* m_pBestScore;
 	SpriteEx* m_pPiyo;
 	CNumberUI* m_pNumber;
+	
+
 
 	// --- ïœêî
 	int nAnimationTimer;

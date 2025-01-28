@@ -1,5 +1,5 @@
 #pragma once
-/* Include */
-#include"Definition.h"
-#include"_StructList.h"
-/* ======= */
+
+void Conect_Init();
+void SetIP(const char* IP);
+void SendData(int nData);

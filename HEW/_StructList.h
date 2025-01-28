@@ -39,25 +39,6 @@ enum STM
 	TIME_OUT_RESPONSE,
 };
 
-/* ユーザーの個人データ */
-struct Personal_Information_Data
-{
-	int nConnctinKey;				/* ユーザー認証キー */
-	char IPv4[IPV4_LEN];			/* IPv4アドレス */
-};
-
-/* システムデータ */
-struct Connecting_System_Data
-{
-	bool bUse = false;				/* 使用判定 */
-	SPR eProsessMode;				/* 処理モードの選択 */
-	STM eTimeOutProsess;			/* 接続確認処理 */
-	int nTimeOutTImer;				/* 接続確認用タイマー */
-	int nCalling_Number;			/* 呼出番号 */
-
-
-};
-
 /* Result用データ */
 struct ResultGameInfo
 {
@@ -69,11 +50,6 @@ struct ResultGameInfo
 	int nDrawCount;
 };
 
-struct Communication_Data
-{
-	Personal_Information_Data PersonalData;
-	Connecting_System_Data ConectionData;
-};
 
 struct ObjectParam
 {
