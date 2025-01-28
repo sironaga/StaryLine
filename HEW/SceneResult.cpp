@@ -899,7 +899,7 @@ void CSceneResult::NumberDisp(void)
 			bBestScore = true;
 			if (StageLevel.StageSubNumber == 8)
 			{
-				//SetIP(SAVER_IP);
+				SetIP(SAVER_IP);
 				char cScore[255];
 				sprintf(cScore, "%d", nScore);
 				SendData(cScore);
