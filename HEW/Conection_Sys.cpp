@@ -15,7 +15,7 @@ WSAData wsaData;
 void Conect_Init()
 {
 	WSACleanup();
-	WSAStartup(MAKEWORD(2, 0), &wsaData);   //MAKEWORD(2, 0)はwinsockのバージョン2.0ってこと
+	(void)WSAStartup(MAKEWORD(2, 0), &wsaData);   //MAKEWORD(2, 0)はwinsockのバージョン2.0ってこと
 	sock = socket(AF_INET, SOCK_DGRAM, 0);  //AF_INETはIPv4、SOCK_DGRAMはUDP通信、0は？
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(50008);// 待ち受けポート番号を50008にする
