@@ -109,6 +109,7 @@ private:
 	float f_SelectY;
 	float posX[3];
 	float subposX[3];
+	float LinieRotationY;
 	DirectX::XMFLOAT2 m_tDecitionPos[2];
 	float m_tBGRotateZ;
 	bool MainStage;
