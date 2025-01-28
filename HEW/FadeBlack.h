@@ -17,6 +17,7 @@ public:
 
 	// 共通フェード処理 
 	void DrawFade(float alpha);
+	virtual void Reset() override;
 
 private:
 	Texture* m_pTexture; // フェード中に表示する画像 

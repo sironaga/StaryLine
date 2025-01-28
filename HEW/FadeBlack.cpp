@@ -52,3 +52,9 @@ void CFadeBlack::DrawFade(float alpha)
 	Sprite::Draw();
 	Sprite::ReSetSprite();
 }
+
+void CFadeBlack::Reset()
+{
+	SAFE_DELETE(m_pTexture);
+	if (FAILED(m_pTexture->Create(TEX_PASS("Fade/Fade.png"))))MessageBox(NULL, "Load failed FadeBlack.", "Error", MB_OK);
+}

@@ -13,7 +13,7 @@ public:
 	void DrawFadeOut(float alpha) final;
 	void DrawFade(float alpha);
 
-	void Reset();
+	virtual void Reset() override;
 private:
 	SpriteEx* m_pTransitionA;
 	SpriteEx* m_pTransitionB;

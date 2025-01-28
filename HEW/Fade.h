@@ -17,6 +17,7 @@ public:
 	float GetRate();
 	float GetAlpha();
 
+	virtual void Reset() = 0;
 
 protected:
 	virtual void DrawFadeIn(float alpha);
