@@ -7,7 +7,7 @@
 #include "SpriteDrawer.h"
 #include "InputEx.h"
 #include "SoundList.h"
-#include"SceneResult.h"
+#include "SceneResult.h"
 #include "Geometory.h"
 
 #define LOGO_WIND (1000)
@@ -70,6 +70,7 @@ CStageSelect::CStageSelect()
 	, m_tBGRotateZ(0.0f)
 	, m_ModelWorldParam{}
 	, LinieRotationY{180.0f}
+	, m_bClear{}
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -181,6 +182,8 @@ CStageSelect::CStageSelect()
 
 	m_tDecitionPos[0] = { -375.0f, -55.0f };
 	m_tDecitionPos[1] = {  375.0f, -385.0f };
+
+	ClearCheck();
 }
 
 CStageSelect::~CStageSelect()
@@ -320,7 +323,7 @@ void CStageSelect::Update()
 					posX[1] = 400.0f;
 					posX[2] = 800.0f;
 					LinieRotationY = 180.0f;
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[GRASSLAND_STAGE3])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = DESERT;
@@ -328,7 +331,7 @@ void CStageSelect::Update()
 						m_rotate.z = GRASS_ROTATE_Z2;
 						bRight = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT)))
+					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) && m_bClear[DESERT_STAGE3])
 					{ 
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = SNOWFIELD;	
@@ -344,7 +347,7 @@ void CStageSelect::Update()
 					posX[1] = 0.0f;
 					posX[2] = 400.0f;
 					LinieRotationY = 180.0f;
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[DESERT_STAGE3])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = SNOWFIELD; 
@@ -404,7 +407,7 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(GRASSLAND_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[GRASSLAND_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE2;
@@ -414,14 +417,15 @@ void CStageSelect::Update()
 					break;
 
 				case(GRASSLAND_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[GRASSLAND_STAGE2])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE3;
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
+					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 						m_bMoving = true;
@@ -444,7 +448,7 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(DESERT_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[DESERT_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE2; 
@@ -454,14 +458,15 @@ void CStageSelect::Update()
 					break;
 
 				case(DESERT_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[DESERT_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE3; 
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) {
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
+					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE1;
 						m_bMoving = true;
@@ -485,7 +490,7 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(SNOWFIELD_STAGE1):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[SNOWFIELD_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2;
@@ -495,7 +500,7 @@ void CStageSelect::Update()
 					break;
 
 				case(SNOWFIELD_STAGE2):
-					if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT)))
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[SNOWFIELD_STAGE2])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3;
@@ -1543,6 +1548,15 @@ void CStageSelect::LinieDraw()
 void CStageSelect::SelectAnimation()
 {
 	if(MainStage)m_pBackGround->MultiScrollRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(m_tBGRotateZ) });
+}
+
+void CStageSelect::ClearCheck()
+{
+	for (int i = 0; i < MAX_STAGE; i++)
+	{
+		m_bClear[i] = true;
+		//m_bClear[i] = CSceneResult::GetStageClear(i);
+	}
 }
 
 //int CStageSelect::GetStageNum()

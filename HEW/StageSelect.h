@@ -30,7 +30,9 @@ enum E_SELECT_STAGENUMBER
 	DESERT_STAGE3,
 	SNOWFIELD_STAGE1,
 	SNOWFIELD_STAGE2,
-	SNOWFIELD_STAGE3
+	SNOWFIELD_STAGE3,
+
+	MAX_STAGE
 };
 
 class CStageSelect : public CScene
@@ -46,6 +48,7 @@ private:
 
 	void LinieDraw();
 	void SelectAnimation();
+	void ClearCheck();
 
 	SpriteEx* m_pGrassLand;
 	SpriteEx* m_pDesert;
@@ -115,6 +118,7 @@ private:
 	bool MainStage;
 	bool m_bEnd;
 	bool m_bMoving;
+	bool m_bClear[MAX_STAGE];
 
 	int nSlect;
 };
