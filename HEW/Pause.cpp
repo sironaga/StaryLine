@@ -5,17 +5,22 @@
 #include "Easing.h"
 #include "InputEx.h"
 
+SpriteEx* CPause::m_pPauseTex[11];//texture情報
+COption* CPause::m_pOption;//オプション
+CSoundList* CPause::m_pSoundPause[3];//音データ
+IXAudio2SourceVoice* CPause::m_pSoundPauseSE[3];//スピーカー
+bool CPause::m_bPause;//ポーズ画面判定
+bool CPause::m_bOption;//オプション画面判定
+bool CPause::m_bRetry;//リトライ判定
+bool CPause::m_bSelect;//ステータス選択判定
+bool CPause::m_bReturn;//ゲームに戻る判定
+bool CPause::m_bClose;//画面を閉じる
 
-CPause::CPause()
-	:m_bPause(false)
-,m_bOption(false)
-,m_bRetry(false)
-,m_bSelect(false)
-,m_bReturn(false)
-,m_pOption(nullptr)
-,m_ftime(0.0f)
-,m_bClose(false)
+FLOAT3 CPause::m_fPos[11];//ポジション
+FLOAT3 CPause::m_fSize[11];//サイズ
+float CPause::m_ftime;//計算用
 
+void CPause::Init()
 {
 	//テクスチャの読み込み
 	m_pPauseTex[0] = new SpriteEx(TEX_PASS("Pause/Pause_.png"));
@@ -32,17 +37,17 @@ CPause::CPause()
 
 
 	//ポジションの初期化
-	m_fPos[0] ={-285.0f,SCREEN_HEIGHT/2.0f,0.0f};
-	m_fPos[1] ={-285.0f,625.0f,0.0f };
-	m_fPos[2] ={-285.0f,625.0f,0.0f };
-	m_fPos[3] ={-285.0f,435,0.0f };
-	m_fPos[4] ={-285.0f,435.0f,0.0f };
-	m_fPos[5] ={-285.0f,340.0f,0.0f };
-	m_fPos[6] ={-285.0f,340.0f,0.0f };
-	m_fPos[7] ={-285.0f,530.0f,0.0f};
-	m_fPos[8] ={-285.0f,530.0f,0.0f};
-	m_fPos[9] ={-290.0f,340.0f,0.0f };
-	m_fPos[10] = { SCREEN_WIDTH/2.0f,SCREEN_HEIGHT/2.0f,0.0f };
+	m_fPos[0] = { -285.0f,SCREEN_HEIGHT / 2.0f,0.0f };
+	m_fPos[1] = { -285.0f,625.0f,0.0f };
+	m_fPos[2] = { -285.0f,625.0f,0.0f };
+	m_fPos[3] = { -285.0f,435,0.0f };
+	m_fPos[4] = { -285.0f,435.0f,0.0f };
+	m_fPos[5] = { -285.0f,340.0f,0.0f };
+	m_fPos[6] = { -285.0f,340.0f,0.0f };
+	m_fPos[7] = { -285.0f,530.0f,0.0f };
+	m_fPos[8] = { -285.0f,530.0f,0.0f };
+	m_fPos[9] = { -290.0f,340.0f,0.0f };
+	m_fPos[10] = { SCREEN_WIDTH / 2.0f,SCREEN_HEIGHT / 2.0f,0.0f };
 
 	//サイズの初期化
 	m_fSize[0] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT, 0.0f };
@@ -57,18 +62,27 @@ CPause::CPause()
 	m_fSize[9] = { SCREEN_WIDTH * 0.304f,SCREEN_HEIGHT * 0.087f,0.0f };
 	m_fSize[10] = { SCREEN_WIDTH ,SCREEN_HEIGHT ,0.0f };
 
-	
-		m_pSoundPause[0] = new CSoundList(SE_CANCEL);
-		m_pSoundPause[1] = new CSoundList(SE_DECISION);
-		m_pSoundPause[2] = new CSoundList(SE_SELECT);
-		for (int i = 0; i < 3; i++)
-		{
-			m_pSoundPause[i]->SetMasterVolume();
-			m_pSoundPauseSE[i] = m_pSoundPause[i]->GetSound(false);
-		}
+
+	m_pSoundPause[0] = new CSoundList(SE_CANCEL);
+	m_pSoundPause[1] = new CSoundList(SE_DECISION);
+	m_pSoundPause[2] = new CSoundList(SE_SELECT);
+	for (int i = 0; i < 3; i++)
+	{
+		m_pSoundPause[i]->SetMasterVolume();
+		m_pSoundPauseSE[i] = m_pSoundPause[i]->GetSound(false);
+	}
+
+	m_bPause = false;
+	m_bOption = false;
+	m_bRetry = false;
+	m_bSelect = false;
+	m_bReturn = false;
+	m_pOption = nullptr;
+	m_ftime = 0.0f;
+	m_bClose = false;
 }
 
-CPause::~CPause()
+void CPause::Uninit()
 {
 	for (int i = 0; i < 11; i++)
 	{
@@ -76,9 +90,8 @@ CPause::~CPause()
 	}
 	if (m_pOption)
 	{
-		m_pOption=nullptr;
+		m_pOption = nullptr;
 	}
-	
 }
 
 void CPause::Update()
