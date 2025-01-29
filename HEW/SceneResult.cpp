@@ -8,7 +8,7 @@
 
 // 変数きれいにする！！！！！！！！！！！！！！！！！
 
-#define SAVER_IP ("10.130.21.36")
+#define SAVER_IP ("14.133.0.16")
 
 // --- Global
 ResultGameInfo CSceneResult::ResultGameData;
