@@ -4,7 +4,6 @@
 #include "SceneGame.h"
 #include "Defines.h"
 #include "InputEx.h"
-#include "SpriteDrawer.h"
 #include "DirectXTex/TextureLoad.h"
 #include "SoundList.h"
 #include "Sprite.h"

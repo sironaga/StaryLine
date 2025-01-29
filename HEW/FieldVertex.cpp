@@ -5,7 +5,6 @@
 #include "Player.h"
 #include <math.h>
 #include "SceneGame.h"
-#include "SpriteDrawer.h"
 #include "_StructList.h"
 #include "Defines.h"
 #include "Main.h"

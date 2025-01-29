@@ -177,10 +177,10 @@ float4 main(PS_IN pin) : SV_TARGET {
 
 	// ƒTƒ“ƒvƒ‰[
 	D3D11_SAMPLER_DESC samplerDesc = {};
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	hr = pDevice->CreateSamplerState(&samplerDesc, &g_pSpriteSampler);
 	if (FAILED(hr)) { return; }
 	g_pSpriteContext->PSSetSamplers(0, 1, &g_pSpriteSampler);
