@@ -136,6 +136,8 @@ private:
 	int Mode_Player_Move;//フィーバー時のプレイヤーの動き方
 	float Fever_Stop_Player_time; //フィーバー時のプレイヤーの止まっている時間
 	float Fever_Effects_Alpha;//フィーバーEffectの透明度
+
+	DirectX::XMFLOAT3 Shapes_Pos[MAX_ALLY];
 	//float
 
 	CBattle* m_pBattle;//バトルクラスのポインター
@@ -148,6 +150,7 @@ private:
 	Texture* m_pTex_Summon_Log[2];
 	Texture* m_pTex_Ally_Count[4];
 	Texture* m_pTex_Ally_Number[10];
+	Texture* m_pTex_Shapes[2];
 
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[4];//フィーバースター
@@ -155,6 +158,7 @@ private:
 	Sprite* m_pSprite_Summon_Log;//召喚ログ
 	Sprite* m_pSprite_Ally_Count[4];//召喚数
 	Sprite* m_pSprite_Ally_Number[10];//召喚Number
+	Sprite* m_pSprite_Shapes;
 
 	CEffectManager_sp* g_pLineEffects_Sprite;
 	CEffectManager_sp* g_pLineEffects[MAX_ALLY];

@@ -10,6 +10,15 @@
 #include "Main.h"
 #include "SoundList.h"
 
+//図形のやつ
+//三角形を回転させる(辺が一番長いところの2頂点が外心の上下左右を同時に満たす所を取得するればいけそう)
+//四角形を回転させる(????)
+//特殊な三角形の判定(1種類)
+//特殊な四角形の判定(4種類)
+//ひし形と正方形扱い変える
+//正方形と長方形どうする
+
+
 //↓FieldVertexのまだやってない事↓
 //各変数名の修正
 //コンストラクタとupdateのクリーンアップ
@@ -101,12 +110,14 @@ CFieldVertex::CFieldVertex()
 	, m_pTex_Summon_Log{ nullptr }
 	, m_pTex_Ally_Number{ nullptr }
 	, m_pTex_Ally_Count{ nullptr }
+	, m_pTex_Shapes{ nullptr }
 	, m_pSprite_SuperStar_Number(nullptr)
 	, m_pSprite_Fever_Gage{ nullptr }
 	, m_pSprite_Fever_Player (nullptr)
 	, m_pSprite_Summon_Log(nullptr)
 	, m_pSprite_Ally_Number{ nullptr }
 	, m_pSprite_Ally_Count{ nullptr }
+	, m_pSprite_Shapes{ nullptr }
 	, g_pFeverEffects_Sprite(nullptr)
 	, g_pFeverEffects{nullptr}
 	, g_pLineEffects_Sprite( nullptr)
@@ -114,6 +125,7 @@ CFieldVertex::CFieldVertex()
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
 	, Fever_Effects_Alpha(1.0f)
+	, Shapes_Pos{}
 {
 	//-----サウンドの初期化-----//
 	{
@@ -135,6 +147,7 @@ CFieldVertex::CFieldVertex()
 		m_pSprite_Ally_Count[1] = new Sprite();
 		m_pSprite_Ally_Count[2] = new Sprite();
 		m_pSprite_Ally_Count[3] = new Sprite();
+		m_pSprite_Shapes = new Sprite();
 		for (int i = 0; i < 10; i++)
 		{
 			m_pSprite_Ally_Number[i] = new Sprite();
@@ -154,6 +167,10 @@ CFieldVertex::CFieldVertex()
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
+		for (int i = 0; i < 2; i++)
+		{
+			m_pTex_Shapes[i] = new Texture();
+		}
 		for (int i = 0; i < 10; i++)
 		{
 			m_pTex_Ally_Number[i] = new Texture();
@@ -352,6 +369,21 @@ CFieldVertex::CFieldVertex()
 			}
 		}
 	}
+	HRESULT hrShapes;
+	for (int i = 0; i < 2; i++)
+	{
+		switch (i)
+		{
+		case 0:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/三角形_1.png")); break;
+		case 1:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/四角形_1.png")); break;
+		default:
+			break;
+		}
+		
+		if (FAILED(hrShapes)) {
+			MessageBox(NULL, "Shapes 画像", "Error", MB_OK);
+		}
+	}
 
 	Xx = 0.0f;
 	Yy = 0.0f;
@@ -387,6 +419,10 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_Ally_Count[1]);
 	SAFE_DELETE(m_pTex_Ally_Count[2]);
 	SAFE_DELETE(m_pTex_Ally_Count[3]);
+	for (int i = 0; i < 2; i++)
+	{
+		SAFE_DELETE(m_pTex_Shapes[i]);
+	}
 	for (int i = 0; i < 10; i++)
 	{
 		SAFE_DELETE(m_pTex_Ally_Number[i]);
@@ -409,6 +445,8 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pSprite_Ally_Count[1]);
 	SAFE_DELETE(m_pSprite_Ally_Count[2]);
 	SAFE_DELETE(m_pSprite_Ally_Count[3]);
+	SAFE_DELETE(m_pSprite_Shapes);
+
 	for (int i = 0; i < 10; i++)
 	{
 		SAFE_DELETE(m_pSprite_Ally_Number[i]);
@@ -774,6 +812,20 @@ void CFieldVertex::Draw()
 		{
 			if (g_pLineEffects[i]->IsPlay())
 			{
+				
+				
+				if (Shapes_Count[i] == 3)
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f + 50.0f * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),50.0f + 50.0f * (sqrtf(Shapes_Size[i] * 2.0f)-1.0f),1.0f}, {0.0f,0.0f,0.0f}, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
+				}
+				else 
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
+				}
+				m_pSprite_Shapes->Draw();
+				
 				g_pLineEffects[i]->Update();
 				g_pLineEffects[i]->Draw();
 			}
@@ -1176,6 +1228,7 @@ void CFieldVertex::InitFieldVertex()
 		Fill(Shapes_Count, -1);
 		Fill(Comparison, -1);
 		Fill(vtx_FieldLine, 0.0f);
+		Fill(Shapes_Pos, -1.0f);
 	
 		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
 		OrderVertexCount = 1;//たどった頂点の数初期化
@@ -1431,12 +1484,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 	for (int k = 0; k < MAX_VERTEX; k++)
 	{
+		if (NowShapes >= 200)
+		{
+			MessageBox(NULL, "200以上の図形が保存されました!これ以上保存できません!!", "Error", MB_OK);
+		}
 		if (Comparison[k] == VertexNumber.Number)//過去に自分と同じ頂点が格納されていたら図形としてみなし格納する	
 		{
-			if (NowShapes == 14)
-			{
-				NowShapes = NowShapes;
-			}
 			int Comparison2[MAX_VERTEX];//過去に自分と同じ頂点が格納されている場所から今の場所までの頂点を保存する//降順に並び替える
 			int Comparison3[MAX_VERTEX];//降順にする前の頂点情報
 			for (int l = k; l < MAX_VERTEX; l++)
@@ -1674,22 +1727,58 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							//比較頂点を一番左からにする
 							for (int n = (m / 5) * 5; n < m; n++)
 							{
-								if (m_tVertex[n].Use)LeftVertex = true;
+								if (m_tVertex[n].Use)
+								{
+									for (int o = 0; o < MAX_VERTEX; o++)//図形に使用している頂点のみ
+									{
+										if (n == Comparison2[o])
+										{
+											LeftVertex = true;
+										}
+									}		
+								}
 							}
 							//比較頂点を一番右からにする
 							for (int n = (m / 5) * 5 + 4; n > m; n--)
 							{
-								if (m_tVertex[n].Use)RightVertex = true;
+								if (m_tVertex[n].Use)
+								{
+									for (int o = 0; o < MAX_VERTEX; o++)//図形に使用している頂点のみ
+									{
+										if (n == Comparison2[o])
+										{
+											RightVertex = true;
+										}
+									}
+								}
 							}
 							//比較頂点を一番上からにする
 							for (int n = m % 5; n < m; n += 5)
 							{
-								if (m_tVertex[n].Use)UpVertex = true;
+								if (m_tVertex[n].Use)
+								{
+									for (int o = 0; o < MAX_VERTEX; o++)//図形に使用している頂点のみ
+									{
+										if (n == Comparison2[o])
+										{
+											UpVertex = true;
+										}
+									}
+								}
 							}
 							//比較頂点を一番下からにする
 							for (int n = m % 5 + 5 * 4; n > m; n -= 5)
 							{
-								if (m_tVertex[n].Use)DownVertex = true;
+								if (m_tVertex[n].Use)
+								{
+									for (int o = 0; o < MAX_VERTEX; o++)//図形に使用している頂点のみ
+									{
+										if (n == Comparison2[o])
+										{
+											DownVertex = true;
+										}
+									}
+								}
 							}
 							if (UpVertex && DownVertex && LeftVertex && RightVertex)InVertex++;//全方向に使っている頂点があれば囲まれているので内側の頂点
 						}
@@ -1708,13 +1797,30 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 					if (Shapes_Count[NowShapes] == 3)//三角形なら
 					{
-						Effect_Shapes_Pos[NowShapes].x = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.x) / 3.0f;
-						Effect_Shapes_Pos[NowShapes].y = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.y) / 3.0f;
+						//三角形の外心の座標を求める
+						DirectX::XMFLOAT2 pos[3];
+						for (int m = 0; m < 3; m++)
+						{
+							pos[m].x = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.x;
+							pos[m].y = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.y;
+						}
+						Shapes_Pos[NowShapes].x = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].y - pos[2].y) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].y - pos[0].y) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].y - pos[1].y)) / (2.0f * ((pos[0].x - pos[1].x) * (pos[1].y - pos[2].y) - (pos[1].x - pos[2].x) * (pos[0].y - pos[1].y)));
+						Shapes_Pos[NowShapes].y = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].x - pos[2].x) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].x - pos[0].x) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].x - pos[1].x)) / (2.0f * ((pos[1].x - pos[2].x) * (pos[0].y - pos[1].y) - (pos[0].x - pos[1].x) * (pos[1].y - pos[2].y)));
+						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
+						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
 					}
 					else//四角形なら
 					{
-						Effect_Shapes_Pos[NowShapes].x = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.x + m_tVertex[Shapes_Vertex[NowShapes][3]].Pos.x) / 4.0f;
-						Effect_Shapes_Pos[NowShapes].y = (m_tVertex[Shapes_Vertex[NowShapes][0]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][1]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][2]].Pos.y + m_tVertex[Shapes_Vertex[NowShapes][3]].Pos.y) / 4.0f;
+						DirectX::XMFLOAT2 pos[4];
+						for (int m = 0; m < 4; m++)
+						{
+							pos[m].x = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.x;
+							pos[m].y = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.y;
+						}
+						Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
+						Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
+						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
+						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
 					}
 
 					//音を再生
@@ -1791,6 +1897,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 		for (int k = 0; k < 8; k++)
 		{
 			//ｋ＝０のときはがいる
+			
 			if (NowVertex == 0)
 			{
 				if (VertexNumber.Connect[k] != -1)ShapesCheck(m_tVertex[VertexNumber.Connect[k]]);
