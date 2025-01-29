@@ -5,18 +5,20 @@
 #include"Controller.h"
 #include"InputEx.h"
 #include"Easing.h"
+// ---
 
-// 変数きれいにする！！！！！！！！！！！！！！！！！
-
+// --- SaverIPSetting
 #define SAVER_IP ("14.133.0.16")
+// ---
 
-// --- Global
+// --- static
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
 int CSceneResult::nBestScore[8];
 bool CSceneResult::bClearState[8];
+// ---
 
-
+// --- 初期化
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),nScore(0),bEnter(false)
 {
@@ -68,7 +70,6 @@ CSceneResult::CSceneResult()
 	Conect_Init();
 
 }
-
 CSceneResult::~CSceneResult()
 {
 	for (int nLoop = 0; nLoop < 2; nLoop++)
@@ -161,6 +162,7 @@ CSceneResult::~CSceneResult()
 	
 }
 
+// --- 全体の更新処理
 void CSceneResult::Update()
 {
 	//--- 入力処理
@@ -174,15 +176,17 @@ void CSceneResult::Update()
 
 
 }
-
+// --- 全体の描画処理
 void CSceneResult::Draw()
 {
-	// 背景
+	// 背景描画
 	m_pBack->SetTexture();
 	m_pBack->Disp();
 
+	// 分岐処理
 	if (ResultGameData.bWin)
 	{
+		// 勝利時の描画
 		WinAnimation();
 
 		WinDisp();
@@ -191,11 +195,13 @@ void CSceneResult::Draw()
 	}
 	else
 	{
+		// 敗北時の描画
 		LoseAnimation();
 
 		LoseDisp();
 	}
 
+	// UI系
 	if (ResultGameData.bWin)
 	{
 		if (!bWorldClear)
@@ -220,32 +226,33 @@ void CSceneResult::Draw()
 	
 }
 
-// --- セッター　ゲッター
+
+// --- リザルト情報の設定
 void CSceneResult::InResultData(ResultGameInfo InData)
 {
 	ResultGameData = InData;
 }
-
+// --- ステージ情報を設定
 void CSceneResult::InStageLevel(StageType  nInLevel)
 {
 	StageLevel = nInLevel;
 }
-
+// --- ベストSCORE情報の設定
 void CSceneResult::InBestScore(int InScore, StageType InStage)
 {
 	nBestScore[InStage.StageSubNumber] = InScore;
 }
-
+// --- ベストSCORE情報の取得
 int  CSceneResult::OutBestScore(StageType InStage)
 {
 	return nBestScore[InStage.StageSubNumber];
 }
-
+// --- ステージクリア情報の取得
 bool CSceneResult::GetStageClear(int nStage)
 {
 	return bClearState[nStage];
 }
-
+// ---　ステージクリア情報の設定
 void CSceneResult::SetStageClear(int nStage, bool bWin)
 {
 	bClearState[nStage] = bWin;
@@ -255,41 +262,41 @@ void CSceneResult::SetStageClear(int nStage, bool bWin)
 // --- テクスチャの読み込み
 void CSceneResult::LoadTexture(void)
 {
-	m_pHitPoint = new SpriteEx("Assets/Texture/Result/Result_Helth.png");
+	m_pHitPoint =		new SpriteEx("Assets/Texture/Result/Result_Helth.png");
 	m_pStageSelect[0] = new SpriteEx("Assets/Texture/Result/Result_Side_Stageselect.png");
 	m_pStageSelect[1] = new SpriteEx("Assets/Texture/Result/Result_Side_Stageselect_Push.png");
-	m_pShadow = new SpriteEx("Assets/Texture/Result/Result_Shadow.png");
-	m_pSelect = new SpriteEx("Assets/Texture/Result/Result_Nextstage_Frame.png");
-	m_pSummonData = new SpriteEx("Assets/Texture/Result/Result_Summon.png");
-	m_pUnderBar = new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
-	m_pBack = new SpriteEx("Assets/Texture/Result/B.png");
-	m_pPiyo = new SpriteEx("Assets/Texture/Result/stan.png");
-	m_pScore = new SpriteEx("Assets/Texture/Result/Score.png");
-	m_pBestScore = new SpriteEx("Assets/Texture/Result/BestScore.png");
+	m_pShadow =			new SpriteEx("Assets/Texture/Result/Result_Shadow.png");
+	m_pSelect =			new SpriteEx("Assets/Texture/Result/Result_Nextstage_Frame.png");
+	m_pSummonData =		new SpriteEx("Assets/Texture/Result/Result_Summon.png");
+	m_pUnderBar =		new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
+	m_pBack =			new SpriteEx("Assets/Texture/Result/B.png");
+	m_pPiyo =			new SpriteEx("Assets/Texture/Result/stan.png");
+	m_pScore =			new SpriteEx("Assets/Texture/Result/Score.png");
+	m_pBestScore =		new SpriteEx("Assets/Texture/Result/BestScore.png");
 	// -- 分岐読み込み
 	if (ResultGameData.bWin)
 	{
 		// --- WinData
-		m_pText = new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_top.png");
-		m_pCharacter = new SpriteEx("Assets/Texture/Result/Win/Result_Linie_Win_Sprite.png");
-		m_pLighting = new SpriteEx("Assets/Texture/Result/Win/Result_Win_Light.png");
-		m_pTextShadow = new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_under.png");
-		m_pClearTime = new SpriteEx("Assets/Texture/Result/Win/Result_Win_Cleartime.png");
-		m_pNextUI[0] = new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
-		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
-		m_pStar = new SpriteEx("Assets/Texture/Star/star.png");
+		m_pText =		new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_top.png");
+		m_pCharacter =	new SpriteEx("Assets/Texture/Result/Win/Result_Linie_Win_Sprite.png");
+		m_pLighting =	new SpriteEx("Assets/Texture/Result/Win/Result_Win_Light.png");
+		m_pTextShadow =	new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_under.png");
+		m_pClearTime =	new SpriteEx("Assets/Texture/Result/Win/Result_Win_Cleartime.png");
+		m_pNextUI[0] =	new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
+		m_pNextUI[1] =	new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
+		m_pStar =		new SpriteEx("Assets/Texture/Star/star.png");
 	}
 	else
 	{
 		// ---- Lose
-		m_pText = new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Text_top.png");
-		m_pCharacter = new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Linie.png");
-		m_pLighting = new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Light.png");
+		m_pText =		new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Text_top.png");
+		m_pCharacter =	new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Linie.png");
+		m_pLighting =	new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Light.png");
 		m_pTextShadow = new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Text_under.png");
-		m_pClearTime = new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Cleartime.png");
-		m_pNextUI[0] = new SpriteEx("Assets/Texture/Result/Lose/Result_Retry.png");
-		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/Lose/Result_Retry_Push.png");
-		m_pStar = new SpriteEx("Assets/Texture/Star/star2.png");
+		m_pClearTime =	new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Cleartime.png");
+		m_pNextUI[0] =	new SpriteEx("Assets/Texture/Result/Lose/Result_Retry.png");
+		m_pNextUI[1] =	new SpriteEx("Assets/Texture/Result/Lose/Result_Retry_Push.png");
+		m_pStar =		new SpriteEx("Assets/Texture/Star/star2.png");
 	}
 }
 
@@ -394,6 +401,7 @@ void CSceneResult::DefaultSetPos(void)
 // --- 入力処理
 void CSceneResult::KeyProsess(void)
 {
+	// --- 勝利時のボタン処理
 	if (ResultGameData.bWin)
 	{
 		if (!bWorldClear)
@@ -433,6 +441,7 @@ void CSceneResult::KeyProsess(void)
 			}
 		}
 	}
+	// --- 敗北時のボタン処理
 	else
 	{
 		if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S'))
@@ -447,6 +456,7 @@ void CSceneResult::KeyProsess(void)
 				m_pResultSelectSE->SubmitSourceBuffer(&buffer);
 				if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
 				m_pResultSelectSE->Start();
+
 				m_pSelect->SetPositon(1630.0f, 940.0f, 10.0f);
 			}
 			nSelect = 0;
@@ -464,13 +474,14 @@ void CSceneResult::KeyProsess(void)
 				m_pResultSelectSE->SubmitSourceBuffer(&buffer);
 				if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
 				m_pResultSelectSE->Start();
+
 				m_pSelect->SetPositon(1630.0f, 840.0f, 10.0f);
 			}
 			nSelect = 1;
 		}
 	}
 
-
+	// --- nSelect == 0 のEnter処理
 	if (nSelect == 0)
 	{
 		// StageSelect
@@ -481,6 +492,7 @@ void CSceneResult::KeyProsess(void)
 			SetNext(STAGE_SELECT);
 		}
 	}
+	// --- nSelect == 1 のEnter処理
 	else
 	{
 		// retry or Next
@@ -524,13 +536,12 @@ void CSceneResult::KeyProsess(void)
 			}
 		}
 	}
-
-
 }
 
 // --- 全体のAnimation管理
 void CSceneResult::AnimationManagemer(void)
 {
+	// --- Animation管理　20FPS
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
 		bAnimation = true;
@@ -765,8 +776,10 @@ void CSceneResult::LoseDisp(void)
 
 void CSceneResult::NumberDisp(void)
 {
+	// --- 無効な数値が検出されたときの処理
 	if (ResultGameData.nAverageSpwn <= 0 || ResultGameData.nDrawCount <= 0 || ResultGameData.nHitPoint <= 0 || ResultGameData.nSpawnCount <= 0 || ResultGameData.nTime <= 0)
 	{
+		MessageBox(NULL, "無効な数値が検出されました\n仮数値を代入します", "確認_RESULT", MB_OK);
 		ResultGameData.nAverageSpwn = 114;
 		ResultGameData.nTime = 114;
 		ResultGameData.nHitPoint = 114;
@@ -774,20 +787,15 @@ void CSceneResult::NumberDisp(void)
 		ResultGameData.nDrawCount = 114;
 	}
 
-
-
-
-
-
+	// NumberUI の設定
 	m_pNumber->SetArrangment(m_pNumber->Left_AL);
-	m_pNumber->SetNumberColor(1);
 
+	m_pNumber->SetNumberColor(1);
 
 	// --- 時間計算
 	int nM, nS;
 	nM = ResultGameData.nTime / 60;
 	nS = ResultGameData.nTime % 60;
-
 
 	// 秒数Animation
 	bool bTime = false;
@@ -856,7 +864,7 @@ void CSceneResult::NumberDisp(void)
 	m_pNumber->SetPos({ 1840.0f,572.0f,0.0f });
 	m_pNumber->Draw();
 
-	// 平均賞関数
+	// 平均召喚数
 	bool bAvSpawn = false;
 	
 	if (bSpawn)
@@ -875,7 +883,7 @@ void CSceneResult::NumberDisp(void)
 
 
 	// 描画回数
-	
+	ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
 	if (bAvSpawn)
 	{
 		nDisp++;
@@ -891,9 +899,8 @@ void CSceneResult::NumberDisp(void)
 
 	// SCORE
 	int nScore;
-	nScore = ResultGameData.nHitPoint * ResultGameData.nSpawnCount * ResultGameData.nAverageSpwn / (ResultGameData.nTime * 5.0f);
+	nScore = ResultGameData.nHitPoint * sqrt(ResultGameData.nAverageSpwn * ResultGameData.nSpawnCount)/ (ResultGameData.nTime);
 	
-
 	if (bScore)
 	{
 		if (StageLevel.StageSubNumber == 8)
@@ -926,8 +933,6 @@ void CSceneResult::NumberDisp(void)
 		m_pScore->SetTexture();
 		m_pScore->Disp();
 	}
-
-
 
 	nnScore += 100;
 	if (nnScore >= nScore)
