@@ -6,8 +6,10 @@
 #include "SpriteDrawer.h"
 #include "FadeBlack.h"
 #include "Transition.h"
+#include "Pause.h"
 #include <future>
 #include <thread>
+
 
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
@@ -122,6 +124,16 @@ CSceneGame::~CSceneGame()
 
 void CSceneGame::Update()
 {
+	if (CPause::GetRetry())
+	{
+		CPause::SetRetry();
+		SetNext(SCENE_GAME, m_pBattle->m_nStageNum);
+	}
+	if (CPause::GetSelect())
+	{
+		CPause::SetSelect();
+		SetNext(STAGE_SELECT);
+	}
 	if (IsFadeFinish())
 	{
 		if (FadeTimeFlag)
@@ -301,7 +313,7 @@ void CSceneGame::Draw()
 
 	std::thread Th_BattleDraw(&CBattle::Draw, m_pBattle);
 	Th_BattleDraw.join();
-	m_pBattle->Draw();	// バトル全体の描画
+	//m_pBattle->Draw();	// バトル全体の描画
 	
 
 	// 一つのサイクルが終わった時

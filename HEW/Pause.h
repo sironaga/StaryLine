@@ -6,34 +6,34 @@
 class CPause
 {
 public:
-	//コンストラクタ
-	CPause();
-	//デストラクタ
-	~CPause();
+	//初期化
+	static void Init();
+	//終了処理
+	static void Uninit();
 	//更新処理
-	void Update();
+	static void Update();
 	//描画処理
-	void Draw();
+	static void Draw();
 
 	//====セッター====
 	//オプションの情報を設定
-	void SetOption(COption* InOption);
-	void SetRetry();
-	void SetPause();
-	void SetSelect();
+	static void SetOption(COption* InOption);
+	static void SetRetry();
+	static void SetPause();
+	static void SetSelect();
 	//====ゲッター====
 	//ポーズ画面の判定
-	bool GetPause();
+	static bool GetPause();
 	//オプション画面の判定
-	bool GetOption();
+	static bool GetOption();
 	//リトライの判定
-	bool GetRetry();
+	static bool GetRetry();
 	//ステージセレクトの判定
-	bool GetSelect();
+	static bool GetSelect();
 	//ゲームに戻るの判定
-	bool GetReturn();
+	static bool GetReturn();
 	//textureの再読み込み
-	void InitReload();
+	static void InitReload();
 private:
 	//大項目
 	enum SECTION_KIND
@@ -45,20 +45,20 @@ private:
 
 	};
 private:
-	SpriteEx* m_pPauseTex[11];//texture情報
-	COption* m_pOption;//オプション
-	CSoundList* m_pSoundPause[3];//音データ
-	IXAudio2SourceVoice* m_pSoundPauseSE[3];//スピーカー
-	bool m_bPause;//ポーズ画面判定
-	bool m_bOption;//オプション画面判定
-	bool m_bRetry;//リトライ判定
-	bool m_bSelect;//ステータス選択判定
-	bool m_bReturn;//ゲームに戻る判定
-	bool m_bClose;//画面を閉じる
+	static SpriteEx* m_pPauseTex[11];//texture情報
+	static COption* m_pOption;//オプション
+	static CSoundList* m_pSoundPause[3];//音データ
+	static IXAudio2SourceVoice* m_pSoundPauseSE[3];//スピーカー
+	static bool m_bPause;//ポーズ画面判定
+	static bool m_bOption;//オプション画面判定
+	static bool m_bRetry;//リトライ判定
+	static bool m_bSelect;//ステータス選択判定
+	static bool m_bReturn;//ゲームに戻る判定
+	static bool m_bClose;//画面を閉じる
 
-	FLOAT3 m_fPos[11];//ポジション
-	FLOAT3 m_fSize[11];//サイズ
-	float m_ftime;//計算用
+	static FLOAT3 m_fPos[11];//ポジション
+	static FLOAT3 m_fSize[11];//サイズ
+	static float m_ftime;//計算用
 	//画面のサイズ
 	enum
 	{

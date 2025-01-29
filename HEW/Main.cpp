@@ -43,7 +43,6 @@ bool IsGame = true;
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
 CStartDirection* g_pDirection;
-CPause* g_pPause;
 COption* g_pOption;
 HWND g_hWnd;
 E_SCENE_TYPE g_SceneType;
@@ -93,8 +92,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	
 	
-	g_pPause = new CPause();
-	g_pPause->SetOption(g_pOption);
+	CPause::Init();
+	CPause::SetOption(g_pOption);
 	g_pScene->SethWnd(hWnd);
 	//g_pOption->SetAddPos(1000.0f, 0.0f);
 
@@ -107,14 +106,13 @@ void Uninit()
 	SAFE_DELETE(g_pScene);
 	SAFE_DELETE(g_pFade);
 	SAFE_DELETE(g_pDirection);
-	SAFE_DELETE(g_pPause);
 	SAFE_DELETE(g_pOption);
 	UninitSpriteDrawer();
 	ShaderList::Uninit();
 	UninitInput();
 
 	
-	
+	CPause::Uninit();
 	LibEffekseer::Uninit();
 	Sprite::Uninit();
 	Geometory::Uninit();
@@ -134,8 +132,8 @@ void Update()
 	// --- カメラ情報の更新
 	g_Camera->Update();
 	//ポーズの更新
-	if (g_scene == SCENE_GAME) g_pPause->Update();
-	if (g_pPause->GetPause())
+	if (g_scene == SCENE_GAME) CPause::Update();
+	if (CPause::GetPause())
 	{
 		g_pScene->SetMasterVolume();
 		if (!g_bResolution)
@@ -144,16 +142,7 @@ void Update()
 		}
 		g_bResolution = false;
 	}
-	if (g_pPause->GetRetry())
-	{
-		g_pPause->SetRetry();
-		g_pScene->SetNext(SCENE_GAME, g_stage);
-	}
-	if (g_pPause->GetSelect())
-	{
-		g_pPause->SetSelect();
-		g_pScene->SetNext(STAGE_SELECT);
-	}
+	
 	// --- ゲームモードによる分岐処理
 	g_pScene->RootUpdate();
 
@@ -273,9 +262,9 @@ void Draw()
 		g_pDirection->Draw();
 	}
 
-	if (g_pPause->GetPause())
+	if (CPause::GetPause())
 	{
-		g_pPause->Draw();
+		CPause::Draw();
 	}
 	EndDrawDirectX();
 }
@@ -440,9 +429,9 @@ void InitResolusionMain()
 	g_pDirection = new CStartDirection();*/
 	g_pDirection->ReloadTexture();
 	g_pScene->SetGameDirection(g_pDirection);
-	g_pPause->InitReload();
+	CPause::InitReload();
 	g_pOption->InitResolusion();
-	g_pPause->SetOption(g_pOption);
+	CPause::SetOption(g_pOption);
 	if(g_scene == SCENE_GAME)g_bResolution = true;
 }
 void SetNowResolusion(int wide, int height)
