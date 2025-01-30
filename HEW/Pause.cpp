@@ -292,7 +292,7 @@ void CPause::Update()
 			}
 			if (!m_pOption->GetOption())
 			{
-				if (WithGetKeyTriger(XINPUT_GAMEPAD_START, VK_ESCAPE))
+				if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
 				{
 					//se
 					m_pSoundPauseSE[0]->Stop();
