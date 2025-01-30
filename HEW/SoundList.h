@@ -38,7 +38,11 @@ enum NAME
 	//タイトルBGM
 	,BGM_TITLE
 	//バトルBGM
-	,BGM_BATTLE
+	,BGM_BATTLE1
+	//バトルBGM
+	, BGM_BATTLE2
+	//バトルBGM
+	, BGM_BATTLE3
 	//フィーバー時BGM
 	,BGM_FEVER
 	//ゲームオーバーBGM
