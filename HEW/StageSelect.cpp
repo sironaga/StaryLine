@@ -43,9 +43,11 @@
 #define SNOW_ROTATE_X -12.0f
 #define SNOW_ROTATE_Y 22.0f
 #define SNOW_ROTATE_Z 238.0f
+#define LINIE_ROTATE_FLONT 270.0f
 
 StageType g_Select_type;
 StageType g_OldSelect_type;
+Model::AnimeNo g_AnimNo;
 
 constexpr float STAGE_BETWEEN = 1100.0f;
 constexpr float MOVE_TIME = 30.0f;
@@ -69,7 +71,7 @@ CStageSelect::CStageSelect()
 	, m_pEffect{}, m_pStarEfc{}
 	, m_tBGRotateZ(0.0f)
 	, m_ModelWorldParam{}
-	, LinieRotationY{180.0f}
+	, LinieRotationY{ LINIE_ROTATE_FLONT }
 	, m_bClear{}
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
@@ -116,9 +118,14 @@ CStageSelect::CStageSelect()
 	}
 
 	m_pStageLinie = new Model();
-	m_pStageLinie->Load(MODEL_PASS("Leader/Linie/Char_Main_Linie.fbx"), 1.0f, Model::ZFlip);
+	m_pStageLinie->Load(MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx"), 1.0f, Model::ZFlip);
+	g_AnimNo = m_pStageLinie->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx"));
+	m_pStageLinie->PlayAnime(g_AnimNo, false);
+	m_pStageLinie->Step(0.01f);
+	m_pStageLinie->SetAnimeTime(g_AnimNo, 0.0f);
 
 	m_BGMSound = new CSoundList(BGM_TITLE);
+	//m_BGMSound = new CSoundList(BGM_SELECT);
 	m_BGMSound->SetMasterVolume();
 	m_pSourseStageSelectBGM = m_BGMSound->GetSound(true);
 	SetVolumeBGM(m_pSourseStageSelectBGM);
@@ -307,6 +314,7 @@ void CStageSelect::Update()
 {
 	if (m_pSourseStageSelectBGM)SetVolumeBGM(m_pSourseStageSelectBGM);
 
+	static bool rotateSwap = false;
 	static bool bRight = false;
 	//SpriteDebug(&m_ModelParam[WorldField], true);
 	//if (IsKeyTrigger('B'))m_ModelParam[WorldField].rotate.z += DirectX::XMConvertToRadians(120.0f);
@@ -314,6 +322,7 @@ void CStageSelect::Update()
 	{
 		if (!m_bMoving)
 		{
+			LinieRotationY = LINIE_ROTATE_FLONT;
 			if (MainStage)
 			{
 				switch (g_Select_type.StageMainNumber)
@@ -322,13 +331,13 @@ void CStageSelect::Update()
 					posX[0] = 0.0f;
 					posX[1] = 400.0f;
 					posX[2] = 800.0f;
-					LinieRotationY = 180.0f;
 					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[GRASSLAND_STAGE3])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = DESERT;
 						m_bMoving = true; 
 						m_rotate.z = GRASS_ROTATE_Z2;
+						m_pStageLinie->PlayAnime(g_AnimNo, false);
 						bRight = true;
 					}
 					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) && m_bClear[DESERT_STAGE3])
@@ -338,6 +347,7 @@ void CStageSelect::Update()
 						m_bMoving = true; 
 						m_rotate.z = GRASS_ROTATE_Z;
 						posX[2] = -400.0f;
+						m_pStageLinie->PlayAnime(g_AnimNo, false);
 						bRight = false;
 					}
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
@@ -346,18 +356,21 @@ void CStageSelect::Update()
 					posX[0] = -400.0f;
 					posX[1] = 0.0f;
 					posX[2] = 400.0f;
-					LinieRotationY = 180.0f;
+					//LinieRotationY = 180.0f;
 					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) && m_bClear[DESERT_STAGE3])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = SNOWFIELD; 
 						m_bMoving = true;
+						m_pStageLinie->PlayAnime(g_AnimNo, false);
 						bRight = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
 					{ 
 						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = GRASSLAND;	m_bMoving = true; 
+						g_Select_type.StageMainNumber = GRASSLAND;
+						m_bMoving = true;
+						m_pStageLinie->PlayAnime(g_AnimNo, false);
 						bRight = false;
 					}
 					g_Select_type.StageSubNumber = DESERT_STAGE1;
@@ -366,11 +379,13 @@ void CStageSelect::Update()
 					posX[0] = -800.0f;
 					posX[1] = -400.0f;
 					posX[2] = 0.0f;
-					LinieRotationY = 180.0f;
+					//LinieRotationY = 180.0f;
 					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT))) 
 					{
 						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = DESERT; m_bMoving = true; 
+						g_Select_type.StageMainNumber = DESERT;
+						m_bMoving = true;
+						m_pStageLinie->PlayAnime(g_AnimNo, false);
 						bRight = false;
 					}
 					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT))) 
@@ -379,6 +394,7 @@ void CStageSelect::Update()
 						g_Select_type.StageMainNumber = GRASSLAND; 
 						m_bMoving = true; 
 						posX[0] = 400.0f;
+						m_pStageLinie->PlayAnime(g_AnimNo, false);
 						bRight = true;
 					};
 					g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
@@ -563,9 +579,10 @@ void CStageSelect::Update()
 		}
 		else if (m_bMoving)
 		{
+			float rotate = 90.0f;
 			static int moveCnt = 0;
 			moveCnt++;
-
+			m_pStageLinie->Step(2.0f / MOVE_TIME);
 			if (bRight)m_tBGRotateZ += 120.0f / MOVE_TIME;
 			else m_tBGRotateZ -= 120.0f / MOVE_TIME;
 			if (g_OldSelect_type.StageMainNumber != g_Select_type.StageMainNumber|| g_OldSelect_type.StageSubNumber != g_Select_type.StageSubNumber)
@@ -607,45 +624,33 @@ void CStageSelect::Update()
 			case(GRASSLAND):
 				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(GRASS_ROTATE_X) - m_rotate.x) / MOVE_TIME;
 				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(GRASS_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (m_bMoving) {
-					if (bRight) {
-						LinieRotationY = -90.0f;
-					}
-					else
-					{
-						LinieRotationY = 90.0f;
-					}
-				}
+				//if (m_bMoving)
+				//{
+				//	if (moveCnt >= MOVE_TIME / 2.0f)LinieRotationY += 90.0f / MOVE_TIME;
+				//	else LinieRotationY -= 90.0f / MOVE_TIME;
+				//}
 				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
 				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(GRASS_ROTATE_Z2) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
 				break;
 			case(DESERT):
 				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(DESERT_ROTATE_X) - m_rotate.x) / MOVE_TIME;
 				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(DESERT_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (m_bMoving == true) {
-					if (bRight) {
-						LinieRotationY = -90.0f;
-					}
-					else
-					{
-						LinieRotationY = 90.0f;
-					}
-				}
+				/*if (m_bMoving == true)
+				{
+					if (moveCnt >= MOVE_TIME / 2.0f)LinieRotationY += 90.0f / MOVE_TIME;
+					else LinieRotationY -= 90.0f / MOVE_TIME;
+				}*/
 				if (bRight)m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(GRASS_ROTATE_Z2)) / MOVE_TIME;
 				else m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(DESERT_ROTATE_Z) - DirectX::XMConvertToRadians(SNOW_ROTATE_Z)) / MOVE_TIME;
 				break;
 			case(SNOWFIELD):
 				//m_ModelParam[WorldField].rotate.x += (DirectX::XMConvertToRadians(SNOW_ROTATE_X) - m_rotate.x) / MOVE_TIME;
 				//m_ModelParam[WorldField].rotate.y += (DirectX::XMConvertToRadians(SNOW_ROTATE_Y) - m_rotate.y) / MOVE_TIME;
-				if (m_bMoving) {
-					if (bRight) {
-						LinieRotationY = -90.0f;
-					}
-					else
-					{
-						LinieRotationY = 90.0f;
-					}
-				}
+				//if (m_bMoving) 
+				//{
+				//	if (moveCnt >= MOVE_TIME / 2.0f)LinieRotationY += 90.0f / MOVE_TIME;
+				//	else LinieRotationY -= 90.0f / MOVE_TIME;
+				//}
 				if (bRight) {
 					m_ModelWorldParam.rotate.z += (DirectX::XMConvertToRadians(SNOW_ROTATE_Z) - DirectX::XMConvertToRadians(DESERT_ROTATE_Z)) / MOVE_TIME;
 				}
@@ -694,6 +699,7 @@ void CStageSelect::Update()
 			}
 			if (moveCnt >= MOVE_TIME)
 			{
+				m_pStageLinie->SetAnimeTime(g_AnimNo,0.0f);
 				m_bMoving = false;
 				moveCnt = 0;
 			}
@@ -1507,7 +1513,7 @@ void CStageSelect::LinieDraw()
 
 	ShaderList::SetWVP(wvp);
 
-	m_pStageLinie->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pStageLinie->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 	m_pStageLinie->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
 	for (int i = 0; i < m_pStageLinie->GetMeshNum(); ++i)
@@ -1520,13 +1526,6 @@ void CStageSelect::LinieDraw()
 		ShaderList::SetMaterial(material);
 
 		// ボーンの情報をシェーダーに送る
-		//DirectX::XMFLOAT4X4 bones[200];
-
-		//for (int i = 0; i < tMesh.bones.size(); ++i) {
-		//	DirectX::XMStoreFloat4x4(&bones[i], DirectX::XMMatrixTranspose(
-		//		tMesh.bones[i].invOffset * m_pStageLinie->GetBoneMatrix(tMesh.bones[i].nodeIndex)
-		//	));
-		//}
 
 		DirectX::XMFLOAT4X4 bones[200];
 		for (int j = 0; j < tMesh.bones.size(); ++j)
@@ -1534,11 +1533,12 @@ void CStageSelect::LinieDraw()
 			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
 				tMesh.bones[j].invOffset * m_pStageLinie->GetBoneMatrix(tMesh.bones[j].nodeIndex)
 			));
-			ShaderList::SetBones(bones);
 		}
+		ShaderList::SetBones(bones);
 
 
-		if (m_pStageLinie) {
+		if (m_pStageLinie) 
+		{
 			m_pStageLinie->Draw(i);
 		}
 	}
