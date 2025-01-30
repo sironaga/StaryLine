@@ -816,6 +816,9 @@ void CSceneResult::NumberDisp(void)
 	m_pNumber->SetPos({ 1820.0f + Group.X,650.f,0.0f });
 	m_pNumber->Draw();
 
-
+	m_pNumber->SetNumber(nScore);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,300.0f,0.0f });
+	m_pNumber->Draw();
 
 }
