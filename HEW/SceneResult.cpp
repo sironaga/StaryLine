@@ -24,7 +24,7 @@ CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
 	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false)
 {
-	ResultGameData.bWin = 0;
+	//ResultGameData.bWin = 0;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
