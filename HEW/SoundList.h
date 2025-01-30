@@ -31,13 +31,15 @@ enum NAME
 	,SE_WANDONOFF
 	//召喚
 	, SE_SUMMON
+	//召喚(敵)
+	, SE_SUMMONENEMY
 	//敗北音
 	,SE_DEATH
 	//タイトルBGM
 	,BGM_TITLE
 	//バトルBGM
 	,BGM_BATTLE
-	//フィーバー時SE
+	//フィーバー時BGM
 	,BGM_FEVER
 	//ゲームオーバーBGM
 	,BGM_GAMEOVER
