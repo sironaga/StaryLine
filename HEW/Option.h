@@ -193,10 +193,12 @@ private:
 
 	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
 	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
+	
 
 	CNumberUI* m_pNumberUI;
 	FLOAT2 OldPos[KINDMAX_OPTION];
 	FLOAT2 MovePos;
+	WORD m_Direction; 
 	float m_fMul;
 	int m_nSection;							// 大項目の選択
 	int m_nSelect;							// 小項目の選択
