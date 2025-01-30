@@ -32,6 +32,7 @@
 float g_volumeBGM = 0.5f;
 float g_volumeSE = 0.5f;
 float g_masterSound = 0.5f;
+
 CSoundList::CSoundList(NAME inName)
 {
 	switch (inName)
