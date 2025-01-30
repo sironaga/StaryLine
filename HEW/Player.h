@@ -24,6 +24,7 @@ public:
 	void Reset();
 
 	void Reload();
+	void TimerReCharge();
 
 	/*＝＝＝＝＝＝＝＝＝＝内部処理＝＝＝＝＝＝＝＝＝＝*/
 	/*＝＝＝＝＝＝＝＝＝ プレイヤー ＝＝＝＝＝＝＝＝＝*/
@@ -65,13 +66,16 @@ private:
 	float m_fBrushSize;						// プレイヤー(筆)のサイズ
 	float m_fBrushSpeed;					// プレイヤー(筆)の速度
 	float m_fAddSpeed;						// 速度の加算
+	float m_fDrawTime;
 
 	int m_nNowVertex;						// 今の頂点
 	int m_nDestination;						// 目的地の頂点
 	bool m_bCanMoveCheck;					// 目的地へ行けるかどうか
+	bool m_bReCharge;
+	bool m_bSwap;
 
 	bool m_bDrawing;						// 作図中かどうか
-	bool m_bool;
+	bool m_bStop;
 
 	
 	enum E_ARROW_STATE
@@ -106,7 +110,7 @@ public:
 	// 描画中か取得
 	const bool GetCanMove() { return m_bDrawing; }
 
-	bool GetMoveStop() { return m_bool; }
+	bool GetMoveStop() { return m_bStop; }
 
 	/* Setter */
 	// 再作図開始のための設定

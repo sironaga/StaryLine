@@ -210,6 +210,7 @@ void CSceneGame::Update()
 			m_pPlayer->UpdateStop();
 		}
 
+
 		if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 		{
 			g_tTime.GamePhaseTime++;
@@ -269,6 +270,7 @@ void CSceneGame::Update()
 				m_pEffect->Play({ m_pPlayer->GetPlayerPos().x, m_pPlayer->GetPlayerPos().y, m_pPlayer->GetPlayerPos().z });
 			}
 			m_pPlayer->Update();
+			m_pPlayer->TimerReCharge();
 			// 図形を作る時間
 			// 経過時間が作図開始の時間から召喚開始の時間になるまで
 			if (((float)SHAPE_DRAW_START * 60.0f <= g_tTime.GamePhaseTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ

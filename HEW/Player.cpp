@@ -51,7 +51,8 @@ CPlayer::CPlayer()
 	, m_pTimerTex{}
 	, m_eArrowState{}
 	, m_tArrowCenterPos{}, m_tAjustPos{}
-	, m_bool(false)
+	, m_bStop(false), m_fDrawTime(DRAW_TIME)
+	, m_bReCharge(false), m_bSwap(true)
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
@@ -100,6 +101,10 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {	
+	for (int i = 0; i < 3; i++)
+	{
+		SAFE_DELETE(m_pTimerTex[i]);
+	}
 	SAFE_DELETE(m_pArrowModel);
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
 
@@ -115,6 +120,11 @@ CPlayer::~CPlayer()
 
 void CPlayer::Update()
 {
+	if ((m_bDrawing || GetTime() != -1.0f ) && !m_bSwap)
+	{
+		m_bSwap = true;
+		m_bReCharge = true;
+	}
 	//マスターヴォリュームの設定
 	g_pPlayerSound->SetMasterVolume();
 
@@ -124,6 +134,8 @@ void CPlayer::Update()
 	}
 	// タイマー処理
 	TimeProcess();
+	   
+
 
 	// 状態別更新処理
 	if (m_bDrawing)	//召喚フェーズじゃない時
@@ -134,6 +146,33 @@ void CPlayer::Update()
 		case CPlayer::MOVE: UpdateMove(); break;	// 動いている状態の処理
 		default:break;
 		}
+
+
+		static bool AlphaSwitch = false;
+		if (m_bDrawing || GetTime() == -1.0f)
+		{
+			if (m_pTimerParam[Timer_Gauge]->size.y <= TIMER_BARSIZE_Y * 0.3f)
+			{
+				if (m_pTimerParam[Timer_Gauge]->color.w >= 1.0f)
+				{
+					AlphaSwitch = true;
+				}
+				else if (m_pTimerParam[Timer_Gauge]->color.w <= 0.3f)
+				{
+					AlphaSwitch = false;
+				}
+
+				if (AlphaSwitch)m_pTimerParam[Timer_Gauge]->color.w -= 0.01f;
+				else m_pTimerParam[Timer_Gauge]->color.w += 0.01f;
+			}
+			else
+			{
+				m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+			}
+		}
+
+
+
 	}
 	else
 	{
@@ -188,8 +227,6 @@ void CPlayer::Draw()
 	//	Sprite::Draw();
 	//}
 
-	if (m_bDrawing || GetTime() == -1.0f)m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
-	else m_pTimerParam[Timer_Gauge]->color.w = 0.3f;
 	for (int i = 0; i < 3; i++)
 	{
 		Sprite::SetParam(m_pTimerParam[i]);
@@ -268,9 +305,13 @@ void CPlayer::Reset()
 	m_bDrawing = false;	// 作図中を解除
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
 	m_pTimerParam[Timer_Gauge]->size.y += TIMER_BARSIZE_Y / (RECOVER_TIME  * 60.0f);	// タイマーを上げ続ける
-	if (m_pTimerParam[Timer_Gauge]->size.y >= TIMER_BARSIZE_Y) m_pTimerParam[Timer_Gauge]->size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する
-
-	m_pTimerParam[Timer_Gauge]->pos = { TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f };
+	m_pTimerParam[Timer_Gauge]->color.w = 0.3f;
+	if (m_pTimerParam[Timer_Gauge]->size.y >= TIMER_BARSIZE_Y)
+	{
+		m_pTimerParam[Timer_Gauge]->size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する
+		m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+	}
+	m_pTimerParam[Timer_Gauge]->pos.y = TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
 }
 
 void CPlayer::Reload()
@@ -305,6 +346,36 @@ void CPlayer::Reload()
 
 }
 
+void CPlayer::TimerReCharge()
+{
+	if (m_bReCharge)
+	{
+		static int count = 0;
+		static float rad = 0.0f;
+		rad = DirectX::XMConvertToRadians(count * 60);
+		float cosScale = cosf(rad) - 0.5f;
+		float posAjust = 10.0f * cosScale + TIMER_BAR_OFFSET_X;
+		for (int i = 0; i < 3; i++)
+		{
+			m_pTimerParam[i]->pos.x = posAjust;
+		}
+
+		if (count >= 10)
+		{
+			m_bReCharge = false;
+		}
+		count++;
+	}
+	else
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			m_pTimerParam[i]->pos.x = TIMER_BAR_OFFSET_X;
+		}
+
+	}
+}
+
 void CPlayer::UpdateStop()
 {
 	g_pWalkSe->Stop();
@@ -330,7 +401,7 @@ void CPlayer::UpdateStop()
 			// 8方向全てに移動が出来ないなら
 			if (Count == 8)
 			{
-				m_bool = true;
+				m_bStop = true;
 				m_eArrowState = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
@@ -543,7 +614,7 @@ void CPlayer::ArrowProcess()
 
 void CPlayer::SetMoveStop()
 {
-	m_bool = false;
+	m_bStop = false;
 }
 
 void CPlayer::TimeProcess()
@@ -559,9 +630,10 @@ void CPlayer::TimeProcess()
 			{
 				m_pTimerParam[Timer_Gauge]->size.y = 0.0f;	// 下がり切ったらその位置で固定する
 				m_bDrawing = false;				// 作図を終わる
+	
 			}
 		}
-		m_pTimerParam[Timer_Gauge]->pos = { TIMER_BAR_OFFSET_X, TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f };
+		m_pTimerParam[Timer_Gauge]->pos.y = TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
 	}
 }
 
@@ -583,5 +655,6 @@ void CPlayer::SetPlayerStop()
 	m_ePlayerState = STOP;		// プレイヤーの動きを止める
 	m_bCanMoveCheck = false;	// 移動可能かのチェック再開
 	m_bDrawing = true;			// 作図中にする
-	m_bool = false;
+	m_bStop = false;
+	m_bSwap = false;
 }
