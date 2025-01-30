@@ -193,6 +193,8 @@ void CSceneGame::Update()
 
 		m_pFieldVertex->LogUpdate();
 
+		ModelUpDate();
+
 		m_pField->Update();		// フィールドは常に更新する
 		InitInput();
 		if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE)))
