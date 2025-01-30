@@ -81,7 +81,7 @@ enum class DamageDraw
 
 /*事前読み込み用のポインタ*/
 //味方
-Model* g_pAllyModel[(int)Ally::MAX];
+Model* g_pAllyModel[(int)CharacterAnimation::MAX][(int)Ally::MAX];
 //味方用アニメーション
 Model::AnimeNo g_pAlly_Anima[(int)CharacterAnimation::MAX][(int)Ally::MAX];
 //敵
@@ -113,6 +113,7 @@ CSoundList* g_wandonoffSound;
 IXAudio2SourceVoice* g_pSourceSummon[2];//スピーカー
 IXAudio2SourceVoice* g_pSourceWandonoff;//スピーカー
 
+
 void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 
 //事前読み込み用関数
@@ -124,31 +125,56 @@ void InitCharacterTexture(StageType StageType)
 	/*味方キャラクターのModel読み込み*/
 	for (int i = 0; i < (int)Ally::MAX; i++)
 	{
-			g_pAllyModel[i] = new Model();
+		for (int j = 0; j < (int)CharacterAnimation::MAX; j++)
+		{
+			g_pAllyModel[j][i] = new Model();
+		}
 	}
 		
-	g_pAllyModel[(int)Ally::Ally3]
-		->Load(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Walk.fbx"), 0.05f, Model::None);
+	g_pAllyModel[(int)CharacterAnimation::None][(int)Ally::Ally3]
+		->Load(MODEL_PASS("Character/Triangle/Char_Summonstar_Triangle.fbx"), 0.05f, Model::None);
 
-	g_pAlly_Anima[(int)CharacterAnimation::Walk][(int)Ally::Ally3] = g_pAllyModel[(int)Ally::Ally3]
+	g_pAllyModel[(int)CharacterAnimation::Walk][(int)Ally::Ally3]
+		->Load(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Walk.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Walk][(int)Ally::Ally3] = g_pAllyModel[(int)CharacterAnimation::Walk][(int)Ally::Ally3]
 		->AddAnimation(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Walk.fbx"));
-	g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally3] = g_pAllyModel[(int)Ally::Ally3]
+	
+	g_pAllyModel[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally3]
+		->Load(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Attack_Ground.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally3] = g_pAllyModel[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally3]
 		->AddAnimation(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Attack_Ground.fbx"));
-	g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally3] = g_pAllyModel[(int)Ally::Ally3]
-		->AddAnimation(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Attack_Midair.fbx"));
-	g_pAlly_Anima[(int)CharacterAnimation::Death][(int)Ally::Ally3] = g_pAllyModel[(int)Ally::Ally3]
+	
+	g_pAllyModel[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally3]
+		->Load(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Attack_Ground.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally3] = g_pAllyModel[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally3]
+		->AddAnimation(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Attack_Ground.fbx"));
+	
+	g_pAllyModel[(int)CharacterAnimation::Death][(int)Ally::Ally3]
+		->Load(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Death.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Death][(int)Ally::Ally3] = g_pAllyModel[(int)CharacterAnimation::Death][(int)Ally::Ally3]
 		->AddAnimation(MODEL_PASS("Character/Triangle/Anim_Summonstar_Triangle_Death.fbx"));
 
-	g_pAllyModel[(int)Ally::Ally4]
+	g_pAllyModel[(int)CharacterAnimation::None][(int)Ally::Ally4]
+		->Load(MODEL_PASS("Character/Square/Char_Summonstar_Square.fbx"), 0.05f, Model::None);
+
+	g_pAllyModel[(int)CharacterAnimation::Walk][(int)Ally::Ally4]
 		->Load(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Walk.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Walk][(int)Ally::Ally4] = g_pAllyModel[(int)CharacterAnimation::Walk][(int)Ally::Ally4]
+		->AddAnimation(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Walk.fbx"));
+
+	g_pAllyModel[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally4]
+		->Load(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Walk.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally4] = g_pAllyModel[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally4]
+		->AddAnimation(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Walk.fbx"));
 	
-	g_pAlly_Anima[(int)CharacterAnimation::Walk][(int)Ally::Ally4] = g_pAllyModel[(int)Ally::Ally4]
-		->AddAnimation(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Walk.fbx"));
-	g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][(int)Ally::Ally4] = g_pAllyModel[(int)Ally::Ally4]
-		->AddAnimation(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Walk.fbx"));
-	g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally4] = g_pAllyModel[(int)Ally::Ally4]
+	g_pAllyModel[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally4]
+		->Load(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Attack_Ground.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally4] = g_pAllyModel[(int)CharacterAnimation::Attack_Disadvantage][(int)Ally::Ally4]
 		->AddAnimation(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Attack_Ground.fbx"));
-	g_pAlly_Anima[(int)CharacterAnimation::Death][(int)Ally::Ally4] = g_pAllyModel[(int)Ally::Ally4]
+	
+	g_pAllyModel[(int)CharacterAnimation::Death][(int)Ally::Ally4]
+		->Load(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Death.fbx"), 0.05f, Model::None);
+	g_pAlly_Anima[(int)CharacterAnimation::Death][(int)Ally::Ally4] = g_pAllyModel[(int)CharacterAnimation::Death][(int)Ally::Ally4]
 		->AddAnimation(MODEL_PASS("Character/Square/Anim_Summonstar_Square_Death.fbx"));
 
 	g_pHpGageTex[(int)HpTexture::Ally3] = new Texture();
@@ -390,7 +416,7 @@ void UnInitCharacterTexture()
 	//車モデルの破棄
 	SAFE_DELETE(g_pBosCar);
 	//味方モデルの破棄
-	for (int i = 0; i < (int)Ally::MAX; i++)SAFE_DELETE(g_pAllyModel[i]);
+	for (int i = 0; i < (int)Ally::MAX; i++)for (int j = 0; j < (int)CharacterAnimation::MAX; j++)SAFE_DELETE(g_pAllyModel[j][i]);
 	//敵モデルの破棄
 	for (int i = 0; i < (int)Enemy::MAX; i++)SAFE_DELETE(g_pEnemyModel[i]);
 	//リーダーたちのモデルの破棄
@@ -423,6 +449,25 @@ void ReLoadCharacterTexture(StageType StageType)
 {
 	UnInitCharacterTexture();
 	InitCharacterTexture(StageType);
+}
+
+void ModelUpDate(void)
+{
+	for (int i = 0; i < (int)Ally::MAX; i++)
+	{
+		for (int j = 1; j < (int)CharacterAnimation::MAX; j++)
+		{
+			if (g_pAllyModel[j][i]->IsAnimePlay(0))
+			{
+ 				g_pAllyModel[j][i]->Step(0.01f);
+			}
+			else
+			{
+				g_pAllyModel[j][i]->PlayAnime(0, true);
+				g_pAllyModel[j][i]->SetAnimeTime(g_pAllyModel[j][i]->GetAnimePlayNo(), 0.0f);
+			}
+		}
+	}
 }
 
 void ReLoadSound()
@@ -512,7 +557,9 @@ CFighter::CFighter(int InCornerCount, bool IsStellaBuff)
 	, m_bMoveUp(false)
 	, m_bStellaBuff(IsStellaBuff)
 	, m_bDamageLogDraw{false}
-	, m_bIsAnimationFlag{false}
+	, m_eModelNo(CharacterAnimation::None)
+	, m_bIsDeath(false)
+	//, m_bIsAnimationFlag{false}
 {
 	//サウンドの設定
 	m_pSourceNormalAttack = g_NormalAttackSound->m_sound->CreateSourceVoice(m_pSourceNormalAttack);
@@ -554,7 +601,7 @@ CFighter::~CFighter()
 	{
 		if (m_pModel)
 		{
-			m_pModel = nullptr;
+			m_pModel[i] = nullptr;
 		}
 	}
 	//エフェクトの破棄
@@ -798,17 +845,24 @@ CAlly::CAlly(int InCornerCount,bool IsStellaBuff)
 	//Hpのポインタの作成
 	m_pHpGage = new CHpUI(m_fHp,CHpUI::Ally);
 	//角数ごとに同期するポインタを変更
+
 	switch (m_nCornerCount)
 	{
 	case 3:
 		//モデル
-		m_pModel = g_pAllyModel[(int)Ally::Ally3];
+		for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
+		{
+			m_pModel[i] = g_pAllyModel[i][(int)Ally::Ally3];
+		}
 		//攻撃エフェクトのポインタ同期
 		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::SwordAtk]);
 		break;
 	case 4:
 		//モデル
-		m_pModel = g_pAllyModel[(int)Ally::Ally4];
+		for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
+		{
+			m_pModel[i] = g_pAllyModel[i][(int)Ally::Ally4];
+		}
 		//攻撃エフェクトのポインタ同期
 		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
 		break;
@@ -849,7 +903,7 @@ void CAlly::Update(void)
 	//モデルの再読み込みフラグが立っていたら読み込む
 	if (m_bReLoadFlag)
 	{
-		if (m_pModel)m_pModel = nullptr;
+		if (m_pModel[(int)m_eModelNo])m_pModel[(int)m_eModelNo] = nullptr;
 		//エフェクトの破棄
 		for (int i = 0; i < (int)FighterEffect::MAX; i++)
 		{
@@ -862,15 +916,21 @@ void CAlly::Update(void)
 		{
 		case 3:
 			//モデル
-			m_pModel = g_pAllyModel[(int)Ally::Ally3];
-			
+			for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
+			{
+				m_pModel[i] = g_pAllyModel[i][(int)Ally::Ally3];
+			}
+
 			//攻撃エフェクトのポインタ同期
 			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::SwordAtk]);
 			break;
 		case 4:
 			//モデル
-			m_pModel = g_pAllyModel[(int)Ally::Ally4];
-			
+			for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
+			{
+				m_pModel[i] = g_pAllyModel[i][(int)Ally::Ally4];
+			}
+
 			//攻撃エフェクトのポインタ同期
 			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
 			break;
@@ -943,60 +1003,79 @@ void CAlly::Draw(void)
 		}
 	}
 
-	//キャラクターの描画
-	SetRender3D();
-	DirectX::XMFLOAT4X4 wvp[3];
-	DirectX::XMMATRIX world;
-	//行列(Scaling)
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
-	//拡大縮小行列(Scaling)
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
-	//回転行列(Rotation)
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(90.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
-	//それぞれの行列を掛け合わせて格納
-	DirectX::XMMATRIX mat = S * R * T;
-
-	world = mat;
-
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-	wvp[1] = GetView();
-	wvp[2] = GetProj();
-
-	Geometory::SetView(wvp[1]);
-	Geometory::SetProjection(wvp[2]);
-
-	ShaderList::SetWVP(wvp);
-
-	if (m_pModel->IsAnimePlay(0) || m_pModel->IsAnimePlay(1) || m_pModel->IsAnimePlay(2) || m_pModel->IsAnimePlay(3))
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-	else
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-
-	const Model::Mesh *tMesh;
-
-	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+	if (m_bIsDeath)
 	{
-		tMesh = m_pModel->GetMesh(i);
-		Model::Material material = *m_pModel->GetMaterial(tMesh->materialID);
-		material.ambient.x = 0.85f; // x (r) 
-		material.ambient.y = 0.85f; // y (g) 
-		material.ambient.z = 0.85f; // z (b) 
-		ShaderList::SetMaterial(material);
+		m_eModelNo = CharacterAnimation::Death;
+	}
+	else if (m_bIsAttack)
+	{
+		if(m_bTypeAttack)
+			m_eModelNo = CharacterAnimation::Attack_Advantage;
+		else
+			m_eModelNo = CharacterAnimation::Attack_Disadvantage;
+	}
+	else
+	{
+		m_eModelNo = CharacterAnimation::Walk;
+	}
 
-		// ボーンの情報をシェーダーに送る
-		DirectX::XMFLOAT4X4 bones[200];
-		for (int j = 0; j < tMesh->bones.size(); ++j)
+	if (m_pModel[(int)m_eModelNo])
+	{
+		//キャラクターの描画
+		SetRender3D();
+		DirectX::XMFLOAT4X4 wvp[3];
+		DirectX::XMMATRIX world;
+		//行列(Scaling)
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
+		//拡大縮小行列(Scaling)
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+		//回転行列(Rotation)
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(90.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+		//それぞれの行列を掛け合わせて格納
+		DirectX::XMMATRIX mat = S * R * T;
+
+		world = mat;
+
+		DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+		wvp[1] = GetView();
+		wvp[2] = GetProj();
+
+		Geometory::SetView(wvp[1]);
+		Geometory::SetProjection(wvp[2]);
+
+		ShaderList::SetWVP(wvp);
+
+		if (m_pModel[(int)m_eModelNo]->IsAnimePlay(0))
+			m_pModel[(int)m_eModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+		else
+			m_pModel[(int)m_eModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+		m_pModel[(int)m_eModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+		const Model::Mesh* tMesh;
+
+		for (int i = 0; i < m_pModel[(int)m_eModelNo]->GetMeshNum(); ++i)
 		{
-			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-				tMesh->bones[j].invOffset * m_pModel->GetBoneMatrix(tMesh->bones[j].nodeIndex)
-			));
-		}
-		ShaderList::SetBones(bones);
+			tMesh = m_pModel[(int)m_eModelNo]->GetMesh(i);
+			Model::Material material = *m_pModel[(int)m_eModelNo]->GetMaterial(tMesh->materialID);
+			material.ambient.x = 0.85f; // x (r) 
+			material.ambient.y = 0.85f; // y (g) 
+			material.ambient.z = 0.85f; // z (b) 
+			ShaderList::SetMaterial(material);
+
+			// ボーンの情報をシェーダーに送る
+			DirectX::XMFLOAT4X4 bones[200];
+			for (int j = 0; j < tMesh->bones.size(); ++j)
+			{
+				DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+					tMesh->bones[j].invOffset * m_pModel[(int)m_eModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
+				));
+			}
+			ShaderList::SetBones(bones);
 
 
-		if (m_pModel) {
-			m_pModel->Draw(i);
+			if (m_pModel[(int)m_eModelNo]) {
+				m_pModel[(int)m_eModelNo]->Draw(i);
+			}
 		}
 	}
 }
@@ -1098,37 +1177,35 @@ void CAlly::BattleUpdate(void)
 	}
 
 	//戦闘アニメーション
-	if (m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][m_nCornerCount - 3])
-		|| m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][m_nCornerCount - 3]))
-	{
-		m_pModel->Step(0.01f);
-	}
-	else if (m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Advantage])
-	{
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-		m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][m_nCornerCount - 3], false);
-		m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-		m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Advantage] = false;
-	}
-	else if (m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Disadvantage])
-	{
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-		m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][m_nCornerCount - 3], false);
-		m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-		m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Disadvantage] = false;
-	}
+	//if (m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][m_nCornerCount - 3])
+	//	|| m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][m_nCornerCount - 3]))
+	//{
+	//	m_pModel->Step(0.01f);
+	//}
+	//else if (m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Advantage])
+	//{
+	//	m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Attack_Advantage][m_nCornerCount - 3], false);
+	//	m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+	//	m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Advantage] = false;
+	//}
+	//else if (m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Disadvantage])
+	//{
+	//	m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Attack_Disadvantage][m_nCornerCount - 3], false);
+	//	m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+	//	m_bIsAnimationFlag[(int)CharacterAnimation::Attack_Disadvantage] = false;
+	//}
+
 	//移動アニメーション(移動していたら)
-	if (m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Walk][m_nCornerCount - 3]))
-	{
-		m_pModel->Step(0.01f);
-	}
-	else if (m_bIsAnimationFlag[(int)CharacterAnimation::Walk])
-	{
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-		m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Walk][m_nCornerCount - 3], false);
-		m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-		m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = false;
-	}
+	//if (m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Walk][m_nCornerCount - 3]))
+	//{
+	//	m_pModel->Step(0.01f);
+	//}
+	//else if (m_bIsAnimationFlag[(int)CharacterAnimation::Walk])
+	//{
+	//	m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Walk][m_nCornerCount - 3], false);
+	//	m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+	//	m_bIsAnimationFlag[(int)CharacterAnimation::Walk] = false;
+	//}
 
 	//HPUIの更新処理
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
@@ -1137,17 +1214,18 @@ void CAlly::BattleUpdate(void)
 void CAlly::DeathUpdate(void)
 {
 	//死亡アニメーション
-	if (m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Death][m_nCornerCount - 3]))
-	{
-		m_pModel->Step(0.01f);
-	}
-	else if (m_bIsAnimationFlag[(int)CharacterAnimation::Death])
-	{
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-		m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Death][m_nCornerCount - 3], false);
-		m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-		m_bIsAnimationFlag[(int)CharacterAnimation::Death] = false;
-	}
+	m_bIsDeath = true;
+
+	//if (m_pModel->IsAnimePlay(g_pAlly_Anima[(int)CharacterAnimation::Death][m_nCornerCount - 3]))
+	//{
+	//	m_pModel->Step(0.01f);
+	//}
+	//else if (m_bIsAnimationFlag[(int)CharacterAnimation::Death])
+	//{
+	//	m_pModel->PlayAnime(g_pAlly_Anima[(int)CharacterAnimation::Death][m_nCornerCount - 3], false);
+	//	m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+	//	m_bIsAnimationFlag[(int)CharacterAnimation::Death] = false;
+	//}
 
 	//死亡エフェクトの再生時間
 	if (!m_pEffect[(int)FighterEffect::Death]->IsPlay() && !IsDeathEffectPlay)
@@ -1246,14 +1324,14 @@ CEnemy::CEnemy(int InCornerCount)
 	{
 	case 3:
 		//モデル
-		m_pModel = g_pEnemyModel[(int)Enemy::Enemy1];
+		m_pModel[0] = g_pEnemyModel[(int)Enemy::Enemy1];
 
 		//攻撃エフェクトのポインタ同期
 		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::SwordAtk]);
 		break;
 	case 4:
 		//モデル
-		m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
+		m_pModel[0] = g_pEnemyModel[(int)Enemy::Enemy2];
 		
 		//攻撃エフェクトのポインタ同期
 		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
@@ -1273,7 +1351,7 @@ void CEnemy::Update(void)
 	//モデルの再読み込みフラグが立っていたら読み込む
 	if (m_bReLoadFlag)
 	{
-		if (m_pModel)m_pModel = nullptr;
+		if (m_pModel[0])m_pModel[0] = nullptr;
 		//エフェクトの破棄
 		for (int i = 0; i < (int)FighterEffect::MAX; i++)
 		{
@@ -1286,14 +1364,14 @@ void CEnemy::Update(void)
 		{
 		case 3:
 			//モデル
-			m_pModel = g_pEnemyModel[(int)Enemy::Enemy1];
+			m_pModel[0] = g_pEnemyModel[(int)Enemy::Enemy1];
 
 			//攻撃エフェクトのポインタ同期
 			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::SwordAtk]);
 			break;
 		case 4:
 			//モデル
-			m_pModel = g_pEnemyModel[(int)Enemy::Enemy2];
+			m_pModel[0] = g_pEnemyModel[(int)Enemy::Enemy2];
 	
 			//攻撃エフェクトのポインタ同期
 			m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(g_pCharacterEffects[(int)CharactersEffect::BowAtk]);
@@ -1382,19 +1460,19 @@ void CEnemy::Draw(void)
 
 	ShaderList::SetWVP(wvp);
 
-	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+	m_pModel[0]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pModel[0]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
-	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+	for (int i = 0; i < m_pModel[0]->GetMeshNum(); ++i)
 	{
-		Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
+		Model::Material material = *m_pModel[0]->GetMaterial(m_pModel[0]->GetMesh(i)->materialID);
 		material.ambient.x = 0.85f; // x (r) 
 		material.ambient.y = 0.85f; // y (g) 
 		material.ambient.z = 0.85f; // z (b) 
 		ShaderList::SetMaterial(material);
 
-		if (m_pModel) {
-			m_pModel->Draw(i);
+		if (m_pModel[0]) {
+			m_pModel[0]->Draw(i);
 		}
 	}
 	//エフェクトの描画

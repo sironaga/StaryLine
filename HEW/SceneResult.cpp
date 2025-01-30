@@ -14,15 +14,17 @@
 // --- static
 ResultGameInfo CSceneResult::ResultGameData;
 StageType CSceneResult::StageLevel;
-int CSceneResult::nBestScore[8];
-bool CSceneResult::bClearState[8];
+int CSceneResult::nBestScore[MAX_STAGE];
+bool CSceneResult::bClearState[MAX_STAGE];
+Rank CSceneResult::StageRank[MAX_STAGE];
 // ---
 
 // --- 初期化
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),nScore(0),bEnter(false)
+	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
+	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false),nStage(StageLevel.StageSubNumber)
 {
-	//ResultGameData.bWin = 1;
+	ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
@@ -36,12 +38,16 @@ CSceneResult::CSceneResult()
 	{
 		m_pResultSound = new CSoundList(BGM_GAMECLEAR);
 		m_pResultBGM = m_pResultSound->GetSound(true);
+		m_pResultSound->SetMasterVolume();
+		SetVolumeBGM(m_pResultBGM);
 		m_pResultBGM->Start();
 	}
 	else
 	{
 		m_pResultSound = new CSoundList(BGM_GAMEOVER);
 		m_pResultBGM = m_pResultSound->GetSound(true);
+		m_pResultSound->SetMasterVolume();
+		SetVolumeBGM(m_pResultBGM);
 		m_pResultBGM->Start();
 	}
 
@@ -56,91 +62,66 @@ CSceneResult::CSceneResult()
 	{
 		bWorldClear = false;
 	}
+
 	if (ResultGameData.bWin)
 	{
 		bClearState[StageLevel.StageSubNumber] = true;
 	}
 
-
-
 	m_pResultSelectSound    = new CSoundList(SE_SELECT);
+	m_pResultSelectSound->SetMasterVolume();
 	m_pResultSelectSE = m_pResultSelectSound->GetSound(false);
 
 	m_pNumber = new CNumberUI();
 	Conect_Init();
 
+	if (ResultGameData.nAverageSpwn <= 0 && ResultGameData.nDrawCount <= 0 && ResultGameData.nHitPoint <= 0 && ResultGameData.nSpawnCount <= 0)
+	{
+		ResultGameData.nTime = 444;
+		ResultGameData.nHitPoint = 444;
+		ResultGameData.nSpawnCount = 444;
+		ResultGameData.nDrawCount = 444;
+		ResultGameData.nAverageSpwn = 444;
+	}
+
+	nScore = (sqrt(ResultGameData.nSpawnCount) * 100) + (5000 / ResultGameData.nTime + 1) + (ResultGameData.nAverageSpwn * 150) + (ResultGameData.nHitPoint * 5);
+
+
+	if (nBestScore[StageLevel.StageSubNumber] < nScore)
+	{
+		nBestScore[StageLevel.StageSubNumber] = nScore;
+		bBestScore = true;
+	}
+
+	char buf[255];
+	sprintf(buf, "%d", nScore);
+
+	if (StageLevel.StageSubNumber == 8)
+	{
+		SetIP(SAVER_IP);
+		SendData(buf);
+	}
+
+	if (nBestScore[StageLevel.StageSubNumber] <= 1999)
+	{
+		StageRank[StageLevel.StageSubNumber] = C_RANK;
+	}else
+		if (nBestScore[StageLevel.StageSubNumber] <= 3999)
+		{
+			StageRank[StageLevel.StageSubNumber] = B_RANK;
+		}
+		else
+			if (nBestScore[StageLevel.StageSubNumber] <= 5999)
+			{
+				StageRank[StageLevel.StageSubNumber] = A_RANK;
+			}
+			else
+			{
+				StageRank[StageLevel.StageSubNumber] = S_RANK;
+			}
 }
 CSceneResult::~CSceneResult()
 {
-	for (int nLoop = 0; nLoop < 2; nLoop++)
-	{
-		if (m_pStageSelect[nLoop])
-		{
-			delete m_pStageSelect[nLoop];
-			m_pStageSelect[nLoop] = nullptr;
-		}
-		if (m_pSelect)
-		{
-			delete m_pSelect;
-			m_pSelect = nullptr;
-		}
-		if (m_pNextUI[nLoop])
-		{
-			delete m_pNextUI[nLoop];
-			m_pNextUI[nLoop] = nullptr;
-		}
-	}
-
-	if (m_pHitPoint)
-	{
-		delete m_pHitPoint;
-		m_pHitPoint = nullptr;
-	}
-	if (m_pShadow)
-	{
-		delete m_pShadow;
-		m_pShadow = nullptr;
-	}
-	if (m_pSummonData)
-	{
-		delete m_pSummonData;
-		m_pSummonData = nullptr;
-	}
-	if (m_pUnderBar)
-	{
-		delete m_pUnderBar;
-		m_pUnderBar = nullptr;
-	}
-	if (m_pText)
-	{
-		delete m_pText;
-		m_pText = nullptr;
-	}
-	if (m_pCharacter)
-	{
-		delete m_pCharacter;
-		m_pCharacter = nullptr;
-	}
-	if (m_pLighting)
-	{
-		delete m_pLighting;
-		m_pLighting = nullptr;
-	}
-	if (m_pTextShadow)
-	{
-		delete m_pTextShadow;
-		m_pTextShadow = nullptr;
-	}
-	if (m_pClearTime)
-	{
-		delete m_pClearTime;
-		m_pClearTime = nullptr;
-	}
-	if (m_pNumber)
-	{
-		delete m_pNumber;
-		m_pNumber = nullptr;
-	}
 	if (m_pResultBGM)
 	{
 		m_pResultBGM->Stop();
@@ -159,7 +140,76 @@ CSceneResult::~CSceneResult()
 	{
 		SAFE_DELETE(m_pResultSelectSound);
 	}
-	
+
+	if (m_pBackGround)
+	{
+		delete m_pBackGround;
+		m_pBackGround = nullptr;
+	}
+
+	if (m_pUnberUI)
+	{
+		delete m_pUnberUI;
+		m_pUnberUI = nullptr;
+	}
+
+	for (int nLoop = 0; nLoop < 2; nLoop++)
+	{
+		if ((m_pStageSelectUI[nLoop]))
+		{
+			delete m_pStageSelectUI[nLoop];
+			m_pStageSelectUI[nLoop] = nullptr;
+		}
+		if (m_pNextUI[nLoop])
+		{
+			delete m_pNextUI[nLoop];
+			m_pNextUI[nLoop] = nullptr;
+		}
+	}
+	if (m_pSelectUI)
+	{
+		delete m_pSelectUI;
+		m_pSelectUI = nullptr;
+	}
+	if (m_pResultData)
+	{
+		delete m_pResultData;
+		m_pResultData = nullptr;
+	}
+	if (m_pLighting)
+	{
+		delete  m_pLighting;
+		m_pLighting = nullptr;
+	}
+	if (m_pText)
+	{
+		delete m_pText;
+		m_pText = nullptr;
+	}
+	for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
+	{
+		if (m_pRank[nLoop])
+		{
+			delete m_pRank[nLoop];
+			m_pRank[nLoop] = nullptr;
+		}
+	}
+	if (m_pCharacter)
+	{
+		delete m_pCharacter;
+		m_pCharacter = nullptr;
+	}
+	if (m_pNumber)
+	{
+		delete m_pNumber;
+		m_pNumber = nullptr;
+	}
+	if (m_pBestScore)
+	{
+		delete m_pBestScore;
+		m_pBestScore = nullptr;
+	}
+
 }
 
 // --- 全体の更新処理
@@ -180,8 +230,8 @@ void CSceneResult::Update()
 void CSceneResult::Draw()
 {
 	// 背景描画
-	m_pBack->SetTexture();
-	m_pBack->Disp();
+	m_pBackGround->SetTexture();
+	m_pBackGround->Disp();
 
 	// 分岐処理
 	if (ResultGameData.bWin)
@@ -190,6 +240,9 @@ void CSceneResult::Draw()
 		WinAnimation();
 
 		WinDisp();
+
+		m_pResultData->SetTexture();
+		m_pResultData->Disp();
 
 		NumberDisp();
 	}
@@ -202,34 +255,48 @@ void CSceneResult::Draw()
 	}
 
 	// UI系
-	if (ResultGameData.bWin)
-	{
-		if (!bWorldClear)
-		{
-			m_pNextUI[nPush[1]]->SetTexture();
-			m_pNextUI[nPush[1]]->Disp();
-		}
-	}
-	else
+	m_pStageSelectUI[nPush[0]]->SetTexture();
+	m_pStageSelectUI[nPush[0]]->Disp();
+
+	if (!bWorldClear)
 	{
 		m_pNextUI[nPush[1]]->SetTexture();
 		m_pNextUI[nPush[1]]->Disp();
 	}
-	m_pStageSelect[nPush[0]]->SetTexture();
-	m_pStageSelect[nPush[0]]->Disp();
 
-	m_pSelect->SetTexture();
-	m_pSelect->Disp();
+	m_pSelectUI->SetTexture();
+	m_pSelectUI->Disp();
 
-	m_pUnderBar->SetTexture();
-	m_pUnderBar->Disp();
-	
+	m_pUnberUI->SetTexture();
+	m_pUnberUI->Disp();
 }
 
+// --- static 変数の初期化
+void CSceneResult::Init_Result()
+{
+	StageLevel.StageMainNumber	= 0;
+	StageLevel.StageSubNumber	= 0;
+	ResultGameData.bWin			= true;
+	ResultGameData.nAverageSpwn = 1;
+	ResultGameData.nDrawCount	= 1;
+	ResultGameData.nHitPoint	= 1;
+	ResultGameData.nSpawnCount	= 1;
+	ResultGameData.nTime		= 1;
+	for (int nLoop = 0; nLoop < MAX_STAGE; nLoop++)
+	{
+		nBestScore[nLoop]	 = 0;
+		bClearState[nLoop]	 = false;
+		StageRank[nLoop]	 = NONE_RANK;
+	}
+}
 
 // --- リザルト情報の設定
 void CSceneResult::InResultData(ResultGameInfo InData)
 {
+	if (InData.nSpawnCount > 0 && InData.nDrawCount > 0)
+	{
+		InData.nAverageSpwn = InData.nSpawnCount / InData.nDrawCount;
+	}
 	ResultGameData = InData;
 }
 // --- ステージ情報を設定
@@ -257,145 +324,164 @@ void CSceneResult::SetStageClear(int nStage, bool bWin)
 {
 	bClearState[nStage] = bWin;
 }
+// --- ステージクリア情報の取得
+Rank CSceneResult::GetRankData(int nStage)
+{
+	return StageRank[nStage];
+}
+// --- ステージクリア情報の設定
+void CSceneResult::SetRankData(int nStage, Rank SetRank)
+{
+	StageRank[nStage] = SetRank;
+}
 
 
 // --- テクスチャの読み込み
 void CSceneResult::LoadTexture(void)
 {
-	m_pHitPoint =		new SpriteEx("Assets/Texture/Result/Result_Helth.png");
-	m_pStageSelect[0] = new SpriteEx("Assets/Texture/Result/Result_Side_Stageselect.png");
-	m_pStageSelect[1] = new SpriteEx("Assets/Texture/Result/Result_Side_Stageselect_Push.png");
-	m_pShadow =			new SpriteEx("Assets/Texture/Result/Result_Shadow.png");
-	m_pSelect =			new SpriteEx("Assets/Texture/Result/Result_Nextstage_Frame.png");
-	m_pSummonData =		new SpriteEx("Assets/Texture/Result/Result_Summon.png");
-	m_pUnderBar =		new SpriteEx("Assets/Texture/Result/Result_Underbar.png");
-	m_pBack =			new SpriteEx("Assets/Texture/Result/B.png");
-	m_pPiyo =			new SpriteEx("Assets/Texture/Result/stan.png");
-	m_pScore =			new SpriteEx("Assets/Texture/Result/Score.png");
-	m_pBestScore =		new SpriteEx("Assets/Texture/Result/BestScore.png");
-	// -- 分岐読み込み
+	m_pBackGround		= new SpriteEx("Assets/Texture/Result/B.png");
+	m_pUnberUI			= new SpriteEx("Assets/Texture/Result/UI/Result_Underbar.png");
+	m_pStageSelectUI[0] = new SpriteEx("Assets/Texture/Result/UI/Result_01.png");
+	m_pStageSelectUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_02.png");
+	m_pSelectUI			= new SpriteEx("Assets/Texture/Result/UI/Result_Selected.png");
+	m_pResultData		= new SpriteEx("Assets/Texture/Result/UI/Result_List.png");
+	m_pRank[S_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_S.png");
+	m_pRank[A_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_A.png");
+	m_pRank[B_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_B.png");
+	m_pRank[C_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_C.png");
+	m_pBestScore		= new SpriteEx("Assets/Texture/Result/Text/BestScore.png");
+	m_pCharacterShadow = new SpriteEx("Assets/Texture/Result/shadow/Result_Shadow.png");
+
 	if (ResultGameData.bWin)
 	{
-		// --- WinData
-		m_pText =		new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_top.png");
-		m_pCharacter =	new SpriteEx("Assets/Texture/Result/Win/Result_Linie_Win_Sprite.png");
-		m_pLighting =	new SpriteEx("Assets/Texture/Result/Win/Result_Win_Light.png");
-		m_pTextShadow =	new SpriteEx("Assets/Texture/Result/Win/Result_Win_Text_under.png");
-		m_pClearTime =	new SpriteEx("Assets/Texture/Result/Win/Result_Win_Cleartime.png");
-		m_pNextUI[0] =	new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
-		m_pNextUI[1] =	new SpriteEx("Assets/Texture/Result/Win/Result_Nextstage.png");
-		m_pStar =		new SpriteEx("Assets/Texture/Star/star.png");
+		m_pNextUI[0] = new SpriteEx("Assets/Texture/Result/UI/Result_03.png");
+		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_04.png");
+
+		m_pText		= new SpriteEx("Assets/Texture/Result/Text/Result_Win_Text_top.png");
+		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Win_Light.png");
+		m_pTextShadow = new SpriteEx("Assets/Texture/Result/shadow/Result_Win_Text_under.png");
+		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Result_Linie_Win_Sprite.png");
+
 	}
 	else
 	{
-		// ---- Lose
-		m_pText =		new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Text_top.png");
-		m_pCharacter =	new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Linie.png");
-		m_pLighting =	new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Light.png");
-		m_pTextShadow = new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Text_under.png");
-		m_pClearTime =	new SpriteEx("Assets/Texture/Result/Lose/Result_Lose_Cleartime.png");
-		m_pNextUI[0] =	new SpriteEx("Assets/Texture/Result/Lose/Result_Retry.png");
-		m_pNextUI[1] =	new SpriteEx("Assets/Texture/Result/Lose/Result_Retry_Push.png");
-		m_pStar =		new SpriteEx("Assets/Texture/Star/star2.png");
+		m_pNextUI[0] = new SpriteEx("Assets/Texture/Result/UI/Result_05.png");
+		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_06.png");
+		m_pText = new SpriteEx("Assets/Texture/Result/Text/Result_Lose_Text_top.png");
+		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Lose_Light.png");
+		m_pTextShadow = new SpriteEx("Assets/Texture/Result/shadow/Result_Lose_Text_under.png");
+		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Line_Lose.png");
 	}
+
+
 }
 
 // --- 初期位置の設定
 void CSceneResult::DefaultSetPos(void)
 {
-	for (int nLoop = 0; nLoop < 2; nLoop++)
-	{
-		m_pStageSelect[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pStageSelect[nLoop]->SetSize(600.0f, 80.0f, 1.0f);
-		m_pStageSelect[nLoop]->SetPositon(1630.0f, 940.0f, 10.0f);
+	m_pBackGround->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pBackGround->SetSize(1920.0f, 1080.0f, 0.0f);
+	m_pBackGround->SetPositon(960.0f, 540.0f, 0.0f);
 
-		m_pNextUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pNextUI[nLoop]->SetSize(600.0f, 80.0f, 1.0f);
-		m_pNextUI[nLoop]->SetPositon(1630.0f, 840.0f, 10.0f);
-	}
-	m_pBack->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_pBack->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pBack->SetSize(2000.0f, 2000.0f, 1.0f);
-	m_pBack->SetPositon(960.0f, 540.0f, 10.0f);
+	m_pUnberUI->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+	m_pUnberUI->SetSize(1920.0f, 60.0f, 0.0f);
+	m_pUnberUI->SetPositon(960.0f, 1050.0f, 0.0f);
 
-	m_pSelect->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pSelect->SetSize(620.0f, 105.0f, 1.0f);
-	m_pSelect->SetPositon(1630.0f, 940.0f, 10.0f);
 
-	m_pUnderBar->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pUnderBar->SetSize(2000.0f, 50.0f, 1.0f);
-	m_pUnderBar->SetPositon(960.0f, 1050.0f, 10.0f);
 
-	m_pClearTime->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pClearTime->SetSize(600.0f, 70.0f, 1.0f);
-	m_pClearTime->SetPositon(1632.0f, 434.0f, 10.0f);
-
-	m_pHitPoint->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pHitPoint->SetSize(600.0f, 70.0f, 1.0f);
-	m_pHitPoint->SetPositon(1632.0f, 504.0f, 10.0f);
-
-	m_pSummonData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pSummonData->SetSize(600.0f, 140.0f, 1.0f);
-	m_pSummonData->SetPositon(1632.0f, 610.0f, 10.0f);
-	
-	m_pPiyo->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pPiyo->SetSize(300.0f, 100.0f, 1.0f);
-	m_pPiyo->SetPositon(600.0f, 600.0f, 10.0f);
-
-	m_pBestScore->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pBestScore->SetSize(300.0f, 100.0f, 1.0f);
-	m_pBestScore->SetPositon(1400.0f, 300.0f, 10.0f);
-
-	m_pScore->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-	m_pScore->SetSize(300.0f, 100.0f, 1.0f);
-	m_pScore->SetPositon(1400.0f, 300.0f, 10.0f);
 
 	if (ResultGameData.bWin)
 	{
+		for (int nLoop = 0; nLoop < 2; nLoop++)
+		{
+			m_pStageSelectUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStageSelectUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
 
-		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pTextShadow->SetSize(700.0f, 50.0f, 1.0f);
-		m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
+			m_pNextUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pNextUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pNextUI[nLoop]->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
+		}
 
-		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pText->SetSize(700.0f, 123.0f, 1.0f);
-		m_pText->SetPositon(920.0f, 140.0f, 10.0f);
+		m_pSelectUI->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pSelectUI->SetSize(670.0f * 1.1f, 107.0f * 1.1f, 0.0f);
+		m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
+
+		m_pResultData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pResultData->SetSize(710.0f * 0.9, 390.0f * 0.9, 0.0f);
+		m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
 
 		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pLighting->SetSize(940.0f, 1000.0f, 1.0f);
-		m_pLighting->SetPositon(460.0f, 440.0f, 10.0f);
+		m_pLighting->SetSize(969, 982, 0.0f);
+		m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
+
+		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pText->SetSize(822.0f, 143.0f, 0.0f);
+		m_pText->SetPositon(960.0f + Group.X, 100.0f, 0.0f);
+
+		for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
+		{
+			m_pRank[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pRank[nLoop]->SetSize(445.0f, 446.0f, 0.0f);
+			m_pRank[nLoop]->SetPositon(960.0f + Group.X, 450.0f, 0.0f);
+		}
 
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pCharacter->SetSize(800.0f, 750.0f, 1.0f);
-		m_pCharacter->SetPositon(560.0f, 440.0f, 10.0f);
+		m_pCharacter->SetSize(8192.0f / 8.0f, 8192 / 8.0f,0.0f);
+		m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
 
-		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pShadow->SetSize(400.0f, 150.0f, 1.0f);
-		m_pShadow->SetPositon(460.0f, 820.0f, 10.0f);
+		m_pBestScore->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pBestScore->SetSize(1302.0f * 0.3f, 368.0f * 0.3f, 0.0f);
+		m_pBestScore->SetPositon(1500.0f + Group.X, 230.0f, 0.0f);
+
+		m_pCharacterShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacterShadow->SetSize(440.0f,81.0f, 0.0f);
+		m_pCharacterShadow->SetPositon((330.0f + Group.Y), 850.0f, 0.0f);
+
+		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pTextShadow->SetSize(1129.0f, 73.0f, 0.0f);
+		m_pTextShadow->SetPositon(960.0f + Group.X, 190.0f, 0.0f);
 	}
 	else
 	{
-		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pTextShadow->SetSize(700.0f, 50.0f, 1.0f);
-		m_pTextShadow->SetPositon(920.0f, 200.0f, 10.0f);
+		for (int nLoop = 0; nLoop < 2; nLoop++)
+		{
+			m_pStageSelectUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStageSelectUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pStageSelectUI[nLoop]->SetPositon(960.0f, 900.0f, 0.0f);
 
-		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(190.0f));
-		m_pText->SetSize(700.0f, 123.0f, 1.0f);
-		m_pText->SetPositon(920.0f, 140.0f, 10.0f);
+			m_pNextUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pNextUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pNextUI[nLoop]->SetPositon(960.0f, 790.0f, 0.0f);
+		}
+
+		m_pSelectUI->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pSelectUI->SetSize(670.0f * 1.1f, 107.0f * 1.1f, 0.0f);
+		m_pSelectUI->SetPositon(960.0f, 900.0f, 0.0f);
+
 
 		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pLighting->SetSize(940.0f, 600.0f, 1.0f);
-		m_pLighting->SetPositon(460.0f, 640.0f, 10.0f);
+		m_pLighting->SetSize(969 * 1.1f, 642 * 1.1f, 0.0f);
+		m_pLighting->SetPositon(960, 520.0f, 0.0f);
 
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pCharacter->SetSize(600.0f, 300.0f, 1.0f);
-		m_pCharacter->SetPositon(490.0f, 700.0f, 10.0f);
+		m_pCharacter->SetSize(705, 430, 0.0f);
+		m_pCharacter->SetPositon(960, 620.0f, 0.0f);
 
-		m_pShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
-		m_pShadow->SetSize(600.0f, 150.0f, 1.0f);
-		m_pShadow->SetPositon(470.0f, 800.0f, 10.0f);
+		m_pCharacterShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacterShadow->SetSize(440.0f * 1.5f, 81.0f * 1.5f, 0.0f);
+		m_pCharacterShadow->SetPositon(920.0f, 800.0f, 0.0f);
+
+		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pText->SetSize(913.0f, 145.0f, 0.0f);
+		m_pText->SetPositon(960.0f , 100.0f, 0.0f);
+
+		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pTextShadow->SetSize(1129.0f, 73.0f, 0.0f);
+		m_pTextShadow->SetPositon((960.0f), 190.0f, 0.0f);
 
 	}
+
 }
 
 // --- 入力処理
@@ -416,9 +502,8 @@ void CSceneResult::KeyProsess(void)
 					XAUDIO2_BUFFER buffer;
 					buffer = m_pResultSelectSound->GetBuffer(false);
 					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+					if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 					m_pResultSelectSE->Start();
-					m_pSelect->SetPositon(1630.0f, 940.0f, 10.0f);
 				}
 				nSelect = 0;
 			}
@@ -433,9 +518,11 @@ void CSceneResult::KeyProsess(void)
 					XAUDIO2_BUFFER buffer;
 					buffer = m_pResultSelectSound->GetBuffer(false);
 					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+					if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 					m_pResultSelectSE->Start();
-					m_pSelect->SetPositon(1630.0f, 840.0f, 10.0f);
+
+
+			
 				}
 				nSelect = 1;
 			}
@@ -454,10 +541,11 @@ void CSceneResult::KeyProsess(void)
 				XAUDIO2_BUFFER buffer;
 				buffer = m_pResultSelectSound->GetBuffer(false);
 				m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-				if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+				if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 				m_pResultSelectSE->Start();
 
-				m_pSelect->SetPositon(1630.0f, 940.0f, 10.0f);
+
+
 			}
 			nSelect = 0;
 		}
@@ -472,10 +560,11 @@ void CSceneResult::KeyProsess(void)
 				XAUDIO2_BUFFER buffer;
 				buffer = m_pResultSelectSound->GetBuffer(false);
 				m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-				if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+				if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 				m_pResultSelectSE->Start();
 
-				m_pSelect->SetPositon(1630.0f, 840.0f, 10.0f);
+	
+
 			}
 			nSelect = 1;
 		}
@@ -545,62 +634,100 @@ void CSceneResult::AnimationManagemer(void)
 	if (timeGetTime() - nAnimationTimer >= 20.0f)
 	{
 		bAnimation = true;
+		nAnimationFrame++;
 		nAnimationTimer = timeGetTime();
 	}
 	else
 	{
 		bAnimation = false;
 	}
+	
+	m_pSelectUI->SetSize(640.0f * 1.1f + (cosf((float)nAnimationFrame / 10) * 5.0f), 107.0f * 1.1f + (cosf((float)nAnimationFrame / 10)* 5.0f), 0.0f);
+
+	if (nSelect)
+	{
+		if (ResultGameData.bWin)
+		{
+			m_pSelectUI->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
+		}
+		else
+		{
+			m_pSelectUI->SetPositon(960.0f, 790.0f, 0.0f);
+		}
+		for (int nLoop = 0; nLoop < 2; nLoop++)
+		{
+			m_pStageSelectUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pNextUI[nLoop]->SetSize(608.0f * 1.1f, 76.0f * 1.1f, 0.0f);
+		}
+	}
+	else
+	{
+		if (ResultGameData.bWin)
+		{
+			m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
+		}
+		else
+		{
+			m_pSelectUI->SetPositon(960.0f, 900.0f, 0.0f);
+		}
+		for (int nLoop = 0; nLoop < 2; nLoop++)
+		{
+			m_pStageSelectUI[nLoop]->SetSize(608.0f * 1.1f, 76.0f * 1.1f, 0.0f);
+			m_pNextUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+		}
+	}
 }
 
 // --- カメラ情報の更新
 void CSceneResult::SetCamData(void)
 {
+	m_pTextShadow->SetView(Get2DView());
+	m_pTextShadow->SetProjection(Get2DProj());
+
+	m_pBackGround->SetView(Get2DView());
+	m_pBackGround->SetProjection(Get2DProj());
+	
+	m_pUnberUI->SetView(Get2DView());
+	m_pUnberUI->SetProjection(Get2DProj());
+	
+	m_pSelectUI->SetView(Get2DView());
+	m_pSelectUI->SetProjection(Get2DProj());
+	
+	m_pResultData->SetView(Get2DView());
+	m_pResultData->SetProjection(Get2DProj());
+	
+	m_pLighting->SetView(Get2DView());
+	m_pLighting->SetProjection(Get2DProj());
+
+	m_pText->SetView(Get2DView());
+	m_pText->SetProjection(Get2DProj());
+
+	m_pCharacter->SetView(Get2DView());
+	m_pCharacter->SetProjection(Get2DProj());
+
+	m_pBestScore->SetView(Get2DView());
+	m_pBestScore->SetProjection(Get2DProj());
+
+	m_pCharacterShadow->SetView(Get2DView());
+	m_pCharacterShadow->SetProjection(Get2DProj());
+
+	m_pTextShadow->SetView(Get2DView());
+	m_pTextShadow->SetProjection(Get2DProj());
+
+	for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
+	{
+		m_pRank[nLoop]->SetView(Get2DView());
+		m_pRank[nLoop]->SetProjection(Get2DProj());
+	}
+
 	for (int nLoop = 0; nLoop < 2; nLoop++)
 	{
-		m_pStageSelect[nLoop]->SetProjection(Get2DProj());
-		m_pStageSelect[nLoop]->SetView(Get2DView());
-		m_pNextUI[nLoop]->SetProjection(Get2DProj());
+		m_pStageSelectUI[nLoop]->SetView(Get2DView());
+		m_pStageSelectUI[nLoop]->SetProjection(Get2DProj());
+		
 		m_pNextUI[nLoop]->SetView(Get2DView());
+		m_pNextUI[nLoop]->SetProjection(Get2DProj());
 	}
-	
-	m_pSelect->SetProjection(Get2DProj());
-	m_pSelect->SetView(Get2DView());
-
-	if (ResultGameData.bWin)
-	{
-		m_pScore->SetView(Get2DView());
-		m_pScore->SetProjection(Get2DProj());
-		m_pBestScore->SetView(Get2DView());
-		m_pBestScore->SetProjection(Get2DProj());
-	}
-	m_pHitPoint->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_pHitPoint->SetProjection(Get2DProj());
-	m_pHitPoint->SetView(Get2DView());
-	m_pShadow->SetProjection(Get2DProj());
-	m_pShadow->SetView(Get2DView());
-	m_pSummonData->SetProjection(Get2DProj());
-	m_pSummonData->SetView(Get2DView());
-	m_pUnderBar->SetProjection(Get2DProj());
-	m_pUnderBar->SetView(Get2DView());
-	m_pText->SetProjection(Get2DProj());
-	m_pText->SetView(Get2DView());
-	m_pCharacter->SetProjection(Get2DProj());
-	m_pCharacter->SetView(Get2DView());
-	m_pLighting->SetProjection(Get2DProj());
-	m_pLighting->SetView(Get2DView());
-	m_pLighting->SetProjection(Get2DProj());
-	m_pLighting->SetView(Get2DView());
-	m_pTextShadow->SetProjection(Get2DProj());
-	m_pTextShadow->SetView(Get2DView());
-	m_pClearTime->SetProjection(Get2DProj());
-	m_pClearTime->SetView(Get2DView());
-	m_pBack->SetProjection(Get2DProj());
-	m_pBack->SetView(Get2DView());
-	m_pStar->SetProjection(Get2DProj());
-	m_pStar->SetView(Get2DView());
-	m_pPiyo->SetProjection(Get2DProj());
-	m_pPiyo->SetView(Get2DView());
 }
 
 // --- 描画アニメーション
@@ -608,126 +735,84 @@ void CSceneResult::WinAnimation(void)
 {
 	if (bAnimation)
 	{
-		nAnimationFrame++;
+		int nUvPos = 0;
 
-		int nUvPos;
-		int nX, nY;
-		// --- アニメーション
 		if (nAnimationFrame > 63)
 		{
-			static bool bLoopAnimation = true;
-			static int nLoopAnimation = 0;
 			nUvPos = 63;
 
+			float fAnimeFrame = nAnimationFrame - 63;
+			// --- イージング速度の変更
+			fAnimeFrame = fAnimeFrame * 0.04f;
+			if (fAnimeFrame > 1.0f)fAnimeFrame = 1.0f;
 
-
-			if (bLoopAnimation)
+			Group.Y = (Easing39(fAnimeFrame,0.1f,0.9f) * 600.0f) - 600.0f;
+			Group.X = (Easing39(fAnimeFrame,0.1f,0.9f) * 1920.0f) - 1920.0f;
+	
+			// --- positionの再設定
+			m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
+			for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)m_pRank[nLoop]->SetPositon(960.0f + Group.X, 450.0f, 0.0f);
+			m_pText->SetPositon(960.0f + Group.X, 100.0f, 0.0f);
+			m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
+			m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
+			m_pBestScore->SetPositon(1500.0f + Group.X, 230.0f, 0.0f);
+			m_pCharacterShadow->SetPositon((330.0f + Group.Y), 850.0f, 0.0f);
+			for (int nLoop = 0; nLoop < 2; nLoop++)
 			{
-				nLoopAnimation++;
-				if (nLoopAnimation > 15)bLoopAnimation = false;
+				m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
+				m_pNextUI[nLoop]->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
+			}
+			// --- Animation Loop
+			if (bLoopAnime)
+			{
+				nLoopAnimeCount--;
+				if (nLoopAnimeCount < 1)bLoopAnime = false;
+
 			}
 			else
 			{
-				nLoopAnimation--;
-				if (nLoopAnimation < 1)bLoopAnimation = true;
+				nLoopAnimeCount++;
+				if (nLoopAnimeCount > 15)bLoopAnime = true;
 			}
 
 
-	
-			nX = nUvPos % 8;
-			nY = nUvPos / 8;
-
-			nX = nX - nLoopAnimation % 8;
-			nY = nY - nLoopAnimation / 8;
-
+			nUvPos -= nLoopAnimeCount;
 
 		}
 		else
 		{
 			nUvPos = nAnimationFrame;
-	
-			nX = nUvPos % 8;
-			nY = nUvPos / 8;
 		}
 
-		float fUvSize;
-		fUvSize = 1.0f / 8.0f;
-		
+		int nShiftUvX;
+		int nShiftUvY;
 
-		
-		fUvPos.X = fUvSize * (float)nX;
-		fUvPos.Y = fUvSize * (float)nY;
+		nShiftUvX = nUvPos % 8;
+		nShiftUvY = nUvPos / 8;
 
+		fUvPos.X = (1.0f / 8.0f) * nShiftUvX;
+		fUvPos.Y = (1.0f / 8.0f) * nShiftUvY;
 
 
 	}
+
 }
 
 void CSceneResult::LoseAnimation(void)
 {
 	if (bAnimation)
 	{
-		
-		static float fFream = 0;
-		fFream += 0.05f;
-		if (fFream > 1)
-		{
-			float Pos = Easing39(1.0f);
-			Pos = Pos * 100.0f;
-			m_pCharacter->SetPositon(490.0f, 800.0f - Pos, 10.0f);
-			
-			fPiyoA = fFream - 1.0f;
-			if (fPiyoA < 0.0f)fPiyoA = 0.0f;
-
-			if (fFream > 2.0f)fFream = 2.0f;
-		}
-		else
-		{
-
-			float Pos = Easing39(fFream);
-			Pos = Pos * 100.0f;
-			m_pCharacter->SetPositon(490.0f, 800.0f - Pos, 10.0f);
-		}
-
-		nAnimationFrame++;
-		static int PiyoF = 0;
-		if (nAnimationFrame > 1)
-		{
-			nAnimationFrame = 0;
-			PiyoF++;
-		}
-
-		int nF;
-		int nP;
-		nF = PiyoF % 4;
-		nP = PiyoF / 4;
-
-		if (nF * nP > 21)
-		{
-			PiyoF = 0;
-		}
-
-		fUvPos.X = (1.0f / 4.0f) * (float)nF;
-		fUvPos.Y = (1.0f / 21.0f) * (float)nP;
-
+		float fAnime;
+		fAnime = nAnimationFrame * 0.02f;
+		m_pCharacter->SetPositon(960, 620.0f - Easing39(fAnime,0.3f,0.9f) * 1920.0f + 1920.0f , 0.0f);
 	}
 }
 
 // --- 描画
 void CSceneResult::WinDisp(void)
 {
-	m_pClearTime->SetTexture();
-	m_pClearTime->Disp();
-
-	m_pHitPoint->SetTexture();
-	m_pHitPoint->Disp();
-
-	m_pSummonData->SetTexture();
-	m_pSummonData->Disp();
-
 	m_pLighting->SetTexture();
 	m_pLighting->Disp();
-
 
 	m_pTextShadow->SetTexture();
 	m_pTextShadow->Disp();
@@ -735,215 +820,140 @@ void CSceneResult::WinDisp(void)
 	m_pText->SetTexture();
 	m_pText->Disp();
 
-	m_pShadow->SetTexture();
-	m_pShadow->Disp();
+	m_pCharacterShadow->SetTexture();
+	m_pCharacterShadow->Disp();
 
-	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
 	m_pCharacter->SetUvSize(1.0f / 8.0f, 1.0f / 8.0f);
+	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
 	m_pCharacter->SetTexture();
 	m_pCharacter->Disp();
-
 	m_pCharacter->SetUvSize(1.0f, 1.0f);
 	m_pCharacter->SetUvPos(0.0f, 0.0f);
-}
 
-void CSceneResult::LoseDisp(void)
-{
-	m_pTextShadow->SetTexture();
-	m_pTextShadow->Disp();
+	m_pRank[StageRank[nStage]]->SetTexture();
+	m_pRank[StageRank[nStage]]->Disp();
 
-	m_pText->SetTexture();
-	m_pText->Disp();
-
-	m_pLighting->SetTexture();
-	m_pLighting->Disp();
-
-	m_pShadow->SetTexture();
-	m_pShadow->Disp();
-
-	m_pCharacter->SetTexture();
-	m_pCharacter->Disp();
-
-	m_pPiyo->Setcolor(1.0f, 1.0f, 1.0f, fPiyoA);
-	m_pPiyo->SetUvPos(fUvPos.X, fUvPos.Y);
-	m_pPiyo->SetUvSize(1.0f / 4.0f, 1.0f / 21.0f);
-	m_pPiyo->SetTexture();
-	m_pPiyo->Disp();
-	m_pPiyo->SetUvSize(1.0f, 1.0f);
-	m_pPiyo->SetUvPos(0.0f, 0.0f);
-	m_pPiyo->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
-void CSceneResult::NumberDisp(void)
-{
-	// --- 無効な数値が検出されたときの処理
-	if (ResultGameData.nAverageSpwn <= 0 || ResultGameData.nDrawCount <= 0 || ResultGameData.nHitPoint <= 0 || ResultGameData.nSpawnCount <= 0 || ResultGameData.nTime <= 0)
-	{
-		MessageBox(NULL, "無効な数値が検出されました\n仮数値を代入します", "確認_RESULT", MB_OK);
-		ResultGameData.nAverageSpwn = 114;
-		ResultGameData.nTime = 114;
-		ResultGameData.nHitPoint = 114;
-		ResultGameData.nSpawnCount = 114;
-		ResultGameData.nDrawCount = 114;
-	}
-
-	// NumberUI の設定
-	m_pNumber->SetArrangment(m_pNumber->Left_AL);
-
-	m_pNumber->SetNumberColor(1);
-
-	// --- 時間計算
-	int nM, nS;
-	nM = ResultGameData.nTime / 60;
-	nS = ResultGameData.nTime % 60;
-
-	// 秒数Animation
-	bool bTime = false;
-
-	nSS++;
-	if (nSS > 60)
-	{
-		nSS = 0;
-		nMM++;
-	}
-	if (nMM >= nM)
-	{
-		if (nSS >= nS)
-		{
-			bTime = true;
-			nSS = nS;
-		}
-	}
-
-	// --- 秒数
-	m_pNumber->SetNumber(nSS);
-	m_pNumber->SetLend(2);
-	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
-	m_pNumber->SetPos({ 1895.0f,435.0f,0.0f });
-	m_pNumber->Draw();
-
-	// --- 分数
-	m_pNumber->SetNumber(nMM);
-	m_pNumber->SetLend(2);
-	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
-	m_pNumber->SetPos({ 1810.0f,435.0f,0.0f });
-	m_pNumber->Draw();
-
-	// 体力Animation
-	bool bHp = false;
-	
-	if (bTime)
-	{
-		nHp++;
-		if (nHp >= ResultGameData.nHitPoint)
-		{
-			bHp = true;
-			nHp = ResultGameData.nHitPoint;
-		}
-	}
-	// --- 体力
-	m_pNumber->SetNumber(nHp);
-	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
-	m_pNumber->SetPos({ 1840.0f,505.0f,0.0f });
-	m_pNumber->Draw();
-
-	// 召喚合計
-	bool bSpawn = false;
-
-	if (bHp)
-	{
-		nSpawn++;
-		if (nSpawn >= ResultGameData.nSpawnCount)
-		{
-			bSpawn = true;
-			nSpawn = ResultGameData.nSpawnCount;
-		}
-	}
-	m_pNumber->SetNumber(nSpawn);
-	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
-	m_pNumber->SetPos({ 1840.0f,572.0f,0.0f });
-	m_pNumber->Draw();
-
-	// 平均召喚数
-	bool bAvSpawn = false;
-	
-	if (bSpawn)
-	{
-		nAvS++;
-		if (nAvS >= ResultGameData.nAverageSpwn / ResultGameData.nDrawCount)
-		{
-			bAvSpawn = true;
-			nAvS = ResultGameData.nAverageSpwn / ResultGameData.nDrawCount;
-		}
-	}
-	m_pNumber->SetNumber(nAvS);
-	m_pNumber->SetScale({ 40.0f,40.0f,0.0f });
-	m_pNumber->SetPos({ 1840.0f,615.0f,0.0f });
-	m_pNumber->Draw();
-
-
-	// 描画回数
-	ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
-	if (bAvSpawn)
-	{
-		nDisp++;
-		if (nDisp >= ResultGameData.nDrawCount)
-		{
-			nDisp = ResultGameData.nDrawCount;
-		}
-	}
-	m_pNumber->SetNumber(nDisp);
-	m_pNumber->SetScale({ 40.0f,40.0f,0.0f });
-	m_pNumber->SetPos({ 1840.0f,645.0f,0.0f });
-	m_pNumber->Draw();
-
-	// SCORE
-	int nScore;
-	nScore = ResultGameData.nHitPoint * sqrt(ResultGameData.nAverageSpwn * ResultGameData.nSpawnCount)/ (ResultGameData.nTime);
-	
-	nScore = nScore * 50;
-
-	if (bScore)
-	{
-		if (StageLevel.StageSubNumber == 8)
-		{
-			SetIP(SAVER_IP);
-			char cScore[255];
-			sprintf(cScore, "%d", nScore);
-			SendData(cScore);
-		}
-
-		if (nBestScore[StageLevel.StageSubNumber] < nScore)
-		{
-			nBestScore[StageLevel.StageSubNumber] = nScore;
-			bBestScore = true;
-		}
-		else
-		{
-			bBestScore = false;
-		}
-		bScore = false;
-	}
-	
 	if (bBestScore)
 	{
 		m_pBestScore->SetTexture();
 		m_pBestScore->Disp();
 	}
+}
+
+void CSceneResult::LoseDisp(void)
+{
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
+
+	m_pCharacterShadow->SetTexture();
+	m_pCharacterShadow->Disp();
+
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+
+	m_pTextShadow->SetTexture();
+	m_pTextShadow->Disp();
+
+	m_pText->SetTexture();
+	m_pText->Disp();
+}
+
+void CSceneResult::NumberDisp(void)
+{
+	
+	m_pNumber->SetArrangment(CNumberUI::Left_AL);
+	m_pNumber->SetNumberColor(2);
+
+	int nMin, nSec;
+	nMin = nSec = 0;
+
+	nMin = ResultGameData.nTime / 60;
+	nSec = ResultGameData.nTime % 60;
+
+	nMinutes++;
+	nSeconds++;
+
+	if (nMinutes > nMin)
+	{
+		nMinutes = nMin;
+		bTimeProsess = true;
+	}
 	else
 	{
-		m_pScore->SetTexture();
-		m_pScore->Disp();
+		bTimeProsess = false;
+	}
+	if (nSeconds > nSec)
+	{
+		nSeconds = nSec;
+		bTimeProsess = true;
+	}
+	else
+	{
+		bTimeProsess = false;
+	}
+		
+	m_pNumber->SetNumber(nMinutes);
+	m_pNumber->SetLend(2);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1790.0f + Group.X,390.f,0.0f });
+	m_pNumber->Draw();
+
+	m_pNumber->SetNumber(nSeconds);
+	m_pNumber->SetLend(2);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1880.0f + Group.X,390.f,0.0f });
+	m_pNumber->Draw();
+
+	if (bTimeProsess)
+	{
+		nHitPoint++;
+		if (nHitPoint > ResultGameData.nHitPoint)
+		{
+			bHPProsess = true;
+			nHitPoint = ResultGameData.nHitPoint;
+		}
 	}
 
-	nnScore += 100;
-	if (nnScore >= nScore)
-	{
-		nnScore = nScore;
-	}
-	m_pNumber->SetNumberColor(2);
-	m_pNumber->SetNumber(nnScore);
+	m_pNumber->SetNumber(nHitPoint);
 	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
-	m_pNumber->SetPos({ 1840.0f,350.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,475.f,0.0f });
+	m_pNumber->Draw();
+
+	if (bHPProsess)
+	{
+		nSpawn++;
+		if (nSpawn > ResultGameData.nSpawnCount)
+		{
+			bSpwanProsess = true;
+			nSpawn = ResultGameData.nSpawnCount;
+		}
+	}
+
+	m_pNumber->SetNumber(nSpawn);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,555.f,0.0f });
+	m_pNumber->Draw();
+
+	if (bSpwanProsess)
+	{
+		nAverage++;
+		nDispCount++;
+		if (nAverage > ResultGameData.nAverageSpwn)nAverage = ResultGameData.nAverageSpwn;
+		if (nDispCount > ResultGameData.nDrawCount)nDispCount = ResultGameData.nDrawCount;
+	}
+
+	m_pNumber->SetNumber(nAverage);
+	m_pNumber->SetScale({ 45.0f,45.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,615.f,0.0f });
+	m_pNumber->Draw();
+
+	m_pNumber->SetNumber(nDispCount);
+	m_pNumber->SetScale({ 45.0f,45.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,650.f,0.0f });
+	m_pNumber->Draw();
+
+	m_pNumber->SetNumber(nScore);
+	m_pNumber->SetScale({ 150.0f,150.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,300.0f,0.0f });
 	m_pNumber->Draw();
 }
