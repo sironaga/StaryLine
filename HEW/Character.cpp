@@ -108,7 +108,7 @@ Texture* g_pDamageTex[(int)DamageDraw::MAX];
 //攻撃音
 CSoundList* g_NormalAttackSound;
 CSoundList* g_WeaknessAttackSound;
-CSoundList* g_SummonSound;
+CSoundList* g_SummonSound[2];
 CSoundList* g_wandonoffSound;
 IXAudio2SourceVoice* g_pSourceSummon[2];//スピーカー
 IXAudio2SourceVoice* g_pSourceWandonoff;//スピーカー
@@ -357,12 +357,14 @@ void InitCharacterTexture(StageType StageType)
 	g_NormalAttackSound->SetMasterVolume();
 	g_WeaknessAttackSound = new CSoundList(SE_WEAKNESSATTACK);
 	g_WeaknessAttackSound->SetMasterVolume();
-	g_SummonSound = new CSoundList(SE_SUMMON);
-	g_SummonSound->SetMasterVolume();
+	g_SummonSound[0] = new CSoundList(SE_SUMMON);
+	g_SummonSound[0]->SetMasterVolume();
+	g_SummonSound[1] = new CSoundList(SE_SUMMONENEMY);
+	g_SummonSound[1]->SetMasterVolume();
 	for (int i = 0; i < 2; i++)
 	{
-		g_pSourceSummon[i] = g_SummonSound->m_sound->CreateSourceVoice(g_pSourceSummon[i]);
-		XAUDIO2_BUFFER buffer = g_SummonSound->GetBuffer(false);
+		g_pSourceSummon[i] = g_SummonSound[i]->m_sound->CreateSourceVoice(g_pSourceSummon[i]);
+		XAUDIO2_BUFFER buffer = g_SummonSound[i]->GetBuffer(false);
 		g_pSourceSummon[i]->SubmitSourceBuffer(&buffer);
 	}
 	g_wandonoffSound = new CSoundList(SE_WANDONOFF);
@@ -409,8 +411,8 @@ void UnInitCharacterTexture()
 			g_pSourceSummon[i] = nullptr;
 		}
 	}
-	SAFE_DELETE(g_SummonSound);
-	
+	SAFE_DELETE(g_SummonSound[0]);
+	SAFE_DELETE(g_SummonSound[1]);
 	SAFE_DELETE(g_wandonoffSound);
 	g_pSourceWandonoff = nullptr;
 	//エフェクトの破棄
@@ -433,7 +435,8 @@ void ReLoadSound()
 		g_pSourceSummon[i]->DestroyVoice();
 		g_pSourceSummon[i] = nullptr;
 	}
-	SAFE_DELETE(g_SummonSound);
+	SAFE_DELETE(g_SummonSound[0]);
+	SAFE_DELETE(g_SummonSound[1]);
 	g_pSourceWandonoff->Stop();
 	g_pSourceWandonoff = nullptr;
 	SAFE_DELETE(g_wandonoffSound);
@@ -442,12 +445,14 @@ void ReLoadSound()
 	g_NormalAttackSound->SetMasterVolume();
 	g_WeaknessAttackSound = new CSoundList(SE_WEAKNESSATTACK);
 	g_WeaknessAttackSound->SetMasterVolume();
-	g_SummonSound = new CSoundList(SE_SUMMON);
-	g_SummonSound->SetMasterVolume();
+	g_SummonSound[0] = new CSoundList(SE_SUMMON);
+	g_SummonSound[0]->SetMasterVolume();
+	g_SummonSound[1] = new CSoundList(SE_SUMMONENEMY);
+	g_SummonSound[1]->SetMasterVolume();
 	for (int i = 0; i < 2; i++)
 	{
-		g_pSourceSummon[i] = g_SummonSound->m_sound->CreateSourceVoice(g_pSourceSummon[i]);
-		XAUDIO2_BUFFER buffer = g_SummonSound->GetBuffer(false);
+		g_pSourceSummon[i] = g_SummonSound[i]->m_sound->CreateSourceVoice(g_pSourceSummon[i]);
+		XAUDIO2_BUFFER buffer = g_SummonSound[i]->GetBuffer(false);
 		g_pSourceSummon[i]->SubmitSourceBuffer(&buffer);
 	}
 	g_wandonoffSound = new CSoundList(SE_WANDONOFF);
@@ -467,7 +472,8 @@ void SetCharacterMasterVolume()
 {
 	g_NormalAttackSound->SetMasterVolume();
 	g_WeaknessAttackSound->SetMasterVolume();
-	g_SummonSound->SetMasterVolume();
+	g_SummonSound[0]->SetMasterVolume();
+	g_SummonSound[1]->SetMasterVolume();
 	g_wandonoffSound->SetMasterVolume();
 }
 
@@ -1008,7 +1014,7 @@ void CAlly::CreateUpdate(void)
 		m_pEffect[(int)FighterEffect::Create]->Play();
 		g_pSourceSummon[0]->FlushSourceBuffers();
 		XAUDIO2_BUFFER buffer;
-		buffer = g_SummonSound->GetBuffer(false);
+		buffer = g_SummonSound[0]->GetBuffer(false);
 		g_pSourceSummon[0]->SubmitSourceBuffer(&buffer);
 		SetVolumeSE(g_pSourceSummon[0]);
 		g_pSourceSummon[0]->Start();
@@ -1414,7 +1420,7 @@ void CEnemy::CreateUpdate(void)
 		m_pEffect[(int)FighterEffect::Create]->Play();
 		g_pSourceSummon[1]->FlushSourceBuffers();
 		XAUDIO2_BUFFER buffer;
-		buffer = g_SummonSound->GetBuffer(false);
+		buffer = g_SummonSound[1]->GetBuffer(false);
 		g_pSourceSummon[1]->SubmitSourceBuffer(&buffer);
 		SetVolumeSE(g_pSourceSummon[1]);
 		g_pSourceSummon[1]->Start();

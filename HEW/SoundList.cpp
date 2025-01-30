@@ -3,7 +3,7 @@
 #include "iostream"
 #include "vector"
 
-#define MAX_SOUND (19)
+#define MAX_SOUND (21)
 
 #define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
 #define FILENAME_WALKGRASSSE (L"Assets/Sound/walkgrass.wav")
@@ -18,10 +18,12 @@
 #define FILENAME_WEAKNESSATTACKSE (L"Assets/Sound/wwaknessAttack.wav") 
 #define FILENAME_WANDONOFFSE (L"Assets/Sound/wandonoff.wav") 
 #define FILENAME_SUMMONSE (L"Assets/Sound/summon.wav") 
+#define FILENAME_SUMMONENEMYSE (L"Assets/Sound/SummonEnemy.wav") 
 #define FILENAME_DEATHSE (L"Assets/Sound/death.wav") 
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
-#define FILENAME_BATTLEBGM (L"Assets/Sound/battle.wav")
+#define FILENAME_SELECTEBGM (L"Assets/Sound/StageSelect.wav")
+#define FILENAME_BATTLEBGM (L"Assets/Sound/Stage1_Battle.wav")
 #define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
 #define FILENAME_GAMEOVERBGM (L"Assets/Sound/gameover.wav")
 #define FILENAME_GAMECLEARBGM (L"Assets/Sound/gameclear.wav")
@@ -70,6 +72,9 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case SE_SUMMON:
 		m_sound = new CSound(FILENAME_SUMMONSE);
+		break;
+	case SE_SUMMONENEMY:
+		m_sound = new CSound(FILENAME_SUMMONENEMYSE);
 		break;
 	case SE_DEATH:
 		m_sound = new CSound(FILENAME_DEATHSE);
