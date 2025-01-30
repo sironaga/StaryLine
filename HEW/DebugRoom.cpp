@@ -17,7 +17,7 @@ constexpr float SIZE_SPEED = 10.0f;
 
 const char* ch_pModelList[CDebugRoom::MAX_DEBUGMODEL] =
 {
-	MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx")
+	MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx")
 };
 
 CDebugRoom::CDebugRoom()
@@ -31,7 +31,7 @@ CDebugRoom::CDebugRoom()
 	{
 		m_pDebugModel[i] = new Model();
 		if (!m_pDebugModel[i]->Load(ch_pModelList[i]))MessageBox(NULL, ch_pModelList[i], "DebugRoom.cpp", MB_OK);
-		Model::AnimeNo anim = m_pDebugModel[i]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_WandON.fbx"));
+		Model::AnimeNo anim = m_pDebugModel[i]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx"));
 		m_pDebugModel[i]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
 		m_pDebugModel[i]->PlayAnime(anim, true);
 	}
@@ -156,8 +156,8 @@ void CDebugRoom::DrawModel(Model* model, param InParam , bool isAnim)
 				DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
 					model->GetMesh(i)->bones[j].invOffset * model->GetBoneMatrix(model->GetMesh(i)->bones[j].nodeIndex)
 				));
-				ShaderList::SetBones(bones);
 			}
+				ShaderList::SetBones(bones);
 		}
 
 		//ƒ‚ƒfƒ‹‚Ì•`‰æ
