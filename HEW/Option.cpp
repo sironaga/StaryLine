@@ -49,7 +49,7 @@ void COption::Update()
 		{
 		case SEC_SOUND:
 			UpdateSound();
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER, VK_RIGHT) || IsKeyTrigger('D'))
 			{
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
@@ -58,12 +58,12 @@ void COption::Update()
 			break;
 		case SEC_SCREEN:
 			UpdateScreen();
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_LEFT_SHOULDER, VK_LEFT) || IsKeyTrigger('A'))
 			{
 				m_nSection = SEC_SOUND;
 				m_nSelect = MASTER;
 			}
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER, VK_RIGHT) || IsKeyTrigger('D'))
 			{
 				m_nSection = SEC_INPUT;
 				m_nSelect = KEY_BOARD;
@@ -72,7 +72,7 @@ void COption::Update()
 			break;
 		case SEC_INPUT:
 			UpdateInput();
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))
+			if (WithGetKeyTriger(XINPUT_GAMEPAD_LEFT_SHOULDER, VK_LEFT) || IsKeyTrigger('A'))
 			{
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
@@ -458,16 +458,19 @@ void COption::UpdateSound()
 	switch (m_nSelect)
 	{
 	case MASTER:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = BGM;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_DOWN)
+		{
+			m_nSelect = BGM;
+		}
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_MASTERVOLUME]->pos.y;
 		break;
 	case BGM:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = MASTER;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) ||IsKeyTrigger('S'))	m_nSelect = SE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = MASTER;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) ||IsKeyTrigger('S') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = SE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_BGM]->pos.y;
 		break;
 	case SE:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = BGM;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = BGM;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_SE]->pos.y;
 		break;
 	default:break;
@@ -481,16 +484,16 @@ void COption::UpdateScreen()
 	switch (m_nSelect)
 	{
 	case SCREEN_MODE:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = FRAME_RATE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = FRAME_RATE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_WINDOWMODE]->pos.y;
 		break;
 	case FRAME_RATE:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = SCREEN_MODE;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = RESOLUSION;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = SCREEN_MODE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = RESOLUSION;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_FPS]->pos.y;
 		break;
 	case RESOLUSION:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = FRAME_RATE;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = FRAME_RATE;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_RESOLUSION]->pos.y;
 		break;
 	default:break;
@@ -504,11 +507,11 @@ void COption::UpdateInput()
 	switch (m_nSelect)
 	{
 	case KEY_BOARD:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))	m_nSelect = CONTROLLER;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = CONTROLLER;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_KEYBOARD]->pos.y;
 		break;
 	case CONTROLLER:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))	m_nSelect = KEY_BOARD;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = KEY_BOARD;
 		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_CONTROLLER]->pos.y;
 		break;
 	default:break;
@@ -558,43 +561,43 @@ void COption::SetValue(int kind)
 	switch (kind)
 	{
 	case COption::MASTER:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[MASTER]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[MASTER]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[MASTER]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[MASTER]--;
 		AJUST_MINMAX(m_nTempValue[MASTER], 0, 10);
 		break;
 	case COption::BGM:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[BGM]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[BGM]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[BGM]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[BGM]--;
 		AJUST_MINMAX(m_nTempValue[BGM], 0, 10);
 		break;
 	case COption::SE:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[SE]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[SE]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[SE]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[SE]--;
 		AJUST_MINMAX(m_nTempValue[SE], 0, 10);
 		break;
 	case COption::SCREEN_MODE:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[SCREEN_MODE]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[SCREEN_MODE]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[SCREEN_MODE]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[SCREEN_MODE]--;
 		AJUST_MINMAX(m_nTempValue[SCREEN_MODE], 0, 1);
 		break;
 	case COption::RESOLUSION:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[RESOLUSION]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[RESOLUSION]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[RESOLUSION]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[RESOLUSION]--;
 		AJUST_MINMAX(m_nTempValue[RESOLUSION], 0, 3);
 		break;
 	case COption::FRAME_RATE:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[FRAME_RATE]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[FRAME_RATE]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[FRAME_RATE]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[FRAME_RATE]--;
 		AJUST_MINMAX(m_nTempValue[FRAME_RATE], 0, 1);
 		break;
 	case COption::KEY_BOARD:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[KEY_BOARD]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[KEY_BOARD]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[KEY_BOARD]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[KEY_BOARD]--;
 		AJUST_MINMAX(m_nTempValue[KEY_BOARD], 0, 1);
 		break;
 	case COption::CONTROLLER:
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D'))m_nTempValue[CONTROLLER]++;
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))m_nTempValue[CONTROLLER]--;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_RIGHT)m_nTempValue[CONTROLLER]++;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A') || GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_LEFT)m_nTempValue[CONTROLLER]--;
 		AJUST_MINMAX(m_nTempValue[CONTROLLER], 0, 1);
 		break;
 	default:
