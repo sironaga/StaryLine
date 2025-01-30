@@ -6,6 +6,7 @@
 #include "ShaderList.h"
 #include "Input.h"
 #include "StageSelect.h"
+#include "Pause.h"
 
 //キャラクターの横の索敵当たり判定(索敵範囲)
 #define MAX_CHARACTER_SEARCH_COLLISION_WIDTH(Num)  ((m_tSize.x *(Num / 2)) + (m_tSize.x))
@@ -460,6 +461,14 @@ void ReLoadSound()
 	g_pCharacterEffects[(int)CharactersEffect::SwordAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/SwordAtk.png"), 4, 7, 1.0f);
 	g_pCharacterEffects[(int)CharactersEffect::BowAtk] = new CEffectManager_sp(EFFECT_PASS("Sprite/BowAtk.png"), 4, 6, 1.0f);
 	g_pCharacterEffects[(int)CharactersEffect::Death] = new CEffectManager_sp(EFFECT_PASS("Sprite/Death.png"), 4, 8, 3.0f);
+}
+
+void SetCharacterMasterVolume()
+{
+	g_NormalAttackSound->SetMasterVolume();
+	g_WeaknessAttackSound->SetMasterVolume();
+	g_SummonSound->SetMasterVolume();
+	g_wandonoffSound->SetMasterVolume();
 }
 
 //キャラクターの基底クラスのコンストラクタ

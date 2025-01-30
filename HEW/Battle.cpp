@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "StageSelect.h"
 #include "Defines.h"
+#include "Pause.h"
 
 //プレイヤーのX座標位置
 #define ALLYCORE_POSX (-90)
@@ -238,6 +239,10 @@ CBattle::~CBattle()
 
 void CBattle::Update(void)
 {
+	//音の設定
+	m_pSound->SetMasterVolume();
+	SetCharacterMasterVolume();
+	
 	//戦闘時間軸処理
 	TimeLapse();
 	//敵生成処理

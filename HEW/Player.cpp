@@ -8,7 +8,7 @@
 #include "SoundList.h"
 #include "Sprite.h"
 #include "Option.h"
-
+#include "Pause.h"
 // defines
 #define BRUSH_SPEED (0.5f)	// 移動速度
 #define BRUSH_SPEED_FEVER (0.5f)	// フィーバータイム中の移動速度
@@ -115,6 +115,9 @@ CPlayer::~CPlayer()
 
 void CPlayer::Update()
 {
+	//マスターヴォリュームの設定
+	g_pPlayerSound->SetMasterVolume();
+
 	if (GetTimeStart())//Timeが動いているとき
 	{
 		m_bDrawing = true;			// 作図中にする

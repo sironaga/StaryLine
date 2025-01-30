@@ -35,6 +35,7 @@ void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
 void ReLoadSound();//音の再読み込み
+void SetCharacterMasterVolume();//マスターヴォリュームの設定
 
 //ステータス情報
 enum Status

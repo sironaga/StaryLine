@@ -136,8 +136,8 @@ void CStartDirection::Update()
 			}
 			if (m_CountTimer[0] < m_OldCountTimer[1] * (3.0f / 4.0f))
 			{
-				m_tSize[0].X = OutEasing(m_CountTimer[0], 0.0f, (SCREEN_WIDTH * 0.42f), 1.0f) - (SCREEN_WIDTH * 0.42f);
-				m_tSize[0].Y = OutEasing(m_CountTimer[0], 0.0f, (SCREEN_HEIGHT*0.16f), 1.0f) - (SCREEN_HEIGHT *0.16f);
+				m_tSize[0].X = OutEasing(m_CountTimer[0], 0.0f, (SCREEN_WIDTH * 0.39f), 1.0f) - (SCREEN_WIDTH * 0.39f);
+				m_tSize[0].Y = OutEasing(m_CountTimer[0], 0.0f, (SCREEN_HEIGHT*0.13f), 1.0f) - (SCREEN_HEIGHT *0.13f);
 			}
 
 		}
