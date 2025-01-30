@@ -267,13 +267,13 @@ void CSceneResult::DefaultSetPos(void)
 
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pText->SetSize(822.0f, 143.0f, 0.0f);
-		m_pText->SetPositon(920.0f, 100.0f, 0.0f);
+		m_pText->SetPositon(960.0f, 100.0f, 0.0f);
 
 		for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
 		{
 			m_pRank[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pRank[nLoop]->SetSize(445.0f, 446.0f, 0.0f);
-			m_pRank[nLoop]->SetPositon(920.0f, 520.0f, 0.0f);
+			m_pRank[nLoop]->SetPositon(960.0f, 520.0f, 0.0f);
 		}
 
 	}
