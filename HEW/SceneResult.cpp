@@ -901,6 +901,8 @@ void CSceneResult::NumberDisp(void)
 	int nScore;
 	nScore = ResultGameData.nHitPoint * sqrt(ResultGameData.nAverageSpwn * ResultGameData.nSpawnCount)/ (ResultGameData.nTime);
 	
+	nScore = nScore * 50;
+
 	if (bScore)
 	{
 		if (StageLevel.StageSubNumber == 8)
