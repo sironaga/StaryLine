@@ -50,7 +50,7 @@ enum E_TITLE_ANIME
 ID3D11SamplerState* g_pTitleSPSampler;
 
 CSceneTitle::CSceneTitle(COption* pOption)
-	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
+	: m_SelectPos{550.0f, 135.0f}, m_bSelected(false)
 	, m_DecisionPos{ SCREEN_WIDTH / 2.0f, 100.0f }
 	, m_nAnimCount(0), m_tCharaLogoTexPos{}
 	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
@@ -68,7 +68,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	/*tex = new Texture();
 	tex->Create("Assets/Texture/Title/Title_Logo.png");*/
 	m_pTitleLogo		 = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
-	m_pTitleBack		 = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
+	//m_pTitleBack		 = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
 	m_pLini[0]			 = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
 	m_pLini[1]			 = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 	m_pTitleFrame		 = new SpriteEx("Assets/Texture/Title/Title_Selected.png");
@@ -100,8 +100,8 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
-	m_pTitleBack->SetProjection(Get2DProj());
-	m_pTitleBack->SetView(Get2DView());
+	//m_pTitleBack->SetProjection(Get2DProj());
+	//m_pTitleBack->SetView(Get2DView());
 	m_pTitleFrame->SetProjection(Get2DProj());
 	m_pTitleFrame->SetView(Get2DView());
 	m_pTitleUnderbar->SetProjection(Get2DProj());
@@ -123,8 +123,8 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	
 	for (int i = 0; i < 4; i++)
 	{
-		m_tTabPos[i] = { CENTER_POS_X + 735.0f, CENTER_POS_Y + 130.0f + i * SELECT_MOVE };
-		m_tTabSize[i] = { 450.0f,-60.0f };
+		m_tTabPos[i] = { CENTER_POS_X + 550.0f, CENTER_POS_Y + 130.0f + i * SELECT_MOVE };
+		m_tTabSize[i] = { 540.0f,-60.0f };
 	}
 	m_pSelectsound = new CSoundList(SE_DECISION);
 	m_pSourseSelectSE = m_pSelectsound->GetSound(false);
@@ -199,7 +199,7 @@ CSceneTitle::~CSceneTitle()
 		delete m_pTitleUnderbar;
 		m_pTitleLogo = nullptr;
 	}
-	SAFE_DELETE(m_pTitleBack);
+	//SAFE_DELETE(m_pTitleBack);
 	for (int i = 0; i < 2; i++)
 	{
 
@@ -424,13 +424,13 @@ void CSceneTitle::Draw()
 	m_pLini[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[1]->Disp();
 
-	m_pTitleBack->SetTexture();
+	/*m_pTitleBack->SetTexture();
 	m_pTitleBack->SetProjection(Get2DProj());
 	m_pTitleBack->SetView(Get2DView());
 	m_pTitleBack->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
 	m_pTitleBack->SetSize(1920.0f, -1080.0f, 0.0f);
 	m_pTitleBack->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
-	m_pTitleBack->Disp();
+	m_pTitleBack->Disp();*/
 
 	m_pTitleLogo->SetTexture();
 	m_pTitleLogo->SetProjection(Get2DProj());
@@ -471,10 +471,6 @@ void CSceneTitle::Draw()
 	m_pTitleEnd[0]->SetSize(m_tTabSize[3].x, m_tTabSize[3].y , 0.0f);
 	m_pTitleEnd[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pTitleEnd[0]->Disp();
-
-
-
-
 
 
 	if (m_bSelected)
@@ -529,7 +525,7 @@ void CSceneTitle::Draw()
 	m_pTitleFrame->SetSize(m_tTabSize[g_Title_type].x + 25.0f * m_fSelectScale, m_tTabSize[g_Title_type].y - 25.0f * m_fSelectScale, 0.0f);
 	m_pTitleFrame->Setcolor(1.0f,1.0f,1.0f, 1.0f);
 	m_pTitleFrame->Disp();
-	//
+	
 	//m_pDecition->SetTexture();
 	//m_pDecition->SetPositon(CENTER_POS_X + m_DecisionPos.x,CENTER_POS_Y + m_DecisionPos.y,0.0f);
 	//m_pDecition->SetSize(100.0f,100.0f,100.0f );
@@ -548,11 +544,10 @@ void CSceneTitle::Draw()
 	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
 	m_pTitleUnderbar->Disp();
 
-	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 245.0f,-m_SelectPos.y,0.0f });
+	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 245,-m_SelectPos.y,0.0f });
 	m_pEffect[(int)Effect::Choice]->SetSize({ 100.0f,100.0f,100.0f });
 	m_pEffect[(int)Effect::Choice]->SetRotate({ 0.0f,0.0f,0.0f });
 	m_pEffect[(int)Effect::Choice]->Draw(false);
-
 
 
 	//Sprite::SetSize(m_pParam->size);
@@ -607,8 +602,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	m_pTitleEnd[0] = new SpriteEx("Assets/Texture/Title/Title_Finish.png");
 	SAFE_DELETE(m_pTitleEnd[1]);
 	m_pTitleEnd[1] = new SpriteEx("Assets/Texture/Title/Title_Finish_push.png");
-	SAFE_DELETE(m_pTitleBack);
-	m_pTitleBack = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
+	//SAFE_DELETE(m_pTitleBack);
+	//m_pTitleBack = new SpriteEx("Assets/Texture/Title/Title_BackBoard.png");
 	SAFE_DELETE(m_pLini[0]);
 	m_pLini[0] = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
 	SAFE_DELETE(m_pLini[1]);
@@ -639,8 +634,8 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	}
 	m_pTitleLogo->SetProjection(Get2DProj());
 	m_pTitleLogo->SetView(Get2DView());
-	m_pTitleBack->SetProjection(Get2DProj());
-	m_pTitleBack->SetView(Get2DView());
+	//m_pTitleBack->SetProjection(Get2DProj());
+	//m_pTitleBack->SetView(Get2DView());
 	m_pTitleFrame->SetProjection(Get2DProj());
 	m_pTitleFrame->SetView(Get2DView());
 	m_pTitleUnderbar->SetProjection(Get2DProj());
@@ -750,14 +745,14 @@ void CSceneTitle::TitleAnimation()
 	{
 		if (g_Title_type == i)
 		{
-			m_tTabPos[i] = { CENTER_POS_X + 735.0f, CENTER_POS_Y + 130.0f + i * SELECT_MOVE };
-			m_tTabSize[i] = { 450.0f * SELECT_POW,-60.0f * SELECT_POW };
+			m_tTabPos[i] = { CENTER_POS_X + 550.0f, CENTER_POS_Y + 135.0f + i * SELECT_MOVE };
+			m_tTabSize[i] = { 500.0f * SELECT_POW,-60.0f * SELECT_POW };
 		}
 		else
 		{
-			if(i < g_Title_type)m_tTabPos[i].y = CENTER_POS_Y + 130.0f + i * SELECT_MOVE - SELECT_JUST_Y;
+			if(i < g_Title_type)m_tTabPos[i].y = CENTER_POS_Y + 135.0f + i * SELECT_MOVE - SELECT_JUST_Y;
 			else m_tTabPos[i].y = CENTER_POS_Y + 130.0f + i * SELECT_MOVE + SELECT_JUST_Y;
-			m_tTabSize[i] = { 450.0f,-60.0f };
+			m_tTabSize[i] = { 500.0f,-60.0f };
 		}
 	}
 	static float deg = 0.0f;    //“x”
