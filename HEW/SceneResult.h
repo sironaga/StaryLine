@@ -68,7 +68,9 @@ private:
 	SpriteEx* m_pRank[NONE_RANK];   // --- Rank
 	SpriteEx* m_pCharacter;			// --- リリー
 	SpriteEx* m_pBestScore;			// --- ベストスコア
-	CNumberUI* m_pNumber;		// --- 数字の描画
+	SpriteEx* m_pTextShadow;		// --- テキスト影
+	SpriteEx* m_pCharacterShadow;	// --- キャラクター影
+	CNumberUI* m_pNumber;			// --- 数字の描画
 
 	// --- 変数
 	
@@ -76,9 +78,10 @@ private:
 	int nAnimationTimer;
 	int nAnimationFrame;
 	int nSelect;
-	int nPush[2]; // ボタンを押した時
-	int nLoopAnimeCount; // --- キャラクター用ループカウンター
-	int nStage;			 // --- 現在のステージ番号の保管
+	int nPush[2];			// ボタンを押した時
+	int nLoopAnimeCount;	// --- キャラクター用ループカウンター
+	int nStage;				 // --- 現在のステージ番号の保管
+
 	// - Number用
 	int nMinutes;
 	int nSeconds;

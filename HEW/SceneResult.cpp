@@ -24,7 +24,7 @@ CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
 	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false),nStage(StageLevel.StageSubNumber)
 {
-	//ResultGameData.bWin = 0;
+	ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
@@ -345,6 +345,7 @@ void CSceneResult::LoadTexture(void)
 	m_pRank[B_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_B.png");
 	m_pRank[C_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_C.png");
 	m_pBestScore		= new SpriteEx("Assets/Texture/Result/Text/BestScore.png");
+	m_pCharacterShadow = new SpriteEx("Assets/Texture/Result/shadow/Result_Shadow.png");
 
 	if (ResultGameData.bWin)
 	{
@@ -353,7 +354,7 @@ void CSceneResult::LoadTexture(void)
 
 		m_pText		= new SpriteEx("Assets/Texture/Result/Text/Result_Win_Text_top.png");
 		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Win_Light.png");
-
+		m_pTextShadow = new SpriteEx("Assets/Texture/Result/shadow/Result_Win_Text_under.png");
 		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Result_Linie_Win_Sprite.png");
 
 	}
@@ -363,7 +364,7 @@ void CSceneResult::LoadTexture(void)
 		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_06.png");
 		m_pText = new SpriteEx("Assets/Texture/Result/Text/Result_Lose_Text_top.png");
 		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Lose_Light.png");
-
+		m_pTextShadow = new SpriteEx("Assets/Texture/Result/shadow/Result_Lose_Text_under.png");
 		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Line_Lose.png");
 	}
 
@@ -380,6 +381,7 @@ void CSceneResult::DefaultSetPos(void)
 	m_pUnberUI->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 	m_pUnberUI->SetSize(1920.0f, 60.0f, 0.0f);
 	m_pUnberUI->SetPositon(960.0f, 1050.0f, 0.0f);
+
 
 
 
@@ -427,6 +429,13 @@ void CSceneResult::DefaultSetPos(void)
 		m_pBestScore->SetSize(1302.0f * 0.3f, 368.0f * 0.3f, 0.0f);
 		m_pBestScore->SetPositon(1500.0f + Group.X, 230.0f, 0.0f);
 
+		m_pCharacterShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacterShadow->SetSize(440.0f,81.0f, 0.0f);
+		m_pCharacterShadow->SetPositon((330.0f + Group.Y), 850.0f, 0.0f);
+
+		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pTextShadow->SetSize(1129.0f, 73.0f, 0.0f);
+		m_pTextShadow->SetPositon(960.0f + Group.X, 190.0f, 0.0f);
 	}
 	else
 	{
@@ -454,10 +463,18 @@ void CSceneResult::DefaultSetPos(void)
 		m_pCharacter->SetSize(705, 430, 0.0f);
 		m_pCharacter->SetPositon(960, 620.0f, 0.0f);
 
+		m_pCharacterShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacterShadow->SetSize(440.0f * 1.5f, 81.0f * 1.5f, 0.0f);
+		m_pCharacterShadow->SetPositon(920.0f, 800.0f, 0.0f);
 
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pText->SetSize(913.0f, 145.0f, 0.0f);
 		m_pText->SetPositon(960.0f , 100.0f, 0.0f);
+
+		m_pTextShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pTextShadow->SetSize(1129.0f, 73.0f, 0.0f);
+		m_pTextShadow->SetPositon((960.0f), 190.0f, 0.0f);
+
 	}
 
 }
@@ -659,6 +676,9 @@ void CSceneResult::AnimationManagemer(void)
 // --- カメラ情報の更新
 void CSceneResult::SetCamData(void)
 {
+	m_pTextShadow->SetView(Get2DView());
+	m_pTextShadow->SetProjection(Get2DProj());
+
 	m_pBackGround->SetView(Get2DView());
 	m_pBackGround->SetProjection(Get2DProj());
 	
@@ -683,6 +703,12 @@ void CSceneResult::SetCamData(void)
 	m_pBestScore->SetView(Get2DView());
 	m_pBestScore->SetProjection(Get2DProj());
 
+	m_pCharacterShadow->SetView(Get2DView());
+	m_pCharacterShadow->SetProjection(Get2DProj());
+
+	m_pTextShadow->SetView(Get2DView());
+	m_pTextShadow->SetProjection(Get2DProj());
+
 	for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
 	{
 		m_pRank[nLoop]->SetView(Get2DView());
@@ -698,6 +724,7 @@ void CSceneResult::SetCamData(void)
 		m_pNextUI[nLoop]->SetProjection(Get2DProj());
 	}
 }
+
 // --- 描画アニメーション
 void CSceneResult::WinAnimation(void)
 {
@@ -724,6 +751,7 @@ void CSceneResult::WinAnimation(void)
 			m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
 			m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
 			m_pBestScore->SetPositon(1500.0f + Group.X, 230.0f, 0.0f);
+			m_pCharacterShadow->SetPositon((330.0f + Group.Y), 850.0f, 0.0f);
 			for (int nLoop = 0; nLoop < 2; nLoop++)
 			{
 				m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
@@ -781,8 +809,14 @@ void CSceneResult::WinDisp(void)
 	m_pLighting->SetTexture();
 	m_pLighting->Disp();
 
+	m_pTextShadow->SetTexture();
+	m_pTextShadow->Disp();
+
 	m_pText->SetTexture();
 	m_pText->Disp();
+
+	m_pCharacterShadow->SetTexture();
+	m_pCharacterShadow->Disp();
 
 	m_pCharacter->SetUvSize(1.0f / 8.0f, 1.0f / 8.0f);
 	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
@@ -799,9 +833,6 @@ void CSceneResult::WinDisp(void)
 		m_pBestScore->SetTexture();
 		m_pBestScore->Disp();
 	}
-
-
-
 }
 
 void CSceneResult::LoseDisp(void)
@@ -809,8 +840,14 @@ void CSceneResult::LoseDisp(void)
 	m_pLighting->SetTexture();
 	m_pLighting->Disp();
 
+	m_pCharacterShadow->SetTexture();
+	m_pCharacterShadow->Disp();
+
 	m_pCharacter->SetTexture();
 	m_pCharacter->Disp();
+
+	m_pTextShadow->SetTexture();
+	m_pTextShadow->Disp();
 
 	m_pText->SetTexture();
 	m_pText->Disp();
@@ -873,7 +910,6 @@ void CSceneResult::NumberDisp(void)
 	}
 
 	m_pNumber->SetNumber(nHitPoint);
-	m_pNumber->SetLend(3);
 	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,475.f,0.0f });
 	m_pNumber->Draw();
