@@ -3,7 +3,7 @@
 #include "iostream"
 #include "vector"
 
-#define MAX_SOUND (21)
+#define MAX_SOUND (23)
 
 #define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
 #define FILENAME_WALKGRASSSE (L"Assets/Sound/walkgrass.wav")
@@ -23,7 +23,9 @@
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
 #define FILENAME_SELECTEBGM (L"Assets/Sound/StageSelect.wav")
-#define FILENAME_BATTLEBGM (L"Assets/Sound/Stage1_Battle.wav")
+#define FILENAME_BATTLEBGM1 (L"Assets/Sound/Stage1_Battle.wav")
+#define FILENAME_BATTLEBGM2 (L"Assets/Sound/Stage2_Battle.wav")
+#define FILENAME_BATTLEBGM3 (L"Assets/Sound/Stage1_Battle.wav")
 #define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
 #define FILENAME_GAMEOVERBGM (L"Assets/Sound/gameover.wav")
 #define FILENAME_GAMECLEARBGM (L"Assets/Sound/gameclear.wav")
@@ -82,8 +84,14 @@ CSoundList::CSoundList(NAME inName)
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);
 		break;
-	case BGM_BATTLE:
-		m_sound = new CSound(FILENAME_BATTLEBGM);
+	case BGM_BATTLE1:
+		m_sound = new CSound(FILENAME_BATTLEBGM1);
+		break;
+	case BGM_BATTLE2:
+		m_sound = new CSound(FILENAME_BATTLEBGM2);
+		break;
+	case BGM_BATTLE3:
+		m_sound = new CSound(FILENAME_BATTLEBGM3);
 		break;
 	case BGM_FEVER:
 		m_sound = new CSound(FILENAME_FEVERBGM);

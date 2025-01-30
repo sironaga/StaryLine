@@ -50,7 +50,20 @@ CSceneGame::CSceneGame(StageType StageNum)
 	:m_bEnd(false)
 {
 	g_ResultData = {};
-	g_GameSound = new CSoundList(BGM_BATTLE);
+	switch (StageNum.StageMainNumber)
+	{
+	case 0:
+		g_GameSound = new CSoundList(BGM_BATTLE1);
+		break;
+	case 1:
+		g_GameSound = new CSoundList(BGM_BATTLE2);
+		break;
+	case 2:
+		g_GameSound = new CSoundList(BGM_BATTLE3);
+		break;
+	default:
+		break;
+	}
 	g_GameSound->SetMasterVolume();
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
 

@@ -108,6 +108,7 @@ void CPause::Update()
 	}
 	if (!m_bPause) return;
 
+	//ポーズ中かつcloseが呼び出されていない場合
 	if (m_bPause && !m_bClose)
 	{
 		
@@ -121,6 +122,7 @@ void CPause::Update()
 				t = 0.1f;
 			}
 		}
+		//ポーズ画面の開く処理
 			for (int i = 0; i < 9; i++)
 			{
 				m_fPos[i].X = OutEasing(t, 0.0f, 285.0f+ 2800.0f, 1.0f)-300.0f;
@@ -134,7 +136,7 @@ void CPause::Update()
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
 	{
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
+		if (GetControllerLStickTriggerForeDirection()== XINPUT_GAMEPAD_DPAD_UP|| WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
 		{
 			
 			
@@ -178,7 +180,7 @@ void CPause::Update()
 				break;
 			}
 		}
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN,VK_DOWN) || IsKeyTrigger('S'))
+		if (GetControllerLStickTriggerForeDirection()==XINPUT_GAMEPAD_DPAD_DOWN||WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN,VK_DOWN) || IsKeyTrigger('S'))
 		{
 			
 			switch (section)
