@@ -13,44 +13,44 @@ enum NAME
 	//プレイヤーが歩く(雪)SE
 	, SE_WALKSNOW
 	//選択SE
-	,SE_SELECT
+	, SE_SELECT
 	//決定SE
-	,SE_DECISION
+	, SE_DECISION
 	//キャンセルSE
-	,SE_CANCEL
+	, SE_CANCEL
 	//図形完成SE
-	,SE_COMPLETE
+	, SE_COMPLETE
 	//各星に着いた時SE
-	,SE_ARRIVAL
+	, SE_ARRIVAL
 	//攻撃音(通常)
 	, SE_NORMALATTACK
 	//,SE_NORMALATTACK
 	//攻撃音(弱点)
 	, SE_WEAKNESSATTACK
 	//筆の出し入れ
-	,SE_WANDONOFF
+	, SE_WANDONOFF
 	//召喚
 	, SE_SUMMON
 	//召喚(敵)
 	, SE_SUMMONENEMY
 	//敗北音
-	,SE_DEATH
+	, SE_DEATH
 	//タイトルBGM
-	,BGM_TITLE
+	, BGM_TITLE
 	//セレクトBGM
 	, BGM_SELECT
 	//バトルBGM
-	,BGM_BATTLE1
+	, BGM_BATTLE1
 	//バトルBGM
 	, BGM_BATTLE2
 	//バトルBGM
 	, BGM_BATTLE3
 	//フィーバー時BGM
-	,BGM_FEVER
+	, BGM_FEVER
 	//ゲームオーバーBGM
-	,BGM_GAMEOVER
+	, BGM_GAMEOVER
 	//ゲームクリアBGM
-	,BGM_GAMECLEAR
+	, BGM_GAMECLEAR
 };
 class CSoundList
 {
@@ -58,7 +58,7 @@ public:
 	CSoundList(NAME inName);
 	~CSoundList();
 
-	
+
 
 	//再生用のサウンドソースを送る
 	IXAudio2SourceVoice* GetSound(bool Loop);

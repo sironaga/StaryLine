@@ -55,10 +55,12 @@ private:
 	static bool m_bSelect;//ステータス選択判定
 	static bool m_bReturn;//ゲームに戻る判定
 	static bool m_bClose;//画面を閉じる
+	static bool m_bSwitch;//アニメーションの切り替え
 
 	static FLOAT3 m_fPos[11];//ポジション
 	static FLOAT3 m_fSize[11];//サイズ
 	static float m_ftime;//計算用
+	static float m_fAnimeTime;//計算用
 	//画面のサイズ
 	enum
 	{
