@@ -37,6 +37,8 @@ enum NAME
 	,SE_DEATH
 	//タイトルBGM
 	,BGM_TITLE
+	//セレクトBGM
+	, BGM_SELECT
 	//バトルBGM
 	,BGM_BATTLE1
 	//バトルBGM

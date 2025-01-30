@@ -83,6 +83,8 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);
+	case BGM_SELECT:
+		m_sound = new CSound(FILENAME_SELECTEBGM);
 		break;
 	case BGM_BATTLE1:
 		m_sound = new CSound(FILENAME_BATTLEBGM1);
