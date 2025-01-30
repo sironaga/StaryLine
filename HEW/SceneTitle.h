@@ -53,6 +53,7 @@ private:
 	DirectX::XMFLOAT2 m_tLiniPos;
 	DirectX::XMFLOAT2 m_tTabPos[4];
 	DirectX::XMFLOAT2 m_tTabSize[4];
+	WORD m_Direction;
 	float m_fSelectScale;
 	bool m_bSelected;
 	bool m_bChange;
