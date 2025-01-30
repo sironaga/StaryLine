@@ -38,12 +38,16 @@ CSceneResult::CSceneResult()
 	{
 		m_pResultSound = new CSoundList(BGM_GAMECLEAR);
 		m_pResultBGM = m_pResultSound->GetSound(true);
+		m_pResultSound->SetMasterVolume();
+		SetVolumeBGM(m_pResultBGM);
 		m_pResultBGM->Start();
 	}
 	else
 	{
 		m_pResultSound = new CSoundList(BGM_GAMEOVER);
 		m_pResultBGM = m_pResultSound->GetSound(true);
+		m_pResultSound->SetMasterVolume();
+		SetVolumeBGM(m_pResultBGM);
 		m_pResultBGM->Start();
 	}
 
@@ -65,6 +69,7 @@ CSceneResult::CSceneResult()
 	}
 
 	m_pResultSelectSound    = new CSoundList(SE_SELECT);
+	m_pResultSelectSound->SetMasterVolume();
 	m_pResultSelectSE = m_pResultSelectSound->GetSound(false);
 
 	m_pNumber = new CNumberUI();
@@ -497,7 +502,7 @@ void CSceneResult::KeyProsess(void)
 					XAUDIO2_BUFFER buffer;
 					buffer = m_pResultSelectSound->GetBuffer(false);
 					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+					if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 					m_pResultSelectSE->Start();
 				}
 				nSelect = 0;
@@ -513,7 +518,7 @@ void CSceneResult::KeyProsess(void)
 					XAUDIO2_BUFFER buffer;
 					buffer = m_pResultSelectSound->GetBuffer(false);
 					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+					if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 					m_pResultSelectSE->Start();
 
 
@@ -536,7 +541,7 @@ void CSceneResult::KeyProsess(void)
 				XAUDIO2_BUFFER buffer;
 				buffer = m_pResultSelectSound->GetBuffer(false);
 				m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-				if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+				if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 				m_pResultSelectSE->Start();
 
 
@@ -555,7 +560,7 @@ void CSceneResult::KeyProsess(void)
 				XAUDIO2_BUFFER buffer;
 				buffer = m_pResultSelectSound->GetBuffer(false);
 				m_pResultSelectSE->SubmitSourceBuffer(&buffer);
-				if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
+				if (m_pResultSelectSE)SetVolumeSE(m_pResultSelectSE);
 				m_pResultSelectSE->Start();
 
 	
