@@ -90,7 +90,7 @@ void COption::Update()
 			m_nSection = MASTER;
 			m_bOptionMode = false;
 		}
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN))m_bSetValue = true;
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) || IsKeyTrigger(VK_SPACE))m_bSetValue = true;
 	}
 }
 
@@ -608,7 +608,7 @@ void COption::SetValue(int kind)
 		break;
 	}
 
-	if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_SPACE))
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_SPACE) || IsKeyTrigger(VK_RETURN))
 	{
 		m_nValue[kind] = m_nTempValue[kind];
 		m_bSetValue = false;
