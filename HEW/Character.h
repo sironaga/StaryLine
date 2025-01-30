@@ -34,6 +34,8 @@ enum class CharacterAnimation
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
+void ModelUpDate(void);
+
 void ReLoadSound();//音の再読み込み
 void SetCharacterMasterVolume();//マスターヴォリュームの設定
 
@@ -135,10 +137,13 @@ protected:
 public:
 	int m_nTargetNumber;			//標的の選別番号
 	bool m_bIsAttack;				//攻撃しているかどうか
+	bool m_bIsDeath;				//死亡しているかどうか
+
 	bool m_bTypeAttack;				//攻撃対象の相性がいいかどうか
 	bool m_bFirstBattlePosSetting;	//戦闘シーンの開始位置に移動したかどうか
 
-	bool m_bIsAnimationFlag[(int)CharacterAnimation::MAX];
+	//bool m_bIsAnimationFlag[(int)CharacterAnimation::MAX];
+
 	/*ダメージログ関係*/
 	bool m_bDamageLogDraw[3];		//ダメージログ描画関連のフラグ　[0]..描画フラグ,[1]..移動変数初期化フラグ,[2]..相性のフラグ
 	DirectX::XMFLOAT3 m_tDamageLogPos;
@@ -172,7 +177,9 @@ protected:
 
 
 protected:
-	Model* m_pModel;
+	Model* m_pModel[(int)CharacterAnimation::MAX];
+	CharacterAnimation m_eModelNo;
+
 	IXAudio2SourceVoice* m_pSourceNormalAttack;//スピーカー
 	IXAudio2SourceVoice* m_pSourceWeaknessAttack;//スピーカー
 	
@@ -200,6 +207,9 @@ public:
 	void SetStellaBuffFlag(bool IsBuff) { m_bStellaBuff = IsBuff; }
 	//死亡エフェクトの再生
 	//void PlayDeathEffect(void);
+
+	//モデル番号のSet
+	void SetModelNo(CharacterAnimation No) { m_eModelNo = No; }
 
 	//索敵当たり判定のGet
 	Collision GetSearchCollision(void) { return m_tSearchCollision; }
