@@ -22,7 +22,7 @@ Rank CSceneResult::StageRank[MAX_STAGE];
 // --- 初期化
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
-	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false)
+	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false),nStage(StageLevel.StageSubNumber)
 {
 	//ResultGameData.bWin = 0;
 	// --- テクスチャの読み込み
@@ -288,7 +288,10 @@ void CSceneResult::Init_Result()
 // --- リザルト情報の設定
 void CSceneResult::InResultData(ResultGameInfo InData)
 {
-	InData.nAverageSpwn = InData.nSpawnCount / InData.nDrawCount;
+	if (InData.nSpawnCount > 0 && InData.nDrawCount > 0)
+	{
+		InData.nAverageSpwn = InData.nSpawnCount / InData.nDrawCount;
+	}
 	ResultGameData = InData;
 }
 // --- ステージ情報を設定
@@ -788,8 +791,8 @@ void CSceneResult::WinDisp(void)
 	m_pCharacter->SetUvSize(1.0f, 1.0f);
 	m_pCharacter->SetUvPos(0.0f, 0.0f);
 
-	m_pRank[StageRank[StageLevel.StageSubNumber]]->SetTexture();
-	m_pRank[StageRank[StageLevel.StageSubNumber]]->Disp();
+	m_pRank[StageRank[nStage]]->SetTexture();
+	m_pRank[StageRank[nStage]]->Disp();
 
 	if (bBestScore)
 	{

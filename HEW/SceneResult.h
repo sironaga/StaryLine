@@ -78,7 +78,7 @@ private:
 	int nSelect;
 	int nPush[2]; // ボタンを押した時
 	int nLoopAnimeCount; // --- キャラクター用ループカウンター
-
+	int nStage;			 // --- 現在のステージ番号の保管
 	// - Number用
 	int nMinutes;
 	int nSeconds;
@@ -86,7 +86,7 @@ private:
 	int nSpawn;
 	int nAverage;
 	int nDispCount;
-
+	
 	int nScore;
 
 	// - float
