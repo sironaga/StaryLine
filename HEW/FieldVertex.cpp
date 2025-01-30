@@ -2022,7 +2022,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								{
 									Shapes_type_Angle[NowShapes][0] = 4;//’·•ûŒ`
 									Shapes_type_Angle[NowShapes][1] = 0;
-									if (Length[0][0] == 0)
+									if (Length[0][1] == 0)
 									{
 										Shapes_Length[NowShapes][0] = Length[0][0] / 15.0f;
 										Shapes_Length[NowShapes][1] = Length[1][0] / 15.0f;
