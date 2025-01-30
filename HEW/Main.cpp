@@ -7,7 +7,7 @@
 #include "Sprite.h"
 #include "ShaderList.h"
 #include "SpriteDrawer.h"
-
+#include"SceneResult.h"
 #include "Input.h"
 #include "Controller.h"
 
@@ -70,6 +70,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	LibEffekseer::Init(GetDevice(), GetContext());
 	InitInput();
 	ShaderList::Init();
+	CSceneResult::Init_Result();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 	srand(timeGetTime());
 
@@ -90,8 +91,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pScene->SetGameDirection(g_pDirection);
 	g_nEvent = NOMAL_CAMERA;
 
-	
-	
+	// --- Staticデータの初期化
+
+
 	CPause::Init();
 	CPause::SetOption(g_pOption);
 	g_pScene->SethWnd(hWnd);

@@ -7,6 +7,17 @@
 #include"NumberUI.h"
 #include "SoundList.h"
 #include"Conection_Sys.h"
+#include"StageSelect.h"
+
+
+enum Rank
+{
+	S_RANK,
+	A_RANK,
+	B_RANK,
+	C_RANK,
+	NONE_RANK,
+};
 
 class CSceneResult : public CScene
 {
@@ -20,13 +31,15 @@ public:
 	virtual void Draw()override;
 
 	// --- データの受け渡し
+	static void Init_Result();
 	static void InResultData(ResultGameInfo InData);
 	static void InStageLevel(StageType InLevel);
 	static void InBestScore(int InScore, StageType InStage);
 	static int OutBestScore(StageType InStage);
 	static bool GetStageClear(int nStage);
 	static void SetStageClear(int nStage, bool bWin);
-
+	static Rank GetRankData(int nStage);
+	static void SetRankData(int nStage, Rank SetRank);
 private:
 	// --- 処理
 	void LoadTexture(void);
@@ -44,51 +57,56 @@ private:
 
 private:
 	// --- 描画情報
-	SpriteEx*	m_pHitPoint;
-	SpriteEx*	m_pSelect;
-	SpriteEx*	m_pShadow;
-	SpriteEx*	m_pStageSelect[2];
-	SpriteEx*	m_pSummonData;
-	SpriteEx*	m_pUnderBar;
-	SpriteEx*	m_pBack;
-	SpriteEx*	m_pText;
-	SpriteEx*	m_pCharacter;
-	SpriteEx*	m_pLighting;
-	SpriteEx*	m_pTextShadow;
-	SpriteEx*	m_pClearTime;
-	SpriteEx*	m_pNextUI[2];
-	SpriteEx*	m_pStar;
-	SpriteEx*	m_pScore;
-	SpriteEx*	m_pBestScore;
-	SpriteEx*	m_pPiyo;
-	CNumberUI*	m_pNumber;
-	SpriteEx*	m_pRankIco[4];
+	SpriteEx* m_pBackGround;		// --- 背景
+	SpriteEx* m_pUnberUI;			// --- ボタンUI
+	SpriteEx* m_pStageSelectUI[2];	// --- ステージセレクトUI
+	SpriteEx* m_pNextUI[2];			// --- リトライ or 次のステージ
+	SpriteEx* m_pSelectUI;			// --- 選択中UI
+	SpriteEx* m_pResultData;		// --- 勝利時に表示されるリザルト結果
+	SpriteEx* m_pLighting;			// --- 光
+	SpriteEx* m_pText;				// --- テキスト
+	SpriteEx* m_pRank[NONE_RANK];   // --- Rank
+	SpriteEx* m_pCharacter;			// --- リリー
+
+	CNumberUI* m_pNumber;		// --- 数字の描画
 
 	// --- 変数
 	
 	// - int
 	int nAnimationTimer;
 	int nAnimationFrame;
-	int nScore;
 	int nSelect;
-
-	int nMM = 0;
-	int nSS = 0;
-	int nHp = 0;
-	int nSpawn = 0;
-	int nAvS = 0;
-	int nDisp = 0;
-	int nnScore = 0;
 	int nPush[2]; // ボタンを押した時
+	int nLoopAnimeCount; // --- キャラクター用ループカウンター
+
+	// - Number用
+	int nMinutes;
+	int nSeconds;
+	int nHitPoint;
+	int nSpawn;
+	int nAverage;
+	int nDispCount;
+
+	int nScore;
+
 	// - float
-	float fPiyoA;
-	FLOAT2 fUvPos;
+	FLOAT2 fUvPos;	// UVのposition
+
+	// - WinGroup
+	FLOAT2 Group;	  // --- 全体のposition管理に使用
+
 	// - bool
-	bool bAnimation;
-	bool bWorldClear;
-	bool bScore;
+	bool bWorldClear; // --- ? - 3をClearしたか判定
+	bool bAnimation;  // --- アニメーションを実行するかしないか
+	bool bEnter;	  // --- Enterが押されたか判定
+	bool bLoopAnime;  // --- キャラクター用ループAnimation
 	bool bBestScore;
-	bool bEnter;
+
+
+	// - Number用Bool
+	bool bTimeProsess;
+	bool bHPProsess;
+	bool bSpwanProsess;
 
 	// --- サウンド
 	CSoundList* m_pResultSound;
@@ -99,6 +117,7 @@ private:
 	// --- スタティック系
 	static StageType StageLevel; 
 	static ResultGameInfo ResultGameData;
-	static int nBestScore[8];
-	static bool bClearState[8];
+	static int nBestScore[MAX_STAGE];
+	static bool bClearState[MAX_STAGE];
+	static Rank StageRank[MAX_STAGE];
 };
