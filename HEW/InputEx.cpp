@@ -99,29 +99,23 @@ WORD GetControllerLStickTriggerForeDirection()
 {
 	static WORD direction = NULL;
 	static WORD oldDirection = NULL;
+	static WORD returnDirection = NULL;
 	DirectX::XMFLOAT2 pow = CGetLStick();
 	
 	oldDirection = direction;
 
-	if (pow.x < DEADZONE && pow.x > -DEADZONE &&
-		pow.y < DEADZONE && pow.y > -DEADZONE)
-	{
-		direction = NULL;
-		return direction;
-	}
-
 	if (pow.x >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_RIGHT;
 	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_LEFT;
 	else if (pow.y >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_UP;
-	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
+	else if (pow.y <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
+	else direction = NULL;
 
-	if (oldDirection == direction)
+	if (oldDirection != returnDirection)
 	{
-		direction = NULL;
-		return direction;
+		returnDirection = direction;
+		return returnDirection;
 	}
-
-	return direction;
+	else return NULL;
 }
 
 WORD GetControllerLStickPressForeDirection()
@@ -146,7 +140,7 @@ WORD GetControllerLStickPressForeDirection()
 	if (pow.x >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_RIGHT;
 	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_LEFT;
 	else if (pow.y >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_UP;
-	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
+	else if (pow.y <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
 
 	if (oldDirection == direction)
 	{
