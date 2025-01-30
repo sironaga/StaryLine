@@ -98,24 +98,30 @@ DIRECTION WASDKeyBorad()
 WORD GetControllerLStickTriggerForeDirection()
 {
 	static WORD direction = NULL;
-	static WORD oldDirection = NULL;
-	static WORD returnDirection = NULL;
+	static WORD prevDirection = NULL;
+	static bool directionCheck = false;
+
 	DirectX::XMFLOAT2 pow = CGetLStick();
 	
-	oldDirection = direction;
+	if (pow.x >= DEADZONE)	prevDirection = XINPUT_GAMEPAD_DPAD_RIGHT;
+	else if (pow.x <= -DEADZONE)prevDirection = XINPUT_GAMEPAD_DPAD_LEFT;
+	else if (pow.y >= DEADZONE)prevDirection = XINPUT_GAMEPAD_DPAD_UP;
+	else if (pow.y <= -DEADZONE)prevDirection = XINPUT_GAMEPAD_DPAD_DOWN;
+	else prevDirection = XUSER_INDEX_ANY;
 
-	if (pow.x >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_RIGHT;
-	else if (pow.x <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_LEFT;
-	else if (pow.y >= DEADZONE)direction = XINPUT_GAMEPAD_DPAD_UP;
-	else if (pow.y <= -DEADZONE)direction = XINPUT_GAMEPAD_DPAD_DOWN;
-	else direction = NULL;
 
-	if (oldDirection != returnDirection)
+	if (!directionCheck)
 	{
-		returnDirection = direction;
-		return returnDirection;
+		direction = prevDirection;
+		directionCheck = true;
 	}
-	else return NULL;
+	else
+	{
+		if (prevDirection != direction) directionCheck = false;
+		return XUSER_INDEX_ANY;
+	}
+
+	return direction;
 }
 
 WORD GetControllerLStickPressForeDirection()
