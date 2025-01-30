@@ -91,8 +91,11 @@ CSceneResult::CSceneResult()
 	char buf[255];
 	sprintf(buf, "%d", nScore);
 
-	SetIP(SAVER_IP);
-	SendData(buf);
+	if (StageLevel.StageSubNumber == 8)
+	{
+		SetIP(SAVER_IP);
+		SendData(buf);
+	}
 
 	if (nBestScore[StageLevel.StageSubNumber] <= 1999)
 	{
