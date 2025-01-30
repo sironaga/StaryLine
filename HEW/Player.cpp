@@ -458,14 +458,14 @@ void CPlayer::PlayerInput()
 	if (tControllerMove.y <= DEADZONE && tControllerMove.y >= -DEADZONE) tControllerMove.y = 0.0f;
 
 	/* 目的地の更新 */
-	if ((tControllerMove.x > 0.0f && tControllerMove.y > 0.0f)) m_eDestination = UPRIGHT;
-	else if ((tControllerMove.x > 0.0f && tControllerMove.y < 0.0f)) m_eDestination = DOWNRIGHT;
-	else if ((tControllerMove.x < 0.0f && tControllerMove.y < 0.0f)) m_eDestination = DOWNLEFT;
-	else if ((tControllerMove.x < 0.0f && tControllerMove.y > 0.0f)) m_eDestination = UPLEFT;
-	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f))m_eDestination = UP;
-	else if ((tControllerMove.x > 0.0f && tControllerMove.y == 0.0f)) m_eDestination = RIGHT;
-	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f)) m_eDestination = DOWN;
-	else if ((tControllerMove.x < 0.0f && tControllerMove.y == 0.0f)) m_eDestination = LEFT;
+	if ((tControllerMove.x > 0.0f && tControllerMove.y > 0.0f)		|| CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT) && CGetButtons(XINPUT_GAMEPAD_DPAD_UP))	m_eDestination = UPRIGHT;
+	else if ((tControllerMove.x > 0.0f && tControllerMove.y < 0.0f) || CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT) && CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN)) m_eDestination = DOWNRIGHT;
+	else if ((tControllerMove.x < 0.0f && tControllerMove.y < 0.0f)	|| CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT) && CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN))	m_eDestination = DOWNLEFT;
+	else if ((tControllerMove.x < 0.0f && tControllerMove.y > 0.0f)	|| CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT) && CGetButtons(XINPUT_GAMEPAD_DPAD_UP))	m_eDestination = UPLEFT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y > 0.0f)|| CGetButtons(XINPUT_GAMEPAD_DPAD_UP))												m_eDestination = UP;
+	else if ((tControllerMove.x > 0.0f && tControllerMove.y == 0.0f)|| CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT))											m_eDestination = RIGHT;
+	else if ((tControllerMove.x == 0.0f && tControllerMove.y < 0.0f)|| CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN))											m_eDestination = DOWN;
+	else if ((tControllerMove.x < 0.0f && tControllerMove.y == 0.0f)|| CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT))											m_eDestination = LEFT;
 	else m_eDestination = DEFAULT;
 
 	switch (m_eDestination)
