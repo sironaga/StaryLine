@@ -1430,7 +1430,7 @@ void CBattle::Alive(void)
 			//敵の体力が残っているかどうか
 			if (m_pEnemy[l]->GetHp() <= 0.0f)
 			{
-				m_pAlly[l]->m_bIsAnimationFlag[(int)CharacterAnimation::Death] = true;
+				m_pEnemy[l]->m_bIsAnimationFlag[(int)CharacterAnimation::Death] = true;
 				//ステータスを死亡状態にする
 				m_pEnemy[l]->SetStatus(St_Death);
 				//m_pEnemy[l]->PlayDeathEffect();
