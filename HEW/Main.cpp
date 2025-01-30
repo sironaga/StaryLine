@@ -70,6 +70,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	LibEffekseer::Init(GetDevice(), GetContext());
 	InitInput();
 	ShaderList::Init();
+	CSceneResult::Init_Result();
 	InitSpriteDrawer(GetDevice(), GetContext(), SCREEN_WIDTH, SCREEN_HEIGHT);
 	srand(timeGetTime());
 
@@ -85,13 +86,13 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	g_pOption = new COption();
 	// シーン作成 
-	g_pScene = new CSceneResult;
+	g_pScene = new CSceneTitle(g_pOption);
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 	g_pScene->SetGameDirection(g_pDirection);
 	g_nEvent = NOMAL_CAMERA;
 
 	// --- Staticデータの初期化
-	CSceneResult::Init_Result();
+
 
 	CPause::Init();
 	CPause::SetOption(g_pOption);

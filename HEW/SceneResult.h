@@ -77,16 +77,36 @@ private:
 	int nAnimationFrame;
 	int nSelect;
 	int nPush[2]; // ボタンを押した時
+	int nLoopAnimeCount; // --- キャラクター用ループカウンター
+
+	// - Number用
+	int nMinutes;
+	int nSeconds;
+	int nHitPoint;
+	int nSpawn;
+	int nAverage;
+	int nDispCount;
+
+	int nScore;
 
 	// - float
 	FLOAT2 fUvPos;	// UVのposition
+
 	// - WinGroup
-	FLOAT2 Group;
+	FLOAT2 Group;	  // --- 全体のposition管理に使用
 
 	// - bool
 	bool bWorldClear; // --- ? - 3をClearしたか判定
 	bool bAnimation;  // --- アニメーションを実行するかしないか
 	bool bEnter;	  // --- Enterが押されたか判定
+	bool bLoopAnime;  // --- キャラクター用ループAnimation
+	bool bBestScore;
+
+
+	// - Number用Bool
+	bool bTimeProsess;
+	bool bHPProsess;
+	bool bSpwanProsess;
 
 	// --- サウンド
 	CSoundList* m_pResultSound;

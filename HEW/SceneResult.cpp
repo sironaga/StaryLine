@@ -21,9 +21,10 @@ Rank CSceneResult::StageRank[MAX_STAGE];
 
 // --- 初期化
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{},Group{1920.0f,660.0f}
+	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
+	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false)
 {
-	ResultGameData.bWin = 1;
+	ResultGameData.bWin = 0;
 	// --- テクスチャの読み込み
 	LoadTexture();
 	
@@ -69,10 +70,68 @@ CSceneResult::CSceneResult()
 	m_pNumber = new CNumberUI();
 	Conect_Init();
 
+	if (ResultGameData.nAverageSpwn <= 0 && ResultGameData.nDrawCount <= 0 && ResultGameData.nHitPoint <= 0 && ResultGameData.nSpawnCount <= 0)
+	{
+		ResultGameData.nTime = 444;
+		ResultGameData.nHitPoint = 444;
+		ResultGameData.nSpawnCount = 444;
+		ResultGameData.nDrawCount = 444;
+		ResultGameData.nAverageSpwn = 444;
+	}
+
+	nScore = (sqrt(ResultGameData.nSpawnCount) * 100) + (5000 / ResultGameData.nTime + 1) + (ResultGameData.nAverageSpwn * 150) + (ResultGameData.nHitPoint * 5);
+
+
+	if (nBestScore[StageLevel.StageSubNumber] < nScore)
+	{
+		nBestScore[StageLevel.StageSubNumber] = nScore;
+		bBestScore = true;
+	}
+
+	char buf[255];
+	sprintf(buf, "%d", nScore);
+
+	SetIP(SAVER_IP);
+	SendData(buf);
+
+	if (nBestScore[StageLevel.StageSubNumber] <= 1999)
+	{
+		StageRank[StageLevel.StageSubNumber] = C_RANK;
+	}else
+		if (nBestScore[StageLevel.StageSubNumber] <= 3999)
+		{
+			StageRank[StageLevel.StageSubNumber] = B_RANK;
+		}
+		else
+			if (nBestScore[StageLevel.StageSubNumber] <= 5999)
+			{
+				StageRank[StageLevel.StageSubNumber] = A_RANK;
+			}
+			else
+			{
+				StageRank[StageLevel.StageSubNumber] = S_RANK;
+			}
 }
 CSceneResult::~CSceneResult()
 {
-
+	if (m_pResultBGM)
+	{
+		m_pResultBGM->Stop();
+		m_pResultBGM = nullptr;
+	}
+	if (m_pResultSound)
+	{
+		SAFE_DELETE(m_pResultSound);
+	}
+	if (m_pResultSelectSE)
+	{
+		m_pResultSelectSE->Stop();
+		m_pResultSelectSE = nullptr;
+	}
+	if (m_pResultSelectSound)
+	{
+		SAFE_DELETE(m_pResultSelectSound);
+	}
 }
 
 // --- 全体の更新処理
@@ -118,11 +177,11 @@ void CSceneResult::Draw()
 	}
 
 	// UI系
-	m_pStageSelectUI[nPush[1]]->SetTexture();
-	m_pStageSelectUI[nPush[1]]->Disp();
+	m_pStageSelectUI[nPush[0]]->SetTexture();
+	m_pStageSelectUI[nPush[0]]->Disp();
 
-	m_pNextUI[nPush[0]]->SetTexture();
-	m_pNextUI[nPush[0]]->Disp();
+	m_pNextUI[nPush[1]]->SetTexture();
+	m_pNextUI[nPush[1]]->Disp();
 
 	m_pSelectUI->SetTexture();
 	m_pSelectUI->Disp();
@@ -137,11 +196,11 @@ void CSceneResult::Init_Result()
 	StageLevel.StageMainNumber	= 0;
 	StageLevel.StageSubNumber	= 0;
 	ResultGameData.bWin			= true;
-	ResultGameData.nAverageSpwn = 0;
-	ResultGameData.nDrawCount	= 0;
-	ResultGameData.nHitPoint	= 0;
-	ResultGameData.nSpawnCount	= 0;
-	ResultGameData.nTime		= 0;
+	ResultGameData.nAverageSpwn = 1;
+	ResultGameData.nDrawCount	= 1;
+	ResultGameData.nHitPoint	= 1;
+	ResultGameData.nSpawnCount	= 1;
+	ResultGameData.nTime		= 1;
 	for (int nLoop = 0; nLoop < MAX_STAGE; nLoop++)
 	{
 		nBestScore[nLoop]	 = 0;
@@ -153,6 +212,7 @@ void CSceneResult::Init_Result()
 // --- リザルト情報の設定
 void CSceneResult::InResultData(ResultGameInfo InData)
 {
+	InData.nAverageSpwn = InData.nSpawnCount / InData.nDrawCount;
 	ResultGameData = InData;
 }
 // --- ステージ情報を設定
@@ -221,10 +281,10 @@ void CSceneResult::LoadTexture(void)
 	{
 		m_pNextUI[0] = new SpriteEx("Assets/Texture/Result/UI/Result_05.png");
 		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_06.png");
+		m_pText = new SpriteEx("Assets/Texture/Result/Text/Result_Lose_Text_top.png");
+		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Lose_Light.png");
 
-		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Win_Light.png");
-
-		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Result_Linie_Win_Sprite.png");
+		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Line_Lose.png");
 	}
 
 
@@ -286,7 +346,34 @@ void CSceneResult::DefaultSetPos(void)
 	}
 	else
 	{
+		for (int nLoop = 0; nLoop < 2; nLoop++)
+		{
+			m_pStageSelectUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pStageSelectUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pStageSelectUI[nLoop]->SetPositon(960.0f, 900.0f, 0.0f);
 
+			m_pNextUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+			m_pNextUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
+			m_pNextUI[nLoop]->SetPositon(960.0f, 790.0f, 0.0f);
+		}
+
+		m_pSelectUI->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pSelectUI->SetSize(670.0f * 1.1f, 107.0f * 1.1f, 0.0f);
+		m_pSelectUI->SetPositon(960.0f, 900.0f, 0.0f);
+
+
+		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pLighting->SetSize(969 * 1.1f, 642 * 1.1f, 0.0f);
+		m_pLighting->SetPositon(960, 520.0f, 0.0f);
+
+		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacter->SetSize(705, 430, 0.0f);
+		m_pCharacter->SetPositon(960, 620.0f, 0.0f);
+
+
+		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pText->SetSize(913.0f, 145.0f, 0.0f);
+		m_pText->SetPositon(960.0f , 100.0f, 0.0f);
 	}
 
 }
@@ -311,9 +398,6 @@ void CSceneResult::KeyProsess(void)
 					m_pResultSelectSE->SubmitSourceBuffer(&buffer);
 					if (m_pResultSelectSE)SetVolumeBGM(m_pResultSelectSE);
 					m_pResultSelectSE->Start();
-
-
-				
 				}
 				nSelect = 0;
 			}
@@ -456,8 +540,14 @@ void CSceneResult::AnimationManagemer(void)
 
 	if (nSelect)
 	{
-		m_pSelectUI->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
-
+		if (ResultGameData.bWin)
+		{
+			m_pSelectUI->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
+		}
+		else
+		{
+			m_pSelectUI->SetPositon(960.0f, 790.0f, 0.0f);
+		}
 		for (int nLoop = 0; nLoop < 2; nLoop++)
 		{
 			m_pStageSelectUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
@@ -466,8 +556,14 @@ void CSceneResult::AnimationManagemer(void)
 	}
 	else
 	{
-		m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
-
+		if (ResultGameData.bWin)
+		{
+			m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
+		}
+		else
+		{
+			m_pSelectUI->SetPositon(960.0f, 900.0f, 0.0f);
+		}
 		for (int nLoop = 0; nLoop < 2; nLoop++)
 		{
 			m_pStageSelectUI[nLoop]->SetSize(608.0f * 1.1f, 76.0f * 1.1f, 0.0f);
@@ -515,7 +611,6 @@ void CSceneResult::SetCamData(void)
 		m_pNextUI[nLoop]->SetView(Get2DView());
 		m_pNextUI[nLoop]->SetProjection(Get2DProj());
 	}
-
 }
 // --- 描画アニメーション
 void CSceneResult::WinAnimation(void)
@@ -528,24 +623,40 @@ void CSceneResult::WinAnimation(void)
 		{
 			nUvPos = 63;
 
-			Group.Y -= (InEasing(nAnimationFrame * 0.1f,0.0f,1.0f,1.0f));
-			Group.X -= (InEasing(nAnimationFrame * 0.15f, 0.0f, 1.0f, 1.0f));
-			if (Group.Y < 0)Group.Y = 0;
-			if (Group.X < 0)Group.X = 0;
+			float fAnimeFrame = nAnimationFrame - 63;
+			// --- イージング速度の変更
+			fAnimeFrame = fAnimeFrame * 0.04f;
+			if (fAnimeFrame > 1.0f)fAnimeFrame = 1.0f;
 
+			Group.Y = (Easing39(fAnimeFrame,0.1f,0.9f) * 600.0f) - 600.0f;
+			Group.X = (Easing39(fAnimeFrame,0.1f,0.9f) * 1920.0f) - 1920.0f;
+	
 			// --- positionの再設定
 			m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
 			for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)m_pRank[nLoop]->SetPositon(960.0f + Group.X, 520.0f, 0.0f);
 			m_pText->SetPositon(960.0f + Group.X, 100.0f, 0.0f);
 			m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
 			m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
-			m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
 			for (int nLoop = 0; nLoop < 2; nLoop++)
 			{
 				m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
 				m_pNextUI[nLoop]->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
 			}
+			// --- Animation Loop
+			if (bLoopAnime)
+			{
+				nLoopAnimeCount--;
+				if (nLoopAnimeCount < 1)bLoopAnime = false;
 
+			}
+			else
+			{
+				nLoopAnimeCount++;
+				if (nLoopAnimeCount > 15)bLoopAnime = true;
+			}
+
+
+			nUvPos -= nLoopAnimeCount;
 
 		}
 		else
@@ -569,7 +680,12 @@ void CSceneResult::WinAnimation(void)
 
 void CSceneResult::LoseAnimation(void)
 {
-
+	if (bAnimation)
+	{
+		float fAnime;
+		fAnime = nAnimationFrame * 0.02f;
+		m_pCharacter->SetPositon(960, 620.0f - Easing39(fAnime,0.3f,0.9f) * 1920.0f + 1920.0f , 0.0f);
+	}
 }
 
 // --- 描画
@@ -581,23 +697,125 @@ void CSceneResult::WinDisp(void)
 	m_pText->SetTexture();
 	m_pText->Disp();
 
-	m_pRank[A_RANK]->SetTexture();
-	m_pRank[A_RANK]->Disp();
-
 	m_pCharacter->SetUvSize(1.0f / 8.0f, 1.0f / 8.0f);
 	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
 	m_pCharacter->SetTexture();
 	m_pCharacter->Disp();
 	m_pCharacter->SetUvSize(1.0f, 1.0f);
 	m_pCharacter->SetUvPos(0.0f, 0.0f);
+
+	m_pRank[StageRank[StageLevel.StageSubNumber]]->SetTexture();
+	m_pRank[StageRank[StageLevel.StageSubNumber]]->Disp();
+
 }
 
 void CSceneResult::LoseDisp(void)
 {
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
 
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+
+	m_pText->SetTexture();
+	m_pText->Disp();
 }
 
 void CSceneResult::NumberDisp(void)
 {
+	
+	m_pNumber->SetArrangment(CNumberUI::Left_AL);
+	m_pNumber->SetNumberColor(2);
+
+	int nMin, nSec;
+	nMin = nSec = 0;
+
+	nMin = ResultGameData.nTime / 60;
+	nSec = ResultGameData.nTime % 60;
+
+	nMinutes++;
+	nSeconds++;
+
+	if (nMinutes > nMin)
+	{
+		nMinutes = nMin;
+		bTimeProsess = true;
+	}
+	else
+	{
+		bTimeProsess = false;
+	}
+	if (nSeconds > nSec)
+	{
+		nSeconds = nSec;
+		bTimeProsess = true;
+	}
+	else
+	{
+		bTimeProsess = false;
+	}
+		
+	m_pNumber->SetNumber(nMinutes);
+	m_pNumber->SetLend(2);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1790.0f + Group.X,390.f,0.0f });
+	m_pNumber->Draw();
+
+	m_pNumber->SetNumber(nSeconds);
+	m_pNumber->SetLend(2);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1880.0f + Group.X,390.f,0.0f });
+	m_pNumber->Draw();
+
+	if (bTimeProsess)
+	{
+		nHitPoint++;
+		if (nHitPoint > ResultGameData.nHitPoint)
+		{
+			bHPProsess = true;
+			nHitPoint = ResultGameData.nHitPoint;
+		}
+	}
+
+	m_pNumber->SetNumber(nHitPoint);
+	m_pNumber->SetLend(3);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,475.f,0.0f });
+	m_pNumber->Draw();
+
+	if (bHPProsess)
+	{
+		nSpawn++;
+		if (nSpawn > ResultGameData.nSpawnCount)
+		{
+			bSpwanProsess = true;
+			nSpawn = ResultGameData.nSpawnCount;
+		}
+	}
+
+	m_pNumber->SetNumber(nSpawn);
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,555.f,0.0f });
+	m_pNumber->Draw();
+
+	if (bSpwanProsess)
+	{
+		nAverage++;
+		nDispCount++;
+		if (nAverage > ResultGameData.nAverageSpwn)nAverage = ResultGameData.nAverageSpwn;
+		if (nDispCount > ResultGameData.nDrawCount)nDispCount = ResultGameData.nDrawCount;
+	}
+
+	m_pNumber->SetNumber(nAverage);
+	m_pNumber->SetScale({ 45.0f,45.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,615.f,0.0f });
+	m_pNumber->Draw();
+
+	m_pNumber->SetNumber(nDispCount);
+	m_pNumber->SetScale({ 45.0f,45.0f,0.0f });
+	m_pNumber->SetPos({ 1820.0f + Group.X,650.f,0.0f });
+	m_pNumber->Draw();
+
+
 
 }
