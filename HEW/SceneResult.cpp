@@ -132,6 +132,76 @@ CSceneResult::~CSceneResult()
 	{
 		SAFE_DELETE(m_pResultSelectSound);
 	}
+
+	if (m_pBackGround)
+	{
+		delete m_pBackGround;
+		m_pBackGround = nullptr;
+	}
+
+	if (m_pUnberUI)
+	{
+		delete m_pUnberUI;
+		m_pUnberUI = nullptr;
+	}
+
+	for (int nLoop = 0; nLoop < 2; nLoop++)
+	{
+		if ((m_pStageSelectUI[nLoop]))
+		{
+			delete m_pStageSelectUI[nLoop];
+			m_pStageSelectUI[nLoop] = nullptr;
+		}
+		if (m_pNextUI[nLoop])
+		{
+			delete m_pNextUI[nLoop];
+			m_pNextUI[nLoop] = nullptr;
+		}
+	}
+	if (m_pSelectUI)
+	{
+		delete m_pSelectUI;
+		m_pSelectUI = nullptr;
+	}
+	if (m_pResultData)
+	{
+		delete m_pResultData;
+		m_pResultData = nullptr;
+	}
+	if (m_pLighting)
+	{
+		delete  m_pLighting;
+		m_pLighting = nullptr;
+	}
+	if (m_pText)
+	{
+		delete m_pText;
+		m_pText = nullptr;
+	}
+	for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
+	{
+		if (m_pRank[nLoop])
+		{
+			delete m_pRank[nLoop];
+			m_pRank[nLoop] = nullptr;
+		}
+	}
+	if (m_pCharacter)
+	{
+		delete m_pCharacter;
+		m_pCharacter = nullptr;
+	}
+	if (m_pNumber)
+	{
+		delete m_pNumber;
+		m_pNumber = nullptr;
+	}
+	if (m_pBestScore)
+	{
+		delete m_pBestScore;
+		m_pBestScore = nullptr;
+	}
+
 }
 
 // --- ‘S‘Ì‚ÌXVˆ—
@@ -265,6 +335,7 @@ void CSceneResult::LoadTexture(void)
 	m_pRank[A_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_A.png");
 	m_pRank[B_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_B.png");
 	m_pRank[C_RANK]		= new SpriteEx("Assets/Texture/Result/Rank/Rank_C.png");
+	m_pBestScore		= new SpriteEx("Assets/Texture/Result/Text/BestScore.png");
 
 	if (ResultGameData.bWin)
 	{
@@ -336,12 +407,16 @@ void CSceneResult::DefaultSetPos(void)
 		{
 			m_pRank[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pRank[nLoop]->SetSize(445.0f, 446.0f, 0.0f);
-			m_pRank[nLoop]->SetPositon(960.0f + Group.X, 520.0f, 0.0f);
+			m_pRank[nLoop]->SetPositon(960.0f + Group.X, 450.0f, 0.0f);
 		}
 
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pCharacter->SetSize(8192.0f / 8.0f, 8192 / 8.0f,0.0f);
 		m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
+
+		m_pBestScore->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pBestScore->SetSize(1302.0f * 0.3f, 368.0f * 0.3f, 0.0f);
+		m_pBestScore->SetPositon(1500.0f + Group.X, 230.0f, 0.0f);
 
 	}
 	else
@@ -596,6 +671,8 @@ void CSceneResult::SetCamData(void)
 	m_pCharacter->SetView(Get2DView());
 	m_pCharacter->SetProjection(Get2DProj());
 
+	m_pBestScore->SetView(Get2DView());
+	m_pBestScore->SetProjection(Get2DProj());
 
 	for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
 	{
@@ -633,10 +710,11 @@ void CSceneResult::WinAnimation(void)
 	
 			// --- position‚ÌÄÝ’è
 			m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
-			for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)m_pRank[nLoop]->SetPositon(960.0f + Group.X, 520.0f, 0.0f);
+			for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)m_pRank[nLoop]->SetPositon(960.0f + Group.X, 450.0f, 0.0f);
 			m_pText->SetPositon(960.0f + Group.X, 100.0f, 0.0f);
 			m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
 			m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
+			m_pBestScore->SetPositon(1500.0f + Group.X, 230.0f, 0.0f);
 			for (int nLoop = 0; nLoop < 2; nLoop++)
 			{
 				m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
@@ -706,6 +784,14 @@ void CSceneResult::WinDisp(void)
 
 	m_pRank[StageRank[StageLevel.StageSubNumber]]->SetTexture();
 	m_pRank[StageRank[StageLevel.StageSubNumber]]->Disp();
+
+	if (bBestScore)
+	{
+		m_pBestScore->SetTexture();
+		m_pBestScore->Disp();
+	}
+
+
 
 }
 
@@ -817,8 +903,7 @@ void CSceneResult::NumberDisp(void)
 	m_pNumber->Draw();
 
 	m_pNumber->SetNumber(nScore);
-	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetScale({ 150.0f,150.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,300.0f,0.0f });
 	m_pNumber->Draw();
-
 }

@@ -67,7 +67,7 @@ private:
 	SpriteEx* m_pText;				// --- テキスト
 	SpriteEx* m_pRank[NONE_RANK];   // --- Rank
 	SpriteEx* m_pCharacter;			// --- リリー
-
+	SpriteEx* m_pBestScore;			// --- ベストスコア
 	CNumberUI* m_pNumber;		// --- 数字の描画
 
 	// --- 変数
