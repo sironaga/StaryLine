@@ -48,6 +48,8 @@ enum E_TITLE_ANIME
 
 }g_eTitleAnim;
 
+ID3D11SamplerState* g_pTitleSPSampler;
+
 CSceneTitle::CSceneTitle(COption* pOption)
 	: m_SelectPos{735.0f, 130.0f}, m_bSelected(false)
 	, m_DecisionPos{ SCREEN_WIDTH / 2.0f, 100.0f }
@@ -131,6 +133,16 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	{
 		m_pStarEfc[i] = new CEffectManager_sp(m_pEffect[(int)Effect::Star]);
 	}
+
+	// ƒTƒ“ƒvƒ‰[
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	HRESULT hr = GetDevice()->CreateSamplerState(&samplerDesc, &g_pTitleSPSampler);
+	if (FAILED(hr)) { return; }
+	GetContext()->PSSetSamplers(0, 1, &g_pTitleSPSampler);
 }
 
 CSceneTitle::~CSceneTitle()

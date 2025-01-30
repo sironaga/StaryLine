@@ -10,6 +10,7 @@
 #include <future>
 #include <thread>
 
+ID3D11SamplerState* g_pGameSPSampler;
 
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
@@ -95,6 +96,15 @@ CSceneGame::CSceneGame(StageType StageNum)
 
 	FadeTimeFlag = true;
 	FadeTime = 0.0f;
+
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	HRESULT hr = GetDevice()->CreateSamplerState(&samplerDesc, &g_pGameSPSampler);
+	if (FAILED(hr)) { return; }
+	GetContext()->PSSetSamplers(0, 1, &g_pGameSPSampler);
 }
 
 CSceneGame::~CSceneGame()
