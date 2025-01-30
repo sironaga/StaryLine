@@ -116,6 +116,7 @@ private:
 	int Comparison[MAX_VERTEX];//できた図形の頂点を元々ある図形の頂点と比較
 	float Shapes_Size[MAX_ALLY];//できた図形の面積
 	int Shapes_type_Angle[MAX_ALLY][2];//[0][0]=type; [0][1]=Angle;(0～3)
+	float Shapes_Angle_Save[MAX_ALLY][4][2];
 
 	int BreakVertex;//壊れる頂点情報
 
@@ -151,7 +152,7 @@ private:
 	Texture* m_pTex_Summon_Log[2];
 	Texture* m_pTex_Ally_Count[4];
 	Texture* m_pTex_Ally_Number[10];
-	Texture* m_pTex_Shapes[2];
+	Texture* m_pTex_Shapes[3];
 
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[4];//フィーバースター
