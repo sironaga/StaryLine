@@ -140,6 +140,7 @@ private:
 	float Fever_Effects_Alpha;//フィーバーEffectの透明度
 
 	DirectX::XMFLOAT3 Shapes_Pos[MAX_ALLY];
+	float Shapes_Length[MAX_ALLY][2];//縦と横の長さ
 	//float
 
 	CBattle* m_pBattle;//バトルクラスのポインター
