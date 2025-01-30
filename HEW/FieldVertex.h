@@ -115,6 +115,7 @@ private:
 	int Shapes_Vertex_Save[MAX_ALLY][MAX_VERTEX]; //頂点を描画順に並べた頂点情報保存
 	int Comparison[MAX_VERTEX];//できた図形の頂点を元々ある図形の頂点と比較
 	float Shapes_Size[MAX_ALLY];//できた図形の面積
+	int Shapes_type_Angle[MAX_ALLY][2];//[0][0]=type; [0][1]=Angle;(0～3)
 
 	int BreakVertex;//壊れる頂点情報
 

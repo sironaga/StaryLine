@@ -126,6 +126,7 @@ CFieldVertex::CFieldVertex()
 	, m_pStarLine(nullptr)
 	, Fever_Effects_Alpha(1.0f)
 	, Shapes_Pos{}
+    , Shapes_type_Angle{}
 {
 	//-----サウンドの初期化-----//
 	{
@@ -212,6 +213,7 @@ CFieldVertex::CFieldVertex()
 	Fill(Shapes_Count, -1);
 	Fill(Comparison, -1);
 	Fill(vtx_FieldLine, 0.0f);
+	Fill(Shapes_type_Angle, -1);
 
 	// 頂点２５個座標情報初期化
 	{
@@ -583,6 +585,30 @@ void CFieldVertex::Update()
 ////=====FieldVertexの描画処理の関数=====//
 void CFieldVertex::Draw()
 {
+	if (GetFeverMode())
+	{
+		SetRender2D();
+		for (int i = 0; i < 32; i++)
+		{
+			if (!g_pFeverEffects[i]->IsPlay())
+			{
+				g_pFeverEffects[i]->SetPos({ -100.0f + 30.0f * (i % 8),90.0f - 30.0f * (i / 8),0.0f });
+				g_pFeverEffects[i]->SetSize({ 50.0f,50.0f,0.0f });
+
+				g_pFeverEffects[i]->Play(true);
+			}
+			g_pFeverEffects[i]->SetColor({ 1.0f,1.0f,1.0f,Fever_Effects_Alpha });
+			g_pFeverEffects[i]->Update();
+			g_pFeverEffects[i]->Draw();
+		}
+
+		Xx = powf(2.71828, 1.0f - Yy);
+		Yy += (15.0f / (60.0f * 10.0f));
+		Fever_Effects_Alpha = Xx;
+		//Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
+		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
+	}
+
 	SetRender3D();//3D描画準備
 
 	//-----線の描画-----//
@@ -814,17 +840,17 @@ void CFieldVertex::Draw()
 			{
 				
 				
-				if (Shapes_Count[i] == 3)
-				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f + 50.0f * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),50.0f + 50.0f * (sqrtf(Shapes_Size[i] * 2.0f)-1.0f),1.0f}, {0.0f,0.0f,0.0f}, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
-				}
-				else 
-				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
-				}
-				m_pSprite_Shapes->Draw();
+				//if (Shapes_Count[i] == 3)
+				//{
+				//	DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f + 50.0f * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),50.0f + 50.0f * (sqrtf(Shapes_Size[i] * 2.0f)-1.0f),1.0f}, {0.0f,0.0f,0.0f}, m_pSprite_Shapes);//座標と大きさの設定
+				//	m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
+				//}
+				//else 
+				//{
+				//	DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				//	m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
+				//}
+				//m_pSprite_Shapes->Draw();
 				
 				g_pLineEffects[i]->Update();
 				g_pLineEffects[i]->Draw();
@@ -837,9 +863,10 @@ void CFieldVertex::FeverDraw()
 {
 	//-----フィーバープレイヤーの描画-----//
 	{
+		
 		if (GetFeverMode())
-		{
-			
+		{	
+			SetRender2D();
 			switch (Mode_Player_Move)
 			{
 			case 0:
@@ -874,39 +901,15 @@ void CFieldVertex::FeverDraw()
 			default:
 				break;
 			}
-			
 
 
-			DrawSetting( Fever_Player_Draw_Pos , { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
+
+			DrawSetting(Fever_Player_Draw_Pos, { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
 			m_pSprite_Fever_Player->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 			m_pSprite_Fever_Player->SetTexture(m_pTex_Fever_Player);//星形の背景のテクスチャ設定
 			m_pSprite_Fever_Player->Draw();//描画
 			m_pSprite_Fever_Player->ReSetSprite();//スプライトのリセット
 		}
-	}
-
-	if (GetFeverMode())
-	{
-		
-		for (int i = 0; i < 32; i++)
-		{
-			if (!g_pFeverEffects[i]->IsPlay())
-			{
-				g_pFeverEffects[i]->SetPos({ -100.0f + 30.0f*(i%8),90.0f - 30.0f*(i/8),0.0f });
-				g_pFeverEffects[i]->SetSize({ 50.0f,50.0f,0.0f });
-				
-				g_pFeverEffects[i]->Play(true);
-			}
-			g_pFeverEffects[i]->SetColor({ 1.0f,1.0f,1.0f,Fever_Effects_Alpha });
-			g_pFeverEffects[i]->Update();
-			g_pFeverEffects[i]->Draw();
-		}
-		
-		Xx = powf(2.71828, 1.0f - Yy);
-		Yy += (15.0f / (60.0f * 10.0f));
-		Fever_Effects_Alpha = Xx;
-		//Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
-		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
 	}
 }
 
@@ -1229,6 +1232,7 @@ void CFieldVertex::InitFieldVertex()
 		Fill(Comparison, -1);
 		Fill(vtx_FieldLine, 0.0f);
 		Fill(Shapes_Pos, -1.0f);
+		Fill(Shapes_type_Angle, -1);
 	
 		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
 		OrderVertexCount = 1;//たどった頂点の数初期化
@@ -1808,6 +1812,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						Shapes_Pos[NowShapes].y = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].x - pos[2].x) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].x - pos[0].x) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].x - pos[1].x)) / (2.0f * ((pos[1].x - pos[2].x) * (pos[0].y - pos[1].y) - (pos[0].x - pos[1].x) * (pos[1].y - pos[2].y)));
 						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
 						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
+						//Shapes_type_Angle[NowShapes][0] = ;
+						//Shapes_type_Angle[NowShapes][1] = ;
 					}
 					else//四角形なら
 					{
