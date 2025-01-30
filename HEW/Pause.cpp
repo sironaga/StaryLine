@@ -15,10 +15,13 @@ bool CPause::m_bRetry;//リトライ判定
 bool CPause::m_bSelect;//ステータス選択判定
 bool CPause::m_bReturn;//ゲームに戻る判定
 bool CPause::m_bClose;//画面を閉じる
+bool CPause::m_bSwitch;//アニメーションの切り替え
 
 FLOAT3 CPause::m_fPos[11];//ポジション
 FLOAT3 CPause::m_fSize[11];//サイズ
 float CPause::m_ftime;//計算用
+float CPause::m_fAnimeTime;//計算用
+
 
 void CPause::Init()
 {
@@ -37,16 +40,16 @@ void CPause::Init()
 
 
 	//ポジションの初期化
-	m_fPos[0] = { -285.0f,SCREEN_HEIGHT / 2.0f,0.0f };
+	m_fPos[0] = { -295.0f,SCREEN_HEIGHT / 2.0f,0.0f };
 	m_fPos[1] = { -285.0f,625.0f,0.0f };
 	m_fPos[2] = { -285.0f,625.0f,0.0f };
 	m_fPos[3] = { -285.0f,435,0.0f };
 	m_fPos[4] = { -285.0f,435.0f,0.0f };
-	m_fPos[5] = { -285.0f,340.0f,0.0f };
-	m_fPos[6] = { -285.0f,340.0f,0.0f };
+	m_fPos[5] = { -285.0f,330.0f,0.0f };
+	m_fPos[6] = { -285.0f,330.0f,0.0f };
 	m_fPos[7] = { -285.0f,530.0f,0.0f };
 	m_fPos[8] = { -285.0f,530.0f,0.0f };
-	m_fPos[9] = { -290.0f,340.0f,0.0f };
+	m_fPos[9] = { -300.0f,340.0f,0.0f };
 	m_fPos[10] = { SCREEN_WIDTH / 2.0f,SCREEN_HEIGHT / 2.0f,0.0f };
 
 	//サイズの初期化
@@ -55,11 +58,11 @@ void CPause::Init()
 	m_fSize[2] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[3] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[4] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
-	m_fSize[5] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
-	m_fSize[6] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+	m_fSize[5] = { (SCREEN_WIDTH * 0.3f) + 90.0f,(SCREEN_HEIGHT * 0.07f) + 10.0f,0.0f };
+	m_fSize[6] = { (SCREEN_WIDTH * 0.3f) + 90.0f,(SCREEN_HEIGHT * 0.07f) + 10.0f,0.0f };
 	m_fSize[7] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
 	m_fSize[8] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
-	m_fSize[9] = { SCREEN_WIDTH * 0.304f,SCREEN_HEIGHT * 0.087f,0.0f };
+	m_fSize[9] = { (SCREEN_WIDTH * 0.304f) + 90.0f,(SCREEN_HEIGHT * 0.087f) + 10.0f,0.0f };
 	m_fSize[10] = { SCREEN_WIDTH ,SCREEN_HEIGHT ,0.0f };
 
 
@@ -80,6 +83,8 @@ void CPause::Init()
 	m_pOption = nullptr;
 	m_ftime = 0.0f;
 	m_bClose = false;
+	m_bSwitch = false;
+	m_fAnimeTime = 0.0f;
 }
 
 void CPause::Uninit()
@@ -105,13 +110,39 @@ void CPause::Update()
 		m_bPause = true;
 		m_ftime = 0.1f;
 		t = 0.0f;
+		section = SEC_RETURN;
+
+		//ポジションの初期化
+		m_fPos[0] = { -295.0f,SCREEN_HEIGHT / 2.0f,0.0f };
+		m_fPos[1] = { -285.0f,625.0f,0.0f };
+		m_fPos[2] = { -285.0f,625.0f,0.0f };
+		m_fPos[3] = { -285.0f,435,0.0f };
+		m_fPos[4] = { -285.0f,435.0f,0.0f };
+		m_fPos[5] = { -285.0f,330.0f,0.0f };
+		m_fPos[6] = { -285.0f,330.0f,0.0f };
+		m_fPos[7] = { -285.0f,530.0f,0.0f };
+		m_fPos[8] = { -285.0f,530.0f,0.0f };
+		m_fPos[9] = { -300.0f,340.0f,0.0f };
+
+		//サイズの初期化
+		m_fSize[0] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT, 0.0f };
+		m_fSize[1] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+		m_fSize[2] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+		m_fSize[3] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+		m_fSize[4] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+		m_fSize[5] = { (SCREEN_WIDTH * 0.3f) + 90.0f,(SCREEN_HEIGHT * 0.07f) + 10.0f,0.0f };
+		m_fSize[6] = { (SCREEN_WIDTH * 0.3f) + 90.0f,(SCREEN_HEIGHT * 0.07f) + 10.0f,0.0f };
+		m_fSize[7] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+		m_fSize[8] = { SCREEN_WIDTH * 0.3f,SCREEN_HEIGHT * 0.07f,0.0f };
+		m_fSize[9] = { (SCREEN_WIDTH * 0.304f) + 90.0f,(SCREEN_HEIGHT * 0.087f) + 10.0f,0.0f };
+		return;
 	}
 	if (!m_bPause) return;
 
 	//ポーズ中かつcloseが呼び出されていない場合
 	if (m_bPause && !m_bClose)
 	{
-		
+
 		// 毎フレーム判定 
 		if (m_ftime > 0.0f) {
 			m_ftime -= 1.0f / 60.0f;
@@ -123,34 +154,78 @@ void CPause::Update()
 			}
 		}
 		//ポーズ画面の開く処理
-			for (int i = 0; i < 9; i++)
-			{
-				m_fPos[i].X = OutEasing(t, 0.0f, 285.0f+ 2800.0f, 1.0f)-300.0f;
-			}
-			m_fPos[9].X =	 OutEasing(t, 0.0f, 290.0f+ 2800.0f, 1.0f) - 300.0f;
+		for (int i = 0; i < 9; i++)
+		{
+			m_fPos[i].X = OutEasing(t, 0.0f, 285.0f + 2800.0f, 1.0f) - 300.0f;
+		}
+		m_fPos[9].X = OutEasing(t, 0.0f, 290.0f + 2800.0f, 1.0f) - 300.0f;
 
 	}
+	if (!m_bSwitch)
+	{
+		// 毎フレーム判定 
+		if (m_fAnimeTime < 2.0f) {
+			m_fAnimeTime += 1.0f / 60.0f;
+			if (m_fAnimeTime > 2.0f)
+			{
+				m_fAnimeTime = 2.0f;
+				m_bSwitch = true;
+			}
+		}
+	}
+	else
+	{
+		// 毎フレーム判定 
+		if (m_fAnimeTime > 0.0f) {
+			m_fAnimeTime -= 1.0f / 60.0f;
+			if (m_fAnimeTime < 0.0f)
+			{
+				m_fAnimeTime = 0.0f;
+				m_bSwitch = false;
+			}
+		}
+	}
+
+	m_fSize[9].X = OutEasing(m_fAnimeTime, 0.0f, 20.0f, 1.0f) + (SCREEN_WIDTH * 0.304f) + 90.0f;
+	m_fSize[9].Y = OutEasing(m_fAnimeTime, 0.0f, 10.0f, 1.0f) + (SCREEN_HEIGHT * 0.087f) + 10.0f;
+
 	//バー選択
 	SetAllMasterVolume(m_pOption->GetMasterVoluem());
 	SetAllVolumeBGM(m_pOption->GetBGMVoluem());
 	SetAllVolumeSE(m_pOption->GetSEVoluem());
 	if (!m_bOption && !m_bRetry && !m_bReturn && !m_bSelect)
 	{
-		if (GetControllerLStickTriggerForeDirection()== XINPUT_GAMEPAD_DPAD_UP|| WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
 		{
-			
-			
+			m_bClose = true;
+			m_ftime = 0.1f;
+		}
+		if (GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_UP || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
+		{
+
+
 			switch (section)
 			{
 			case SEC_OPTION:
 				//se
 				m_pSoundPauseSE[2]->Stop();
 				m_pSoundPauseSE[2]->FlushSourceBuffers();
-				
 				buffer = m_pSoundPause[2]->GetBuffer(false);
 				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
 				SetVolumeSE(m_pSoundPauseSE[2]);
 				m_pSoundPauseSE[2]->Start();
+				m_fSize[1].X -= 90.0f;
+				m_fSize[1].Y -= 10.0f;
+				m_fSize[2].X -= 90.0f;
+				m_fSize[2].Y -= 10.0f;
+				m_fSize[7].X += 90.0f;
+				m_fSize[7].Y += 10.0f;
+				m_fSize[8].X += 90.0f;
+				m_fSize[8].Y += 10.0f;
+				m_fPos[1].Y += 10.0f;
+				m_fPos[2].Y += 10.0f;
+				m_fPos[7].Y += 10.0f;
+				m_fPos[8].Y += 10.0f;
 				section = SEC_STAGESELECT;
 				break;
 			case SEC_RETRY:
@@ -161,6 +236,24 @@ void CPause::Update()
 				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
 				SetVolumeSE(m_pSoundPauseSE[2]);
 				m_pSoundPauseSE[2]->Start();
+				m_fSize[3].X -= 90.0f;
+				m_fSize[3].Y -= 10.0f;
+				m_fSize[4].X -= 90.0f;
+				m_fSize[4].Y -= 10.0f;
+				m_fSize[5].X += 90.0f;
+				m_fSize[5].Y += 10.0f;
+				m_fSize[6].X += 90.0f;
+				m_fSize[6].Y += 10.0f;
+				m_fPos[3].Y += 10.0f;
+				m_fPos[4].Y += 10.0f;
+				m_fPos[5].Y += 10.0f;
+				m_fPos[6].Y += 10.0f;
+				/*m_fSize[5].X += 90.0f;
+				m_fSize[5].Y += 10.0f;
+				m_fSize[6].X += 90.0f;
+				m_fSize[6].Y += 10.0f;
+				m_fPos[5].Y -=10.0f;
+				m_fPos[6].Y -= 10.0f;*/
 				section = SEC_RETURN;
 				break;
 			case SEC_RETURN:
@@ -174,15 +267,27 @@ void CPause::Update()
 				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
 				SetVolumeSE(m_pSoundPauseSE[2]);
 				m_pSoundPauseSE[2]->Start();
+				m_fSize[7].X -= 90.0f;
+				m_fSize[7].Y -= 10.0f;
+				m_fSize[8].X -= 90.0f;
+				m_fSize[8].Y -= 10.0f;
+				m_fSize[3].X += 90.0f;
+				m_fSize[3].Y += 10.0f;
+				m_fSize[4].X += 90.0f;
+				m_fSize[4].Y += 10.0f;
+				m_fPos[3].Y += 10.0f;
+				m_fPos[4].Y += 10.0f;
+				m_fPos[7].Y += 10.0f;
+				m_fPos[8].Y += 10.0f;
 				section = SEC_RETRY;
 				break;
 			default:
 				break;
 			}
 		}
-		if (GetControllerLStickTriggerForeDirection()==XINPUT_GAMEPAD_DPAD_DOWN||WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN,VK_DOWN) || IsKeyTrigger('S'))
+		if (GetControllerLStickTriggerForeDirection() == XINPUT_GAMEPAD_DPAD_DOWN || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S'))
 		{
-			
+
 			switch (section)
 			{
 			case SEC_OPTION:
@@ -196,6 +301,18 @@ void CPause::Update()
 				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
 				SetVolumeSE(m_pSoundPauseSE[2]);
 				m_pSoundPauseSE[2]->Start();
+				m_fSize[3].X -= 90.0f;
+				m_fSize[3].Y -= 10.0f;
+				m_fSize[4].X -= 90.0f;
+				m_fSize[4].Y -= 10.0f;
+				m_fSize[7].X += 90.0f;
+				m_fSize[7].Y += 10.0f;
+				m_fSize[8].X += 90.0f;
+				m_fSize[8].Y += 10.0f;
+				m_fPos[3].Y -= 10.0f;
+				m_fPos[4].Y -= 10.0f;
+				m_fPos[7].Y -= 10.0f;
+				m_fPos[8].Y -= 10.0f;
 				section = SEC_STAGESELECT;
 				break;
 			case SEC_RETURN:
@@ -206,6 +323,18 @@ void CPause::Update()
 				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
 				SetVolumeSE(m_pSoundPauseSE[2]);
 				m_pSoundPauseSE[2]->Start();
+				m_fSize[5].X -= 90.0f;
+				m_fSize[5].Y -= 10.0f;
+				m_fSize[6].X -= 90.0f;
+				m_fSize[6].Y -= 10.0f;
+				m_fSize[3].X += 90.0f;
+				m_fSize[3].Y += 10.0f;
+				m_fSize[4].X += 90.0f;
+				m_fSize[4].Y += 10.0f;
+				m_fPos[5].Y -= 10.0f;
+				m_fPos[6].Y -= 10.0f;
+				m_fPos[3].Y -= 10.0f;
+				m_fPos[4].Y -= 10.0f;
 				section = SEC_RETRY;
 				break;
 			case SEC_STAGESELECT:
@@ -216,6 +345,18 @@ void CPause::Update()
 				m_pSoundPauseSE[2]->SubmitSourceBuffer(&buffer);
 				SetVolumeSE(m_pSoundPauseSE[2]);
 				m_pSoundPauseSE[2]->Start();
+				m_fSize[7].X -= 90.0f;
+				m_fSize[7].Y -= 10.0f;
+				m_fSize[8].X -= 90.0f;
+				m_fSize[8].Y -= 10.0f;
+				m_fSize[1].X += 90.0f;
+				m_fSize[1].Y += 10.0f;
+				m_fSize[2].X += 90.0f;
+				m_fSize[2].Y += 10.0f;
+				m_fPos[7].Y -= 10.0f;
+				m_fPos[8].Y -= 10.0f;
+				m_fPos[1].Y -= 10.0f;
+				m_fPos[2].Y -= 10.0f;
 				section = SEC_OPTION;
 				break;
 			default:
@@ -292,7 +433,7 @@ void CPause::Update()
 			}
 			if (!m_pOption->GetOption())
 			{
-				if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
+				if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
 				{
 					//se
 					m_pSoundPauseSE[0]->Stop();
@@ -419,7 +560,7 @@ void CPause::Draw()
 		m_pPauseTex[2]->SetPositon(m_fPos[2].X, m_fPos[2].Y, m_fPos[2].Z);
 		m_pPauseTex[2]->SetSize(m_fSize[2].X, m_fSize[2].Y, m_fSize[2].Z);
 		m_pPauseTex[2]->Disp();
-		
+
 	}
 	//リトライバー
 	if (!m_bRetry)

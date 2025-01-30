@@ -25,7 +25,7 @@
 #define FILENAME_SELECTEBGM (L"Assets/Sound/StageSelect.wav")
 #define FILENAME_BATTLEBGM1 (L"Assets/Sound/Stage1_Battle.wav")
 #define FILENAME_BATTLEBGM2 (L"Assets/Sound/Stage2_Battle.wav")
-#define FILENAME_BATTLEBGM3 (L"Assets/Sound/Stage1_Battle.wav")
+#define FILENAME_BATTLEBGM3 (L"Assets/Sound/Stage3_Battle.wav")
 #define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
 #define FILENAME_GAMEOVERBGM (L"Assets/Sound/gameover.wav")
 #define FILENAME_GAMECLEARBGM (L"Assets/Sound/gameclear.wav")
@@ -83,6 +83,7 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);
+		break;
 	case BGM_SELECT:
 		m_sound = new CSound(FILENAME_SELECTEBGM);
 		break;
