@@ -21,7 +21,7 @@ Rank CSceneResult::StageRank[MAX_STAGE];
 
 // --- 初期化
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), bScore(true), bBestScore(false), bWorldClear(false), nPush{},bAnimation(false),fPiyoA(0.0f),bEnter(false)
+	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{},Group{1920.0f,660.0f}
 {
 	ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
@@ -57,12 +57,11 @@ CSceneResult::CSceneResult()
 	{
 		bWorldClear = false;
 	}
+
 	if (ResultGameData.bWin)
 	{
 		bClearState[StageLevel.StageSubNumber] = true;
 	}
-
-
 
 	m_pResultSelectSound    = new CSoundList(SE_SELECT);
 	m_pResultSelectSE = m_pResultSelectSound->GetSound(false);
@@ -215,6 +214,8 @@ void CSceneResult::LoadTexture(void)
 		m_pText		= new SpriteEx("Assets/Texture/Result/Text/Result_Win_Text_top.png");
 		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Win_Light.png");
 
+		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Result_Linie_Win_Sprite.png");
+
 	}
 	else
 	{
@@ -222,6 +223,8 @@ void CSceneResult::LoadTexture(void)
 		m_pNextUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_06.png");
 
 		m_pLighting = new SpriteEx("Assets/Texture/Result/Lighting/Result_Win_Light.png");
+
+		m_pCharacter = new SpriteEx("Assets/Texture/Result/Character/Result_Linie_Win_Sprite.png");
 	}
 
 
@@ -246,35 +249,39 @@ void CSceneResult::DefaultSetPos(void)
 		{
 			m_pStageSelectUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pStageSelectUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
-			m_pStageSelectUI[nLoop]->SetPositon(960.0f, 900.0f, 0.0f);
+			m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
 
 			m_pNextUI[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pNextUI[nLoop]->SetSize(608.0f, 76.0f, 0.0f);
-			m_pNextUI[nLoop]->SetPositon(960.0f, 790.0f, 0.0f);
+			m_pNextUI[nLoop]->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
 		}
 
 		m_pSelectUI->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pSelectUI->SetSize(670.0f * 1.1f, 107.0f * 1.1f, 0.0f);
-		m_pSelectUI->SetPositon(960.0f, 900.0f, 0.0f);
+		m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
 
 		m_pResultData->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pResultData->SetSize(710.0f * 0.9, 390.0f * 0.9, 0.0f);
-		m_pResultData->SetPositon(1600.0f, 520.0f, 0.0f);
+		m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
 
 		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pLighting->SetSize(969, 982, 0.0f);
-		m_pLighting->SetPositon(300.0f, 490.0f, 0.0f);
+		m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
 
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pText->SetSize(822.0f, 143.0f, 0.0f);
-		m_pText->SetPositon(960.0f, 100.0f, 0.0f);
+		m_pText->SetPositon(960.0f + Group.X, 100.0f, 0.0f);
 
 		for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
 		{
 			m_pRank[nLoop]->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 			m_pRank[nLoop]->SetSize(445.0f, 446.0f, 0.0f);
-			m_pRank[nLoop]->SetPositon(960.0f, 520.0f, 0.0f);
+			m_pRank[nLoop]->SetPositon(960.0f + Group.X, 520.0f, 0.0f);
 		}
+
+		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
+		m_pCharacter->SetSize(8192.0f / 8.0f, 8192 / 8.0f,0.0f);
+		m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
 
 	}
 	else
@@ -449,7 +456,7 @@ void CSceneResult::AnimationManagemer(void)
 
 	if (nSelect)
 	{
-		m_pSelectUI->SetPositon(960.0f, 790.0f, 0.0f);
+		m_pSelectUI->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
 
 		for (int nLoop = 0; nLoop < 2; nLoop++)
 		{
@@ -459,7 +466,7 @@ void CSceneResult::AnimationManagemer(void)
 	}
 	else
 	{
-		m_pSelectUI->SetPositon(960.0f, 900.0f, 0.0f);
+		m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
 
 		for (int nLoop = 0; nLoop < 2; nLoop++)
 		{
@@ -474,16 +481,25 @@ void CSceneResult::SetCamData(void)
 {
 	m_pBackGround->SetView(Get2DView());
 	m_pBackGround->SetProjection(Get2DProj());
+	
 	m_pUnberUI->SetView(Get2DView());
 	m_pUnberUI->SetProjection(Get2DProj());
+	
 	m_pSelectUI->SetView(Get2DView());
 	m_pSelectUI->SetProjection(Get2DProj());
+	
 	m_pResultData->SetView(Get2DView());
 	m_pResultData->SetProjection(Get2DProj());
+	
 	m_pLighting->SetView(Get2DView());
 	m_pLighting->SetProjection(Get2DProj());
+
 	m_pText->SetView(Get2DView());
 	m_pText->SetProjection(Get2DProj());
+
+	m_pCharacter->SetView(Get2DView());
+	m_pCharacter->SetProjection(Get2DProj());
+
 
 	for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)
 	{
@@ -495,6 +511,7 @@ void CSceneResult::SetCamData(void)
 	{
 		m_pStageSelectUI[nLoop]->SetView(Get2DView());
 		m_pStageSelectUI[nLoop]->SetProjection(Get2DProj());
+		
 		m_pNextUI[nLoop]->SetView(Get2DView());
 		m_pNextUI[nLoop]->SetProjection(Get2DProj());
 	}
@@ -503,14 +520,51 @@ void CSceneResult::SetCamData(void)
 // --- 描画アニメーション
 void CSceneResult::WinAnimation(void)
 {
-	m_pLighting->SetTexture();
-	m_pLighting->Disp();
+	if (bAnimation)
+	{
+		int nUvPos = 0;
 
-	m_pText->SetTexture();
-	m_pText->Disp();
+		if (nAnimationFrame > 63)
+		{
+			nUvPos = 63;
 
-	m_pRank[A_RANK]->SetTexture();
-	m_pRank[A_RANK]->Disp();
+			Group.Y -= (InEasing(nAnimationFrame * 0.1f,0.0f,1.0f,1.0f));
+			Group.X -= (InEasing(nAnimationFrame * 0.15f, 0.0f, 1.0f, 1.0f));
+			if (Group.Y < 0)Group.Y = 0;
+			if (Group.X < 0)Group.X = 0;
+
+			// --- positionの再設定
+			m_pCharacter->SetPositon((460.0f + Group.Y), 350.0f, 0.0f);
+			for (int nLoop = 0; nLoop < NONE_RANK; nLoop++)m_pRank[nLoop]->SetPositon(960.0f + Group.X, 520.0f, 0.0f);
+			m_pText->SetPositon(960.0f + Group.X, 100.0f, 0.0f);
+			m_pLighting->SetPositon((300.0f + Group.Y), 490.0f, 0.0f);
+			m_pResultData->SetPositon(1600.0f + Group.X, 520.0f, 0.0f);
+			m_pSelectUI->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
+			for (int nLoop = 0; nLoop < 2; nLoop++)
+			{
+				m_pStageSelectUI[nLoop]->SetPositon(960.0f + Group.X, 900.0f, 0.0f);
+				m_pNextUI[nLoop]->SetPositon(960.0f + Group.X, 790.0f, 0.0f);
+			}
+
+
+		}
+		else
+		{
+			nUvPos = nAnimationFrame;
+		}
+
+		int nShiftUvX;
+		int nShiftUvY;
+
+		nShiftUvX = nUvPos % 8;
+		nShiftUvY = nUvPos / 8;
+
+		fUvPos.X = (1.0f / 8.0f) * nShiftUvX;
+		fUvPos.Y = (1.0f / 8.0f) * nShiftUvY;
+
+
+	}
+
 }
 
 void CSceneResult::LoseAnimation(void)
@@ -521,7 +575,21 @@ void CSceneResult::LoseAnimation(void)
 // --- 描画
 void CSceneResult::WinDisp(void)
 {
+	m_pLighting->SetTexture();
+	m_pLighting->Disp();
 
+	m_pText->SetTexture();
+	m_pText->Disp();
+
+	m_pRank[A_RANK]->SetTexture();
+	m_pRank[A_RANK]->Disp();
+
+	m_pCharacter->SetUvSize(1.0f / 8.0f, 1.0f / 8.0f);
+	m_pCharacter->SetUvPos(fUvPos.X, fUvPos.Y);
+	m_pCharacter->SetTexture();
+	m_pCharacter->Disp();
+	m_pCharacter->SetUvSize(1.0f, 1.0f);
+	m_pCharacter->SetUvPos(0.0f, 0.0f);
 }
 
 void CSceneResult::LoseDisp(void)

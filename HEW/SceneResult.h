@@ -66,6 +66,7 @@ private:
 	SpriteEx* m_pLighting;			// --- 光
 	SpriteEx* m_pText;				// --- テキスト
 	SpriteEx* m_pRank[NONE_RANK];   // --- Rank
+	SpriteEx* m_pCharacter;			// --- リリー
 
 	CNumberUI* m_pNumber;		// --- 数字の描画
 
@@ -78,14 +79,14 @@ private:
 	int nPush[2]; // ボタンを押した時
 
 	// - float
-	float fPiyoA;
-	FLOAT2 fUvPos;
+	FLOAT2 fUvPos;	// UVのposition
+	// - WinGroup
+	FLOAT2 Group;
+
 	// - bool
-	bool bAnimation;
-	bool bWorldClear;
-	bool bScore;
-	bool bBestScore;
-	bool bEnter;
+	bool bWorldClear; // --- ? - 3をClearしたか判定
+	bool bAnimation;  // --- アニメーションを実行するかしないか
+	bool bEnter;	  // --- Enterが押されたか判定
 
 	// --- サウンド
 	CSoundList* m_pResultSound;
