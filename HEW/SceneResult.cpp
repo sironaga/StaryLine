@@ -253,8 +253,11 @@ void CSceneResult::Draw()
 	m_pStageSelectUI[nPush[0]]->SetTexture();
 	m_pStageSelectUI[nPush[0]]->Disp();
 
-	m_pNextUI[nPush[1]]->SetTexture();
-	m_pNextUI[nPush[1]]->Disp();
+	if (!bWorldClear)
+	{
+		m_pNextUI[nPush[1]]->SetTexture();
+		m_pNextUI[nPush[1]]->Disp();
+	}
 
 	m_pSelectUI->SetTexture();
 	m_pSelectUI->Disp();
