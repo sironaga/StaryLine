@@ -9,33 +9,33 @@
 #include "Defines.h"
 #include "Pause.h"
 
-//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Xåº§æ¨™ä½ç½®
+//ƒvƒŒƒCƒ„[‚ÌXÀ•WˆÊ’u
 #define ALLYCORE_POSX (-90)
-//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Zåº§æ¨™ä½ç½®
+//ƒvƒŒƒCƒ„[‚ÌZÀ•WˆÊ’u
 #define ALLYCORE_POSZ (0)
 
-//æ•µãƒœã‚¹ã®Xåº§æ¨™ä½ç½®
+//“Gƒ{ƒX‚ÌXÀ•WˆÊ’u
 #define ENEMYBOSSCORE_POSX (90)
-//æ•µãƒœã‚¹ã®Zåº§æ¨™ä½ç½®
+//“Gƒ{ƒX‚ÌZÀ•WˆÊ’u
 #define ENEMYBOSSCORE_POSZ (0)
 
-//å‘³æ–¹ã®ç”ŸæˆXåº§æ¨™ä½ç½®
+//–¡•û‚Ì¶¬XÀ•WˆÊ’u
 #define ALLYCREATE_POSX (-80)
-//å‘³æ–¹ã®ç”ŸæˆZåº§æ¨™ä½ç½®
+//–¡•û‚Ì¶¬ZÀ•WˆÊ’u
 #define ALLYCREATE_POSZ_1 (20)
 #define ALLYCREATE_POSZ_2 (10)
 #define ALLYCREATE_POSZ_3 (0)
 #define ALLYCREATE_POSZ_4 (-10)
 #define ALLYCREATE_POSZ_5 (-20)
 
-//æ•µã®ç”ŸæˆZåº§æ¨™ä½ç½®
+//“G‚Ì¶¬ZÀ•WˆÊ’u
 #define ENEMYCREATE_POSZ_1 (20)
 #define ENEMYCREATE_POSZ_2 (10)
 #define ENEMYCREATE_POSZ_3 (0)
 #define ENEMYCREATE_POSZ_4 (-10)
 #define ENEMYCREATE_POSZ_5 (-20)
 
-//æ•µã®ç”ŸæˆXåº§æ¨™ä½ç½®
+//“G‚Ì¶¬XÀ•WˆÊ’u
 enum class ENEMYCREATE_POSX
 {
 	Stage1 =  80,
@@ -44,22 +44,22 @@ enum class ENEMYCREATE_POSX
 };
 
 
-//æˆ¦é—˜ç¯„å›²Xè»¸
+//í“¬”ÍˆÍX²
 #define BATTLE_X (80)
-//æˆ¦é—˜ç¯„å›²Zè»¸
+//í“¬”ÍˆÍZ²
 #define BATTLE_Z (30)
-//ç§»å‹•ã®Zè»¸æ–¹å‘ã‚’ã—å§‹ã‚ã‚‹ãƒ©ã‚¤ãƒ³
+//ˆÚ“®‚ÌZ²•ûŒü‚ğ‚µn‚ß‚éƒ‰ƒCƒ“
 #define MOVEBATTLE_LINE (80)
 
-//ç§»å‹•é–¢ä¿‚è¨ˆç®—ãƒã‚¯ãƒ­
+//ˆÚ“®ŠÖŒWŒvZƒ}ƒNƒ
 #define MOVESPEED(Speed) Speed / 10
-//ç§»å‹•åŠ›
+//ˆÚ“®—Í
 #define MOVEPOWER (0.4f)
 
-//æ™‚é–“ã®è¨ˆç®—ãƒã‚¯ãƒ­
+//ŠÔ‚ÌŒvZƒ}ƒNƒ
 #define Time(Num) Num * 60
 
-//æ¬¡ã«æ•µãŒç”Ÿæˆã•ã‚Œã‚‹é–“éš”
+//Ÿ‚É“G‚ª¶¬‚³‚ê‚éŠÔŠu
 enum class NEXTSPAWN
 {
 	Stage1_1 = 10,
@@ -72,7 +72,7 @@ enum class NEXTSPAWN
 	Stage3_2 = 10,
 	Stage3_3 = 10,
 };
-//ä¸€åº¦ã«å‡ºã¦ãã‚‹æ•µã®æ•°
+//ˆê“x‚Éo‚Ä‚­‚é“G‚Ì”
 enum class ENEMY_SPAWNNUM
 {
 	Stage1_1 = 3,
@@ -85,7 +85,7 @@ enum class ENEMY_SPAWNNUM
 	Stage3_2 = 10,
 	Stage3_3 = 12,
 };
-//æ•µã®æ­©è¡Œã‚¿ã‚¤ãƒ—é›‘é­šæ•µã®ç¢ºç‡
+//“G‚Ì•àsƒ^ƒCƒvG‹›“G‚ÌŠm—¦
 enum class ENEMY_PROBABILITY
 {
 	Stage1_1 = 100,
@@ -100,20 +100,20 @@ enum class ENEMY_PROBABILITY
 };
 
 
-//æ•°å­—ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ä¿å­˜ç”¨ãƒã‚¤ãƒ³ã‚¿
+//”š‚ÌƒeƒNƒXƒ`ƒƒ•Û‘¶—pƒ|ƒCƒ“ƒ^
 ID3D11ShaderResourceView* m_pLogTex[10];
 
-//ç§»å‹•åŠ›æ§‹é€ ä½“
+//ˆÚ“®—Í\‘¢‘Ì
 struct MovePower
 {
 	float x;
 	float z;
 };
 
-//ç§»å‹•æ–¹å‘è¨ˆç®—é–¢æ•°
+//ˆÚ“®•ûŒüŒvZŠÖ”
 MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos);
 
-//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 CBattle::CBattle()
 	: m_pAlly{}
 	, m_nAllyCount(0)
@@ -141,7 +141,7 @@ CBattle::CBattle()
 	, m_bWinCommand{false}
 	, m_bLoseCommand{false}
 {
-	//æ•°å­—ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
+	//”šƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	HRESULT hr;
 
 	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_0.png"), &m_pLogTex[0]);
@@ -155,7 +155,7 @@ CBattle::CBattle()
 	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_8.png"), &m_pLogTex[8]);
 	hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_9.png"), &m_pLogTex[9]);
 	if (FAILED(hr)) {
-		MessageBox(NULL, "Numbers ç”»åƒ", "Error", MB_OK);
+		MessageBox(NULL, "Numbers ‰æ‘œ", "Error", MB_OK);
 	}
 	Vertex vtx[] = {
 		{{-WIDE_RATIO( 100.0f,GetNowWide()), -HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
@@ -165,13 +165,13 @@ CBattle::CBattle()
 	};
 	m_pLogVtx = CreateVertexBuffer(vtx, 4);
 
-	//å‘³æ–¹ãƒ‡ãƒ¼ã‚¿ã®åˆæœŸåŒ–
+	//–¡•ûƒf[ƒ^‚Ì‰Šú‰»
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
 		m_tAllyData[i].nCornerCount = -1;
 		m_tAllyData[i].bStellaBuff = false;
 	}
-	//æ•µãƒ‡ãƒ¼ã‚¿ã®åˆæœŸåŒ–
+	//“Gƒf[ƒ^‚Ì‰Šú‰»
 	//for (int l = 0; l < MAX_PATTERN; l++)
 	//{
 	//	for (int i = 0; i < MAX_ENEMY; i++)
@@ -179,16 +179,16 @@ CBattle::CBattle()
 	//		m_tEnemyData[l][i].nCornerCount = -1;
 	//	}
 	//}
-	//éŸ³ã®åˆæœŸåŒ–
+	//‰¹‚Ì‰Šú‰»
 	m_pSound = new CSoundList(SE_DEATH);
 	m_pSound->SetMasterVolume();
 	m_pDeathSE = m_pSound->GetSound(false);
 }
 
-//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+//ƒfƒXƒgƒ‰ƒNƒ^
 CBattle::~CBattle()
 {
-	//æ•°å­—ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
+	//”šƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
 	if (m_pLogVtx)
 	{
 		m_pLogVtx->Release();
@@ -198,7 +198,7 @@ CBattle::~CBattle()
 		if (m_pLogTex[i])m_pLogTex[i]->Release();
 	}
 
-	//å‘³æ–¹ãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//–¡•ûƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	for (int i = 0; i < m_pAlly.size(); i++)
 	{
 		if (m_pAlly[i])
@@ -207,7 +207,7 @@ CBattle::~CBattle()
 			m_pAlly[i] = nullptr;
 		}
 	}
-	//æ•µãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//“Gƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	for (int i = 0; i < m_pEnemy.size(); i++)
 	{
 		if (m_pEnemy[i])
@@ -216,19 +216,19 @@ CBattle::~CBattle()
 			m_pEnemy[i] = nullptr;
 		}
 	}
-	//å‘³æ–¹ãƒªãƒ¼ãƒ€ãƒ¼ãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//–¡•ûƒŠ[ƒ_[ƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	if (m_pAllyLeader)
 	{
 		delete m_pAllyLeader;
 		m_pAllyLeader = nullptr;
 	}
-	//æ•µãƒªãƒ¼ãƒ€ãƒ¼ãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//“GƒŠ[ƒ_[ƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	if (m_pEnemyLeader)
 	{
 		delete m_pEnemyLeader;
 		m_pEnemyLeader = nullptr;
 	}
-	//éŸ³ã®è§£æ”¾
+	//‰¹‚Ì‰ğ•ú
 	if(m_pSound)
 	{
 		m_pDeathSE->Stop();;
@@ -239,51 +239,51 @@ CBattle::~CBattle()
 
 void CBattle::Update(void)
 {
-	//éŸ³ã®è¨­å®š
+	//‰¹‚Ìİ’è
 	m_pSound->SetMasterVolume();
 	SetCharacterMasterVolume();
 	
-	//æˆ¦é—˜æ™‚é–“è»¸å‡¦ç†
+	//í“¬ŠÔ²ˆ—
 	TimeLapse();
-	//æ•µç”Ÿæˆå‡¦ç†
+	//“G¶¬ˆ—
 	CreateEnemy();
 
-	//åˆæœŸä½ç½®ã‚»ãƒƒãƒ†ã‚£ãƒ³ã‚°
+	//‰ŠúˆÊ’uƒZƒbƒeƒBƒ“ƒO
 	FirstPosSetting();
 
-	//å‰Šé™¤å‡¦ç†
+	//íœˆ—
 	Delete();
 
-	//Zè»¸é †ã«æç”»
+	//Z²‡‚É•`‰æ
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
-		//å‘³æ–¹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+		//–¡•û‚ğ¶¬‡‚Éˆ—
 		for (int i = 0; i < m_nAllyCount; i++)
 		{
-			//Zè»¸é †ã«æç”»
+			//Z²‡‚É•`‰æ
 			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
 			{
-				//è‡ªåˆ†ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã ã£ãŸã‚‰
+				//©•ª‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚¾‚Á‚½‚ç
 				if (m_pAlly[i]->GetStatus() == St_Battle)
 				{
-					//ç´¢æ•µå‡¦ç†
+					//õ“Gˆ—
 					Search(i, Ally);
-					//æ”»æ’ƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤æ–­ã‚’åˆæœŸåŒ–
+					//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğ‰Šú‰»
 					m_pAlly[i]->m_bIsAttack = false;
 
-					//æ”»æ’ƒã‚’ã—ã¦ã„ãªã‹ã£ãŸã‚‰
+					//UŒ‚‚ğ‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
 					if (!m_pAlly[i]->m_bIsAttack)
 					{
-						//ç›¸æ‰‹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+						//‘Šè‚ğ¶¬‡‚Éˆ—
 						for (int l = 0; l < m_nEnemyCount; l++)
 						{
-							//ç›¸æ‰‹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã ã£ãŸã‚‰
+							//‘Šè‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚¾‚Á‚½‚ç
 							if (m_pEnemy[l]->GetStatus() == St_Battle)
 							{
-								//æ”»æ’ƒå½“ãŸã‚Šåˆ¤å®šã«å…¥ã£ã¦ã‚‹ã‹ã©ã†ã‹
+								//UŒ‚“–‚½‚è”»’è‚É“ü‚Á‚Ä‚é‚©‚Ç‚¤‚©
 								if (m_pAlly[i]->AtkCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
 								{
-									//æ”»æ’ƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤æ–­ã‚’trueã«ã™ã‚‹
+									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğtrue‚É‚·‚é
 									m_pAlly[i]->m_bIsAttack = true;
 									if (m_pAlly[i]->GetCornerCount() == m_pEnemy[l]->GetCornerCount())
 									{
@@ -293,67 +293,67 @@ void CBattle::Update(void)
 									{
 										m_pAlly[i]->m_bTypeAttack = false;
 									}
-									//æ”»æ’ƒå‡¦ç†
+									//UŒ‚ˆ—
 									Battle(i, l, Enemy);
 									break;
 								}
 							}
 						}
 					}
-					//æ”»æ’ƒã‚’ã—ã¦ã„ãªã‹ã£ãŸã‚‰
+					//UŒ‚‚ğ‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
 					if (!m_pAlly[i]->m_bIsAttack)
 					{
-						//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+						//‘Šè‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 						if (m_pEnemyLeader)
 						{
-							//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã ã£ãŸã‚‰
+							//‘Šè‚ÌƒŠ[ƒ_[‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚¾‚Á‚½‚ç
 							if (m_pEnemyLeader->GetStatus() == St_Battle)
 							{
-								//æ”»æ’ƒã®å½“ãŸã‚Šåˆ¤å®šã«å…¥ã£ã¦ã„ã‚‹ã‹
+								//UŒ‚‚Ì“–‚½‚è”»’è‚É“ü‚Á‚Ä‚¢‚é‚©
 								if (m_pAlly[i]->AtkCollisionCheck(m_pEnemyLeader->GetSize(), m_pEnemyLeader->GetPos()))
 								{
-									//æ”»æ’ƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤æ–­ã‚’trueã«ã™ã‚‹
+									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğtrue‚É‚·‚é
 									m_pAlly[i]->m_bIsAttack = true;
 									m_pAlly[i]->m_bTypeAttack = true;
 
-									//æ”»æ’ƒå‡¦ç†
+									//UŒ‚ˆ—
 									Battle(i, -1, EnemyLeader);
 								}
 							}
 						}
 					}
-					//ç§»å‹•å‡¦ç†
+					//ˆÚ“®ˆ—
 					//if (!m_pAlly[i]->m_bIsAttack)
 					Move(i, Ally);
 				}
 			}
 		}
-		//æ•µã‚’ç”Ÿæˆé †ã«å‡¦ç†
+		//“G‚ğ¶¬‡‚Éˆ—
 		for (int i = 0; i < m_nEnemyCount; i++)
 		{
-			//Zè»¸é †ã«å‡¦ç†
+			//Z²‡‚Éˆ—
 			if (m_pEnemy[i]->GetPos().z > Z - 1.0f && m_pEnemy[i]->GetPos().z < Z + 1.0f)
 			{
-				//è‡ªåˆ†ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒãƒãƒˆãƒ«ã ã£ãŸã‚‰
+				//©•ª‚ÌƒXƒe[ƒ^ƒX‚ªƒoƒgƒ‹‚¾‚Á‚½‚ç
 				if (m_pEnemy[i]->GetStatus() == St_Battle)
 				{
-					//ç´¢æ•µå‡¦ç†
+					//õ“Gˆ—
 					Search(i, Enemy);
-					//æ”»æ’ƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤æ–­ã‚’åˆæœŸåŒ–
+					//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğ‰Šú‰»
 					m_pEnemy[i]->m_bIsAttack = false;
-					//æ”»æ’ƒã‚’ã—ã¦ã„ãªã‹ã£ãŸã‚‰
+					//UŒ‚‚ğ‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
 					if (!m_pEnemy[i]->m_bIsAttack)
 					{
-						//ç›¸æ‰‹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+						//‘Šè‚ğ¶¬‡‚Éˆ—
 						for (int l = 0; l < m_nAllyCount; l++)
 						{
-							//ç›¸æ‰‹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒãƒãƒˆãƒ«ã ã£ãŸã‚‰
+							//‘Šè‚ÌƒXƒe[ƒ^ƒX‚ªƒoƒgƒ‹‚¾‚Á‚½‚ç
 							if (m_pAlly[l]->GetStatus() == St_Battle)
 							{
-								//æ”»æ’ƒå½“ãŸã‚Šåˆ¤å®šã«å…¥ã£ã¦ã‚‹ã‹ã©ã†ã‹
+								//UŒ‚“–‚½‚è”»’è‚É“ü‚Á‚Ä‚é‚©‚Ç‚¤‚©
 								if (m_pEnemy[i]->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))
 								{
-									//æ”»æ’ƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤æ–­ã‚’trueã«ã™ã‚‹
+									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’f‚ğtrue‚É‚·‚é
 									m_pEnemy[i]->m_bIsAttack = true;
 									if (m_pEnemy[i]->GetCornerCount() == m_pAlly[l]->GetCornerCount())
 									{
@@ -364,7 +364,7 @@ void CBattle::Update(void)
 										m_pEnemy[i]->m_bTypeAttack = false;
 									}
 
-									//æ”»æ’ƒå‡¦ç†
+									//UŒ‚ˆ—
 									Battle(i, l, Ally);
 
 									break;
@@ -372,56 +372,56 @@ void CBattle::Update(void)
 							}
 						}
 					}
-					//æ”»æ’ƒã‚’ã—ã¦ã„ãªã‹ã£ãŸã‚‰
+					//UŒ‚‚ğ‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
 					if (!m_pEnemy[i]->m_bIsAttack)
 					{
-						//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+						//‘Šè‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 						if (m_pAllyLeader)
 						{
-							//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã ã£ãŸã‚‰
+							//‘Šè‚ÌƒŠ[ƒ_[‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚¾‚Á‚½‚ç
 							if (m_pAllyLeader->GetStatus() == St_Battle)
 							{
-								//æ”»æ’ƒå½“ãŸã‚Šåˆ¤å®šã«å…¥ã£ã¦ã‚‹ã‹ã©ã†ã‹
+								//UŒ‚“–‚½‚è”»’è‚É“ü‚Á‚Ä‚é‚©‚Ç‚¤‚©
 								if (m_pEnemy[i]->AtkCollisionCheck(m_pAllyLeader->GetSize(), m_pAllyLeader->GetPos()))
 								{
-									//æ”»æ’ƒã—ã¦ã„ã‚‹ã‹ã®åˆ¤å®šã‚’trueã«ã™ã‚‹
+									//UŒ‚‚µ‚Ä‚¢‚é‚©‚Ì”»’è‚ğtrue‚É‚·‚é
 									m_pEnemy[i]->m_bIsAttack = true;
 									m_pEnemy[i]->m_bTypeAttack = false;
 
-									//æ”»æ’ƒå‡¦ç†
+									//UŒ‚ˆ—
 									Battle(i, -1, AllyLeader);
 								}
 							}
 						}
 					}
 
-					//ç§»å‹•å‡¦ç†
+					//ˆÚ“®ˆ—
 					if (!m_pEnemy[i]->m_bIsAttack)
 					Move(i, Enemy);
 				}
 			}
 		}
 	}
-	//ç¯„å›²å¤–ã«å‡ºã¦ã„ãŸã‚‰ç¯„å›²å†…ã«è£œæ­£
+	//”ÍˆÍŠO‚Éo‚Ä‚¢‚½‚ç”ÍˆÍ“à‚É•â³
 	ScopeMove();
-	//ç”Ÿå­˜åˆ¤å®š
+	//¶‘¶”»’è
 	Alive();
-	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ›´æ–°å‡¦ç†
+	//ƒLƒƒƒ‰ƒNƒ^[‚ÌXVˆ—
 	CharacterUpdate();
-	//æˆ¦é—˜æ™‚é–“ã®æ›´æ–°
+	//í“¬ŠÔ‚ÌXV
 	m_nBattleTime++;
 
-	/*å‹æ•—åˆ¤å®š*/
-	//ã‚·ãƒ¼ãƒ³ãŒã‚²ãƒ¼ãƒ ã ã£ãŸã‚‰
+	/*Ÿ”s”»’è*/
+	//ƒV[ƒ“‚ªƒQ[ƒ€‚¾‚Á‚½‚ç
 	if (GetScene() == SCENE_GAME)
 	{
-		//æ•µã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒnullptrã«ãªã£ã¦ã„ãŸã‚‰
+		//“G‚ÌƒŠ[ƒ_[‚ªnullptr‚É‚È‚Á‚Ä‚¢‚½‚ç
 		if (m_pEnemyLeader == nullptr)
 		{
 			m_bWin = true;
 			m_bEnd = true;
 		}
-		//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒnullptrã«ãªã£ã¦ã„ãŸã‚‰
+		//–¡•û‚ÌƒŠ[ƒ_[‚ªnullptr‚É‚È‚Á‚Ä‚¢‚½‚ç
 		if (m_pAllyLeader == nullptr)
 		{
 			SetVolumeSE(m_pDeathSE);
@@ -432,30 +432,30 @@ void CBattle::Update(void)
 	}
 }
 
-//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ›´æ–°å‡¦ç†
+//ƒLƒƒƒ‰ƒNƒ^[‚ÌXVˆ—
 void CBattle::CharacterUpdate(bool AnimationFlag)
 {
-	//å‘³æ–¹ã®æ›´æ–°å‡¦ç†(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³)
+	//–¡•û‚ÌXVˆ—(ƒAƒjƒ[ƒVƒ‡ƒ“)
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
 		if (!m_pAlly[i])continue;
 		m_pAlly[i]->Update();
 	}
 
-	//æ•µã®æ›´æ–°å‡¦ç†(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³)
+	//“G‚ÌXVˆ—(ƒAƒjƒ[ƒVƒ‡ƒ“)
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
 		if (!m_pEnemy[i])continue;
 		m_pEnemy[i]->Update();
 	}
 
-	//æ•µã®ãƒªãƒ¼ãƒ€ãƒ¼ã®æ›´æ–°å‡¦ç†(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³)
+	//“G‚ÌƒŠ[ƒ_[‚ÌXVˆ—(ƒAƒjƒ[ƒVƒ‡ƒ“)
 	if (m_pEnemyLeader)
 	{
 		m_pEnemyLeader->Update();
 	}
 
-	//å‘³æ–¹ãƒªãƒ¼ãƒ€ãƒ¼ã®æ›´æ–°å‡¦ç†(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³)
+	//–¡•ûƒŠ[ƒ_[‚ÌXVˆ—(ƒAƒjƒ[ƒVƒ‡ƒ“)
 	if (m_pAllyLeader)
 	{
 		m_pAllyLeader->Update(m_bDrawingStart,m_bDrawingEnd);
@@ -466,67 +466,67 @@ void CBattle::CharacterUpdate(bool AnimationFlag)
 	}
 }
 
-//å‘³æ–¹ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æç”»å‡¦ç†
+//–¡•ûƒLƒƒƒ‰ƒNƒ^[‚Ì•`‰æˆ—
 void CBattle::CharacterDraw(void)
 {
-	//å‘³æ–¹ã®æç”»
+	//–¡•û‚Ì•`‰æ
 	//for (int i = 0; i < m_nAllyCount; i++)
 	//{
 	//	m_pAlly[i]->Draw();
 	//}
 }
 
-//æç”»å‡¦ç†
+//•`‰æˆ—
 void CBattle::Draw(void)
 {
-	//Zè»¸é †ã«æç”»
+	//Z²‡‚É•`‰æ
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
 
-		//å‘³æ–¹ã®æç”»
+		//–¡•û‚Ì•`‰æ
 		for (int i = 0; i < m_nAllyCount; i++)
 		{
-			//ç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+			//¶¬‚³‚ê‚Ä‚¢‚é‚©
 			if (!m_pAlly[i])continue;
-			//Zè»¸ã®ç¯„å›²åˆ¤å®š
+			//Z²‚Ì”ÍˆÍ”»’è
 			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
 			{
-				//æç”»å‡¦ç†
+				//•`‰æˆ—
 				m_pAlly[i]->Draw();
 			}
 		}
 
-		//æ•µã®æç”»
+		//“G‚Ì•`‰æ
 		for (int i = 0; i < m_nEnemyCount; i++)
 		{
-			//ç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+			//¶¬‚³‚ê‚Ä‚¢‚é‚©
 			if (!m_pEnemy[i])continue;
-			//Zè»¸ã®ç¯„å›²åˆ¤å®š
+			//Z²‚Ì”ÍˆÍ”»’è
 			if (m_pEnemy[i]->GetPos().z > Z - 1.0f && m_pEnemy[i]->GetPos().z < Z + 1.0f)
 			{
-				//æç”»å‡¦ç†
+				//•`‰æˆ—
 				m_pEnemy[i]->Draw();
 			}
 		}
 
-		//æ•µã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+		//“G‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 		if (m_pEnemyLeader)
 		{
-			//Zè»¸ã®ç¯„å›²åˆ¤å®š
+			//Z²‚Ì”ÍˆÍ”»’è
 			if (m_pEnemyLeader->GetPos().z > Z - 1.0f && m_pEnemyLeader->GetPos().z < Z + 1.0f)
 			{
-				//æç”»å‡¦ç†
+				//•`‰æˆ—
 				m_pEnemyLeader->Draw(m_nStageNum.StageMainNumber);
 			}
 		}
 
-		//å‘³æ–¹ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+		//–¡•ûƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 		if (m_pAllyLeader)
 		{
-			//Zè»¸ã®ç¯„å›²åˆ¤å®š
+			//Z²‚Ì”ÍˆÍ”»’è
 			if (m_pAllyLeader->GetPos().z > Z - 1.0f && m_pAllyLeader->GetPos().z < Z + 1.0f)
 			{
-				//æç”»å‡¦ç†
+				//•`‰æˆ—
 				m_pAllyLeader->Draw();
 			}
 		}
@@ -552,49 +552,49 @@ bool CBattle::GetEnd()
 
 void CBattle::ReLoadTexture(void)
 {
-	//å‘³æ–¹ãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//–¡•ûƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	for (int i = 0; i < m_pAlly.size(); i++)
 	{
 		m_pAlly[i]->SetReLoadFlag();
 	}
-	//æ•µãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//“Gƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	for (int i = 0; i < m_pEnemy.size(); i++)
 	{
 		m_pEnemy[i]->SetReLoadFlag();
 	}
-	//å‘³æ–¹ãƒªãƒ¼ãƒ€ãƒ¼ãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//–¡•ûƒŠ[ƒ_[ƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	if(m_pAllyLeader)m_pAllyLeader->SetReLoadFlag();
-	//æ•µãƒªãƒ¼ãƒ€ãƒ¼ãƒã‚¤ãƒ³ã‚¿ã®è§£æ”¾
+	//“GƒŠ[ƒ_[ƒ|ƒCƒ“ƒ^‚Ì‰ğ•ú
 	if (m_pEnemyLeader)m_pEnemyLeader->SetReLoadFlag();
 }
 
-//å‘³æ–¹ã®æƒ…å ±ä¿å­˜å‡¦ç†
+//–¡•û‚Ìî•ñ•Û‘¶ˆ—
 void CBattle::SaveAllyData(int InCornerCount,bool IsStella)
 {
-	//è§’æ•°æƒ…å ±ã®æ ¼ç´
+	//Šp”î•ñ‚ÌŠi”[
 	m_tAllyData[m_nAllyDateCount].nCornerCount = InCornerCount;
 	
-	//ã‚¹ãƒ†ãƒ©æƒ…å ±
+	//ƒXƒeƒ‰î•ñ
 	m_tAllyData[m_nAllyDateCount].bStellaBuff = IsStella;
 
-	//ä¿å­˜æ•°ã‚’åŠ ç®—
+	//•Û‘¶”‚ğ‰ÁZ
 	m_nAllyDateCount++;
 }
-//æ•µã®æƒ…å ±ä¿å­˜å‡¦ç†
+//“G‚Ìî•ñ•Û‘¶ˆ—
 //void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
 //{
-//	//è§’æ•°æƒ…å ±ã®ä¿å­˜
+//	//Šp”î•ñ‚Ì•Û‘¶
 //	m_tEnemyData[InPattern][m_nEnemyDateCount[InPattern]].nCornerCount = InCornerCount;
-//	//ä¿å­˜æ•°ã‚’åŠ ç®—
+//	//•Û‘¶”‚ğ‰ÁZ
 //	m_nEnemyDateCount[InPattern]++;
 //}
 
-//æˆ¦é—˜æ™‚é–“è»¸å‡¦ç†
+//í“¬ŠÔ²ˆ—
 void CBattle::TimeLapse(void)
 {
 	if (m_nBattleTime == Time(m_nSpawnTime))
 	{
-		//æ•µã®ç”Ÿæˆæ•°ã‚’æŒ‡å®š
+		//“G‚Ì¶¬”‚ğw’è
 		//m_nCreateEnemyNum = 4;
 		switch (m_nStageNum.StageMainNumber)
 		{
@@ -653,21 +653,21 @@ void CBattle::TimeLapse(void)
 	}
 }
 
-//å‘³æ–¹ã®ç”Ÿæˆå‡¦ç†
+//–¡•û‚Ì¶¬ˆ—
 void CBattle::CreateAlly(void)
 {
-	//ä¿å­˜æ¸ˆã¿æ•°åˆ†å‡¦ç†ã™ã‚‹
+	//•Û‘¶Ï‚İ”•ªˆ—‚·‚é
 	while (m_nAllyDateCount)
 	{
-		//ç”Ÿæˆã™ã‚‹
+		//¶¬‚·‚é
 		m_pAlly.push_back(new CAlly(m_tAllyData[0].nCornerCount,m_tAllyData[0].bStellaBuff));
 		//m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount);
 		
-		//ç”Ÿæˆæ•°ã‚’åŠ ç®—
+		//¶¬”‚ğ‰ÁZ
 		m_nAllyCount++;
-		//å¬å–šç·æ•°ã‚’åŠ ç®—
+		//¢Š«‘”‚ğ‰ÁZ
 		m_nSummonAllyCount++;
-		//ç”Ÿæˆã«ä½¿ç”¨ã—ãŸãŸã‚æƒ…å ±ã‚’æ¶ˆã—ã¦å¾Œã‚ã®æƒ…å ±ã‚’å‰è©°ã‚ã«ã™ã‚‹
+		//¶¬‚Ég—p‚µ‚½‚½‚ßî•ñ‚ğÁ‚µ‚ÄŒã‚ë‚Ìî•ñ‚ğ‘O‹l‚ß‚É‚·‚é
 		for (int i = 0; i + 1 <= m_nAllyDateCount; i++)
 		{
 			if (i + 1 == m_nAllyDateCount)
@@ -680,22 +680,22 @@ void CBattle::CreateAlly(void)
 				m_tAllyData[i] = m_tAllyData[i + 1];
 			}
 		}
-		//ä¿å­˜æ¸ˆã¿ã®ç·æ•°ã‚’æ¸›ã‚‰ã™
+		//•Û‘¶Ï‚İ‚Ì‘”‚ğŒ¸‚ç‚·
 		m_nAllyDateCount--;
 	}
 }
 
-//æ•µã®ç”Ÿæˆå‡¦ç†
+//“G‚Ì¶¬ˆ—
 void CBattle::CreateEnemy(void)
 {
-	//ç”Ÿæˆäºˆå®šæ•°åˆ†å‡¦ç†ã™ã‚‹
+	//¶¬—\’è”•ªˆ—‚·‚é
 	while (m_nCreateEnemyNum)
 	{
-		//ãƒ©ãƒ³ãƒ€ãƒ ãƒ”ãƒƒã‚¯ã—ãŸæ•°å­—ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+		//ƒ‰ƒ“ƒ_ƒ€ƒsƒbƒN‚µ‚½”š‚ğŠi”[‚·‚é•Ï”
 		int nRandNum = rand() % 100;
-		//æ•µã®è§’æ•°æŒ‡å®šå¤‰æ•°
+		//“G‚ÌŠp”w’è•Ï”
 		int EnemyCornerCount = 0;
-		//æ­©è¡Œã‚¿ã‚¤ãƒ—ã®ç¢ºç‡ã‚’è¨­å®š
+		//•àsƒ^ƒCƒv‚ÌŠm—¦‚ğİ’è
 		int Probability = 0;
 
 		switch (m_nStageNum.StageMainNumber)
@@ -726,93 +726,93 @@ void CBattle::CreateEnemy(void)
 			break;
 		}
 
-		//0 ï½ WALKENEMY_PROBABILITY ã¾ã§
+		//0 ` WALKENEMY_PROBABILITY ‚Ü‚Å
 		if (nRandNum < Probability)EnemyCornerCount = 3;
-		//ä¸Šä»¥é™ã‹ã‚‰99ã¾ã§
+		//ãˆÈ~‚©‚ç99‚Ü‚Å
 		else EnemyCornerCount = 4;
 
-		//ç”Ÿæˆã™ã‚‹
+		//¶¬‚·‚é
 		//m_pEnemy[m_nEnemyCount] = new CEnemy(EnemyCornerCount);
 		m_pEnemy.push_back(new CEnemy(EnemyCornerCount));
 
-		//ç”Ÿæˆæ•°ã‚’åŠ ç®—
+		//¶¬”‚ğ‰ÁZ
 		m_nEnemyCount++;
-		//ç”Ÿæˆäºˆå®šæ•°ã‚’æ¸›ã‚‰ã™
+		//¶¬—\’è”‚ğŒ¸‚ç‚·
 		m_nCreateEnemyNum--;
 	}
 }
 
-//ç´¢æ•µå‡¦ç†
+//õ“Gˆ—
 void CBattle::Search(int i, Entity Entity)
 {
-	//ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç•ªå·ã§å‡¦ç†ã‚’åˆ†ã‘ã‚‹
+	//ƒGƒ“ƒeƒBƒeƒB”Ô†‚Åˆ—‚ğ•ª‚¯‚é
 	switch (Entity)
 	{
-	/*å‘³æ–¹ã®åˆ¤å®š*/
+	/*–¡•û‚Ì”»’è*/
 	case CBattle::Ally:
-		//æ¨™çš„ç•ªå·ã®åˆæœŸåŒ–
+		//•W“I”Ô†‚Ì‰Šú‰»
 		m_pAlly[i]->m_nTargetNumber = -1;
 
-		//ç›¸æ‰‹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+		//‘Šè‚ğ¶¬‡‚Éˆ—
 		for (int l = 0; l < m_nEnemyCount; l++)
 		{
-			//ç›¸æ‰‹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã‹ã©ã†ã‹
+			//‘Šè‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚©‚Ç‚¤‚©
 			if (m_pEnemy[l]->GetStatus() == St_Battle)
 			{
-				//ç´¢æ•µå½“ãŸã‚Šåˆ¤å®šå†…ã«æ•µãŒã„ã‚‹ã‹ã©ã†ã‹
+				//õ“G“–‚½‚è”»’è“à‚É“G‚ª‚¢‚é‚©‚Ç‚¤‚©
 				if (m_pAlly[i]->SearchCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
 				{
-					//æ¨™çš„ç•ªå·ãŒã™ã§ã«ä¿å­˜æ¸ˆã¿ã‹ã©ã†ã‹
+					//•W“I”Ô†‚ª‚·‚Å‚É•Û‘¶Ï‚İ‚©‚Ç‚¤‚©
 					if (m_pAlly[i]->m_nTargetNumber != -1)
 					{
-						/*((æ•µã®Xä½ç½® - å‘³æ–¹ã®Xä½ç½®)+(æ•µã®Yä½ç½® - å‘³æ–¹ã®Yä½ç½®)) < ((æ¨™çš„ã®Xä½ç½® - å‘³æ–¹ã®Xä½ç½®)+(æ¨™çš„ã®Yä½ç½® - å‘³æ–¹ã®Yä½ç½®))*/
+						/*((“G‚ÌXˆÊ’u - –¡•û‚ÌXˆÊ’u)+(“G‚ÌYˆÊ’u - –¡•û‚ÌYˆÊ’u)) < ((•W“I‚ÌXˆÊ’u - –¡•û‚ÌXˆÊ’u)+(•W“I‚ÌYˆÊ’u - –¡•û‚ÌYˆÊ’u))*/
 						if (((m_pEnemy[l]->GetPos().x - m_pAlly[i]->GetPos().x) + (m_pEnemy[l]->GetPos().z - m_pAlly[i]->GetPos().z))
 							<
 							((m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().x - m_pAlly[i]->GetPos().x) + (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().z - m_pAlly[i]->GetPos().z)))
 						{
-							//æ¨™çš„ç•ªå·ã‚’æŒ‡å®š
+							//•W“I”Ô†‚ğw’è
 							m_pAlly[i]->m_nTargetNumber = l;
 						}
 					}
-					//ä¿å­˜ã—ã¦ã„ãªã‹ã£ãŸå ´åˆã¯
+					//•Û‘¶‚µ‚Ä‚¢‚È‚©‚Á‚½ê‡‚Í
 					else
 					{
-						//æ¨™çš„ç•ªå·ã‚’æŒ‡å®š
+						//•W“I”Ô†‚ğw’è
 						m_pAlly[i]->m_nTargetNumber = l;
 					}
 				}
 			}
 		}
 		break;
-		/*æ•µã®åˆ¤å®š*/
+		/*“G‚Ì”»’è*/
 	case CBattle::Enemy:
-		//æ¨™çš„ç•ªå·ã®åˆæœŸåŒ–
+		//•W“I”Ô†‚Ì‰Šú‰»
 		m_pEnemy[i]->m_nTargetNumber = -1;
-		//ç›¸æ‰‹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+		//‘Šè‚ğ¶¬‡‚Éˆ—
 		for (int l = 0; l < m_nAllyCount; l++)
 		{
-			//ç›¸æ‰‹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã‹ã©ã†ã‹
+			//‘Šè‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚©‚Ç‚¤‚©
 			if (m_pAlly[l]->GetStatus() == St_Battle)
 			{
-				//ç´¢æ•µå½“ãŸã‚Šåˆ¤å®šå†…ã«å‘³æ–¹ãŒã„ã‚‹ã‹ã©ã†ã‹
+				//õ“G“–‚½‚è”»’è“à‚É–¡•û‚ª‚¢‚é‚©‚Ç‚¤‚©
 				if (m_pEnemy[i]->SearchCollisionCheck(m_pAlly[l]->GetSize(),m_pAlly[l]->GetPos()))
 				{
-					//æ¨™çš„ç•ªå·ãŒã™ã§ã«ä¿å­˜æ¸ˆã¿ã‹ã©ã†ã‹
+					//•W“I”Ô†‚ª‚·‚Å‚É•Û‘¶Ï‚İ‚©‚Ç‚¤‚©
 					if (m_pEnemy[i]->m_nTargetNumber != -1)
 					{
-						/*(( æ•µã®Xä½ç½® - å‘³æ–¹ã®Xä½ç½®)+(æ•µã®Yä½ç½® - å‘³æ–¹ã®Yä½ç½®)) < ((æ•µã®Xä½ç½® - æ¨™çš„ã®Xä½ç½®)+(æ•µã®Yä½ç½® - æ¨™çš„ã®Yä½ç½®))*/
+						/*(( “G‚ÌXˆÊ’u - –¡•û‚ÌXˆÊ’u)+(“G‚ÌYˆÊ’u - –¡•û‚ÌYˆÊ’u)) < ((“G‚ÌXˆÊ’u - •W“I‚ÌXˆÊ’u)+(“G‚ÌYˆÊ’u - •W“I‚ÌYˆÊ’u))*/
 						if (((m_pEnemy[i]->GetPos().x - m_pAlly[l]->GetPos().x) + (m_pEnemy[i]->GetPos().z - m_pAlly[l]->GetPos().z))
 							<
 							((m_pEnemy[i]->GetPos().x - m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().x) + (m_pEnemy[i]->GetPos().z - m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().z)))
 						{
-							//æ¨™çš„ç•ªå·ã«æŒ‡å®š
+							//•W“I”Ô†‚Éw’è
 							m_pEnemy[i]->m_nTargetNumber = l;
 						}
 					}
-					//ä¿å­˜ã—ã¦ã„ãªã‹ã£ãŸå ´åˆã¯
+					//•Û‘¶‚µ‚Ä‚¢‚È‚©‚Á‚½ê‡‚Í
 					else
 					{
-						//æ¨™çš„ç•ªå·ã«æŒ‡å®š
+						//•W“I”Ô†‚Éw’è
 						m_pEnemy[i]->m_nTargetNumber = l;
 					}
 				}
@@ -822,34 +822,34 @@ void CBattle::Search(int i, Entity Entity)
 	}
 }
 
-//ç§»å‹•å‡¦ç†
+//ˆÚ“®ˆ—
 void CBattle::Move(int i, Entity Entity)
 {
-	//ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç•ªå·åˆ¥ã«å‡¦ç†
+	//ƒGƒ“ƒeƒBƒeƒB”Ô†•Ê‚Éˆ—
 	switch (Entity)
 	{
-		/*å‘³æ–¹ã®åˆ¤å®š*/
+		/*–¡•û‚Ì”»’è*/
 	case CBattle::Ally:
 		m_pAlly[i]->SetMoveFlag(false);
 
-		//ç§»å‹•ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ãŸã‚‰ç›®çš„åœ°æŒ‡å®šã®å‡¦ç†ã‚’é£›ã°ã™
+		//ˆÚ“®ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç–Ú“I’nw’è‚Ìˆ—‚ğ”ò‚Î‚·
 		if (!m_pAlly[i]->GetMoveFlag())
 		{
-			//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åŒå£«ãŒé‡ãªã£ã¦ã„ãŸå ´åˆã®ç§»å‹•å‡¦ç†ã‚’ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//ƒLƒƒƒ‰ƒNƒ^[“¯m‚ªd‚È‚Á‚Ä‚¢‚½ê‡‚ÌˆÚ“®ˆ—‚ğ‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (OverlapMove(i, Ally))
 			{
-				//æ¨™çš„ç•ªå·ã‚’è¨­å®šæ¸ˆã¿ã ã£ãŸå ´åˆ
+				//•W“I”Ô†‚ğİ’èÏ‚İ‚¾‚Á‚½ê‡
 				if (m_pAlly[i]->m_nTargetNumber != -1)
 				{
 					m_pAlly[i]->SetTargetPos(m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos());
 
-					//æ¨™çš„ç•ªå·ãŒç¾åœ¨ç”Ÿå­˜æ•°ã‚ˆã‚Šã‚‚æ•°å­—ãŒå¤§ãããªã„ã‹ã©ã†ã‹
+					//•W“I”Ô†‚ªŒ»İ¶‘¶”‚æ‚è‚à”š‚ª‘å‚«‚­‚È‚¢‚©‚Ç‚¤‚©
 					if (m_pAlly[i]->m_nTargetNumber < m_nEnemyCount)
 					{
 						DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
 						DirectX::XMFLOAT3 EnemyPos = m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos();
 
-						//æ•µã®ä½ç½®ã«MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+						//“G‚ÌˆÊ’u‚ÉMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 						if (iAllyPos.x > EnemyPos.x - 10.0f)
 						{
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
@@ -869,23 +869,23 @@ void CBattle::Move(int i, Entity Entity)
 							}
 						}
 					}
-					//æ•°å­—ãŒå¤§ãã‹ã£ãŸå ´åˆ
+					//”š‚ª‘å‚«‚©‚Á‚½ê‡
 					else
 					{
-						//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+						//‘Šè‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 						if (m_pEnemyLeader)
 						{
 							DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
 							DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
-							//è‡ªåˆ†ã®ä½ç½®ãŒæ•µã®ä¸€å®šã®ãƒ©ã‚¤ãƒ³ã¾ã§æ¥ãŸã‚‰
+							//©•ª‚ÌˆÊ’u‚ª“G‚Ìˆê’è‚Ìƒ‰ƒCƒ“‚Ü‚Å—ˆ‚½‚ç
 							if (m_pAlly[i]->GetPos().x > ENEMYBOSSCORE_POSX - 10)
 							{
 
-								//æ¨™çš„ãŒã„ãªã„ã®ã§ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã«å‘ã‹ã£ã¦MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+								//•W“I‚ª‚¢‚È‚¢‚Ì‚Å‘Šè‚ÌƒŠ[ƒ_[‚ÉŒü‚©‚Á‚ÄMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 							}
-							//ãã“ã‚ˆã‚Šæ‰‹å‰ã ã£ãŸã‚‰
+							//‚»‚±‚æ‚èè‘O‚¾‚Á‚½‚ç
 							else
 							{
 								if (m_pAlly[i]->m_bFirstBattlePosSetting)
@@ -909,10 +909,10 @@ void CBattle::Move(int i, Entity Entity)
 						}
 					}
 				}
-				//æ¨™çš„ç•ªå·ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸå ´åˆ
+				//•W“I”Ô†‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½ê‡
 				else
 				{
-					//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+					//‘Šè‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 					if (m_pEnemyLeader)
 					{
 						m_pAlly[i]->SetTargetPos(m_pEnemyLeader->GetPos());
@@ -920,15 +920,15 @@ void CBattle::Move(int i, Entity Entity)
 						DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
 						DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
 
-						//è‡ªåˆ†ã®ä½ç½®ãŒæ•µã®ä¸€å®šã®ãƒ©ã‚¤ãƒ³ã¾ã§æ¥ãŸã‚‰
+						//©•ª‚ÌˆÊ’u‚ª“G‚Ìˆê’è‚Ìƒ‰ƒCƒ“‚Ü‚Å—ˆ‚½‚ç
 						if (m_pAlly[i]->GetPos().x > ENEMYBOSSCORE_POSX - 10)
 						{
 
-							//æ¨™çš„ãŒã„ãªã„ã®ã§ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã«å‘ã‹ã£ã¦MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+							//•W“I‚ª‚¢‚È‚¢‚Ì‚Å‘Šè‚ÌƒŠ[ƒ_[‚ÉŒü‚©‚Á‚ÄMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
 							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
 						}
-						//ãã“ã‚ˆã‚Šæ‰‹å‰ã ã£ãŸã‚‰
+						//‚»‚±‚æ‚èè‘O‚¾‚Á‚½‚ç
 						else
 						{
 							if (m_pAlly[i]->m_bFirstBattlePosSetting)
@@ -954,14 +954,14 @@ void CBattle::Move(int i, Entity Entity)
 				}
 			}
 		}
-		else//ç›®çš„åœ°ã¸ç§»å‹•
+		else//–Ú“I’n‚ÖˆÚ“®
 		{
 			DirectX::XMFLOAT3 iEnemyPos = m_pAlly[i]->GetPos();
 			DirectX::XMFLOAT3 DestinationPos = m_pAlly[i]->GetDestinationPos();
 
 			m_pAlly[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
 			m_pAlly[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
-			//ç›®çš„åœ°ã®+-1.0fã®ç¯„å›²å†…ã«å…¥ã£ãŸã‚‰ç§»å‹•ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+			//–Ú“I’n‚Ì+-1.0f‚Ì”ÍˆÍ“à‚É“ü‚Á‚½‚çˆÚ“®ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
 			if (DestinationPos.x + 1.0f < m_pAlly[i]->GetPos().x && DestinationPos.x - 1.0f > m_pAlly[i]->GetPos().x)
 			{
 				if (DestinationPos.y + 5.0f < m_pAlly[i]->GetPos().y && DestinationPos.y - 5.0f > m_pAlly[i]->GetPos().y)
@@ -974,33 +974,33 @@ void CBattle::Move(int i, Entity Entity)
 			}
 		}
 		break;
-		/*æ•µã®åˆ¤å®š*/
+		/*“G‚Ì”»’è*/
 	case CBattle::Enemy:
 
 		m_pEnemy[i]->SetMoveFlag(false);
 
-		//ç§»å‹•ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ãŸã‚‰ç›®çš„åœ°æŒ‡å®šã®å‡¦ç†ã‚’é£›ã°ã™
+		//ˆÚ“®ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç–Ú“I’nw’è‚Ìˆ—‚ğ”ò‚Î‚·
 		if (!m_pEnemy[i]->GetMoveFlag())
 		{
-			//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åŒå£«ãŒé‡ãªã£ã¦ã„ãŸå ´åˆã®ç§»å‹•å‡¦ç†ã‚’ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//ƒLƒƒƒ‰ƒNƒ^[“¯m‚ªd‚È‚Á‚Ä‚¢‚½ê‡‚ÌˆÚ“®ˆ—‚ğ‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (OverlapMove(i, Enemy))
 			{
-				//æ¨™çš„ç•ªå·ã‚’è¨­å®šæ¸ˆã¿ã ã£ãŸå ´åˆ
+				//•W“I”Ô†‚ğİ’èÏ‚İ‚¾‚Á‚½ê‡
 				if (m_pEnemy[i]->m_nTargetNumber != -1)
 				{
 					m_pEnemy[i]->SetTargetPos(m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos());
 
-					//æ¨™çš„ç•ªå·ãŒç¾åœ¨ç”Ÿå­˜æ•°ã‚ˆã‚Šã‚‚æ•°å­—ãŒå¤§ãããªã„ã‹ã©ã†ã‹
+					//•W“I”Ô†‚ªŒ»İ¶‘¶”‚æ‚è‚à”š‚ª‘å‚«‚­‚È‚¢‚©‚Ç‚¤‚©
 					if (m_pEnemy[i]->m_nTargetNumber < m_nAllyCount)
 					{
 						DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
 						DirectX::XMFLOAT3 AllyPos = m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos();
 
-						//æ¨™çš„ã®ä½ç½®ã«MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+						//•W“I‚ÌˆÊ’u‚ÉMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 						//m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
 						//m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
 						
-						//æ•µã®ä½ç½®ã«MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+						//“G‚ÌˆÊ’u‚ÉMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 						if (iEnemyPos.x > AllyPos.x - 10)
 						{
 							m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
@@ -1021,24 +1021,24 @@ void CBattle::Move(int i, Entity Entity)
 						}
 
 					}
-					//æ•°å­—ãŒå¤§ãã‹ã£ãŸå ´åˆ
+					//”š‚ª‘å‚«‚©‚Á‚½ê‡
 					else
 					{
-						//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+						//‘Šè‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 						if (m_pAllyLeader)
 						{
 							DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
 							DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
 
-							//è‡ªåˆ†ã®ä½ç½®ãŒæ•µã®ä¸€å®šã®ãƒ©ã‚¤ãƒ³ã¾ã§æ¥ãŸã‚‰
+							//©•ª‚ÌˆÊ’u‚ª“G‚Ìˆê’è‚Ìƒ‰ƒCƒ“‚Ü‚Å—ˆ‚½‚ç
 							if (m_pEnemy[i]->GetPos().x < ALLYCORE_POSX + 10)
 							{
 
-								//æ¨™çš„ãŒã„ãªã„ã®ã§ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã«å‘ã‹ã£ã¦MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+								//•W“I‚ª‚¢‚È‚¢‚Ì‚Å‘Šè‚ÌƒŠ[ƒ_[‚ÉŒü‚©‚Á‚ÄMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
 								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
 							}
-							//ãã“ã‚ˆã‚Šæ‰‹å‰ã ã£ãŸã‚‰
+							//‚»‚±‚æ‚èè‘O‚¾‚Á‚½‚ç
 							else
 							{
 								if (m_pEnemy[i]->m_bFirstBattlePosSetting)
@@ -1062,10 +1062,10 @@ void CBattle::Move(int i, Entity Entity)
 						}
 					}
 				}
-				//æ¨™çš„ç•ªå·ã‚’è¨­å®šã—ã¦ã„ãªã‹ã£ãŸå ´åˆ
+				//•W“I”Ô†‚ğİ’è‚µ‚Ä‚¢‚È‚©‚Á‚½ê‡
 				else
 				{
-					//ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+					//‘Šè‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 					if (m_pAllyLeader)
 					{
 						m_pEnemy[i]->SetTargetPos(m_pAllyLeader->GetPos());
@@ -1073,15 +1073,15 @@ void CBattle::Move(int i, Entity Entity)
 						DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
 						DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
 
-						//è‡ªåˆ†ã®ä½ç½®ãŒæ•µã®ä¸€å®šã®ãƒ©ã‚¤ãƒ³ã¾ã§æ¥ãŸã‚‰
+						//©•ª‚ÌˆÊ’u‚ª“G‚Ìˆê’è‚Ìƒ‰ƒCƒ“‚Ü‚Å—ˆ‚½‚ç
 						if (m_pEnemy[i]->GetPos().x < ALLYCORE_POSX + 10)
 						{
 
-							//æ¨™çš„ãŒã„ãªã„ã®ã§ç›¸æ‰‹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã«å‘ã‹ã£ã¦MOVESPEEDã®å¤§ãã•ã§é€²ã‚€
+							//•W“I‚ª‚¢‚È‚¢‚Ì‚Å‘Šè‚ÌƒŠ[ƒ_[‚ÉŒü‚©‚Á‚ÄMOVESPEED‚Ì‘å‚«‚³‚Åi‚Ş
 							m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
 							m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
 						}
-						//ãã“ã‚ˆã‚Šæ‰‹å‰ã ã£ãŸã‚‰
+						//‚»‚±‚æ‚èè‘O‚¾‚Á‚½‚ç
 						else
 						{
 							if (m_pEnemy[i]->m_bFirstBattlePosSetting)
@@ -1106,7 +1106,7 @@ void CBattle::Move(int i, Entity Entity)
 				}
 			}
 		}
-		else//ç›®çš„åœ°ã¸ç§»å‹•
+		else//–Ú“I’n‚ÖˆÚ“®
 		{
 			DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
 			DirectX::XMFLOAT3 DestinationPos = m_pEnemy[i]->GetDestinationPos();
@@ -1114,7 +1114,7 @@ void CBattle::Move(int i, Entity Entity)
 			m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
 			m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
 
-			//ç›®çš„åœ°ã®+-1.0fã®ç¯„å›²å†…ã«å…¥ã£ãŸã‚‰ç§»å‹•ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+			//–Ú“I’n‚Ì+-1.0f‚Ì”ÍˆÍ“à‚É“ü‚Á‚½‚çˆÚ“®ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
 			if (DestinationPos.x + 1.0f < m_pEnemy[i]->GetPos().x && DestinationPos.x - 1.0f > m_pEnemy[i]->GetPos().x)
 			{
 				if (DestinationPos.y + 5.0f < m_pEnemy[i]->GetPos().y && DestinationPos.y - 5.0f > m_pEnemy[i]->GetPos().y)
@@ -1130,41 +1130,41 @@ void CBattle::Move(int i, Entity Entity)
 	}
 }
 
-//é‡ãªã£ã¦ã„ãŸå ´åˆã®è£œæ­£ç§»å‹•å‡¦ç†
+//d‚È‚Á‚Ä‚¢‚½ê‡‚Ì•â³ˆÚ“®ˆ—
 bool CBattle::OverlapMove(int i, Entity Entity)
 {
-	//ç§»å‹•å…ˆã®åº§æ¨™ä¿å­˜å¤‰æ•°
+	//ˆÚ“®æ‚ÌÀ•W•Û‘¶•Ï”
 	DirectX::XMFLOAT3 m_tMovePos;
 	float comparison;
 
-	////Zè»¸é †ã«ç¢ºèª
+	////Z²‡‚ÉŠm”F
 	//for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	//{
-		//ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç•ªå·åˆ¥ã«å‡¦ç†
+		//ƒGƒ“ƒeƒBƒeƒB”Ô†•Ê‚Éˆ—
 	switch (Entity)
 	{
-		/*å‘³æ–¹ã®å‡¦ç†*/
+		/*–¡•û‚Ìˆ—*/
 	case CBattle::Ally:
-		//ç”Ÿæˆé †ã«åˆ¤å®š
+		//¶¬‡‚É”»’è
 		for (int l = 0; l < m_nAllyCount; l++)
 		{
-			//å­˜åœ¨ã—ã¦ã„ã‚‹ã‹ç¢ºèª
+			//‘¶İ‚µ‚Ä‚¢‚é‚©Šm”F
 			if (!m_pAlly[l])continue;
-			//è‡ªåˆ†ã¨åŒã˜ç•ªå·ã®å ´åˆã¯å‡¦ç†ã—ãªã„
+			//©•ª‚Æ“¯‚¶”Ô†‚Ìê‡‚Íˆ—‚µ‚È‚¢
 			if (l == i)continue;
 
 			DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
 			DirectX::XMFLOAT3 AllyPos = m_pAlly[l]->GetPos();
 			DirectX::XMFLOAT3 AllySize = m_pAlly[l]->GetSize();
 
-			////Zè»¸ã®ç¯„å›²åˆ¤å®š
+			////Z²‚Ì”ÍˆÍ”»’è
 			//if (AllyPos.z > Z - 1.0f && AllyPos.z < Z + 1.0f)
 			//{
-				//è‡ªåˆ†ã®ä½ç½®ã‹ã‚‰åœ§å€’çš„ã«é›¢ã‚Œã¦ã„ã‚‹ã‚‚ã®ã¯åˆ¤å®šã—ãªã„
+				//©•ª‚ÌˆÊ’u‚©‚çˆ³“|“I‚É—£‚ê‚Ä‚¢‚é‚à‚Ì‚Í”»’è‚µ‚È‚¢
 			if (iAllyPos.x + 1.0f < AllyPos.x || iAllyPos.x - 1.0f > AllyPos.x)continue;
 			if (iAllyPos.z + 1.0f < AllyPos.z || iAllyPos.z - 1.0f > AllyPos.z)continue;
 
-			//ä¸­å¿ƒä½ç½®ã‹ã‚‰è‡ªåˆ†ã®ä½ç½®ãŒç›¸æ‰‹ã®ä½ç½®ã‚ˆã‚Šè¿‘ã„ã¯å‡¦ç†ã—ãªã„
+			//’†SˆÊ’u‚©‚ç©•ª‚ÌˆÊ’u‚ª‘Šè‚ÌˆÊ’u‚æ‚è‹ß‚¢‚Íˆ—‚µ‚È‚¢
 			float Z1 = iAllyPos.z;
 			float Z2 = AllyPos.z;
 
@@ -1173,10 +1173,10 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 
 			if (Z1 >= Z2)continue;
 
-			//é‡ãªã£ã¦ã„ã‚‹ã‹ç¢ºèª
+			//d‚È‚Á‚Ä‚¢‚é‚©Šm”F
 			if (m_pAlly[i]->OverlapCheck(AllyPos, AllySize))
 			{
-				//ç›®çš„åœ°å…ˆã®åº§æ¨™æ ¼ç´
+				//–Ú“I’næ‚ÌÀ•WŠi”[
 				DirectX::XMFLOAT3 DestinationPos;
 				DestinationPos.x = iAllyPos.x + ((iAllyPos.x - AllyPos.x));
 				DestinationPos.y = iAllyPos.y;
@@ -1185,9 +1185,9 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				//m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, DestinationPos).x);
 				//m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, DestinationPos).z);
 
-				//è£œæ­£ç§»å‹•å…ˆã‚’ç›®çš„åœ°ã«ç§»å‹•
+				//•â³ˆÚ“®æ‚ğ–Ú“I’n‚ÉˆÚ“®
 				m_pAlly[i]->SetDestinationPos(DestinationPos);
-				//ç§»å‹•ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+				//ˆÚ“®ƒtƒ‰ƒO‚ğ—§‚Ä‚é
 				m_pAlly[i]->SetMoveFlag(true);
 
 				return false;
@@ -1195,28 +1195,28 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 			//}
 		}
 		break;
-		/*æ•µã®å‡¦ç†*/
+		/*“G‚Ìˆ—*/
 	case CBattle::Enemy:
-		//å‰ã‹ã‚‰é †ç•ªã«é‡ãªã£ã¦ã„ã‚‹å¥´ãŒã„ãªã„ã‹ç¢ºèª
+		//‘O‚©‚ç‡”Ô‚Éd‚È‚Á‚Ä‚¢‚é“z‚ª‚¢‚È‚¢‚©Šm”F
 		for (int l = 0; l < m_nEnemyCount; l++)
 		{
-			//å­˜åœ¨ã—ã¦ã„ã‚‹ã‹ç¢ºèª
+			//‘¶İ‚µ‚Ä‚¢‚é‚©Šm”F
 			if (!m_pEnemy[l])continue;
-			//è‡ªåˆ†ã¨åŒã˜ç•ªå·ã®å ´åˆã¯å‡¦ç†ã—ãªã„
+			//©•ª‚Æ“¯‚¶”Ô†‚Ìê‡‚Íˆ—‚µ‚È‚¢
 			if (l == i)continue;
 
 			DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
 			DirectX::XMFLOAT3 EnemyPos = m_pEnemy[l]->GetPos();
 			DirectX::XMFLOAT3 EnemySize = m_pEnemy[l]->GetSize();
 
-			////Zè»¸ã®ç¯„å›²åˆ¤å®š
+			////Z²‚Ì”ÍˆÍ”»’è
 			//if (EnemyPos.z > Z - 1.0f && EnemyPos.z < Z + 1.0f)
 			//{
-				//è‡ªåˆ†ã®ä½ç½®ã‹ã‚‰åœ§å€’çš„ã«é›¢ã‚Œã¦ã„ã‚‹ã‚‚ã®ã¯åˆ¤å®šã—ãªã„
+				//©•ª‚ÌˆÊ’u‚©‚çˆ³“|“I‚É—£‚ê‚Ä‚¢‚é‚à‚Ì‚Í”»’è‚µ‚È‚¢
 			if (iEnemyPos.x + 1.0f < EnemyPos.x || iEnemyPos.x - 1.0f > EnemyPos.x)continue;
 			if (iEnemyPos.z + 1.0f < EnemyPos.z || iEnemyPos.z - 1.0f > EnemyPos.z)continue;
 
-			//ä¸­å¿ƒä½ç½®ã‹ã‚‰è‡ªåˆ†ã®ä½ç½®ãŒç›¸æ‰‹ã®ä½ç½®ã‚ˆã‚Šè¿‘ã„ã¯å‡¦ç†ã—ãªã„
+			//’†SˆÊ’u‚©‚ç©•ª‚ÌˆÊ’u‚ª‘Šè‚ÌˆÊ’u‚æ‚è‹ß‚¢‚Íˆ—‚µ‚È‚¢
 			float Z1 = iEnemyPos.z;
 			float Z2 = EnemyPos.z;
 
@@ -1225,10 +1225,10 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 
 			if (Z1 >= Z2)continue;
 
-			//é‡ãªã£ã¦ã„ã‚‹ã‹ç¢ºèª
+			//d‚È‚Á‚Ä‚¢‚é‚©Šm”F
 			if (m_pEnemy[i]->OverlapCheck(EnemyPos, EnemySize))
 			{
-				//ç›®çš„åœ°å…ˆã®åº§æ¨™æ ¼ç´
+				//–Ú“I’næ‚ÌÀ•WŠi”[
 				DirectX::XMFLOAT3 DestinationPos;
 				DestinationPos.x = iEnemyPos.x + ((iEnemyPos.x - EnemyPos.x));
 				DestinationPos.y = iEnemyPos.y;
@@ -1237,9 +1237,9 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 				//m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
 				//m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
 
-				//è£œæ­£ç§»å‹•å…ˆã‚’ç›®çš„åœ°ã«ç§»å‹•
+				//•â³ˆÚ“®æ‚ğ–Ú“I’n‚ÉˆÚ“®
 				m_pEnemy[i]->SetDestinationPos(DestinationPos);
-				//ç§»å‹•ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+				//ˆÚ“®ƒtƒ‰ƒO‚ğ—§‚Ä‚é
 				m_pEnemy[i]->SetMoveFlag(true);
 
 				return false;
@@ -1250,27 +1250,27 @@ bool CBattle::OverlapMove(int i, Entity Entity)
 		//}
 	}
 
-	//ç§»å‹•ã‚’ã—ãŸã‹ã©ã†ã‹ã‚’è¿”ã™
+	//ˆÚ“®‚ğ‚µ‚½‚©‚Ç‚¤‚©‚ğ•Ô‚·
 	return true;
 }
 
-//ç¯„å›²å†…è£œæ­£å‡¦ç†
+//”ÍˆÍ“à•â³ˆ—
 void CBattle::ScopeMove()
 {
-	//ç”Ÿæˆã•ã‚ŒãŸé †ã«å‰ã«ã™ã‚‹ãŸã‚ã«å¾Œã‚ã®ã‚„ã¤ã‹ã‚‰è£œæ­£ã—ã¦ã„ã
+	//¶¬‚³‚ê‚½‡‚É‘O‚É‚·‚é‚½‚ß‚ÉŒã‚ë‚Ì‚â‚Â‚©‚ç•â³‚µ‚Ä‚¢‚­
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
-		//å­˜åœ¨ã—ã¦ã„ã‚‹ã‹ç¢ºèª
+		//‘¶İ‚µ‚Ä‚¢‚é‚©Šm”F
 		if (!m_pAlly[i])continue;
 
 		float posz = m_pAlly[i]->GetPos().z;
 
-		//å¥¥è¡ŒããŒç¯„å›²å¤–		
+		//‰œs‚«‚ª”ÍˆÍŠO		
 		if (posz > BATTLE_Z)
 		{
 			m_pAlly[i]->SetPosZ(BATTLE_Z);
 		}
-		//æ‰‹å‰ãŒç¯„å›²å¤–
+		//è‘O‚ª”ÍˆÍŠO
 		if (posz < -BATTLE_Z)
 		{
 			m_pAlly[i]->SetPosZ(-BATTLE_Z);
@@ -1279,17 +1279,17 @@ void CBattle::ScopeMove()
 
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
-		//å­˜åœ¨ã—ã¦ã„ã‚‹ã‹ç¢ºèª
+		//‘¶İ‚µ‚Ä‚¢‚é‚©Šm”F
 		if (!m_pEnemy[i])continue;
 
 		float posz = m_pEnemy[i]->GetPos().z;
 
-		//å¥¥è¡ŒããŒç¯„å›²å¤–
+		//‰œs‚«‚ª”ÍˆÍŠO
 		if (posz > BATTLE_Z)
 		{
 			m_pEnemy[i]->SetPosZ(BATTLE_Z);
 		}
-		//æ‰‹å‰ãŒç¯„å›²å¤–
+		//è‘O‚ª”ÍˆÍŠO
 		if (posz < -BATTLE_Z)
 		{
 			m_pEnemy[i]->SetPosZ(-BATTLE_Z);
@@ -1297,85 +1297,85 @@ void CBattle::ScopeMove()
 	}
 }
 
-//æˆ¦é—˜å‡¦ç†
+//í“¬ˆ—
 void CBattle::Battle(int i, int l, Entity Entity)
 {
-	//ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç•ªå·åˆ¥ã«å‡¦ç†
+	//ƒGƒ“ƒeƒBƒeƒB”Ô†•Ê‚Éˆ—
 	switch (Entity)
 	{
-	//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒæ”»æ’ƒã•ã‚Œã‚‹
+	//–¡•û‚ÌƒŠ[ƒ_[‚ªUŒ‚‚³‚ê‚é
 	case AllyLeader:
-		//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹
+		//–¡•û‚ÌƒŠ[ƒ_[‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©
 		if (m_pAllyLeader)
 		{
-			//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒãŸã¾ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//UŒ‚ƒ`ƒƒ[ƒW‚ª‚½‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (m_pEnemy[i]->GetAtkCharge() >= m_pEnemy[i]->GetCoolTime())
 			{
 				
-				//ç›¸æ‰‹ã®ä½“åŠ›ã‚’æ¸›ã‚‰ã™
+				//‘Šè‚Ì‘Ì—Í‚ğŒ¸‚ç‚·
 				m_pAllyLeader->Damage(m_pEnemy[i]);
-				//æ”»æ’ƒã—ãŸã®ã§ãƒãƒ£ãƒ¼ã‚¸ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+				//UŒ‚‚µ‚½‚Ì‚Åƒ`ƒƒ[ƒW‚ğƒŠƒZƒbƒg‚·‚é
 				m_pEnemy[i]->ChargeReset();
 			}
-			//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒæºœã¾ã£ã¦ã„ãªã‹ã£ãŸã‚‰
+			//UŒ‚ƒ`ƒƒ[ƒW‚ª—­‚Ü‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
 			else
 			{
-				//ãƒãƒ£ãƒ¼ã‚¸ã™ã‚‹
+				//ƒ`ƒƒ[ƒW‚·‚é
 				m_pEnemy[i]->AddAtkCharge();
 			}
 		}
 		break;
-		//æ•µã®ãƒœã‚¹ãŒæ”»æ’ƒã•ã‚Œã‚‹
+		//“G‚Ìƒ{ƒX‚ªUŒ‚‚³‚ê‚é
 	case CBattle::EnemyLeader:
 		if (m_pEnemyLeader)
 		{
-			//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒãŸã¾ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//UŒ‚ƒ`ƒƒ[ƒW‚ª‚½‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())
 			{
-				//ç›¸æ‰‹ã®ä½“åŠ›ã‚’æ¸›ã‚‰ã™
+				//‘Šè‚Ì‘Ì—Í‚ğŒ¸‚ç‚·
 				m_pEnemyLeader->Damage(m_pAlly[i]);
-				//æ”»æ’ƒã—ãŸã®ã§ãƒãƒ£ãƒ¼ã‚¸ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+				//UŒ‚‚µ‚½‚Ì‚Åƒ`ƒƒ[ƒW‚ğƒŠƒZƒbƒg‚·‚é
 				m_pAlly[i]->ChargeReset();
 			}
-			//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒæºœã¾ã£ã¦ã„ãªã‹ã£ãŸã‚‰
+			//UŒ‚ƒ`ƒƒ[ƒW‚ª—­‚Ü‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
 			else
 			{
-				//ãƒãƒ£ãƒ¼ã‚¸ã™ã‚‹
+				//ƒ`ƒƒ[ƒW‚·‚é
 				m_pAlly[i]->AddAtkCharge();
 			}
 		}
 		break;
-		//å‘³æ–¹ãŒæ”»æ’ƒã•ã‚Œã‚‹
+		//–¡•û‚ªUŒ‚‚³‚ê‚é
 	case CBattle::Ally:
-		//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒãŸã¾ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+		//UŒ‚ƒ`ƒƒ[ƒW‚ª‚½‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 		if (m_pEnemy[i]->GetAtkCharge() >= m_pEnemy[i]->GetCoolTime())
 		{
-			//ç›¸æ‰‹ã®ä½“åŠ›ã‚’æ¸›ã‚‰ã™
+			//‘Šè‚Ì‘Ì—Í‚ğŒ¸‚ç‚·
 			m_pAlly[l]->Damage(m_pEnemy[i]);
-			//æ”»æ’ƒã—ãŸã®ã§ãƒãƒ£ãƒ¼ã‚¸ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+			//UŒ‚‚µ‚½‚Ì‚Åƒ`ƒƒ[ƒW‚ğƒŠƒZƒbƒg‚·‚é
 			m_pEnemy[i]->ChargeReset();
 		}
-		//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒæºœã¾ã£ã¦ã„ãªã‹ã£ãŸã‚‰
+		//UŒ‚ƒ`ƒƒ[ƒW‚ª—­‚Ü‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
 		else
 		{
-			//ãƒãƒ£ãƒ¼ã‚¸ã™ã‚‹
+			//ƒ`ƒƒ[ƒW‚·‚é
 			m_pEnemy[i]->AddAtkCharge();
 		}
 		break;
-		//æ•µã®æ”»æ’ƒ
+		//“G‚ÌUŒ‚
 	case CBattle::Enemy:
-		//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒãŸã¾ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+		//UŒ‚ƒ`ƒƒ[ƒW‚ª‚½‚Ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 		if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())
 		{
-			//ç›¸æ‰‹ã®ä½“åŠ›ã‚’æ¸›ã‚‰ã™
+			//‘Šè‚Ì‘Ì—Í‚ğŒ¸‚ç‚·
 			m_pEnemy[l]->Damage(m_pAlly[i]);
-			//æ”»æ’ƒã—ãŸã®ã§ãƒãƒ£ãƒ¼ã‚¸ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+			//UŒ‚‚µ‚½‚Ì‚Åƒ`ƒƒ[ƒW‚ğƒŠƒZƒbƒg‚·‚é
 			m_pAlly[i]->ChargeReset();
 		}
-		//æ”»æ’ƒãƒãƒ£ãƒ¼ã‚¸ãŒæºœã¾ã£ã¦ã„ãªã‹ã£ãŸã‚‰
+		//UŒ‚ƒ`ƒƒ[ƒW‚ª—­‚Ü‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
 		else
 		{
-			//ãƒãƒ£ãƒ¼ã‚¸ã™ã‚‹
+			//ƒ`ƒƒ[ƒW‚·‚é
 			m_pAlly[i]->AddAtkCharge();
 		}
 		break;
@@ -1384,107 +1384,104 @@ void CBattle::Battle(int i, int l, Entity Entity)
 
 void CBattle::Alive(void)
 {
-	//å‘³æ–¹åˆ¤å®š
+	//–¡•û”»’è
 	for (int l = 0; l < m_nAllyCount; l++)
 	{
-		//å‘³æ–¹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã‹ã©ã†ã‹
+		//–¡•û‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚©‚Ç‚¤‚©
 		if (m_pAlly[l]->GetStatus() == St_Battle)
 		{
-			//å‘³æ–¹ã®ä½“åŠ›ãŒæ®‹ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//–¡•û‚Ì‘Ì—Í‚ªc‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (m_pAlly[l]->GetHp() <= 0.0f)
 			{
 				m_pAlly[l]->m_bIsDeath = true;
-				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æ­»äº¡çŠ¶æ…‹ã«ã™ã‚‹
+				//ƒXƒe[ƒ^ƒX‚ğ€–Só‘Ô‚É‚·‚é
 				m_pAlly[l]->SetStatus(St_Death);
 				//m_pAlly[l]->PlayDeathEffect();
 			}
 		}
 	}
-	//æ•µã®åˆ¤å®š
+	//“G‚Ì”»’è
 	for (int l = 0; l < m_nEnemyCount; l++)
 	{
-		//æ•µã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã‹ã©ã†ã‹
+		//“G‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚©‚Ç‚¤‚©
 		if (m_pEnemy[l]->GetStatus() == St_Battle)
 		{
-			//æ•µã®ä½“åŠ›ãŒæ®‹ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//“G‚Ì‘Ì—Í‚ªc‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (m_pEnemy[l]->GetHp() <= 0.0f)
 			{
-
-				m_pEnemy[l]->m_bIsAnimationFlag[(int)CharacterAnimation::Death] = true;
-
-				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æ­»äº¡çŠ¶æ…‹ã«ã™ã‚‹
+				//ƒXƒe[ƒ^ƒX‚ğ€–Só‘Ô‚É‚·‚é
 				m_pEnemy[l]->SetStatus(St_Death);
 				//m_pEnemy[l]->PlayDeathEffect();
 			}
 		}
 	}
-	//æ•µã®ãƒªãƒ¼ãƒ€ãƒ¼ã®åˆ¤å®š
+	//“G‚ÌƒŠ[ƒ_[‚Ì”»’è
 	if (m_pEnemyLeader)
 	{
-		//æ•µã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã‹ã©ã†ã‹
+		//“G‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚©‚Ç‚¤‚©
 		if (m_pEnemyLeader->GetStatus() == St_Battle)
 		{
-			//æ•µã®ä½“åŠ›ãŒæ®‹ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//“G‚Ì‘Ì—Í‚ªc‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (m_pEnemyLeader->GetHp() <= 0.0f || WinEndCommand())
 			{
-				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æ­»äº¡çŠ¶æ…‹ã«ã™ã‚‹
+				//ƒXƒe[ƒ^ƒX‚ğ€–Só‘Ô‚É‚·‚é
 				m_pEnemyLeader->SetStatus(St_Death);
 			}
 		}
 	}
-	//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã®åˆ¤å®š
+	//–¡•û‚ÌƒŠ[ƒ_[‚Ì”»’è
 	if (m_pAllyLeader)
 	{
-		//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒBattleã‹ã©ã†ã‹
+		//–¡•û‚ÌƒŠ[ƒ_[‚ÌƒXƒe[ƒ^ƒX‚ªBattle‚©‚Ç‚¤‚©
 		if (m_pAllyLeader->GetStatus() == St_Battle)
 		{
-			//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã®ä½“åŠ›ãŒæ®‹ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
+			//–¡•û‚ÌƒŠ[ƒ_[‚Ì‘Ì—Í‚ªc‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 			if (m_pAllyLeader->GetHp() <= 0.0f || LoseEndCommand())
 			{
-				//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’æ­»äº¡çŠ¶æ…‹ã«ã™ã‚‹
+				//ƒXƒe[ƒ^ƒX‚ğ€–Só‘Ô‚É‚·‚é
 				m_pAllyLeader->SetStatus(St_Death);
 			}
 		}
 	}
 }
 
-//å‰Šé™¤å‡¦ç†
+//íœˆ—
 void CBattle::Delete(void)
 {
-	//å‘³æ–¹ã®ç”Ÿå­˜åˆ¤å®š
+	//–¡•û‚Ì¶‘¶”»’è
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
-		//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒDeleteã‹ã©ã†ã‹
+		//ƒXƒe[ƒ^ƒX‚ªDelete‚©‚Ç‚¤‚©
 		if (m_pAlly[i]->GetStatus() == St_Delete)
 		{
 			m_pAlly.erase(m_pAlly.begin() + i);
-			//ä»Šã„ã‚‹ç”Ÿå­˜æ•°ã‚’æ¸›ã‚‰ã™
+			//¡‚¢‚é¶‘¶”‚ğŒ¸‚ç‚·
 			m_nAllyCount--;
-			//å‰è©°ã‚ã•ã‚ŒãŸã®ã§ã‚‚ã†ä¸€åº¦åŒã˜å ´æ‰€ã‚’å‡¦ç†ã™ã‚‹
+			//‘O‹l‚ß‚³‚ê‚½‚Ì‚Å‚à‚¤ˆê“x“¯‚¶êŠ‚ğˆ—‚·‚é
 			i--;
 		}
 	}
-	//æ•µã®ç”Ÿå­˜åˆ¤å®š
+	//“G‚Ì¶‘¶”»’è
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
-		//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒDeleteã‹ã©ã†ã‹
+		//ƒXƒe[ƒ^ƒX‚ªDelete‚©‚Ç‚¤‚©
 		if (m_pEnemy[i]->GetStatus() == St_Delete)		
 		{
-			//è§£æ”¾å‡¦ç†
+			//‰ğ•úˆ—
 			m_pEnemy.erase(m_pEnemy.begin() + i);
-			//ä»Šã„ã‚‹ç”Ÿå­˜æ•°ã‚’æ¸›ã‚‰ã™
+			//¡‚¢‚é¶‘¶”‚ğŒ¸‚ç‚·
 			m_nEnemyCount--;
-			//å‰è©°ã‚ã•ã‚ŒãŸã®ã§ã‚‚ã†ä¸€åº¦åŒã˜å ´æ‰€ã‚’å‡¦ç†ã™ã‚‹
+			//‘O‹l‚ß‚³‚ê‚½‚Ì‚Å‚à‚¤ˆê“x“¯‚¶êŠ‚ğˆ—‚·‚é
 			i--;
 		}
 	}
-	//æ•µãƒœã‚¹ã®ç”Ÿå­˜åˆ¤å®š
+	//“Gƒ{ƒX‚Ì¶‘¶”»’è
 	if (m_pEnemyLeader)
 	{
-		//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒDeleteã‹ã©ã†ã‹
+		//ƒXƒe[ƒ^ƒX‚ªDelete‚©‚Ç‚¤‚©
 		if (m_pEnemyLeader->GetStatus() == St_Delete)
 		{
-			//è§£æ”¾å‡¦ç†
+			//‰ğ•úˆ—
 			m_fRinieMaxHp = m_pAllyLeader->GetMaxHp();
 			m_fRinieLastHp = m_pAllyLeader->GetHp();
 
@@ -1492,15 +1489,15 @@ void CBattle::Delete(void)
 			m_pEnemyLeader = nullptr;
 		}
 	}
-	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿå­˜åˆ¤å®š
+	//ƒvƒŒƒCƒ„[‚Ì¶‘¶”»’è
 	if (m_pAllyLeader)
 	{
-		//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãŒDeleteã‹ã©ã†ã‹
+		//ƒXƒe[ƒ^ƒX‚ªDelete‚©‚Ç‚¤‚©
 		if (m_pAllyLeader->GetStatus() == St_Delete)
 		{
-			//è§£æ”¾å‡¦ç†
+			//‰ğ•úˆ—
 
-			//ãƒªã‚¶ãƒ«ãƒˆã«æ¸¡ã™ãŸã‚ã«æƒ…å ±ã‚’ä»®ä¿å­˜
+			//ƒŠƒUƒ‹ƒg‚É“n‚·‚½‚ß‚Éî•ñ‚ğ‰¼•Û‘¶
 			m_fRinieMaxHp = m_pAllyLeader->GetMaxHp();
 			m_fRinieLastHp = m_pAllyLeader->GetHp();
 
@@ -1510,22 +1507,22 @@ void CBattle::Delete(void)
 	}
 }
 
-//åˆæœŸä½ç½®ã‚»ãƒƒãƒ†ã‚£ãƒ³ã‚°
+//‰ŠúˆÊ’uƒZƒbƒeƒBƒ“ƒO
 void CBattle::FirstPosSetting()
 {
-	//Xåº§æ¨™è£œæ­£ç”¨å¤‰æ•°
+	//XÀ•W•â³—p•Ï”
 	int PosX = 0;
-	//å‘³æ–¹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+	//–¡•û‚ğ¶¬‡‚Éˆ—
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
-		//ç”Ÿæˆã•ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰å‡¦ç†ã‚’ã—ãªã„
+		//¶¬‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚çˆ—‚ğ‚µ‚È‚¢
 		if (!m_pAlly[i])continue;
-		//åˆæœŸä½ç½®è¨­å®šã‚’ã™ã§ã«ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’ç¢ºèª
+		//‰ŠúˆÊ’uİ’è‚ğ‚·‚Å‚É‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğŠm”F
 		if (!m_pAlly[i]->m_bFirstBattlePosSetting)
 		{
-			//åˆæœŸXä½ç½®ã‚’è¨­å®š
+			//‰ŠúXˆÊ’u‚ğİ’è
 			m_pAlly[i]->SetPosX(ALLYCREATE_POSX - PosX);
-			//åˆæœŸYä½ç½®ã‚’è¨­å®š
+			//‰ŠúYˆÊ’u‚ğİ’è
 			m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
 			//if (m_pAlly[i]->GetCornerCount() == 3)
 			//{
@@ -1535,49 +1532,49 @@ void CBattle::FirstPosSetting()
 			//{
 			//	m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 1.3f);
 			//}
-			//Zåº§æ¨™ã‚’ãƒ‘ã‚¿ãƒ¼ãƒ³åˆ¥ã«è¨­å®š
+			//ZÀ•W‚ğƒpƒ^[ƒ“•Ê‚Éİ’è
 			switch (m_nFirstPosPattern)
 			{
 			case 0:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_1);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pAlly[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 1;
 				break;
 			case 1:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_2);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pAlly[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 2;
 				break;
 			case 2:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_3);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pAlly[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 3;
 				break;
 			case 3:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_4);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pAlly[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 4;
 				break;
 			case 4:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_5);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pAlly[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’æœ€åˆã«æˆ»ã™
+				//ƒpƒ^[ƒ“‚ğÅ‰‚É–ß‚·
 				m_nFirstPosPattern = 0;
-				//Xåº§æ¨™è£œæ­£ç”¨å¤‰æ•°ã‚’åŠ ç®—ã™ã‚‹
+				//XÀ•W•â³—p•Ï”‚ğ‰ÁZ‚·‚é
 				PosX += 5.0f;
 				break;
 			}
@@ -1586,18 +1583,18 @@ void CBattle::FirstPosSetting()
 		}
 	}
 
-	//Xåº§æ¨™è£œæ­£ç”¨å¤‰æ•°ã‚’åˆæœŸåŒ–
+	//XÀ•W•â³—p•Ï”‚ğ‰Šú‰»
 	PosX = 0;
 
-	//æ•µã‚’ç”Ÿæˆé †ã«å‡¦ç†
+	//“G‚ğ¶¬‡‚Éˆ—
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
-		//ç”Ÿæˆã—ã¦ã„ãªã‹ã£ãŸã‚‰å‡¦ç†ã—ãªã„
+		//¶¬‚µ‚Ä‚¢‚È‚©‚Á‚½‚çˆ—‚µ‚È‚¢
 		if (!m_pEnemy[i])continue;
-		//åˆæœŸä½ç½®è¨­å®šã‚’ã™ã§ã«ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’ç¢ºèª
+		//‰ŠúˆÊ’uİ’è‚ğ‚·‚Å‚É‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğŠm”F
 		if (!m_pEnemy[i]->m_bFirstBattlePosSetting)
 		{
-			//åˆæœŸXä½ç½®ã‚’è¨­å®š
+			//‰ŠúXˆÊ’u‚ğİ’è
 			switch (m_nStageNum.StageMainNumber)
 			{
 			case 0:
@@ -1612,9 +1609,9 @@ void CBattle::FirstPosSetting()
 			}
 
 
-			////åˆæœŸYä½ç½®ã‚’è¨­å®š
+			////‰ŠúYˆÊ’u‚ğİ’è
 			//m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
-			//åˆæœŸYä½ç½®ã‚’è¨­å®š
+			//‰ŠúYˆÊ’u‚ğİ’è
 
 			if (m_pEnemy[i]->GetCornerCount() == 3)
 			{
@@ -1625,49 +1622,49 @@ void CBattle::FirstPosSetting()
 				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y * 1.3);
 			}
 
-			//Zåº§æ¨™ã‚’ãƒ‘ã‚¿ãƒ¼ãƒ³åˆ¥ã«è¨­å®š
+			//ZÀ•W‚ğƒpƒ^[ƒ“•Ê‚Éİ’è
 			switch (m_nFirstPosPattern)
 			{
 			case 0:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_1);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 1;
 				break;
 			case 1:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_2);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 2;
 				break;
 			case 2:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_3);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 3;
 				break;
 			case 3:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_4);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä¸€ã¤ãšã‚‰ã™
+				//ƒpƒ^[ƒ“‚ğˆê‚Â‚¸‚ç‚·
 				m_nFirstPosPattern = 4;
 				break;
 			case 4:
-				//åˆæœŸZä½ç½®ã‚’è¨­å®š
+				//‰ŠúZˆÊ’u‚ğİ’è
 				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_5);
-				//åˆæœŸä½ç½®è¨­å®šã‚’è¨­å®šæ¸ˆã¿ã«ã™ã‚‹
+				//‰ŠúˆÊ’uİ’è‚ğİ’èÏ‚İ‚É‚·‚é
 				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
-				//ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’æœ€åˆã«æˆ»ã™
+				//ƒpƒ^[ƒ“‚ğÅ‰‚É–ß‚·
 				m_nFirstPosPattern = 0;
-				//Xåº§æ¨™è£œæ­£ç”¨å¤‰æ•°ã‚’åŠ ç®—ã™ã‚‹
+				//XÀ•W•â³—p•Ï”‚ğ‰ÁZ‚·‚é
 				PosX += 5.0f;
 				break;
 			}
@@ -1676,114 +1673,114 @@ void CBattle::FirstPosSetting()
 	}
 }
 
-//ãƒªãƒ¼ãƒ€ãƒ¼ã®ç”Ÿæˆå‡¦ç†
+//ƒŠ[ƒ_[‚Ì¶¬ˆ—
 void CBattle::CreateLeader(void)
 {
-	//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒnullptrã ã£ãŸã‚‰
+	//–¡•û‚ÌƒŠ[ƒ_[‚ªnullptr‚¾‚Á‚½‚ç
 	if (m_pAllyLeader == nullptr)
 	{
-		//åˆæœŸä½ç½®è¨­å®šç”¨å¤‰æ•°
+		//‰ŠúˆÊ’uİ’è—p•Ï”
 		DirectX::XMFLOAT3 InFirstPos;
 
-		//Xåº§æ¨™ã‚’è¨­å®š
+		//XÀ•W‚ğİ’è
 		InFirstPos.x = ALLYCORE_POSX;
-		//Yåº§æ¨™ã‚’è¨­å®š
+		//YÀ•W‚ğİ’è
 		InFirstPos.y = 8.0f;
-		//Zåº§æ¨™ã‚’è¨­å®š
+		//ZÀ•W‚ğİ’è
 		InFirstPos.z = ALLYCORE_POSZ;
-		//å‘³æ–¹ã®ãƒªãƒ¼ãƒ€ãƒ¼ã‚’ç”Ÿæˆ
+		//–¡•û‚ÌƒŠ[ƒ_[‚ğ¶¬
 		m_pAllyLeader = new CLeader(LeaderSize, InFirstPos, 0);
 	}
-	//æ•µã®ãƒªãƒ¼ãƒ€ãƒ¼ãŒnullptrã ã£ãŸã‚‰
+	//“G‚ÌƒŠ[ƒ_[‚ªnullptr‚¾‚Á‚½‚ç
 	if (m_pEnemyLeader == nullptr)
 	{
-		//åˆæœŸä½ç½®è¨­å®šç”¨å¤‰æ•°
+		//‰ŠúˆÊ’uİ’è—p•Ï”
 		DirectX::XMFLOAT3 BossFirstPos;
 		switch (m_nStageNum.StageMainNumber)
 		{
 		case 0:
-			//Yåº§æ¨™ã‚’è¨­å®š
+			//YÀ•W‚ğİ’è
 			BossFirstPos.y = 15.0f;
 			break;
 		case 1:
-			//Yåº§æ¨™ã‚’è¨­å®š
+			//YÀ•W‚ğİ’è
 			BossFirstPos.y = 16.0f;
 			break;
 		case 2:
-			//Yåº§æ¨™ã‚’è¨­å®š
+			//YÀ•W‚ğİ’è
 			BossFirstPos.y = 16.0f;
 			break;
 		}
 
-		//Xåº§æ¨™ã‚’è¨­å®š
+		//XÀ•W‚ğİ’è
 		BossFirstPos.x = ENEMYBOSSCORE_POSX;
-		//Zåº§æ¨™ã‚’è¨­å®š
+		//ZÀ•W‚ğİ’è
 		BossFirstPos.z = ENEMYBOSSCORE_POSZ;
 
-		//æ•µã®ãƒªãƒ¼ãƒ€ãƒ¼ã‚’ç”Ÿæˆ
+		//“G‚ÌƒŠ[ƒ_[‚ğ¶¬
 		switch (m_nStageNum.StageMainNumber)
 		{
-		case 0://è‰åŸ(ã‚¯ãƒ©ãƒƒã‚«ãƒ¼)
+		case 0://‘Œ´(ƒNƒ‰ƒbƒJ[)
 			m_pEnemyLeader = new CLeader(LeaderSize, BossFirstPos, 1, false);
 			break;
-		case 1://ç ‚æ¼ (ãƒŒã‚¬ãƒ¼)
+		case 1://»”™(ƒkƒK[)
 			m_pEnemyLeader = new CLeader(LeaderSize, BossFirstPos, 1, false);
 			break;
-		case 2://é›ªåŸ(ã‚«ãƒŒãƒ¬ï¼†ãƒœãƒ«ãƒ‰ãƒ¼)
+		case 2://áŒ´(ƒJƒkƒŒ•ƒ{ƒ‹ƒh[)
 			m_pEnemyLeader = new CLeader(LeaderSize, BossFirstPos, 1, true);
 			break;
 		}
 	}
 }
 
-/*ï¼ï¼ï¼ï¼ï¼ãƒãƒˆãƒ«ç”¨ï¼ï¼ï¼ï¼ï¼*/
+/*ƒoƒgƒ‹—p*/
 
-//å‘³æ–¹ã‚’è§’æ•°åˆ¥ã«ã‚«ã‚¦ãƒ³ãƒˆã—ãŸã‚‚ã®ã®æç”»å‡¦ç†
+//–¡•û‚ğŠp”•Ê‚ÉƒJƒEƒ“ƒg‚µ‚½‚à‚Ì‚Ì•`‰æˆ—
 void CBattle::CreateAllyLogDraw(void)
 {
 	float fPosX[3] = {-1800.0f,-1700.0f,-1600.0f};
 	float fPosY = 0.0f;
 
-	//ç”Ÿå­˜æ•°ã®ã‚«ã‚¦ãƒ³ãƒˆ
+	//¶‘¶”‚ÌƒJƒEƒ“ƒg
 	CreateAllyLog();
 
-	//æ¡æ•°åˆ¥ã«æ•°å­—ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æŒ‡å®šã‚’ç¨®é¡åˆ†è¡Œã†
+	//Œ…”•Ê‚É”šƒeƒNƒXƒ`ƒƒ‚ğw’è‚ğí—Ş•ªs‚¤
 	for (int i = 0; i < 2; i++)
 	{
-		int nDigits = 0;	//æ¡æ•°
+		int nDigits = 0;	//Œ…”
 		int nNumbers[3];
 
-		//ä¸€æ¡
+		//ˆêŒ…
 		if (m_nAllyTypes[i] < 10)
 		{
-			//æ¡æ•°
+			//Œ…”
 			nDigits = 1;
-			//ä¸€ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//ˆê‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[0] = m_nAllyTypes[i];
 		}
-		//äºŒæ¡
+		//“ñŒ…
 		if (m_nAllyTypes[i] > 9 && m_nAllyTypes[i] < 100)
 		{
-			//æ¡æ•°
+			//Œ…”
 			nDigits = 2;
-			//ä¸€ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//ˆê‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[1] = m_nAllyTypes[i] % 10;
-			//åã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//\‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[0] = (m_nAllyTypes[i] / 10) % 10;
 		}
-		//ä¸‰æ¡
+		//OŒ…
 		if (m_nAllyTypes[i] > 99 && m_nAllyTypes[i] < 1000)
 		{
-			//æ¡æ•°
+			//Œ…”
 			nDigits = 3;
-			//ä¸€ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//ˆê‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[2] = m_nAllyTypes[i] % 10;
-			//åã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//\‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[1] = (m_nAllyTypes[i] / 10) % 10;
-			//ç™¾ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//•S‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[0] = m_nAllyTypes[i] / 100;
 		}
-		//è¡¨ç¤ºã™ã‚‹Yè»¸ã®é«˜ã•æŒ‡å®š
+		//•\¦‚·‚éY²‚Ì‚‚³w’è
 		switch (i)
 		{
 		case 0:
@@ -1797,70 +1794,70 @@ void CBattle::CreateAllyLogDraw(void)
 		for (int l = 0; l < nDigits; l++)
 		{
 
-			//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åº§æ¨™ã®è¨­å®š
+			//ƒXƒvƒ‰ƒCƒg‚ÌÀ•W‚Ìİ’è
 			SetSpritePos(WIDE_RATIO(fPosX[l],GetNowWide()), HEIGHT_RATIO(fPosY,GetNowHeight()));
 
-			//å¤§ãã•ã®è¨­å®š
+			//‘å‚«‚³‚Ìİ’è
 			SetSpriteScale(1.0f, 1.0f);
 
-			//èƒŒæ™¯è‰²ã®è¨­å®š
+			//”wŒiF‚Ìİ’è
 			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			//ãã®ä»–ã€è¡¨ç¤ºã«å¿…è¦ãªSpriteDrawer.hã®å„ç¨®é–¢æ•°ã‚’å‘¼ã³å‡ºã™
+			//‚»‚Ì‘¼A•\¦‚É•K—v‚ÈSpriteDrawer.h‚ÌŠeíŠÖ”‚ğŒÄ‚Ño‚·
 			SetSpriteTexture(m_pLogTex[nNumbers[l]]);
 
-			// æç”»
+			// •`‰æ
 			DrawSprite(m_pLogVtx, sizeof(Vertex));
 
-			// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆè¨­å®šã®ãƒªã‚»ãƒƒãƒˆ
+			// ƒXƒvƒ‰ƒCƒgİ’è‚ÌƒŠƒZƒbƒg
 			ReSetSprite();
 		}
 	}
 }
-//æ•µã‚’ç¨®é¡åˆ¥ã«ã‚«ã‚¦ãƒ³ãƒˆã—ãŸã‚‚ã®ã®æç”»å‡¦ç†
+//“G‚ğí—Ş•Ê‚ÉƒJƒEƒ“ƒg‚µ‚½‚à‚Ì‚Ì•`‰æˆ—
 void CBattle::CreateEnemyLogDraw(void)
 {
 	float fPosX[3] = {1600.0f,1700.0f,1800.0f};
 	float fPosY = 0.0f;
 
-	//ç”Ÿå­˜æ•°ã®ã‚«ã‚¦ãƒ³ãƒˆ
+	//¶‘¶”‚ÌƒJƒEƒ“ƒg
 	CreateEnemyLog();
 
-	//æ¡æ•°åˆ¥ã«æ•°å­—ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æŒ‡å®šã‚’ç¨®é¡åˆ†è¡Œã†
+	//Œ…”•Ê‚É”šƒeƒNƒXƒ`ƒƒ‚ğw’è‚ğí—Ş•ªs‚¤
 	for (int i = 0; i < 2; i++)
 	{
-		//æ¡æ•°
+		//Œ…”
 		int nDigits = 0;
 		int nNumbers[3];
 
 		if (m_nEnemyTypes[i] < 10)
 		{
-			//æ¡æ•°
+			//Œ…”
 			nDigits = 1;
-			//ä¸€ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//ˆê‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[0] = m_nEnemyTypes[i];
 		}
 		if (m_nEnemyTypes[i] > 9 && m_nEnemyTypes[i] < 100)
 		{
-			//æ¡æ•°
+			//Œ…”
 			nDigits = 2;
-			//ä¸€ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//ˆê‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[1] = m_nEnemyTypes[i] % 10;
-			//åã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//\‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[0] = (m_nEnemyTypes[i] / 10) % 10;
 		}
 		if (m_nEnemyTypes[i] > 99 && m_nEnemyTypes[i] < 1000)
 		{
-			//æ¡æ•°
+			//Œ…”
 			nDigits = 3;
-			//ä¸€ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//ˆê‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[2] = m_nEnemyTypes[i] % 10;
-			//åã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//\‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[1] = (m_nEnemyTypes[i] / 10) % 10;
-			//ç™¾ã®æ¡ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·ã‚’æŒ‡å®š
+			//•S‚ÌŒ…‚ÌƒeƒNƒXƒ`ƒƒ”Ô†‚ğw’è
 			nNumbers[0] = m_nEnemyTypes[i] / 100;
 		}
-		//è¡¨ç¤ºã™ã‚‹Yè»¸ã®é«˜ã•æŒ‡å®š
+		//•\¦‚·‚éY²‚Ì‚‚³w’è
 		switch (i)
 		{
 		case 0:
@@ -1873,22 +1870,22 @@ void CBattle::CreateEnemyLogDraw(void)
 
 		for (int l = 0; l < nDigits; l++)
 		{
-			//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åº§æ¨™ã®è¨­å®š
+			//ƒXƒvƒ‰ƒCƒg‚ÌÀ•W‚Ìİ’è
 			SetSpritePos(WIDE_RATIO(fPosX[l], GetNowWide()), HEIGHT_RATIO(fPosY, GetNowHeight()));
 
-			//å¤§ãã•ã®è¨­å®š
+			//‘å‚«‚³‚Ìİ’è
 			SetSpriteScale(1.0f, 1.0f);
 
-			//èƒŒæ™¯è‰²ã®è¨­å®š
+			//”wŒiF‚Ìİ’è
 			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			//ãã®ä»–ã€è¡¨ç¤ºã«å¿…è¦ãªSpriteDrawer.hã®å„ç¨®é–¢æ•°ã‚’å‘¼ã³å‡ºã™
+			//‚»‚Ì‘¼A•\¦‚É•K—v‚ÈSpriteDrawer.h‚ÌŠeíŠÖ”‚ğŒÄ‚Ño‚·
 			SetSpriteTexture(m_pLogTex[nNumbers[l]]);
 
-			// æç”»
+			// •`‰æ
 			DrawSprite(m_pLogVtx, sizeof(Vertex));
 
-			// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆè¨­å®šã®ãƒªã‚»ãƒƒãƒˆ
+			// ƒXƒvƒ‰ƒCƒgİ’è‚ÌƒŠƒZƒbƒg
 			ReSetSprite();
 		}
 	}
@@ -2017,17 +2014,17 @@ bool CBattle::LoseEndCommand(void)
 }
 
 
-//å‘³æ–¹ã‚’è§’æ•°åˆ¥ã«ã‚«ã‚¦ãƒ³ãƒˆ
+//–¡•û‚ğŠp”•Ê‚ÉƒJƒEƒ“ƒg
 void CBattle::CreateAllyLog(void)
 {
-	//ä¸‰è§’å½¢ã®ã‚«ã‚¦ãƒ³ãƒˆæ ¼ç´ç”¨å¤‰æ•°ã®åˆæœŸåŒ–
+	//OŠpŒ`‚ÌƒJƒEƒ“ƒgŠi”[—p•Ï”‚Ì‰Šú‰»
 	m_nAllyTypes[0] = 0;
-	//å››è§’å½¢ã®ã‚«ã‚¦ãƒ³ãƒˆæ ¼ç´ç”¨å¤‰æ•°ã®åˆæœŸåŒ–
+	//lŠpŒ`‚ÌƒJƒEƒ“ƒgŠi”[—p•Ï”‚Ì‰Šú‰»
 	m_nAllyTypes[1] = 0;
-	//å‘³æ–¹ã‚’ç”Ÿæˆé †ã«å‡¦ç†
+	//–¡•û‚ğ¶¬‡‚Éˆ—
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
-		//è§’æ•°åˆ¥ã«å‡¦ç†
+		//Šp”•Ê‚Éˆ—
 		switch (m_pAlly[i]->GetCornerCount())
 		{
 		case 3:
@@ -2039,17 +2036,17 @@ void CBattle::CreateAllyLog(void)
 		}
 	}
 }
-//æ•µã‚’ç¨®é¡åˆ¥ã«ã‚«ã‚¦ãƒ³ãƒˆ
+//“G‚ğí—Ş•Ê‚ÉƒJƒEƒ“ƒg
 void CBattle::CreateEnemyLog(void)
 {
-	//ä¸‰è§’å½¢ã®ã‚«ã‚¦ãƒ³ãƒˆæ ¼ç´ç”¨å¤‰æ•°ã®åˆæœŸåŒ–
+	//OŠpŒ`‚ÌƒJƒEƒ“ƒgŠi”[—p•Ï”‚Ì‰Šú‰»
 	m_nEnemyTypes[0] = 0;
-	//å››è§’å½¢ã®ã‚«ã‚¦ãƒ³ãƒˆæ ¼ç´ç”¨å¤‰æ•°ã®åˆæœŸåŒ–
+	//lŠpŒ`‚ÌƒJƒEƒ“ƒgŠi”[—p•Ï”‚Ì‰Šú‰»
 	m_nEnemyTypes[1] = 0;
-	//æ•µã‚’ç”Ÿæˆé †ã«å‡¦ç†
+	//“G‚ğ¶¬‡‚Éˆ—
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
-		//è§’æ•°åˆ¥ã«å‡¦ç†
+		//Šp”•Ê‚Éˆ—
 		switch (m_pEnemy[i]->GetCornerCount())
 		{
 		case 3:
@@ -2062,7 +2059,7 @@ void CBattle::CreateEnemyLog(void)
 	}
 }
 
-/*ï¼ï¼ï¼ï¼ï¼å›³å½¢åˆ¤å®šç”¨ï¼ï¼ï¼ï¼ï¼*/
+/*}Œ`”»’è—p*/
 
 void CBattle::SaveAllyLog(void)
 {
@@ -2091,7 +2088,7 @@ void CBattle::SaveAllyLogDraw(void)
 
 	for (int i = 0; i < 2; i++)
 	{
-		int nDigits = 0;	//æ¡æ•°
+		int nDigits = 0;	//Œ…”
 		int nNumbers[3];
 
 
@@ -2128,28 +2125,28 @@ void CBattle::SaveAllyLogDraw(void)
 		{
 			SetRender2D();
 
-			//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åº§æ¨™ã®è¨­å®š
+			//ƒXƒvƒ‰ƒCƒg‚ÌÀ•W‚Ìİ’è
 			SetSpritePos(WIDE_RATIO(fPosX[l], GetNowWide()), HEIGHT_RATIO(fPosY, GetNowHeight()));
 
-			//å¤§ãã•ã®è¨­å®š
+			//‘å‚«‚³‚Ìİ’è
 			SetSpriteScale(1.0f, 1.0f);
 
-			//èƒŒæ™¯è‰²ã®è¨­å®š
+			//”wŒiF‚Ìİ’è
 			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			//ãã®ä»–ã€è¡¨ç¤ºã«å¿…è¦ãªSpriteDrawer.hã®å„ç¨®é–¢æ•°ã‚’å‘¼ã³å‡ºã™
+			//‚»‚Ì‘¼A•\¦‚É•K—v‚ÈSpriteDrawer.h‚ÌŠeíŠÖ”‚ğŒÄ‚Ño‚·
 			SetSpriteTexture(m_pLogTex[nNumbers[l]]);
 
-			// æç”»
+			// •`‰æ
 			DrawSprite(m_pLogVtx, sizeof(Vertex));
 
-			// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆè¨­å®šã®ãƒªã‚»ãƒƒãƒˆ
+			// ƒXƒvƒ‰ƒCƒgİ’è‚ÌƒŠƒZƒbƒg
 			ReSetSprite();
 		}
 	}
 }
 
-/*ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼*/
+/**/
 
 void CBattle::RandomSelectPattern(void)
 {
@@ -2163,36 +2160,36 @@ void CBattle::ReloadSound()
 		SAFE_DELETE(m_pSound);
 		m_pDeathSE = nullptr;
 	}
-	//éŸ³ã®åˆæœŸåŒ–
+	//‰¹‚Ì‰Šú‰»
 	m_pSound = new CSoundList(SE_DEATH);
 	m_pSound->SetMasterVolume();
 	m_pDeathSE = m_pSound->GetSound(false);
 }
 
-//ç§»å‹•æ–¹å‘è¨ˆç®—é–¢æ•°
+//ˆÚ“®•ûŒüŒvZŠÖ”
 MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos)
 {
-	//ç§»å‹•åŠ›æ ¼ç´å¤‰æ•°
+	//ˆÚ“®—ÍŠi”[•Ï”
 	MovePower Movepower;
-	//Xè»¸ç§»å‹•åŠ›æ ¼ç´å¤‰æ•°ã®åˆæœŸåŒ–
+	//X²ˆÚ“®—ÍŠi”[•Ï”‚Ì‰Šú‰»
 	float X = 0.0f;
-	//Zè»¸ç§»å‹•åŠ›æ ¼ç´å¤‰æ•°ã®åˆæœŸåŒ–
+	//Z²ˆÚ“®—ÍŠi”[•Ï”‚Ì‰Šú‰»
 	float Z = 0.0f;
-	//è¨ˆç®—çµæœã®æ ¼ç´å¤‰æ•°ã®åˆæœŸåŒ–
+	//ŒvZŒ‹‰Ê‚ÌŠi”[•Ï”‚Ì‰Šú‰»
 	float ShortDis = 0.0f;
 
-	//Xè»¸ã®è¨­å®š
+	//X²‚Ìİ’è
 	X = (nEnemyPos.x - nPos.x);
-	//Zè»¸ã®è¨­å®š
+	//Z²‚Ìİ’è
 	Z = (nEnemyPos.z - nPos.z);
 
 	ShortDis = sqrtf(powf(X, 2) + powf(Z, 2));
 
-	/*æ­£è¦åŒ–*/
+	/*³‹K‰»*/
 	float NorX = X / (ShortDis);
 	float NorZ = Z / (ShortDis);
 
-	/*çµ¶å¯¾å€¤*/
+	/*â‘Î’l*/
 	float absX = fabs(NorX);
 	float absZ = fabs(NorZ);
 
