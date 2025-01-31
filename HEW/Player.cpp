@@ -100,7 +100,7 @@ CPlayer::CPlayer()
 
 	m_pEffect = new CEffectManager_sp(EFFECT_PASS("Sprite/Drawing.png"), 4, 6);
 	m_pEffect->Play(true);
-	m_tEffectParam.pos = { 0.0f,0.0f,0.0f };
+	m_tEffectParam.pos = { 0.0f,10000.0f,0.0f };
 	m_tEffectParam.size = { 100.0f,100.0f,100.0f };
 	m_tEffectParam.rotate = { 0.0f,0.0f,0.0f };
 	m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
@@ -361,7 +361,7 @@ void CPlayer::Reload()
 	SAFE_DELETE(m_pEffect);
 	m_pEffect = new CEffectManager_sp(EFFECT_PASS("Sprite/Drawing.png"), 4, 6);
 	m_pEffect->Play(true);
-	m_tEffectParam.pos = { 0.0f,0.0f,0.0f };
+	m_tEffectParam.pos = { 0.0f,10000.0f,0.0f };
 	m_tEffectParam.size = { 100.0f,100.0f,100.0f };
 	m_tEffectParam.rotate = { 0.0f,0.0f,0.0f };
 	m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };

@@ -13,14 +13,14 @@
 #include "FadeBlack.h"
 #include "Transition.h"
 #include "File.h"
-#define SELECT_MOVE (70.0f)
+#define SELECT_MOVE (80.0f)
 #define CENTER_POS_X SCREEN_WIDTH / 2.0f
 #define CENTER_POS_Y SCREEN_HEIGHT / 2.0f
 #define STAR_SPEED 2.0f
 #define DECISION_SPEED 1.0f
 #define SELECT_POW 1.2f
 #define STAR_AJUSTPOS_X SCREEN_WIDTH / 2.0f
-#define SELECT_JUST_Y 20.0f
+#define SELECT_JUST_Y 30.0f
 
 enum
 {
@@ -413,7 +413,7 @@ void CSceneTitle::Draw()
 	m_pLini[0]->SetView(Get2DView());
 	m_pLini[0]->SetPositon(CENTER_POS_X - 210.0, CENTER_POS_Y, 0.0f);
 	m_pLini[0]->SetSize(1920.0f, -1080.0f, 0.0f);
-	m_pLini[0]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pLini[0]->SetUvSize(1.0f,1.0f);
 	m_pLini[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[0]->Disp();
 	
@@ -422,7 +422,7 @@ void CSceneTitle::Draw()
 	m_pLini[1]->SetView(Get2DView());
 	m_pLini[1]->SetPositon(m_tLiniPos.x, m_tLiniPos.y, 0.0f);
 	m_pLini[1]->SetSize(1500.0f, -1080.0f, 0.0f);
-	m_pLini[1]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pLini[1]->SetUvSize(1.0f,1.0f);
 	m_pLini[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[1]->Disp();
 
@@ -546,7 +546,7 @@ void CSceneTitle::Draw()
 	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
 	m_pTitleUnderbar->Disp();
 
-	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 245,-m_SelectPos.y,0.0f });
+	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 255,-m_SelectPos.y,0.0f });
 	m_pEffect[(int)Effect::Choice]->SetSize({ 100.0f,100.0f,100.0f });
 	m_pEffect[(int)Effect::Choice]->SetRotate({ 0.0f,0.0f,0.0f });
 	m_pEffect[(int)Effect::Choice]->Draw(false);
@@ -673,45 +673,45 @@ void CSceneTitle::TitleAnimation()
 		m_pStarEfc[i]->Update();
 	}
 
-	if (g_eTitleAnim == LogoToBar)m_nLiniYCount += 2;
+	m_nLiniYCount += 2;
 	float rad = DirectX::XMConvertToRadians(m_nLiniYCount);
 	float cosMove = cosf(rad) - 0.5f;
 	float Y = CENTER_POS_Y + 75.0f;
 
-	switch (g_eTitleAnim)
-	{
-	case AnimeStart:
+	//switch (g_eTitleAnim)
+	//{
+	//case AnimeStart:
 
-		if (m_nAnimCount >= StartToChara)
-		{
-			g_eTitleAnim = StartToChara;
-		}
-		break;
-	case StartToChara:
+	//	if (m_nAnimCount >= StartToChara)
+	//	{
+	//		g_eTitleAnim = StartToChara;
+	//	}
+	//	break;
+	//case StartToChara:
 
-		for (int i = 0; i < 2; i++)
-		{
-			m_tCharaLogoTexPos[i] =
-			{ (m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)),
-				(m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)) };
-		}
-		if (m_nAnimCount >= CharaToLogo)
-		{
-			g_eTitleAnim = CharaToLogo;
-		}
-		break;
-	case CharaToLogo:
-		if (m_nAnimCount >= LogoToBar)
-		{
-			g_eTitleAnim = LogoToBar;
-		}
-		break;
-	case LogoToBar:
-		m_tLiniPos.y = Y + cosMove * 50.0f;
-		break;
-	default:
-		break;
-	}
+	//	for (int i = 0; i < 2; i++)
+	//	{
+	//		m_tCharaLogoTexPos[i] =
+	//		{ (m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)),
+	//			(m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)) };
+	//	}
+	//	if (m_nAnimCount >= CharaToLogo)
+	//	{
+	//		g_eTitleAnim = CharaToLogo;
+	//	}
+	//	break;
+	//case CharaToLogo:
+	//	if (m_nAnimCount >= LogoToBar)
+	//	{
+	//		g_eTitleAnim = LogoToBar;
+	//	}
+	//	break;
+	//case LogoToBar:
+	//	break;
+	//default:
+	//	break;
+	//}
+	m_tLiniPos.y = Y + cosMove * 50.0f;
 
 	static int SelectProcess = 0;
 	static float TotalMove = 485.0f * 2.0f + 60.0f;
@@ -748,13 +748,13 @@ void CSceneTitle::TitleAnimation()
 		if (g_Title_type == i)
 		{
 			m_tTabPos[i] = { CENTER_POS_X + 550.0f, CENTER_POS_Y + 135.0f + i * SELECT_MOVE };
-			m_tTabSize[i] = { 500.0f * SELECT_POW,-60.0f * SELECT_POW };
+			m_tTabSize[i] = { 500.0f * SELECT_POW,-75.0f * SELECT_POW };
 		}
 		else
 		{
 			if(i < g_Title_type)m_tTabPos[i].y = CENTER_POS_Y + 135.0f + i * SELECT_MOVE - SELECT_JUST_Y;
 			else m_tTabPos[i].y = CENTER_POS_Y + 130.0f + i * SELECT_MOVE + SELECT_JUST_Y;
-			m_tTabSize[i] = { 500.0f,-60.0f };
+			m_tTabSize[i] = { 500.0f,-75.0f };
 		}
 	}
 	static float deg = 0.0f;    //“x”

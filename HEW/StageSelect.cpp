@@ -681,7 +681,9 @@ void CStageSelect::Update()
 				{
 					StartFade();
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
-					subposX[0] = 140.0f; subposX[1] = 540.0f; subposX[2] = 540.0f;
+					subposX[0] = 140.0f;
+					subposX[1] = 540.0f;
+					subposX[2] = 940.0f;
 					MainStage ^= true;
 					
 					m_ModelWorldParam.pos = { 0.0f,-66.0f,100.0f };
