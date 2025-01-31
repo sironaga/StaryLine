@@ -894,13 +894,13 @@ void CSceneResult::NumberDisp(void)
 		
 	m_pNumber->SetNumber(nMinutes);
 	m_pNumber->SetLend(2);
-	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
 	m_pNumber->SetPos({ 1790.0f + Group.X,390.f,0.0f });
 	m_pNumber->Draw();
 
 	m_pNumber->SetNumber(nSeconds);
 	m_pNumber->SetLend(2);
-	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
 	m_pNumber->SetPos({ 1880.0f + Group.X,390.f,0.0f });
 	m_pNumber->Draw();
 
@@ -915,7 +915,7 @@ void CSceneResult::NumberDisp(void)
 	}
 
 	m_pNumber->SetNumber(nHitPoint);
-	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,475.f,0.0f });
 	m_pNumber->Draw();
 
@@ -930,7 +930,7 @@ void CSceneResult::NumberDisp(void)
 	}
 
 	m_pNumber->SetNumber(nSpawn);
-	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
+	m_pNumber->SetScale({ 50.0f,50.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,555.f,0.0f });
 	m_pNumber->Draw();
 
@@ -943,17 +943,17 @@ void CSceneResult::NumberDisp(void)
 	}
 
 	m_pNumber->SetNumber(nAverage);
-	m_pNumber->SetScale({ 45.0f,45.0f,0.0f });
+	m_pNumber->SetScale({ 25.0f,25.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,615.f,0.0f });
 	m_pNumber->Draw();
 
 	m_pNumber->SetNumber(nDispCount);
-	m_pNumber->SetScale({ 45.0f,45.0f,0.0f });
+	m_pNumber->SetScale({ 25.0f,25.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,650.f,0.0f });
 	m_pNumber->Draw();
 
 	m_pNumber->SetNumber(nScore);
-	m_pNumber->SetScale({ 150.0f,150.0f,0.0f });
+	m_pNumber->SetScale({ 90.0f,90.0f,0.0f });
 	m_pNumber->SetPos({ 1820.0f + Group.X,300.0f,0.0f });
 	m_pNumber->Draw();
 }
