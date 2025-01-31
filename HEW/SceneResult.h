@@ -92,6 +92,8 @@ private:
 	
 	int nScore;
 
+	Rank NowRank;
+
 	// - float
 	FLOAT2 fUvPos;	// UV‚Ìposition
 

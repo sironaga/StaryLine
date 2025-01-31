@@ -101,24 +101,46 @@ CSceneResult::CSceneResult()
 		SetIP(SAVER_IP);
 		SendData(buf);
 	}
-
+	// ベストスコアから最高ランクの設定
 	if (nBestScore[StageLevel.StageSubNumber] <= 1999)
 	{
 		StageRank[StageLevel.StageSubNumber] = C_RANK;
 	}else
-		if (nBestScore[StageLevel.StageSubNumber] <= 3999)
-		{
-			StageRank[StageLevel.StageSubNumber] = B_RANK;
-		}
-		else
-			if (nBestScore[StageLevel.StageSubNumber] <= 5999)
-			{
-				StageRank[StageLevel.StageSubNumber] = A_RANK;
-			}
-			else
-			{
-				StageRank[StageLevel.StageSubNumber] = S_RANK;
-			}
+	if (nBestScore[StageLevel.StageSubNumber] <= 3999)
+	{
+		StageRank[StageLevel.StageSubNumber] = B_RANK;
+	}else
+	if (nBestScore[StageLevel.StageSubNumber] <= 5999)
+	{
+			StageRank[StageLevel.StageSubNumber] = A_RANK;
+	}
+	else
+	{
+		StageRank[StageLevel.StageSubNumber] = S_RANK;
+	}
+	// 現在のランクの設定
+	NowRank = NONE_RANK;
+	if (nScore <= 1999)
+	{
+		NowRank = C_RANK;
+	}
+	else
+	if (nScore <= 3999)
+	{
+		NowRank = B_RANK;
+	}
+	else
+	if (nScore <= 5999)
+	{
+		NowRank = A_RANK;
+	}
+	else
+	{
+		NowRank = S_RANK;
+	}
+
+
+
 }
 CSceneResult::~CSceneResult()
 {
@@ -830,8 +852,8 @@ void CSceneResult::WinDisp(void)
 	m_pCharacter->SetUvSize(1.0f, 1.0f);
 	m_pCharacter->SetUvPos(0.0f, 0.0f);
 
-	m_pRank[StageRank[nStage]]->SetTexture();
-	m_pRank[StageRank[nStage]]->Disp();
+	m_pRank[NowRank]->SetTexture();
+	m_pRank[NowRank]->Disp();
 
 	if (bBestScore)
 	{
