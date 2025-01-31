@@ -37,3 +37,33 @@ float Easing39(float t, float d, float p)
 	double s = p / (2 * PI) * asin(1);
 	return 1 - pow(2, -10 * t) * sin((t - s) * (2 * PI) / p);
 }
+
+float Shaking(float Time, float StartValue, float ValueDifference, float Tween)
+{
+	float shakeTime = 6.0f / Tween;
+
+	if (shakeTime * 5 <= Time)
+	{
+		return StartValue + ValueDifference / (Time / shakeTime) / 6.0f;
+	}
+	else if (shakeTime * 4 <= Time)
+	{
+		return StartValue +  -ValueDifference / (Time / shakeTime) / 5.0f;
+	}
+	else if (shakeTime * 3 <= Time)
+	{
+		return StartValue +  ValueDifference / (Time / shakeTime) / 4.0f;
+	}
+	else if (shakeTime * 2 <= Time)
+	{
+		return StartValue + -ValueDifference / (Time / shakeTime) / 3.0f;
+	}
+	else if (shakeTime * 1 <= Time)
+	{
+		return StartValue + ValueDifference / (Time / shakeTime) / 2.0f;
+	}
+	else
+	{
+		return StartValue +  -ValueDifference / (Time / shakeTime) / 1.0f;
+	}
+}

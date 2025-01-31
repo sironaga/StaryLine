@@ -48,6 +48,9 @@ private:
 
 	void LinieDraw();
 	void QrackerDraw();
+	void NugarDraw();
+	void BoldowDraw();
+	void KanneleDraw();
 	void SelectAnimation();
 	void ClearCheck();
 	bool ClearCommand(void);
@@ -67,6 +70,10 @@ private:
 	SpriteEx* m_pWorldSelect_Backboard;
 	SpriteEx* m_pWorld[3];
 	SpriteEx* m_pDecition;
+	SpriteEx* m_pRank_C;
+	SpriteEx* m_pRank_B;
+	SpriteEx* m_pRank_A;
+	SpriteEx* m_pRank_S;
 
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* m_BGMSound;
@@ -93,6 +100,9 @@ private:
 	CModelEx* m_pModel[StageKindMax];
 	Model* m_pStageLinie;
 	Model* m_pStageQracker;
+	Model* m_pStageNugar;
+	Model* m_pStageBoldow;
+	Model* m_pStageKannele;
 	Model* m_pWorldModel;
 	ObjectParam m_ModelWorldParam;
 	ObjectParam m_ModelParam[StageKindMax];
@@ -122,6 +132,9 @@ private:
 	bool m_bEnd;
 	bool m_bMoving;
 	bool m_bClear[MAX_STAGE];
+	bool m_bCantMove_Left;
+	bool m_bCantMove_Right;
+	float m_fTime;
 	bool m_bClearCommand[5];
 	float m_fClearCommandResetTimer;
 
