@@ -1388,6 +1388,54 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 				m_pGrassLandStage[2]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pGrassLandStage[2]->Disp();
+
+				if (CSceneResult::GetStageClear(1))
+				{
+					if (CSceneResult::GetRankData(1) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(1) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(1) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(1) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
 				if (m_bMoving == false)
 				{
 					if (m_bClear[GRASSLAND_STAGE2])
@@ -1445,54 +1493,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(1))
-					{
-						if (CSceneResult::GetRankData(1) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(1) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(1) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(1) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 				break;
 
@@ -1513,6 +1513,55 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 				m_pGrassLandStage[2]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pGrassLandStage[2]->Disp();
+
+				if (CSceneResult::GetStageClear(2))
+				{
+					if (CSceneResult::GetRankData(2) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(2) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(2) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(2) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
+
 				if (m_bMoving == false)
 				{
 					Sprite::ReSetSprite();
@@ -1531,54 +1580,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(2))
-					{
-						if (CSceneResult::GetRankData(2) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(2) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(2) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(2) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 				break;
 			case(DESERT_STAGE1):
@@ -1599,6 +1600,54 @@ void CStageSelect::Draw()
 				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
 				m_pDesertStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pDesertStage[1]->Disp();
+
+				if (CSceneResult::GetStageClear(3))
+				{
+					if (CSceneResult::GetRankData(3) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(3) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(3) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(3) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
 
 				if (m_bMoving == false)
 				{
@@ -1650,54 +1699,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(3))
-					{
-						if (CSceneResult::GetRankData(3) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(3) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(3) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(3) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 				break;
 
@@ -1727,6 +1728,55 @@ void CStageSelect::Draw()
 				m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 				m_pDesertStage[2]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pDesertStage[2]->Disp();
+
+				if (CSceneResult::GetStageClear(5))
+				{
+					if (CSceneResult::GetRankData(4) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(4) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(4) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(4) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
+
 				if (m_bMoving == false)
 				{
 					Sprite::ReSetSprite();
@@ -1785,55 +1835,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(5))
-					{
-						if (CSceneResult::GetRankData(4) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(4) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(4) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(4) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
-
 				}
 
 				break;
@@ -1856,6 +1857,55 @@ void CStageSelect::Draw()
 				m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 				m_pDesertStage[2]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pDesertStage[2]->Disp();
+
+				if (CSceneResult::GetStageClear(5))
+				{
+					if (CSceneResult::GetRankData(5) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(5) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(5) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(5) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
+
 				if (m_bMoving == false)
 				{
 					Sprite::ReSetSprite();
@@ -1874,54 +1924,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(5))
-					{
-						if (CSceneResult::GetRankData(5) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(5) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(5) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(5) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 
 				break;
@@ -1943,6 +1945,54 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
 				m_pSnowFieldStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pSnowFieldStage[1]->Disp();
+
+				if (CSceneResult::GetStageClear(6))
+				{
+					if (CSceneResult::GetRankData(6) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(6) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(6) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(6) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
 
 				if (m_bMoving == false)
 				{
@@ -1994,54 +2044,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(6))
-					{
-						if (CSceneResult::GetRankData(6) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(6) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(6) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(6) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 					break;
 
@@ -2080,6 +2082,55 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
+
+					if (CSceneResult::GetStageClear(6))
+					{
+						if (CSceneResult::GetRankData(7) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(7) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(7) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(7) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+
 
 					if (m_bClear[SNOWFIELD_STAGE2])
 					{
@@ -2130,53 +2181,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 
-					if (CSceneResult::GetStageClear(6))
-					{
-						if (CSceneResult::GetRankData(7) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(7) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(7) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(7) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 				break;
 
@@ -2198,6 +2202,54 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
 				m_pSnowFieldStage[2]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pSnowFieldStage[2]->Disp();
+
+				if (CSceneResult::GetStageClear(8))
+				{
+					if (CSceneResult::GetRankData(8) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(8) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(8) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(8) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
 				if (m_bMoving == false)
 				{
 					Sprite::ReSetSprite();
@@ -2216,54 +2268,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(8))
-					{
-						if (CSceneResult::GetRankData(8) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(8) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(8) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(8) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 
 				break;
