@@ -8,6 +8,8 @@
 
 //=====デファイン=====
 #define FILENAME_ENEMY ("Assets/csv/EnemyData.csv")
+#define FILENAME_STAGEDATA ("Assets/csv/StageData.csv")
+
 
 std::vector<std::string> split(const std::string text, const char delimiter);
 
@@ -129,4 +131,31 @@ std::vector<std::string> split(const std::string text, const char delimiter) {
 		columns.push_back(buff);
 	}
 	return columns;
+}
+void InStageData(int Inscore,Rank InRankData,bool InStageClear)
+{
+	int RankData = InRankData;
+	fstream file;
+	file.open(FILENAME_STAGEDATA, ios::binary | ios::out);
+	file.write((char*)&Inscore, sizeof(Inscore));
+	file.write((char*)&RankData, sizeof(RankData));
+	file.write((char*)&InStageClear, sizeof(InStageClear));
+	file.close();
+}
+bool OutStageData(int *score, Rank *RankData, bool *StageClear)
+{
+	int InRankData;
+	fstream file;
+	file.open(FILENAME_STAGEDATA, ios::binary | ios::in);
+	if (!file)
+	{
+		return false;
+	}
+	file.read((char*)&score, sizeof(score));
+	file.read((char*)&InRankData, sizeof(InRankData));
+	file.read((char*)&StageClear, sizeof(StageClear));
+	file.close();
+	*RankData = (Rank)InRankData;
+
+	return true;
 }
