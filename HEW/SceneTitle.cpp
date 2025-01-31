@@ -53,7 +53,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	: m_SelectPos{550.0f, 135.0f}, m_bSelected(false)
 	, m_DecisionPos{ SCREEN_WIDTH / 2.0f, 100.0f }
 	, m_nAnimCount(0), m_tCharaLogoTexPos{}
-	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X ,CENTER_POS_Y + 75.0f}
+	, m_nLiniYCount(0), m_tLiniPos{CENTER_POS_X-210.0f ,CENTER_POS_Y + 75.0f}
 	, m_pEffect()
 	,m_bChange(false)
 	, m_tTabPos{}, m_tTabSize{}
@@ -409,7 +409,7 @@ void CSceneTitle::Draw()
 	m_pLini[0]->SetTexture();
 	m_pLini[0]->SetProjection(Get2DProj());
 	m_pLini[0]->SetView(Get2DView());
-	m_pLini[0]->SetPositon(CENTER_POS_X, CENTER_POS_Y, 0.0f);
+	m_pLini[0]->SetPositon(CENTER_POS_X - 210.0, CENTER_POS_Y, 0.0f);
 	m_pLini[0]->SetSize(1920.0f, -1080.0f, 0.0f);
 	m_pLini[0]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
 	m_pLini[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -419,7 +419,7 @@ void CSceneTitle::Draw()
 	m_pLini[1]->SetProjection(Get2DProj());
 	m_pLini[1]->SetView(Get2DView());
 	m_pLini[1]->SetPositon(m_tLiniPos.x, m_tLiniPos.y, 0.0f);
-	m_pLini[1]->SetSize(1920.0f, -1080.0f, 0.0f);
+	m_pLini[1]->SetSize(1500.0f, -1080.0f, 0.0f);
 	m_pLini[1]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
 	m_pLini[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[1]->Disp();
