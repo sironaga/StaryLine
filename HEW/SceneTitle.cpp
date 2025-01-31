@@ -12,7 +12,7 @@
 #include "Geometory.h"
 #include "FadeBlack.h"
 #include "Transition.h"
-
+#include "File.h"
 #define SELECT_MOVE (70.0f)
 #define CENTER_POS_X SCREEN_WIDTH / 2.0f
 #define CENTER_POS_Y SCREEN_HEIGHT / 2.0f
@@ -285,6 +285,8 @@ void CSceneTitle::Update()
 			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				//コンティニューシーンへ切り替える処理
+				if (OutStageData())return;
+				
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
 			}
