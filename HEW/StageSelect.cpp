@@ -418,7 +418,7 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE3])
 					{
-						m_bCantMove_Left = true;
+						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
 					{ 
@@ -467,6 +467,7 @@ void CStageSelect::Update()
 				}
 				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
+					StartFade();
 					SetNext(SCENE_TITLE, g_Select_type);
 					m_bEnd = true;
 				}
@@ -485,6 +486,10 @@ void CStageSelect::Update()
 						m_bMoving = true;
 						bRight = true;
 					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[GRASSLAND_STAGE1])
+					{
+						m_bCantMove_Right = true;
+					}
 					break;
 
 				case(GRASSLAND_STAGE2):
@@ -494,6 +499,10 @@ void CStageSelect::Update()
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE3;
 						m_bMoving = true;
 						bRight = true;
+					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[GRASSLAND_STAGE2])
+					{
+						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
 					{
@@ -526,15 +535,23 @@ void CStageSelect::Update()
 						m_bMoving = true;
 						bRight = true;
 					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE1])
+					{
+						m_bCantMove_Right = true;
+					}
 					break;
 
 				case(DESERT_STAGE2):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[DESERT_STAGE1])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[DESERT_STAGE2])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE3; 
 						m_bMoving = true;
 						bRight = true;
+					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE2])
+					{
+						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
 					{
@@ -568,6 +585,10 @@ void CStageSelect::Update()
 						m_bMoving = true;
 						bRight = true;
 					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[SNOWFIELD_STAGE1])
+					{
+						m_bCantMove_Right = true;
+					}
 					break;
 
 				case(SNOWFIELD_STAGE2):
@@ -577,6 +598,10 @@ void CStageSelect::Update()
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3;
 						m_bMoving = true;
 						bRight = true;
+					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[SNOWFIELD_STAGE2])
+					{
+						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
 					{
@@ -606,7 +631,7 @@ void CStageSelect::Update()
 				}
 				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
 				{
-					//StartFade();
+					StartFade();
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 					subposX[0] = 0.0f; subposX[1] = 400.0f; subposX[2] = 800.0f;
 					MainStage ^= true;
@@ -971,7 +996,7 @@ void CStageSelect::Draw()
 						m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 					}
-					m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 					m_pRight_Select_Lock->Disp();
 				}
 				if (m_bClear[DESERT_STAGE3])
@@ -1010,7 +1035,7 @@ void CStageSelect::Draw()
 						m_pLeft_Select_Lock->SetPositon(-180.0f, 105.0f, 145.0f);
 
 					}
-					m_pLeft_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 					m_pLeft_Select_Lock->Disp();
 				}
 
@@ -1106,7 +1131,7 @@ void CStageSelect::Draw()
 						m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 					}
-					m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 					m_pRight_Select_Lock->Disp();
 				}
 			}
@@ -1236,6 +1261,54 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pGrassLandStage[1]->Disp();
 
+				if (CSceneResult::GetStageClear(0))
+				{
+					if (CSceneResult::GetRankData(0) == C_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_C->SetProjection(GetProj());
+						m_pRank_C->SetView(GetView());
+						m_pRank_C->SetTexture();
+						m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_C->Disp();
+					}
+					else if (CSceneResult::GetRankData(0) == B_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_B->SetProjection(GetProj());
+						m_pRank_B->SetView(GetView());
+						m_pRank_B->SetTexture();
+						m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_B->Disp();
+					}
+					else if (CSceneResult::GetRankData(0) == A_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_A->SetProjection(GetProj());
+						m_pRank_A->SetView(GetView());
+						m_pRank_A->SetTexture();
+						m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_A->Disp();
+					}
+					else if (CSceneResult::GetRankData(0) == S_RANK)
+					{
+						SetRender2D();
+						Sprite::ReSetSprite();
+						m_pRank_S->SetProjection(GetProj());
+						m_pRank_S->SetView(GetView());
+						m_pRank_S->SetTexture();
+						m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+						m_pRank_S->Disp();
+					}
+				}
+
 				if (m_bMoving == false)
 				{
 					if (m_bClear[GRASSLAND_STAGE1])
@@ -1274,7 +1347,7 @@ void CStageSelect::Draw()
 							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
 
 						}
-						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 						m_pRight_Select_Lock->Disp();
 
 					}
@@ -1287,54 +1360,6 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
-
-					if (CSceneResult::GetStageClear(0))
-					{
-						if (CSceneResult::GetRankData(0) == C_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_C->SetProjection(GetProj());
-							m_pRank_C->SetView(GetView());
-							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_C->Disp();
-						}
-						else if (CSceneResult::GetRankData(0) == B_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_B->SetProjection(GetProj());
-							m_pRank_B->SetView(GetView());
-							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_B->Disp();
-						}
-						else if (CSceneResult::GetRankData(0) == A_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_A->SetProjection(GetProj());
-							m_pRank_A->SetView(GetView());
-							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_A->Disp();
-						}
-						else if (CSceneResult::GetRankData(0) == S_RANK)
-						{
-							SetRender2D();
-							Sprite::ReSetSprite();
-							m_pRank_S->SetProjection(GetProj());
-							m_pRank_S->SetView(GetView());
-							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
-							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
-							m_pRank_S->Disp();
-						}
-					}
 				}
 				break;
 
@@ -1401,7 +1426,7 @@ void CStageSelect::Draw()
 							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 						}
-						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 						m_pRight_Select_Lock->Disp();
 					}
 					Sprite::ReSetSprite();
@@ -1613,7 +1638,7 @@ void CStageSelect::Draw()
 							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 						}
-						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 						m_pRight_Select_Lock->Disp();
 					}
 
@@ -1748,7 +1773,7 @@ void CStageSelect::Draw()
 							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 						}
-						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 						m_pRight_Select_Lock->Disp();
 					}
 
@@ -1957,7 +1982,7 @@ void CStageSelect::Draw()
 							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 						}
-						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 						m_pRight_Select_Lock->Disp();
 					}
 
@@ -2092,7 +2117,7 @@ void CStageSelect::Draw()
 							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
 						}
-						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
 						m_pRight_Select_Lock->Disp();
 					}
 
