@@ -324,6 +324,16 @@ void SetCameraPos(DirectX::XMFLOAT3 look)
 	g_Camera->SetCameraPos(look);
 }
 
+void SetCameraRotate(DirectX::XMFLOAT3 rotate)
+{
+	g_Camera->SetCameraRotate(rotate);
+}
+
+void SetFovY(float radFov)
+{
+	g_Camera->SetFovY(radFov);
+}
+
 void SetCameraKind(CAMERA_KIND kind)
 {
 	SAFE_DELETE(g_Camera);

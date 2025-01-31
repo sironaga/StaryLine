@@ -9,7 +9,8 @@ public:
 	~CameraDebug() {};
 	virtual void Update()override;
 	virtual void SetCameraPos(DirectX::XMFLOAT3 look)override;
-
+	virtual void SetCameraRotate(DirectX::XMFLOAT3 rotate)override;
+ 
 private:
 	float m_radXZ; /* ƒJƒƒ‰‚Ì‰¡‰ñ“] */
 	float m_radY;  /* ƒJƒƒ‰‚Ì‰¡‰ñ“] */
