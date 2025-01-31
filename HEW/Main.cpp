@@ -59,7 +59,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	SetData.nScore = 999;
 	SetData.Stage_Number = 999;
 	Conect_Init();
-	//SetIP(SAVER_IP);
+
+	SetIP(SAVER_IP);
 	SendData(SetData);
 
 	HRESULT hr;

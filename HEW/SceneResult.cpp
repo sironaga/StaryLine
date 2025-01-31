@@ -7,9 +7,6 @@
 #include"Easing.h"
 #include "File.h"
 // ---
-
-// --- SaverIPSetting
-#define SAVER_IP ("14.133.0.16")
 // ---
 
 // --- static
@@ -66,7 +63,7 @@ CSceneResult::CSceneResult()
 
 	if (ResultGameData.bWin)
 	{
-		bClearState[StageLevel.StageSubNumber] = true;
+		bClearState[StageLevel.StageSubNumber] = true; 
 	}
 
 	m_pResultSelectSound    = new CSoundList(SE_SELECT);
@@ -97,15 +94,16 @@ CSceneResult::CSceneResult()
 	char buf[255];
 	sprintf(buf, "%d", nScore);
 
+	if (ResultGameData.bWin)
+	{
+		Acquired_Data SetData;
+		SetData.bNew = true;
+		SetData.nScore = nScore;
+		SetData.Stage_Number = StageLevel.StageSubNumber;
 
-	Acquired_Data SetData;
-	SetData.bNew = true;
-	SetData.nScore = nScore;
-	SetData.Stage_Number = StageLevel.StageSubNumber;
-
-	SetIP(SAVER_IP);
-	SendData(SetData);
-
+		SetIP(SAVER_IP);
+		SendData(SetData);
+	}
 	if (nBestScore[StageLevel.StageSubNumber] <= 1999)
 	{
 		StageRank[StageLevel.StageSubNumber] = C_RANK;
