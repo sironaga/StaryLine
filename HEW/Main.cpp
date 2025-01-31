@@ -7,7 +7,6 @@
 #include "Sprite.h"
 #include "ShaderList.h"
 #include "SpriteDrawer.h"
-#include"SceneResult.h"
 #include "Input.h"
 #include "Controller.h"
 
@@ -318,6 +317,11 @@ DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose)
 DirectX::XMFLOAT3 GetCameraPos()
 {
 	return g_Camera->GetPos();
+}
+
+void SetCameraPos(DirectX::XMFLOAT3 look)
+{
+	g_Camera->SetCameraPos(look);
 }
 
 void SetCameraKind(CAMERA_KIND kind)
