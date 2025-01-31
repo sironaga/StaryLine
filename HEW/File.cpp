@@ -140,9 +140,9 @@ void InStageData()
 	
 	fstream file;
 	file.open(FILENAME_STAGEDATA, ios::binary | ios::out);
-	for (int i,k = 0; i < 3; i++,k+=3)
+	for (int i=0,k = 0; i < 3; i++,k+=3)
 	{
-		for (int j = 0 + k; i < 3+k; j++)
+		for (int j = 0 + k; j < 3+k; j++)
 		{
 			StageType nowstage;
 			nowstage.StageMainNumber = i;
@@ -176,9 +176,9 @@ bool OutStageData()
 	{
 		return false;
 	}
-	for (int i, k = 0; i < 3; i++, k += 3)
+	for (int i = 0, k = 0; i < 3; i++, k += 3)
 	{
-		for (int j = 0 + k; i < 3 + k; j++)
+		for (int j = 0 + k; j < 3 + k; j++)
 		{
 			StageType nowstage;
 			nowstage.StageMainNumber = i;
