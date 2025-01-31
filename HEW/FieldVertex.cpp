@@ -170,7 +170,7 @@ CFieldVertex::CFieldVertex()
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 7; i++)
 		{
 			m_pTex_Shapes[i] = new Texture();
 		}
@@ -383,8 +383,10 @@ CFieldVertex::CFieldVertex()
 		case 0:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/三角形_1.png")); break;
 		case 1:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/三角形_2.png")); break;
 		case 2:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/四角形_1.png")); break;
-		case 3:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/台形_1.png")); break;
-		case 4:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/台形_2.png")); break;
+		case 3:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/台形_1.png")); break;//1:3
+		case 4:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/台形_2.png")); break;//1:2
+		case 5:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/台形_3.png")); break;//2:3
+		case 6:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/台形_4.png")); break;//3:4
 		default:
 			break;
 		}
@@ -428,7 +430,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_Ally_Count[1]);
 	SAFE_DELETE(m_pTex_Ally_Count[2]);
 	SAFE_DELETE(m_pTex_Ally_Count[3]);
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		SAFE_DELETE(m_pTex_Shapes[i]);
 	}
@@ -881,15 +883,38 @@ void CFieldVertex::Draw()
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 						break;
 					case 6://台形 //斜めの台形考える必要あり
-						if (Shapes_Length[i][0] - 1 == 0)
+						if (Shapes_type_Angle[i][1] < 4)
 						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 100.0f ,100.0f,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[3]);
+							if (Shapes_Length[i][0] - 1 == 0)
+							{
+								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 100.0f ,100.0f,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[3]);
+							}
+							else
+							{
+								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 140.0f ,100.0f,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
+							}
 						}
-						else
+						else //斜めの台形
 						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 140.0f ,100.0f,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
+							switch ((int)Shapes_Length[i][0])
+							{
+							case 1:
+								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 140.0f ,100.0f,1.0f }, { 0.0f,0.0f,(Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
+								break;
+							case 2:
+								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 140.0f ,100.0f,1.0f }, { 0.0f,0.0f,(Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
+								break;	
+							case 3:
+								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 140.0f ,100.0f,1.0f }, { 0.0f,0.0f,(Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[6]);
+								break;
+							default:
+								break;
+							}
 						}
 						break;
 					case 7://カッター型(右尖り)
@@ -2095,24 +2120,15 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									Num[1] = 0;
 									for (int m = 1; m < 4; m++)
 									{
-										if ((int)Length[m][0] % 15 == 0)
+										if (Num[0] < Length[m][0])
 										{
-											if((int)Num[0] % 15 == 0)
-											{
-												if (Num[0] > Length[m][0])
-												{
-													Num[0] = Length[m][0];
-													Num[1] = m;
-												}
-											}
-											else
-											{
-												Num[0] = Length[m][0];
-												Num[1] = m;
-											}
+											Num[0] = Length[m][0];
+											Num[1] = m;
 										}
 									}
 									DirectX::XMFLOAT2 dirpos;
+									Num[1] = Num[1] + 2;
+									if (Num[1] > 3) Num[1] = Num[1] - 4;
 									if (Num[1] == 3)
 									{
 										dirpos.x = (pos[(int)Num[1]].x + pos[0].x) / 2.0f;
@@ -2129,7 +2145,19 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									if (dirpos.x > 0.0f && dirpos.y == 0.0f)Shapes_type_Angle[NowShapes][1] = 1;
 									if (dirpos.x == 0.0f && dirpos.y < 0.0f)Shapes_type_Angle[NowShapes][1] = 2;
 									if (dirpos.x < 0.0f && dirpos.y == 0.0f)Shapes_type_Angle[NowShapes][1] = 3;
-									Shapes_Length[NowShapes][0] = Num[0] /15.0f;
+									if (dirpos.x > 0.0f && dirpos.y > 0.0f)Shapes_type_Angle[NowShapes][1] = 4;
+									if (dirpos.x > 0.0f && dirpos.y < 0.0f)Shapes_type_Angle[NowShapes][1] = 5;
+									if (dirpos.x < 0.0f && dirpos.y < 0.0f)Shapes_type_Angle[NowShapes][1] = 6;
+									if (dirpos.x < 0.0f && dirpos.y > 0.0f)Shapes_type_Angle[NowShapes][1] = 7;
+									if (Shapes_type_Angle[NowShapes][1] < 4)
+									{
+										Shapes_Length[NowShapes][0] = Num[0] / 15.0f;
+									}
+									else
+									{
+										Shapes_Length[NowShapes][0] = Num[0] / sqrtf(450);
+									}
+									
 								}
 							}
 							else
