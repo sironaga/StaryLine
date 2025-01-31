@@ -285,8 +285,8 @@ void CSceneTitle::Update()
 			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
 			{
 				//コンティニューシーンへ切り替える処理
-				if (OutStageData())return;
-				
+				if (!OutStageData())return;
+				SetNext(STAGE_SELECT);
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
 			}

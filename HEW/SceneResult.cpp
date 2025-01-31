@@ -5,6 +5,7 @@
 #include"Controller.h"
 #include"InputEx.h"
 #include"Easing.h"
+#include "File.h"
 // ---
 
 // --- SaverIPSetting
@@ -144,6 +145,7 @@ CSceneResult::CSceneResult()
 }
 CSceneResult::~CSceneResult()
 {
+	InStageData();
 	if (m_pResultBGM)
 	{
 		m_pResultBGM->Stop();
