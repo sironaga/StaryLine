@@ -54,6 +54,13 @@ StageType g_stage = {};
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
+	Acquired_Data SetData;
+	SetData.bNew = true;
+	SetData.nScore = 999;
+	SetData.Stage_Number = 999;
+	Conect_Init();
+	//SetIP(SAVER_IP);
+	SendData(SetData);
 
 	HRESULT hr;
 	// DirectX初期化

@@ -9,7 +9,7 @@
 // ---
 
 // --- SaverIPSetting
-#define SAVER_IP ("10.130.21.36")
+#define SAVER_IP ("14.133.0.16")
 // ---
 
 // --- static
@@ -74,7 +74,7 @@ CSceneResult::CSceneResult()
 	m_pResultSelectSE = m_pResultSelectSound->GetSound(false);
 
 	m_pNumber = new CNumberUI();
-	Conect_Init();
+
 
 	if (ResultGameData.nAverageSpwn <= 0 && ResultGameData.nDrawCount <= 0 && ResultGameData.nHitPoint <= 0 && ResultGameData.nSpawnCount <= 0)
 	{
@@ -97,12 +97,15 @@ CSceneResult::CSceneResult()
 	char buf[255];
 	sprintf(buf, "%d", nScore);
 
-	if (StageLevel.StageSubNumber == 8)
-	{
-		SetIP(SAVER_IP);
-		SendData(buf);
-	}
-	// ベストスコアから最高ランクの設定
+
+	Acquired_Data SetData;
+	SetData.bNew = true;
+	SetData.nScore = nScore;
+	SetData.Stage_Number = StageLevel.StageSubNumber;
+
+	SetIP(SAVER_IP);
+	SendData(SetData);
+
 	if (nBestScore[StageLevel.StageSubNumber] <= 1999)
 	{
 		StageRank[StageLevel.StageSubNumber] = C_RANK;
