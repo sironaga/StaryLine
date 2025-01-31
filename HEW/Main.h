@@ -19,6 +19,8 @@ DirectX::XMFLOAT4X4 Get2DView(bool isTranspose = true);
 DirectX::XMFLOAT4X4 Get2DProj(bool isTranspose = true);
 DirectX::XMFLOAT3 GetCameraPos();
 void SetCameraPos(DirectX::XMFLOAT3 look);
+void SetCameraRotate(DirectX::XMFLOAT3 rotate);
+void SetFovY(float radFov);
 enum CAMERA_KIND
 {
 	NOMAL_CAMERA,

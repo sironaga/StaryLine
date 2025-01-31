@@ -5,7 +5,7 @@ Camera::Camera()
 	: m_pos(0.0f, 10.0f, 0.0f)
 	, m_look(0.0f, 45.0f, -15.0f)
 	, m_up(0.0f, 1.0f, 0.0f)
-	, m_fovy(DirectX::XMConvertToRadians(60.0f))
+	, m_fovy(DirectX::XMConvertToRadians(30.0f))
 	, m_aspect(16.0f / 9.0f)
 	, m_near(CMETER(30.0f))
 	, m_far(METER(10000.0f))
@@ -65,4 +65,13 @@ DirectX::XMMATRIX Camera::GetProjection()
 void Camera::SetCameraPos(DirectX::XMFLOAT3 look)
 {
 
+}
+
+void Camera::SetCameraRotate(DirectX::XMFLOAT3 rotate)
+{
+}
+
+void Camera::SetFovY(float radFov)
+{
+	m_fovy = radFov;
 }

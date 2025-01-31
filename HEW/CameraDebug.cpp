@@ -42,3 +42,10 @@ void CameraDebug::SetCameraPos(DirectX::XMFLOAT3 look)
 	//ƒJƒƒ‰ˆÊ’u‚ÌŒvZ
 	m_look = look;
 }
+
+void CameraDebug::SetCameraRotate(DirectX::XMFLOAT3 rotate)
+{
+	m_radXZ = rotate.x;
+	m_radY = rotate.y;
+	m_radius = rotate.z;
+}

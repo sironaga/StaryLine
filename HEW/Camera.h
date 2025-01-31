@@ -14,7 +14,8 @@ public:
 	DirectX::XMMATRIX GetView();
 	DirectX::XMMATRIX GetProjection();
 	virtual void SetCameraPos(DirectX::XMFLOAT3 look);
-
+	virtual void SetCameraRotate(DirectX::XMFLOAT3 rotate);
+	void SetFovY(float radFov);
 protected:
 	DirectX::XMFLOAT3 m_pos;	/* ç¿ïW */
 	DirectX::XMFLOAT3 m_look;	/* íçéãì_ */
