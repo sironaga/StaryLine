@@ -36,7 +36,6 @@ private:
 	CBattle* m_pBattle;
 	Field* m_pField;
 	CBackGround* m_pBackGround;
-	CEffectManager* m_pEffect;
 	IXAudio2SourceVoice* m_pSourseGameBGM;
 	CSoundList* g_GameSound;
 	IXAudio2SourceVoice* m_pSourseFeverBGM;

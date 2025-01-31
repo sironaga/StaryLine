@@ -5,7 +5,7 @@
 #include "ModelEx.h"
 #include "LibEffekseer.h"
 #include "FieldVertex.h"
-#include "EffectManager.h"
+#include "EffectManager_sp.h"
 #include "Texture.h"
 #include "_StructList.h"
 #include "SpriteEx.h"
@@ -89,6 +89,9 @@ private:
 	ObjectParam m_pArrowParam;
 	DirectX::XMFLOAT2  m_tArrowCenterPos;
 	DirectX::XMFLOAT2 m_tAjustPos;
+
+	CEffectManager_sp* m_pEffect;
+	ObjectParam m_tEffectParam;
 
 	enum Timer
 	{

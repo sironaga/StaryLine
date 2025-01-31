@@ -52,7 +52,7 @@ CPlayer::CPlayer()
 	, m_eArrowState{}
 	, m_tArrowCenterPos{}, m_tAjustPos{}
 	, m_bStop(false), m_fDrawTime(DRAW_TIME)
-	, m_bReCharge(false), m_bSwap(true)
+	, m_bReCharge(false), m_bSwap(true), m_pEffect(nullptr), m_tEffectParam{}
 
 	// FieldVertexアドレスの初期化処理
 	, m_pFieldVtx(nullptr)
@@ -97,6 +97,13 @@ CPlayer::CPlayer()
 	g_pPlayerSound = new CSoundList(SE_WALK);
 	g_pPlayerSound->SetMasterVolume();
 	g_pWalkSe = g_pPlayerSound->GetSound(true);
+
+	m_pEffect = new CEffectManager_sp(EFFECT_PASS("Sprite/Drawing.png"), 4, 6);
+	m_pEffect->Play(true);
+	m_tEffectParam.pos = { 0.0f,0.0f,0.0f };
+	m_tEffectParam.size = { 100.0f,100.0f,100.0f };
+	m_tEffectParam.rotate = { 0.0f,0.0f,0.0f };
+	m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
 }
 
 CPlayer::~CPlayer()
@@ -107,6 +114,7 @@ CPlayer::~CPlayer()
 	}
 	SAFE_DELETE(m_pArrowModel);
 	SAFE_DELETE(m_pModel);		// プレイヤーモデルの解放
+	SAFE_DELETE(m_pEffect);
 
 	//音の解放
 	SAFE_DELETE(g_pPlayerSound);
@@ -290,7 +298,14 @@ void CPlayer::Draw()
 		m_pArrowModel->SetProjectionMatrix(GetProj());
 		/*if(m_eArrowState == SELECTED)*/
 		if(!(m_eDestination == CPlayer::DEFAULT))m_pArrowModel->Draw();//DEFAULTを表示しない
-
+		if (m_ePlayerState == CPlayer::MOVE)
+		{
+			m_pEffect->SetPos(m_tEffectParam.pos);
+			m_pEffect->SetSize(m_tEffectParam.size);
+			m_pEffect->SetRotate(m_tEffectParam.rotate);
+			m_pEffect->SetColor(m_tEffectParam.color);
+			m_pEffect->Draw(true);
+		}
 	}
 	/* プレイヤーの描画 */
 	
@@ -343,6 +358,13 @@ void CPlayer::Reload()
 	SAFE_DELETE(m_pModel);
 	m_pModel = new CModelEx(MODEL_PASS("Player/Lini_FountainPen.fbx"));
 
+	SAFE_DELETE(m_pEffect);
+	m_pEffect = new CEffectManager_sp(EFFECT_PASS("Sprite/Drawing.png"), 4, 6);
+	m_pEffect->Play(true);
+	m_tEffectParam.pos = { 0.0f,0.0f,0.0f };
+	m_tEffectParam.size = { 100.0f,100.0f,100.0f };
+	m_tEffectParam.rotate = { 0.0f,0.0f,0.0f };
+	m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
 
 }
 
@@ -435,6 +457,10 @@ void CPlayer::UpdateMove()
 {
 	if (GetFeverMode())m_fBrushSpeed = BRUSH_SPEED_FEVER;
 	else m_fBrushSpeed = BRUSH_SPEED;
+
+	m_pEffect->Update();
+
+	m_tEffectParam.pos = m_tBrushPos;
 
 	// 各種方向別移動処理
 	switch (m_eDestination)
