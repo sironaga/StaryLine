@@ -50,9 +50,10 @@ StageType g_Select_type;
 StageType g_OldSelect_type;
 Model::AnimeNo g_AnimNo[5];
 
-constexpr float STAGE_BETWEEN = 1100.0f;
+constexpr float STAGE_BETWEEN = 700.0f;
 constexpr float MOVE_TIME = 30.0f;
 constexpr float FIRST_POS = 200.0f;
+constexpr float UI_POS_Y = 100.0f;
 
 CStageSelect::CStageSelect()
 	: f_Rotation(0)
@@ -66,7 +67,7 @@ CStageSelect::CStageSelect()
 	, m_pBackGround(nullptr)
 	, m_bMoving(false)
 	, posX{ 0.0f,400.0f,800.0f }
-	, subposX{ 0.0f,400.0f,800.0f }
+	, subposX{ 140.0f,540.0f,940.0f }
 	, m_rotate{}
 	, m_pDecition(nullptr)
 	, m_pEffect{}, m_pStarEfc{}
@@ -79,7 +80,7 @@ CStageSelect::CStageSelect()
 	, m_bCantMove_Right(false)
 	, m_fTime(0.0f)
 {
-	g_Select_type.StageMainNumber = GRASSLAND;
+	g_Select_type.StageMainNumber = GrassField;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
 	g_OldSelect_type = g_Select_type;
 	m_pGrassLand         = new SpriteEx("Assets/Texture/StageSelectBackGround/Worldselect_01.png");
@@ -170,8 +171,8 @@ CStageSelect::CStageSelect()
 	nSlect = 0;
 	for (int i = 0; i < StageKindMax; i++)
 	{
-		m_ModelParam[i].pos = { FIRST_POS,0.0f,100.0f };
-		m_ModelParam[i].rotate = { DirectX::XMConvertToRadians(10.0f),DirectX::XMConvertToRadians(180.0f),0.0f };
+		m_ModelParam[i].pos = { FIRST_POS,0.0f,-100.0f };
+		m_ModelParam[i].rotate = { DirectX::XMConvertToRadians(0.0f),DirectX::XMConvertToRadians(180.0f),0.0f };
 		m_ModelParam[i].size = { -2.0f,2.0f,2.0f };
 
 
@@ -352,6 +353,37 @@ void CStageSelect::Update()
 	static bool bRight = false;
 	//SpriteDebug(&m_ModelParam[WorldField], true);
 	//if (IsKeyTrigger('B'))m_ModelParam[WorldField].rotate.z += DirectX::XMConvertToRadians(120.0f);
+
+	static DirectX::XMFLOAT3 debugpos = { 170.0f, 46.0f, -370.0f };
+#if 0
+	if (IsKeyPress('D'))debugpos.x++;
+	if (IsKeyPress('A'))debugpos.x--;
+	if (IsKeyPress(VK_SPACE))debugpos.y++;
+	if (IsKeyPress(VK_SHIFT))debugpos.y--;
+	if (IsKeyPress('W'))debugpos.z++;
+	if (IsKeyPress('S'))debugpos.z--;
+
+
+	if (MainStage)
+	{
+		SetCameraPos(DirectX::XMFLOAT3(0.0f, 45.0f, -15.0f));
+		SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -90.0f));
+		SetFovY(DirectX::XMConvertToRadians(60.0f));
+	}
+	else
+	{
+		SetCameraPos(debugpos);
+		SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f));
+		SetFovY(DirectX::XMConvertToRadians(20.0f));
+	}
+
+	OutputDebugStringA("X:");
+	OutputDebugStringA(std::to_string(debugpos.x).c_str());
+	OutputDebugStringA("Y:");
+	OutputDebugStringA(std::to_string(debugpos.y).c_str());
+	OutputDebugStringA("Z:");
+	OutputDebugStringA(std::to_string(debugpos.z).c_str());
+	OutputDebugStringA("\n");
 	if (ClearCommand())
 	{
 		for (int i = 0; i < MAX_STAGE; i++)
@@ -360,6 +392,22 @@ void CStageSelect::Update()
 			
 		}
 	}
+#endif
+#if 1
+	if (MainStage)
+	{
+		SetCameraPos(DirectX::XMFLOAT3(0.0f, 45.0f, -15.0f));
+		SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -90.0f));
+		SetFovY(DirectX::XMConvertToRadians(60.0f));
+	}
+	else
+	{
+		SetCameraPos(DirectX::XMFLOAT3(140.0f, 46.0f, -370.0f));
+		SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f));
+		SetFovY(DirectX::XMConvertToRadians(30.0f));
+	}
+
+
 
 	if (!m_bEnd)
 	{
@@ -460,9 +508,9 @@ void CStageSelect::Update()
 					StartFade();
 					MainStage ^= true;
 
-					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
-					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
-					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
+					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
 
 				}
 				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
@@ -633,7 +681,7 @@ void CStageSelect::Update()
 				{
 					StartFade();
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
-					subposX[0] = 0.0f; subposX[1] = 400.0f; subposX[2] = 800.0f;
+					subposX[0] = 140.0f; subposX[1] = 540.0f; subposX[2] = 540.0f;
 					MainStage ^= true;
 					
 					m_ModelWorldParam.pos = { 0.0f,-66.0f,100.0f };
@@ -785,7 +833,7 @@ void CStageSelect::Update()
 			}
 		}
 	}
-
+#endif
 	SelectAnimation();
 	//m_bMoving = false;
 }
@@ -863,6 +911,8 @@ void CStageSelect::Draw()
 	}
 	else
 	{
+		SetRender3D();
+
 		switch (g_Select_type.StageMainNumber)
 		{
 		case GrassField:
@@ -1232,13 +1282,12 @@ void CStageSelect::Draw()
 	}
 	else
 	{
-		{
+#if	1
 			LinieDraw();
 			if (g_Select_type.StageMainNumber == GRASSLAND)QrackerDraw();
 			if (g_Select_type.StageMainNumber == DESERT)NugarDraw();
 			if (g_Select_type.StageMainNumber == SNOWFIELD)KanneleDraw();
 			if (g_Select_type.StageMainNumber == SNOWFIELD)BoldowDraw();
-
 			switch (g_Select_type.StageSubNumber)
 			{
 
@@ -1248,7 +1297,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[0]->SetProjection(GetProj());
 				m_pGrassLandStage[0]->SetView(GetView());
 				m_pGrassLandStage[0]->SetTexture();
-				m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pGrassLandStage[0]->SetPositon(subposX[0], UI_POS_Y, 145.0f);
 				m_pGrassLandStage[0]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pGrassLandStage[0]->Disp();
 
@@ -1256,7 +1305,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[1]->SetProjection(GetProj());
 				m_pGrassLandStage[1]->SetView(GetView());
 				m_pGrassLandStage[1]->SetTexture();
-				m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pGrassLandStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				//if (!m_bMoving)
 				m_pGrassLandStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pGrassLandStage[1]->Disp();
@@ -1270,7 +1319,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1281,7 +1330,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1292,7 +1341,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1303,7 +1352,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -1317,7 +1366,7 @@ void CStageSelect::Draw()
 						m_pRight_Select->SetProjection(GetProj());
 						m_pRight_Select->SetView(GetView());
 						m_pRight_Select->SetTexture();
-						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetPositon(subposX[0] + 180.0f, UI_POS_Y, 145.0f);
 						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 						m_pRight_Select->Disp();
 					}
@@ -1333,8 +1382,8 @@ void CStageSelect::Draw()
 							static float rad = 0.0f;
 							rad = DirectX::XMConvertToRadians(count * 60);
 							float cosScale = cosf(rad) - 0.5f;
-							float posAjust = 10.0f * cosScale + 180.0f;
-							m_pRight_Select_Lock->SetPositon(posAjust, 70.0f, 145.0f);
+							float posAjust = 10.0f * cosScale + 180.0f + subposX[0];
+							m_pRight_Select_Lock->SetPositon(posAjust, UI_POS_Y, 145.0f);
 							if (count >= 10)
 							{
 								count = 0;
@@ -1344,7 +1393,7 @@ void CStageSelect::Draw()
 						}
 						else
 						{
-							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
+							m_pRight_Select_Lock->SetPositon(subposX[0] + 180.0f, UI_POS_Y, 145.0f);
 
 						}
 						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
@@ -1357,7 +1406,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[0], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -1369,7 +1418,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[0]->SetProjection(GetProj());
 				m_pGrassLandStage[0]->SetView(GetView());
 				m_pGrassLandStage[0]->SetTexture();
-				m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pGrassLandStage[0]->SetPositon(subposX[0], UI_POS_Y, 145.0f);
 				m_pGrassLandStage[0]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pGrassLandStage[0]->Disp();
 
@@ -1377,7 +1426,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[1]->SetProjection(GetProj());
 				m_pGrassLandStage[1]->SetView(GetView());
 				m_pGrassLandStage[1]->SetTexture();
-				m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pGrassLandStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pGrassLandStage[1]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pGrassLandStage[1]->Disp();
 
@@ -1385,7 +1434,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[2]->SetProjection(GetProj());
 				m_pGrassLandStage[2]->SetView(GetView());
 				m_pGrassLandStage[2]->SetTexture();
-				m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pGrassLandStage[2]->SetPositon(subposX[2], UI_POS_Y, 145.0f);
 				m_pGrassLandStage[2]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pGrassLandStage[2]->Disp();
 
@@ -1398,7 +1447,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1409,7 +1458,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1420,7 +1469,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1431,7 +1480,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -1444,7 +1493,7 @@ void CStageSelect::Draw()
 						m_pRight_Select->SetProjection(GetProj());
 						m_pRight_Select->SetView(GetView());
 						m_pRight_Select->SetTexture();
-						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 						m_pRight_Select->Disp();
 					}
@@ -1460,8 +1509,8 @@ void CStageSelect::Draw()
 							static float rad = 0.0f;
 							rad = DirectX::XMConvertToRadians(count * 60);
 							float cosScale = cosf(rad) - 0.5f;
-							float posAjust = 10.0f * cosScale + 180.0f;
-							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							float posAjust = 10.0f * cosScale + 180.0f + subposX[1];
+							m_pRight_Select_Lock->SetPositon(posAjust, UI_POS_Y, 145.0f);
 							if (count >= 10)
 							{
 								count = 0;
@@ -1471,7 +1520,7 @@ void CStageSelect::Draw()
 						}
 						else
 						{
-							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+							m_pRight_Select_Lock->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 
 						}
 						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
@@ -1481,7 +1530,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetPositon(subposX[1] - 180.0f, UI_POS_Y, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 
@@ -1490,7 +1539,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[1], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -1502,7 +1551,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[1]->SetProjection(GetProj());
 				m_pGrassLandStage[1]->SetView(GetView());
 				m_pGrassLandStage[1]->SetTexture();
-				m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pGrassLandStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pGrassLandStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pGrassLandStage[1]->Disp();
 
@@ -1510,7 +1559,7 @@ void CStageSelect::Draw()
 				m_pGrassLandStage[2]->SetProjection(GetProj());
 				m_pGrassLandStage[2]->SetView(GetView());
 				m_pGrassLandStage[2]->SetTexture();
-				m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pGrassLandStage[2]->SetPositon(subposX[2], UI_POS_Y, 145.0f);
 				m_pGrassLandStage[2]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pGrassLandStage[2]->Disp();
 
@@ -1523,7 +1572,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1534,7 +1583,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1545,7 +1594,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1556,7 +1605,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -1568,7 +1617,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetPositon(subposX[2] + -180.0f, UI_POS_Y, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 
@@ -1577,7 +1626,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[2], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -1589,7 +1638,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[0]->SetProjection(GetProj());
 				m_pDesertStage[0]->SetView(GetView());
 				m_pDesertStage[0]->SetTexture();
-				m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pDesertStage[0]->SetPositon(subposX[0], UI_POS_Y, 145.0f);
 				m_pDesertStage[0]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pDesertStage[0]->Disp();
 
@@ -1597,7 +1646,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[1]->SetProjection(GetProj());
 				m_pDesertStage[1]->SetView(GetView());
 				m_pDesertStage[1]->SetTexture();
-				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pDesertStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pDesertStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pDesertStage[1]->Disp();
 
@@ -1610,7 +1659,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1621,7 +1670,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1632,7 +1681,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1643,7 +1692,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -1657,7 +1706,7 @@ void CStageSelect::Draw()
 						m_pRight_Select->SetProjection(GetProj());
 						m_pRight_Select->SetView(GetView());
 						m_pRight_Select->SetTexture();
-						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetPositon(subposX[0] + 180.0f, UI_POS_Y, 145.0f);
 						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 						m_pRight_Select->Disp();
 					}
@@ -1673,8 +1722,8 @@ void CStageSelect::Draw()
 							static float rad = 0.0f;
 							rad = DirectX::XMConvertToRadians(count * 60);
 							float cosScale = cosf(rad) - 0.5f;
-							float posAjust = 10.0f * cosScale + 180.0f;
-							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							float posAjust = 10.0f * cosScale + 180.0f + subposX[1];
+							m_pRight_Select_Lock->SetPositon(posAjust, UI_POS_Y, 145.0f);
 							if (count >= 10)
 							{
 								count = 0;
@@ -1684,7 +1733,7 @@ void CStageSelect::Draw()
 						}
 						else
 						{
-							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+							m_pRight_Select_Lock->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 
 						}
 						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
@@ -1696,7 +1745,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[0], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -1709,7 +1758,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[0]->SetProjection(GetProj());
 				m_pDesertStage[0]->SetView(GetView());
 				m_pDesertStage[0]->SetTexture();
-				m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pDesertStage[0]->SetPositon(subposX[0], UI_POS_Y, 145.0f);
 				m_pDesertStage[0]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pDesertStage[0]->Disp();
 
@@ -1717,7 +1766,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[1]->SetProjection(GetProj());
 				m_pDesertStage[1]->SetView(GetView());
 				m_pDesertStage[1]->SetTexture();
-				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pDesertStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pDesertStage[1]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pDesertStage[1]->Disp();
 
@@ -1725,7 +1774,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[2]->SetProjection(GetProj());
 				m_pDesertStage[2]->SetView(GetView());
 				m_pDesertStage[2]->SetTexture();
-				m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pDesertStage[2]->SetPositon(subposX[2], UI_POS_Y, 145.0f);
 				m_pDesertStage[2]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pDesertStage[2]->Disp();
 
@@ -1738,7 +1787,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1749,7 +1798,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1760,7 +1809,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1771,7 +1820,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -1783,7 +1832,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetPositon(subposX[1]  + -180.0f, UI_POS_Y, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 
@@ -1793,7 +1842,7 @@ void CStageSelect::Draw()
 						m_pRight_Select->SetProjection(GetProj());
 						m_pRight_Select->SetView(GetView());
 						m_pRight_Select->SetTexture();
-						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 						m_pRight_Select->Disp();
 					}
@@ -1809,8 +1858,8 @@ void CStageSelect::Draw()
 							static float rad = 0.0f;
 							rad = DirectX::XMConvertToRadians(count * 60);
 							float cosScale = cosf(rad) - 0.5f;
-							float posAjust = 10.0f * cosScale + 180.0f;
-							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							float posAjust = 10.0f * cosScale + 180.0f + subposX[1];
+							m_pRight_Select_Lock->SetPositon(posAjust, UI_POS_Y, 145.0f);
 							if (count >= 10)
 							{
 								count = 0;
@@ -1820,7 +1869,7 @@ void CStageSelect::Draw()
 						}
 						else
 						{
-							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+							m_pRight_Select_Lock->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 
 						}
 						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
@@ -1832,7 +1881,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[1], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -1846,7 +1895,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[1]->SetProjection(GetProj());
 				m_pDesertStage[1]->SetView(GetView());
 				m_pDesertStage[1]->SetTexture();
-				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pDesertStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pDesertStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pDesertStage[1]->Disp();
 
@@ -1854,7 +1903,7 @@ void CStageSelect::Draw()
 				m_pDesertStage[2]->SetProjection(GetProj());
 				m_pDesertStage[2]->SetView(GetView());
 				m_pDesertStage[2]->SetTexture();
-				m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pDesertStage[2]->SetPositon(subposX[2], UI_POS_Y, 145.0f);
 				m_pDesertStage[2]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pDesertStage[2]->Disp();
 
@@ -1867,7 +1916,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1878,7 +1927,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1889,7 +1938,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1900,7 +1949,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -1912,7 +1961,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetPositon(subposX[2]  + -180.0f, UI_POS_Y, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 
@@ -1921,7 +1970,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[2], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -1934,7 +1983,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[0]->SetProjection(GetProj());
 				m_pSnowFieldStage[0]->SetView(GetView());
 				m_pSnowFieldStage[0]->SetTexture();
-				m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pSnowFieldStage[0]->SetPositon(subposX[0], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[0]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pSnowFieldStage[0]->Disp();
 
@@ -1942,7 +1991,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[1]->SetProjection(GetProj());
 				m_pSnowFieldStage[1]->SetView(GetView());
 				m_pSnowFieldStage[1]->SetTexture();
-				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pSnowFieldStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pSnowFieldStage[1]->Disp();
 
@@ -1955,7 +2004,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -1966,7 +2015,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -1977,7 +2026,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -1988,7 +2037,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[0] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -2002,7 +2051,7 @@ void CStageSelect::Draw()
 						m_pRight_Select->SetProjection(GetProj());
 						m_pRight_Select->SetView(GetView());
 						m_pRight_Select->SetTexture();
-						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetPositon(subposX[0] + 180.0f, UI_POS_Y, 145.0f);
 						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 						m_pRight_Select->Disp();
 					}
@@ -2018,8 +2067,8 @@ void CStageSelect::Draw()
 							static float rad = 0.0f;
 							rad = DirectX::XMConvertToRadians(count * 60);
 							float cosScale = cosf(rad) - 0.5f;
-							float posAjust = 10.0f * cosScale + 180.0f;
-							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							float posAjust = 10.0f * cosScale + 180.0f + subposX[0];
+							m_pRight_Select_Lock->SetPositon(posAjust, UI_POS_Y, 145.0f);
 							if (count >= 10)
 							{
 								count = 0;
@@ -2029,7 +2078,7 @@ void CStageSelect::Draw()
 						}
 						else
 						{
-							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+							m_pRight_Select_Lock->SetPositon(subposX[0] + 180.0f, UI_POS_Y, 145.0f);
 
 						}
 						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
@@ -2041,7 +2090,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[0], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -2054,7 +2103,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[0]->SetProjection(GetProj());
 				m_pSnowFieldStage[0]->SetView(GetView());
 				m_pSnowFieldStage[0]->SetTexture();
-				m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pSnowFieldStage[0]->SetPositon(subposX[0], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[0]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pSnowFieldStage[0]->Disp();
 
@@ -2062,7 +2111,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[1]->SetProjection(GetProj());
 				m_pSnowFieldStage[1]->SetView(GetView());
 				m_pSnowFieldStage[1]->SetTexture();
-				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pSnowFieldStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[1]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pSnowFieldStage[1]->Disp();
 
@@ -2070,7 +2119,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[2]->SetProjection(GetProj());
 				m_pSnowFieldStage[2]->SetView(GetView());
 				m_pSnowFieldStage[2]->SetTexture();
-				m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pSnowFieldStage[2]->SetPositon(subposX[2], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[2]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pSnowFieldStage[2]->Disp();
 				if (m_bMoving == false)
@@ -2079,7 +2128,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetPositon(subposX[1] + -180.0f, UI_POS_Y, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 
@@ -2092,7 +2141,7 @@ void CStageSelect::Draw()
 							m_pRank_C->SetProjection(GetProj());
 							m_pRank_C->SetView(GetView());
 							m_pRank_C->SetTexture();
-							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 							m_pRank_C->Disp();
 						}
@@ -2103,7 +2152,7 @@ void CStageSelect::Draw()
 							m_pRank_B->SetProjection(GetProj());
 							m_pRank_B->SetView(GetView());
 							m_pRank_B->SetTexture();
-							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 							m_pRank_B->Disp();
 						}
@@ -2114,7 +2163,7 @@ void CStageSelect::Draw()
 							m_pRank_A->SetProjection(GetProj());
 							m_pRank_A->SetView(GetView());
 							m_pRank_A->SetTexture();
-							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 							m_pRank_A->Disp();
 						}
@@ -2125,7 +2174,7 @@ void CStageSelect::Draw()
 							m_pRank_S->SetProjection(GetProj());
 							m_pRank_S->SetView(GetView());
 							m_pRank_S->SetTexture();
-							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetPositon(subposX[1] + 60, UI_POS_Y + 20.0f, 140.0f);
 							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 							m_pRank_S->Disp();
 						}
@@ -2138,7 +2187,7 @@ void CStageSelect::Draw()
 						m_pRight_Select->SetProjection(GetProj());
 						m_pRight_Select->SetView(GetView());
 						m_pRight_Select->SetTexture();
-						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 						m_pRight_Select->Disp();
 					}
@@ -2154,8 +2203,8 @@ void CStageSelect::Draw()
 							static float rad = 0.0f;
 							rad = DirectX::XMConvertToRadians(count * 60);
 							float cosScale = cosf(rad) - 0.5f;
-							float posAjust = 10.0f * cosScale + 180.0f;
-							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							float posAjust = 10.0f * cosScale + 180.0f + subposX[1];
+							m_pRight_Select_Lock->SetPositon(posAjust, UI_POS_Y, 145.0f);
 							if (count >= 10)
 							{
 								count = 0;
@@ -2165,7 +2214,7 @@ void CStageSelect::Draw()
 						}
 						else
 						{
-							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+							m_pRight_Select_Lock->SetPositon(subposX[1] + 180.0f, UI_POS_Y, 145.0f);
 
 						}
 						m_pRight_Select_Lock->SetSize(35.0f, 35.0f, 100.0f);
@@ -2177,7 +2226,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[1], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 
@@ -2191,7 +2240,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[1]->SetProjection(GetProj());
 				m_pSnowFieldStage[1]->SetView(GetView());
 				m_pSnowFieldStage[1]->SetTexture();
-				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pSnowFieldStage[1]->SetPositon(subposX[1], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[1]->SetSize(210.0f, 110.0f, 100.0f);
 				m_pSnowFieldStage[1]->Disp();
 
@@ -2199,7 +2248,7 @@ void CStageSelect::Draw()
 				m_pSnowFieldStage[2]->SetProjection(GetProj());
 				m_pSnowFieldStage[2]->SetView(GetView());
 				m_pSnowFieldStage[2]->SetTexture();
-				m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pSnowFieldStage[2]->SetPositon(subposX[2], UI_POS_Y, 145.0f);
 				m_pSnowFieldStage[2]->SetSize(220.0f, 120.0f, 100.0f);
 				m_pSnowFieldStage[2]->Disp();
 
@@ -2212,7 +2261,7 @@ void CStageSelect::Draw()
 						m_pRank_C->SetProjection(GetProj());
 						m_pRank_C->SetView(GetView());
 						m_pRank_C->SetTexture();
-						m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_C->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_C->Disp();
 					}
@@ -2223,7 +2272,7 @@ void CStageSelect::Draw()
 						m_pRank_B->SetProjection(GetProj());
 						m_pRank_B->SetView(GetView());
 						m_pRank_B->SetTexture();
-						m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_B->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_B->Disp();
 					}
@@ -2234,7 +2283,7 @@ void CStageSelect::Draw()
 						m_pRank_A->SetProjection(GetProj());
 						m_pRank_A->SetView(GetView());
 						m_pRank_A->SetTexture();
-						m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_A->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_A->Disp();
 					}
@@ -2245,7 +2294,7 @@ void CStageSelect::Draw()
 						m_pRank_S->SetProjection(GetProj());
 						m_pRank_S->SetView(GetView());
 						m_pRank_S->SetTexture();
-						m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+						m_pRank_S->SetPositon(subposX[2] + 60, UI_POS_Y + 20.0f, 140.0f);
 						m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
 						m_pRank_S->Disp();
 					}
@@ -2256,7 +2305,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetPositon(subposX[2]  + -180.0f, UI_POS_Y, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 
@@ -2265,7 +2314,7 @@ void CStageSelect::Draw()
 					m_pStageSelected->SetProjection(GetProj());
 					m_pStageSelected->SetView(GetView());
 					m_pStageSelected->SetTexture();
-					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
+					m_pStageSelected->SetPositon(subposX[2], UI_POS_Y - 12.0f, 140.0f);
 					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
 					m_pStageSelected->Disp();
 				}
@@ -2273,7 +2322,7 @@ void CStageSelect::Draw()
 				break;
 
 			}
-		}
+#endif
 	}
 }
 
@@ -2285,7 +2334,7 @@ void CStageSelect::LinieDraw()
 	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX T;
 	if (MainStage) T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 25.0f, 0.0f, 0.0f));
-	else T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	else T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(140.0f, 15.0f, -250.0f, 0.0f));
 	//拡大縮小行列(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
@@ -2340,9 +2389,9 @@ void CStageSelect::QrackerDraw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 30.0f, 25.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 70.0f, 10.0f, -150.0f, 0.0f));
 	//拡大縮小行列(Scaling)
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);
 	//回転行列(Rotation)
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	//それぞれの行列を掛け合わせて格納
@@ -2394,7 +2443,7 @@ void CStageSelect::NugarDraw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 30.0f, 25.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 70.0f, 10.0f, -150.0f, 0.0f));
 	//拡大縮小行列(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
@@ -2448,7 +2497,7 @@ void CStageSelect::BoldowDraw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 30.0f, 25.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 60.0f, 10.0f, -150.0f, 0.0f));
 	//拡大縮小行列(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
@@ -2502,7 +2551,7 @@ void CStageSelect::KanneleDraw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 10.0f, 25.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 50.0f, 10.0f, -150.0f, 0.0f));
 	//拡大縮小行列(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
@@ -2556,7 +2605,7 @@ void CStageSelect::KanneleDraw()
 
 void CStageSelect::SelectAnimation()
 {
-	if(MainStage)m_pBackGround->MultiScrollRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(m_tBGRotateZ) });
+	//if(MainStage)m_pBackGround->MultiScrollRotate({ 0.0f,0.0f,DirectX::XMConvertToRadians(m_tBGRotateZ) });
 }
 
 void CStageSelect::ClearCheck()

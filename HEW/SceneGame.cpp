@@ -67,6 +67,10 @@ CSceneGame::CSceneGame(StageType StageNum)
 	g_GameSound->SetMasterVolume();
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
 
+	SetCameraPos(DirectX::XMFLOAT3(0.0f, 45.0f, -15.0f));
+	SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -90.0f));
+	SetFovY(DirectX::XMConvertToRadians(60.0f));
+
 	m_pBackGround = new CBackGround();
 	m_pFieldVertex = new CFieldVertex();
 	m_pPlayer = new CPlayer();
