@@ -8,6 +8,7 @@
 #include "InputEx.h"
 #include "SoundList.h"
 #include "SceneResult.h"
+#include "Easing.h"
 #include "Geometory.h"
 
 #define LOGO_WIND (1000)
@@ -47,7 +48,7 @@
 
 StageType g_Select_type;
 StageType g_OldSelect_type;
-Model::AnimeNo g_AnimNo;
+Model::AnimeNo g_AnimNo[5];
 
 constexpr float STAGE_BETWEEN = 1100.0f;
 constexpr float MOVE_TIME = 30.0f;
@@ -73,7 +74,10 @@ CStageSelect::CStageSelect()
 	, m_ModelWorldParam{}
 	, LinieRotationY{ LINIE_ROTATE_FLONT }
 	, m_bClear{}
-	, m_bClearCommand{false}
+	, m_bClearCommand{ false }
+	, m_bCantMove_Left(false)
+	, m_bCantMove_Right(false)
+	, m_fTime(0.0f)
 {
 	g_Select_type.StageMainNumber = GRASSLAND;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -105,6 +109,11 @@ CStageSelect::CStageSelect()
 	m_pRight_Select_Lock = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Right02.png");
 	m_pLeft_Select		 = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Left01.png");
     m_pLeft_Select_Lock  = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Left02.png");
+
+	m_pRank_C = new SpriteEx("Assets/Texture/Result/Rank/Rank_C.png");
+	m_pRank_B = new SpriteEx("Assets/Texture/Result/Rank/Rank_B.png");
+	m_pRank_A = new SpriteEx("Assets/Texture/Result/Rank/Rank_A.png");
+	m_pRank_S = new SpriteEx("Assets/Texture/Result/Rank/Rank_S.png");
 	
 	m_pStageSelect_Underbar = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Underbar.png");
 	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
@@ -120,13 +129,26 @@ CStageSelect::CStageSelect()
 
 	m_pStageLinie = new Model();
 	m_pStageLinie->Load(MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx"), 1.0f, Model::ZFlip);
-	g_AnimNo = m_pStageLinie->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx"));
-	m_pStageLinie->PlayAnime(g_AnimNo, false);
+	g_AnimNo[0] = m_pStageLinie->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_SelectStage_Run.fbx"));
+	m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 	m_pStageLinie->Step(0.01f);
-	m_pStageLinie->SetAnimeTime(g_AnimNo, 0.0f);
+	m_pStageLinie->SetAnimeTime(g_AnimNo[0], 0.0f);
 
 	m_pStageQracker = new Model();
-	m_pStageQracker->Load(MODEL_PASS("Leader/Linie/Char_Boss01_Qracker.fbx"), 1.0f, Model::ZFlip);
+	m_pStageQracker->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::ZFlip);
+	//g_AnimNo[1] = m_pStageQracker->AddAnimation(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"));
+	//m_pStageQracker->PlayAnime(g_AnimNo[1], false);
+	//m_pStageQracker->Step(0.01f);
+	//m_pStageQracker->SetAnimeTime(g_AnimNo[1], 0.0f);
+
+	m_pStageNugar = new Model();
+	m_pStageNugar->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::ZFlip);
+
+	m_pStageBoldow = new Model();
+	m_pStageBoldow->Load(MODEL_PASS("Leader/Boldow/Char_Boss03_Boldow.fbx"), 1.0f, Model::ZFlip);
+
+	m_pStageKannele = new Model();
+	m_pStageKannele->Load(MODEL_PASS("Leader/Kannele/Char_Boss03_Kannele.fbx"), 1.0f, Model::ZFlip);
 
 	//m_BGMSound = new CSoundList(BGM_TITLE);
 	m_BGMSound = new CSoundList(BGM_SELECT);
@@ -184,6 +206,14 @@ CStageSelect::CStageSelect()
 	m_pStageSelected->SetView(GetView());
 	m_pStageSelect_Underbar->SetProjection(GetProj());
 	m_pStageSelect_Underbar->SetView(GetView());
+	m_pRank_C->SetProjection(GetProj());
+	m_pRank_C->SetView(GetView());
+	m_pRank_B->SetProjection(GetProj());
+	m_pRank_B->SetView(GetView());
+	m_pRank_A->SetProjection(GetProj());
+	m_pRank_A->SetView(GetView());
+	m_pRank_S->SetProjection(GetProj());
+	m_pRank_S->SetView(GetView());
 
 	}
 
@@ -208,7 +238,14 @@ CStageSelect::~CStageSelect()
 	}
 	SAFE_DELETE(m_pStageLinie);
 	SAFE_DELETE(m_pStageQracker);
+	SAFE_DELETE(m_pStageNugar);
+	SAFE_DELETE(m_pStageBoldow);
+	SAFE_DELETE(m_pStageKannele);
 	SAFE_DELETE(m_pWorldModel);
+	SAFE_DELETE(m_pRank_C);
+	SAFE_DELETE(m_pRank_B);
+	SAFE_DELETE(m_pRank_A);
+	SAFE_DELETE(m_pRank_S);
 	if (m_BGMSound)
 	{
 		delete m_BGMSound;
@@ -343,8 +380,12 @@ void CStageSelect::Update()
 						g_Select_type.StageMainNumber = DESERT;
 						m_bMoving = true; 
 						m_rotate.z = GRASS_ROTATE_Z2;
-						m_pStageLinie->PlayAnime(g_AnimNo, false);
+						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = true;
+					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[GRASSLAND_STAGE3])
+					{
+						m_bCantMove_Right = true;
 					}
 					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT))) && m_bClear[DESERT_STAGE3])
 					{ 
@@ -353,8 +394,12 @@ void CStageSelect::Update()
 						m_bMoving = true; 
 						m_rotate.z = GRASS_ROTATE_Z;
 						posX[2] = -400.0f;
-						m_pStageLinie->PlayAnime(g_AnimNo, false);
+						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = false;
+					}
+					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT))) && !m_bClear[DESERT_STAGE3])
+					{
+						m_bCantMove_Left = true;
 					}
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
 					break;
@@ -368,15 +413,19 @@ void CStageSelect::Update()
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = SNOWFIELD; 
 						m_bMoving = true;
-						m_pStageLinie->PlayAnime(g_AnimNo, false);
+						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = true;
+					}
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE3])
+					{
+						m_bCantMove_Left = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
 					{ 
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = GRASSLAND;
 						m_bMoving = true;
-						m_pStageLinie->PlayAnime(g_AnimNo, false);
+						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = false;
 					}
 					g_Select_type.StageSubNumber = DESERT_STAGE1;
@@ -391,7 +440,7 @@ void CStageSelect::Update()
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = DESERT;
 						m_bMoving = true;
-						m_pStageLinie->PlayAnime(g_AnimNo, false);
+						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = false;
 					}
 					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)))
@@ -400,7 +449,7 @@ void CStageSelect::Update()
 						g_Select_type.StageMainNumber = GRASSLAND; 
 						m_bMoving = true; 
 						posX[0] = 400.0f;
-						m_pStageLinie->PlayAnime(g_AnimNo, false);
+						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = true;
 					};
 					g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
@@ -705,7 +754,7 @@ void CStageSelect::Update()
 			}
 			if (moveCnt >= MOVE_TIME)
 			{
-				m_pStageLinie->SetAnimeTime(g_AnimNo,0.0f);
+				m_pStageLinie->SetAnimeTime(g_AnimNo[0],0.0f);
 				m_bMoving = false;
 				moveCnt = 0;
 			}
@@ -738,8 +787,8 @@ void CStageSelect::Draw()
 	float ArrowSize3 = 102.0f * Scale2;
 
 	float Scale3 = 1.05f + cosAngle / 30.0f;
-	float ArrowSize4 = 220.0f * Scale2;
-	float ArrowSize5 = 120.0f * Scale2;
+	float ArrowSize4 = 230.0f * Scale2;
+	float ArrowSize5 = 115.0f * Scale2;
 
 	m_pBackGround->Draw();
 	// f`æ
@@ -891,17 +940,37 @@ void CStageSelect::Draw()
 					m_pRight_Select->SetProjection(GetProj());
 					m_pRight_Select->SetView(GetView());
 					m_pRight_Select->SetTexture();
-					m_pRight_Select->SetPositon(180.0f, 80.0f, 145.0f);
+					m_pRight_Select->SetPositon(180.0f, 105.0f, 145.0f);
 					m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pRight_Select->Disp();
 				}
 				else
 				{
+
 					Sprite::ReSetSprite();
 					m_pRight_Select_Lock->SetProjection(GetProj());
 					m_pRight_Select_Lock->SetView(GetView());
 					m_pRight_Select_Lock->SetTexture();
-					m_pRight_Select_Lock->SetPositon(180.0f, 80.0f, 145.0f);
+					if (m_bCantMove_Right)
+					{
+						static int count = 0;
+						static float rad = 0.0f;
+						rad = DirectX::XMConvertToRadians(count * 60);
+						float cosScale = cosf(rad) - 0.5f;
+						float posAjust = 10.0f * cosScale + 180.0f;
+						m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+						if (count >= 10)
+						{
+							count = 0;
+							m_bCantMove_Right = false;
+						}
+						count++;
+					}
+					else
+					{
+						m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+
+					}
 					m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pRight_Select_Lock->Disp();
 				}
@@ -911,7 +980,7 @@ void CStageSelect::Draw()
 					m_pLeft_Select->SetProjection(GetProj());
 					m_pLeft_Select->SetView(GetView());
 					m_pLeft_Select->SetTexture();
-					m_pLeft_Select->SetPositon(-180.0f, 80.0f, 145.0f);
+					m_pLeft_Select->SetPositon(-180.0f, 105.0f, 145.0f);
 					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select->Disp();
 				}
@@ -921,10 +990,31 @@ void CStageSelect::Draw()
 					m_pLeft_Select_Lock->SetProjection(GetProj());
 					m_pLeft_Select_Lock->SetView(GetView());
 					m_pLeft_Select_Lock->SetTexture();
-					m_pLeft_Select_Lock->SetPositon(-180.0f, 80.0f, 145.0f);
+					if (m_bCantMove_Left)
+					{
+						static int count = 0;
+						static float rad = 0.0f;
+						rad = DirectX::XMConvertToRadians(count * 60);
+						float cosScale = cosf(rad) - 0.5f;
+						float posAjust = 10.0f * cosScale + 180.0f;
+						m_pLeft_Select_Lock->SetPositon(-posAjust, 105.0f, 145.0f);
+						if (count >= 10)
+						{
+							count = 0;
+							m_bCantMove_Left = false;
+						}
+						count++;
+					}
+					else
+					{
+						m_pLeft_Select_Lock->SetPositon(-180.0f, 105.0f, 145.0f);
+
+					}
 					m_pLeft_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pLeft_Select_Lock->Disp();
 				}
+
+				
 			}
 			break;
 		case(DESERT):
@@ -976,7 +1066,7 @@ void CStageSelect::Draw()
 				m_pLeft_Select->SetProjection(GetProj());
 				m_pLeft_Select->SetView(GetView());
 				m_pLeft_Select->SetTexture();
-				m_pLeft_Select->SetPositon(-170.0f, 100.0f, 145.0f);
+				m_pLeft_Select->SetPositon(-180.0f, 105.0f, 145.0f);
 				m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 				m_pLeft_Select->Disp();
 
@@ -986,7 +1076,7 @@ void CStageSelect::Draw()
 					m_pRight_Select->SetProjection(GetProj());
 					m_pRight_Select->SetView(GetView());
 					m_pRight_Select->SetTexture();
-					m_pRight_Select->SetPositon(170.0f, 100.0f, 145.0f);
+					m_pRight_Select->SetPositon(180.0f, 105.0f, 145.0f);
 					m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pRight_Select->Disp();
 				}
@@ -996,7 +1086,26 @@ void CStageSelect::Draw()
 					m_pRight_Select_Lock->SetProjection(GetProj());
 					m_pRight_Select_Lock->SetView(GetView());
 					m_pRight_Select_Lock->SetTexture();
-					m_pRight_Select_Lock->SetPositon(170.0f, 100.0f, 145.0f);
+					if (m_bCantMove_Right)
+					{
+						static int count = 0;
+						static float rad = 0.0f;
+						rad = DirectX::XMConvertToRadians(count * 60);
+						float cosScale = cosf(rad) - 0.5f;
+						float posAjust = 10.0f * cosScale + 180.0f;
+						m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+						if (count >= 10)
+						{
+							count = 0;
+							m_bCantMove_Right = false;
+						}
+						count++;
+					}
+					else
+					{
+						m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+
+					}
 					m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 					m_pRight_Select_Lock->Disp();
 				}
@@ -1052,7 +1161,7 @@ void CStageSelect::Draw()
 				m_pLeft_Select->SetProjection(GetProj());
 				m_pLeft_Select->SetView(GetView());
 				m_pLeft_Select->SetTexture();
-				m_pLeft_Select->SetPositon(-170.0f, 100.0f, 145.0f);
+				m_pLeft_Select->SetPositon(-170.0f, 105.0f, 145.0f);
 				m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 				m_pLeft_Select->Disp();
 
@@ -1060,7 +1169,7 @@ void CStageSelect::Draw()
 				m_pRight_Select->SetProjection(GetProj());
 				m_pRight_Select->SetView(GetView());
 				m_pRight_Select->SetTexture();
-				m_pRight_Select->SetPositon(170.0f, 100.0f, 145.0f);
+				m_pRight_Select->SetPositon(170.0f, 105.0f, 145.0f);
 				m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 				m_pRight_Select->Disp();
 
@@ -1100,494 +1209,1045 @@ void CStageSelect::Draw()
 	{
 		{
 			LinieDraw();
-			if(GRASSLAND)QrackerDraw();
+			if (g_Select_type.StageMainNumber == GRASSLAND)QrackerDraw();
+			if (g_Select_type.StageMainNumber == DESERT)NugarDraw();
+			if (g_Select_type.StageMainNumber == SNOWFIELD)KanneleDraw();
+			if (g_Select_type.StageMainNumber == SNOWFIELD)BoldowDraw();
 
 			switch (g_Select_type.StageSubNumber)
 			{
 
-				case(GRASSLAND_STAGE1):
-					SetRender3D();
-					Sprite::ReSetSprite();
-					m_pGrassLandStage[0]->SetProjection(GetProj());
-					m_pGrassLandStage[0]->SetView(GetView());
-					m_pGrassLandStage[0]->SetTexture();
-					m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
-					m_pGrassLandStage[0]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pGrassLandStage[0]->Disp();
+			case(GRASSLAND_STAGE1):
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[0]->SetProjection(GetProj());
+				m_pGrassLandStage[0]->SetView(GetView());
+				m_pGrassLandStage[0]->SetTexture();
+				m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pGrassLandStage[0]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pGrassLandStage[0]->Disp();
 
-					Sprite::ReSetSprite();
-					m_pGrassLandStage[1]->SetProjection(GetProj());
-					m_pGrassLandStage[1]->SetView(GetView());
-					m_pGrassLandStage[1]->SetTexture();
-					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					//if (!m_bMoving)
-					m_pGrassLandStage[1]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pGrassLandStage[1]->Disp();
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[1]->SetProjection(GetProj());
+				m_pGrassLandStage[1]->SetView(GetView());
+				m_pGrassLandStage[1]->SetTexture();
+				m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				//if (!m_bMoving)
+				m_pGrassLandStage[1]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pGrassLandStage[1]->Disp();
 
-					if (m_bMoving == false)
+				if (m_bMoving == false)
+				{
+					if (m_bClear[GRASSLAND_STAGE1])
 					{
-						if (m_bClear[GRASSLAND_STAGE1])
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+					}
+					else
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select_Lock->SetProjection(GetProj());
+						m_pRight_Select_Lock->SetView(GetView());
+						m_pRight_Select_Lock->SetTexture();
+						if (m_bCantMove_Right)
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select->SetProjection(GetProj());
-							m_pRight_Select->SetView(GetView());
-							m_pRight_Select->SetTexture();
-							m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select->Disp();
+							static int count = 0;
+							static float rad = 0.0f;
+							rad = DirectX::XMConvertToRadians(count * 60);
+							float cosScale = cosf(rad) - 0.5f;
+							float posAjust = 10.0f * cosScale + 180.0f;
+							m_pRight_Select_Lock->SetPositon(posAjust, 70.0f, 145.0f);
+							if (count >= 10)
+							{
+								count = 0;
+								m_bCantMove_Right = false;
+							}
+							count++;
 						}
 						else
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select_Lock->SetProjection(GetProj());
-							m_pRight_Select_Lock->SetView(GetView());
-							m_pRight_Select_Lock->SetTexture();
 							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select_Lock->Disp();
+
 						}
+						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->Disp();
 
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
 					}
-					break;
 
-				case(GRASSLAND_STAGE2):
-					SetRender3D();
+					SetRender2D();
 					Sprite::ReSetSprite();
-					m_pGrassLandStage[0]->SetProjection(GetProj());
-					m_pGrassLandStage[0]->SetView(GetView());
-					m_pGrassLandStage[0]->SetTexture();
-					m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
-					m_pGrassLandStage[0]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pGrassLandStage[0]->Disp();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
 
-					Sprite::ReSetSprite();
-					m_pGrassLandStage[1]->SetProjection(GetProj());
-					m_pGrassLandStage[1]->SetView(GetView());
-					m_pGrassLandStage[1]->SetTexture();
-					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pGrassLandStage[1]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pGrassLandStage[1]->Disp();
-
-					Sprite::ReSetSprite();
-					m_pGrassLandStage[2]->SetProjection(GetProj());
-					m_pGrassLandStage[2]->SetView(GetView());
-					m_pGrassLandStage[2]->SetTexture();
-					m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
-					m_pGrassLandStage[2]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pGrassLandStage[2]->Disp();
-					if (m_bMoving == false)
+					if (CSceneResult::GetStageClear(0))
 					{
-						if (m_bClear[GRASSLAND_STAGE2])
+						if (CSceneResult::GetRankData(0) == C_RANK)
 						{
+							SetRender2D();
 							Sprite::ReSetSprite();
-							m_pRight_Select->SetProjection(GetProj());
-							m_pRight_Select->SetView(GetView());
-							m_pRight_Select->SetTexture();
-							m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select->Disp();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(0) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(0) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(0) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
+				break;
+
+			case(GRASSLAND_STAGE2):
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[0]->SetProjection(GetProj());
+				m_pGrassLandStage[0]->SetView(GetView());
+				m_pGrassLandStage[0]->SetTexture();
+				m_pGrassLandStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pGrassLandStage[0]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pGrassLandStage[0]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[1]->SetProjection(GetProj());
+				m_pGrassLandStage[1]->SetView(GetView());
+				m_pGrassLandStage[1]->SetTexture();
+				m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pGrassLandStage[1]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pGrassLandStage[1]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[2]->SetProjection(GetProj());
+				m_pGrassLandStage[2]->SetView(GetView());
+				m_pGrassLandStage[2]->SetTexture();
+				m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pGrassLandStage[2]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pGrassLandStage[2]->Disp();
+				if (m_bMoving == false)
+				{
+					if (m_bClear[GRASSLAND_STAGE2])
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+					}
+					else
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select_Lock->SetProjection(GetProj());
+						m_pRight_Select_Lock->SetView(GetView());
+						m_pRight_Select_Lock->SetTexture();
+						if (m_bCantMove_Right)
+						{
+							static int count = 0;
+							static float rad = 0.0f;
+							rad = DirectX::XMConvertToRadians(count * 60);
+							float cosScale = cosf(rad) - 0.5f;
+							float posAjust = 10.0f * cosScale + 180.0f;
+							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							if (count >= 10)
+							{
+								count = 0;
+								m_bCantMove_Right = false;
+							}
+							count++;
 						}
 						else
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select_Lock->SetProjection(GetProj());
-							m_pRight_Select_Lock->SetView(GetView());
-							m_pRight_Select_Lock->SetTexture();
-							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select_Lock->Disp();
+							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+
 						}
-						Sprite::ReSetSprite();
-						m_pLeft_Select->SetProjection(GetProj());
-						m_pLeft_Select->SetView(GetView());
-						m_pLeft_Select->SetTexture();
-						m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
-						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-						m_pLeft_Select->Disp();
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
+						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->Disp();
 					}
-					break;
-
-				case(GRASSLAND_STAGE3):
-					SetRender3D();
 					Sprite::ReSetSprite();
-					m_pGrassLandStage[1]->SetProjection(GetProj());
-					m_pGrassLandStage[1]->SetView(GetView());
-					m_pGrassLandStage[1]->SetTexture();
-					m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pGrassLandStage[1]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pGrassLandStage[1]->Disp();
+					m_pLeft_Select->SetProjection(GetProj());
+					m_pLeft_Select->SetView(GetView());
+					m_pLeft_Select->SetTexture();
+					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select->Disp();
 
+					SetRender2D();
 					Sprite::ReSetSprite();
-					m_pGrassLandStage[2]->SetProjection(GetProj());
-					m_pGrassLandStage[2]->SetView(GetView());
-					m_pGrassLandStage[2]->SetTexture();
-					m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
-					m_pGrassLandStage[2]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pGrassLandStage[2]->Disp();
-					if (m_bMoving == false)
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
+
+					if (CSceneResult::GetStageClear(1))
 					{
-						Sprite::ReSetSprite();
-						m_pLeft_Select->SetProjection(GetProj());
-						m_pLeft_Select->SetView(GetView());
-						m_pLeft_Select->SetTexture();
-						m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
-						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-						m_pLeft_Select->Disp();
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
-					}
-					break;
-				case(DESERT_STAGE1):
-
-					SetRender3D();
-					Sprite::ReSetSprite();
-					m_pDesertStage[0]->SetProjection(GetProj());
-					m_pDesertStage[0]->SetView(GetView());
-					m_pDesertStage[0]->SetTexture();
-					m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
-					m_pDesertStage[0]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pDesertStage[0]->Disp();
-
-					Sprite::ReSetSprite();
-					m_pDesertStage[1]->SetProjection(GetProj());
-					m_pDesertStage[1]->SetView(GetView());
-					m_pDesertStage[1]->SetTexture();
-					m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pDesertStage[1]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pDesertStage[1]->Disp();
-
-					if (m_bMoving == false)
-					{
-						if (m_bClear[DESERT_STAGE1])
+						if (CSceneResult::GetRankData(1) == C_RANK)
 						{
+							SetRender2D();
 							Sprite::ReSetSprite();
-							m_pRight_Select->SetProjection(GetProj());
-							m_pRight_Select->SetView(GetView());
-							m_pRight_Select->SetTexture();
-							m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select->Disp();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(1) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(1) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(1) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
+				break;
+
+			case(GRASSLAND_STAGE3):
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[1]->SetProjection(GetProj());
+				m_pGrassLandStage[1]->SetView(GetView());
+				m_pGrassLandStage[1]->SetTexture();
+				m_pGrassLandStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pGrassLandStage[1]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pGrassLandStage[1]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pGrassLandStage[2]->SetProjection(GetProj());
+				m_pGrassLandStage[2]->SetView(GetView());
+				m_pGrassLandStage[2]->SetTexture();
+				m_pGrassLandStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pGrassLandStage[2]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pGrassLandStage[2]->Disp();
+				if (m_bMoving == false)
+				{
+					Sprite::ReSetSprite();
+					m_pLeft_Select->SetProjection(GetProj());
+					m_pLeft_Select->SetView(GetView());
+					m_pLeft_Select->SetTexture();
+					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select->Disp();
+
+					SetRender2D();
+					Sprite::ReSetSprite();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
+
+					if (CSceneResult::GetStageClear(2))
+					{
+						if (CSceneResult::GetRankData(2) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(2) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(2) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(2) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
+				break;
+			case(DESERT_STAGE1):
+
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pDesertStage[0]->SetProjection(GetProj());
+				m_pDesertStage[0]->SetView(GetView());
+				m_pDesertStage[0]->SetTexture();
+				m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pDesertStage[0]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pDesertStage[0]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pDesertStage[1]->SetProjection(GetProj());
+				m_pDesertStage[1]->SetView(GetView());
+				m_pDesertStage[1]->SetTexture();
+				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pDesertStage[1]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pDesertStage[1]->Disp();
+
+				if (m_bMoving == false)
+				{
+					if (m_bClear[DESERT_STAGE1])
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+					}
+					else
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select_Lock->SetProjection(GetProj());
+						m_pRight_Select_Lock->SetView(GetView());
+						m_pRight_Select_Lock->SetTexture();
+						if (m_bCantMove_Right)
+						{
+							static int count = 0;
+							static float rad = 0.0f;
+							rad = DirectX::XMConvertToRadians(count * 60);
+							float cosScale = cosf(rad) - 0.5f;
+							float posAjust = 10.0f * cosScale + 180.0f;
+							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							if (count >= 10)
+							{
+								count = 0;
+								m_bCantMove_Right = false;
+							}
+							count++;
 						}
 						else
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select_Lock->SetProjection(GetProj());
-							m_pRight_Select_Lock->SetView(GetView());
-							m_pRight_Select_Lock->SetTexture();
-							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select_Lock->Disp();
+							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+
 						}
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
+						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->Disp();
 					}
-					break;
 
-				case(DESERT_STAGE2):
-
-					SetRender3D();
+					SetRender2D();
 					Sprite::ReSetSprite();
-					m_pDesertStage[0]->SetProjection(GetProj());
-					m_pDesertStage[0]->SetView(GetView());
-					m_pDesertStage[0]->SetTexture();
-					m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
-					m_pDesertStage[0]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pDesertStage[0]->Disp();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
 
-					Sprite::ReSetSprite();
-					m_pDesertStage[1]->SetProjection(GetProj());
-					m_pDesertStage[1]->SetView(GetView());
-					m_pDesertStage[1]->SetTexture();
-					m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pDesertStage[1]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pDesertStage[1]->Disp();
+					if (CSceneResult::GetStageClear(3))
+					{
+						if (CSceneResult::GetRankData(3) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(3) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(3) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(3) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
+				break;
 
+			case(DESERT_STAGE2):
+
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pDesertStage[0]->SetProjection(GetProj());
+				m_pDesertStage[0]->SetView(GetView());
+				m_pDesertStage[0]->SetTexture();
+				m_pDesertStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pDesertStage[0]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pDesertStage[0]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pDesertStage[1]->SetProjection(GetProj());
+				m_pDesertStage[1]->SetView(GetView());
+				m_pDesertStage[1]->SetTexture();
+				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pDesertStage[1]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pDesertStage[1]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pDesertStage[2]->SetProjection(GetProj());
+				m_pDesertStage[2]->SetView(GetView());
+				m_pDesertStage[2]->SetTexture();
+				m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pDesertStage[2]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pDesertStage[2]->Disp();
+				if (m_bMoving == false)
+				{
 					Sprite::ReSetSprite();
-					m_pDesertStage[2]->SetProjection(GetProj());
-					m_pDesertStage[2]->SetView(GetView());
-					m_pDesertStage[2]->SetTexture();
-					m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
-					m_pDesertStage[2]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pDesertStage[2]->Disp();
-					if (m_bMoving == false)
+					m_pLeft_Select->SetProjection(GetProj());
+					m_pLeft_Select->SetView(GetView());
+					m_pLeft_Select->SetTexture();
+					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select->Disp();
+
+					if (m_bClear[DESERT_STAGE2])
 					{
 						Sprite::ReSetSprite();
-						m_pLeft_Select->SetProjection(GetProj());
-						m_pLeft_Select->SetView(GetView());
-						m_pLeft_Select->SetTexture();
-						m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
-						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-						m_pLeft_Select->Disp();
-
-						if (m_bClear[DESERT_STAGE2])
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+					}
+					else
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select_Lock->SetProjection(GetProj());
+						m_pRight_Select_Lock->SetView(GetView());
+						m_pRight_Select_Lock->SetTexture();
+						if (m_bCantMove_Right)
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select->SetProjection(GetProj());
-							m_pRight_Select->SetView(GetView());
-							m_pRight_Select->SetTexture();
-							m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select->Disp();
+							static int count = 0;
+							static float rad = 0.0f;
+							rad = DirectX::XMConvertToRadians(count * 60);
+							float cosScale = cosf(rad) - 0.5f;
+							float posAjust = 10.0f * cosScale + 180.0f;
+							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							if (count >= 10)
+							{
+								count = 0;
+								m_bCantMove_Right = false;
+							}
+							count++;
 						}
 						else
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select_Lock->SetProjection(GetProj());
-							m_pRight_Select_Lock->SetView(GetView());
-							m_pRight_Select_Lock->SetTexture();
-							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select_Lock->Disp();
+							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+
 						}
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
+						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->Disp();
 					}
 
-					break;
-
-				case(DESERT_STAGE3):
-
-					SetRender3D();
+					SetRender2D();
 					Sprite::ReSetSprite();
-					m_pDesertStage[1]->SetProjection(GetProj());
-					m_pDesertStage[1]->SetView(GetView());
-					m_pDesertStage[1]->SetTexture();
-					m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pDesertStage[1]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pDesertStage[1]->Disp();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
 
-					Sprite::ReSetSprite();
-					m_pDesertStage[2]->SetProjection(GetProj());
-					m_pDesertStage[2]->SetView(GetView());
-					m_pDesertStage[2]->SetTexture();
-					m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
-					m_pDesertStage[2]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pDesertStage[2]->Disp();
-					if (m_bMoving == false)
+					if (CSceneResult::GetStageClear(5))
 					{
-						Sprite::ReSetSprite();
-						m_pLeft_Select->SetProjection(GetProj());
-						m_pLeft_Select->SetView(GetView());
-						m_pLeft_Select->SetTexture();
-						m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
-						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-						m_pLeft_Select->Disp();
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
-					}
-
-					break;
-				case(SNOWFIELD_STAGE1):
-
-					SetRender3D();
-					Sprite::ReSetSprite();
-					m_pSnowFieldStage[0]->SetProjection(GetProj());
-					m_pSnowFieldStage[0]->SetView(GetView());
-					m_pSnowFieldStage[0]->SetTexture();
-					m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
-					m_pSnowFieldStage[0]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pSnowFieldStage[0]->Disp();
-
-					Sprite::ReSetSprite();
-					m_pSnowFieldStage[1]->SetProjection(GetProj());
-					m_pSnowFieldStage[1]->SetView(GetView());
-					m_pSnowFieldStage[1]->SetTexture();
-					m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pSnowFieldStage[1]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pSnowFieldStage[1]->Disp();
-
-					if (m_bMoving == false)
-					{
-						if (m_bClear[SNOWFIELD_STAGE1])
+						if (CSceneResult::GetRankData(4) == C_RANK)
 						{
+							SetRender2D();
 							Sprite::ReSetSprite();
-							m_pRight_Select->SetProjection(GetProj());
-							m_pRight_Select->SetView(GetView());
-							m_pRight_Select->SetTexture();
-							m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select->Disp();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(4) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(4) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(4) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+
+				}
+
+				break;
+
+			case(DESERT_STAGE3):
+
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pDesertStage[1]->SetProjection(GetProj());
+				m_pDesertStage[1]->SetView(GetView());
+				m_pDesertStage[1]->SetTexture();
+				m_pDesertStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pDesertStage[1]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pDesertStage[1]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pDesertStage[2]->SetProjection(GetProj());
+				m_pDesertStage[2]->SetView(GetView());
+				m_pDesertStage[2]->SetTexture();
+				m_pDesertStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pDesertStage[2]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pDesertStage[2]->Disp();
+				if (m_bMoving == false)
+				{
+					Sprite::ReSetSprite();
+					m_pLeft_Select->SetProjection(GetProj());
+					m_pLeft_Select->SetView(GetView());
+					m_pLeft_Select->SetTexture();
+					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select->Disp();
+
+					SetRender2D();
+					Sprite::ReSetSprite();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
+
+					if (CSceneResult::GetStageClear(5))
+					{
+						if (CSceneResult::GetRankData(5) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(5) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(5) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(5) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
+
+				break;
+			case(SNOWFIELD_STAGE1):
+
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[0]->SetProjection(GetProj());
+				m_pSnowFieldStage[0]->SetView(GetView());
+				m_pSnowFieldStage[0]->SetTexture();
+				m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pSnowFieldStage[0]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pSnowFieldStage[0]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[1]->SetProjection(GetProj());
+				m_pSnowFieldStage[1]->SetView(GetView());
+				m_pSnowFieldStage[1]->SetTexture();
+				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pSnowFieldStage[1]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pSnowFieldStage[1]->Disp();
+
+				if (m_bMoving == false)
+				{
+					if (m_bClear[SNOWFIELD_STAGE1])
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+					}
+					else
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select_Lock->SetProjection(GetProj());
+						m_pRight_Select_Lock->SetView(GetView());
+						m_pRight_Select_Lock->SetTexture();
+						if (m_bCantMove_Right)
+						{
+							static int count = 0;
+							static float rad = 0.0f;
+							rad = DirectX::XMConvertToRadians(count * 60);
+							float cosScale = cosf(rad) - 0.5f;
+							float posAjust = 10.0f * cosScale + 180.0f;
+							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							if (count >= 10)
+							{
+								count = 0;
+								m_bCantMove_Right = false;
+							}
+							count++;
 						}
 						else
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select_Lock->SetProjection(GetProj());
-							m_pRight_Select_Lock->SetView(GetView());
-							m_pRight_Select_Lock->SetTexture();
-							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select_Lock->Disp();
-						}
+							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
 
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
+						}
+						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->Disp();
 					}
+
+					SetRender2D();
+					Sprite::ReSetSprite();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[0], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
+
+					if (CSceneResult::GetStageClear(6))
+					{
+						if (CSceneResult::GetRankData(6) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(6) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(6) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(6) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[0] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
 					break;
 
-				case(SNOWFIELD_STAGE2):
+			case(SNOWFIELD_STAGE2):
 
-					SetRender3D();
-					Sprite::ReSetSprite();
-					m_pSnowFieldStage[0]->SetProjection(GetProj());
-					m_pSnowFieldStage[0]->SetView(GetView());
-					m_pSnowFieldStage[0]->SetTexture();
-					m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
-					m_pSnowFieldStage[0]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pSnowFieldStage[0]->Disp();
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[0]->SetProjection(GetProj());
+				m_pSnowFieldStage[0]->SetView(GetView());
+				m_pSnowFieldStage[0]->SetTexture();
+				m_pSnowFieldStage[0]->SetPositon(subposX[0], 80.0f, 145.0f);
+				m_pSnowFieldStage[0]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pSnowFieldStage[0]->Disp();
 
-					Sprite::ReSetSprite();
-					m_pSnowFieldStage[1]->SetProjection(GetProj());
-					m_pSnowFieldStage[1]->SetView(GetView());
-					m_pSnowFieldStage[1]->SetTexture();
-					m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pSnowFieldStage[1]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pSnowFieldStage[1]->Disp();
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[1]->SetProjection(GetProj());
+				m_pSnowFieldStage[1]->SetView(GetView());
+				m_pSnowFieldStage[1]->SetTexture();
+				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pSnowFieldStage[1]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pSnowFieldStage[1]->Disp();
 
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[2]->SetProjection(GetProj());
+				m_pSnowFieldStage[2]->SetView(GetView());
+				m_pSnowFieldStage[2]->SetTexture();
+				m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pSnowFieldStage[2]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pSnowFieldStage[2]->Disp();
+				if (m_bMoving == false)
+				{
 					Sprite::ReSetSprite();
-					m_pSnowFieldStage[2]->SetProjection(GetProj());
-					m_pSnowFieldStage[2]->SetView(GetView());
-					m_pSnowFieldStage[2]->SetTexture();
-					m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
-					m_pSnowFieldStage[2]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pSnowFieldStage[2]->Disp();
-					if (m_bMoving == false)
+					m_pLeft_Select->SetProjection(GetProj());
+					m_pLeft_Select->SetView(GetView());
+					m_pLeft_Select->SetTexture();
+					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select->Disp();
+
+					if (m_bClear[SNOWFIELD_STAGE2])
 					{
 						Sprite::ReSetSprite();
-						m_pLeft_Select->SetProjection(GetProj());
-						m_pLeft_Select->SetView(GetView());
-						m_pLeft_Select->SetTexture();
-						m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
-						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-						m_pLeft_Select->Disp();
-
-						if (m_bClear[SNOWFIELD_STAGE2])
+						m_pRight_Select->SetProjection(GetProj());
+						m_pRight_Select->SetView(GetView());
+						m_pRight_Select->SetTexture();
+						m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
+						m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select->Disp();
+					}
+					else
+					{
+						Sprite::ReSetSprite();
+						m_pRight_Select_Lock->SetProjection(GetProj());
+						m_pRight_Select_Lock->SetView(GetView());
+						m_pRight_Select_Lock->SetTexture();
+						if (m_bCantMove_Right)
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select->SetProjection(GetProj());
-							m_pRight_Select->SetView(GetView());
-							m_pRight_Select->SetTexture();
-							m_pRight_Select->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select->Disp();
+							static int count = 0;
+							static float rad = 0.0f;
+							rad = DirectX::XMConvertToRadians(count * 60);
+							float cosScale = cosf(rad) - 0.5f;
+							float posAjust = 10.0f * cosScale + 180.0f;
+							m_pRight_Select_Lock->SetPositon(posAjust, 105.0f, 145.0f);
+							if (count >= 10)
+							{
+								count = 0;
+								m_bCantMove_Right = false;
+							}
+							count++;
 						}
 						else
 						{
-							Sprite::ReSetSprite();
-							m_pRight_Select_Lock->SetProjection(GetProj());
-							m_pRight_Select_Lock->SetView(GetView());
-							m_pRight_Select_Lock->SetTexture();
-							m_pRight_Select_Lock->SetPositon(180.0f, 70.0f, 145.0f);
-							m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-							m_pRight_Select_Lock->Disp();
+							m_pRight_Select_Lock->SetPositon(180.0f, 105.0f, 145.0f);
+
 						}
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
+						m_pRight_Select_Lock->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+						m_pRight_Select_Lock->Disp();
 					}
 
-					break;
-
-				case(SNOWFIELD_STAGE3):
-
-					SetRender3D();
+					SetRender2D();
 					Sprite::ReSetSprite();
-					m_pSnowFieldStage[1]->SetProjection(GetProj());
-					m_pSnowFieldStage[1]->SetView(GetView());
-					m_pSnowFieldStage[1]->SetTexture();
-					m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
-					m_pSnowFieldStage[1]->SetSize(210.0f, 130.0f, 100.0f);
-					m_pSnowFieldStage[1]->Disp();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[1], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
 
-					Sprite::ReSetSprite();
-					m_pSnowFieldStage[2]->SetProjection(GetProj());
-					m_pSnowFieldStage[2]->SetView(GetView());
-					m_pSnowFieldStage[2]->SetTexture();
-					m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
-					m_pSnowFieldStage[2]->SetSize(220.0f, 140.0f, 100.0f);
-					m_pSnowFieldStage[2]->Disp();
-					if (m_bMoving == false)
+					if (CSceneResult::GetStageClear(6))
 					{
-						Sprite::ReSetSprite();
-						m_pLeft_Select->SetProjection(GetProj());
-						m_pLeft_Select->SetView(GetView());
-						m_pLeft_Select->SetTexture();
-						m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
-						m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
-						m_pLeft_Select->Disp();
-
-						SetRender2D();
-						Sprite::ReSetSprite();
-						m_pStageSelected->SetProjection(GetProj());
-						m_pStageSelected->SetView(GetView());
-						m_pStageSelected->SetTexture();
-						m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
-						m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-						m_pStageSelected->Disp();
+						if (CSceneResult::GetRankData(7) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(7) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(7) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(7) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[1] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
 					}
+				}
+				break;
 
-					break;
-			
+			case(SNOWFIELD_STAGE3):
+
+				SetRender3D();
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[1]->SetProjection(GetProj());
+				m_pSnowFieldStage[1]->SetView(GetView());
+				m_pSnowFieldStage[1]->SetTexture();
+				m_pSnowFieldStage[1]->SetPositon(subposX[1], 80.0f, 145.0f);
+				m_pSnowFieldStage[1]->SetSize(210.0f, 110.0f, 100.0f);
+				m_pSnowFieldStage[1]->Disp();
+
+				Sprite::ReSetSprite();
+				m_pSnowFieldStage[2]->SetProjection(GetProj());
+				m_pSnowFieldStage[2]->SetView(GetView());
+				m_pSnowFieldStage[2]->SetTexture();
+				m_pSnowFieldStage[2]->SetPositon(subposX[2], 80.0f, 145.0f);
+				m_pSnowFieldStage[2]->SetSize(220.0f, 120.0f, 100.0f);
+				m_pSnowFieldStage[2]->Disp();
+				if (m_bMoving == false)
+				{
+					Sprite::ReSetSprite();
+					m_pLeft_Select->SetProjection(GetProj());
+					m_pLeft_Select->SetView(GetView());
+					m_pLeft_Select->SetTexture();
+					m_pLeft_Select->SetPositon(-180.0f, 70.0f, 145.0f);
+					m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
+					m_pLeft_Select->Disp();
+
+					SetRender2D();
+					Sprite::ReSetSprite();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[2], 68.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
+
+					if (CSceneResult::GetStageClear(8))
+					{
+						if (CSceneResult::GetRankData(8) == C_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_C->SetProjection(GetProj());
+							m_pRank_C->SetView(GetView());
+							m_pRank_C->SetTexture();
+							m_pRank_C->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_C->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_C->Disp();
+						}
+						else if (CSceneResult::GetRankData(8) == B_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_B->SetProjection(GetProj());
+							m_pRank_B->SetView(GetView());
+							m_pRank_B->SetTexture();
+							m_pRank_B->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_B->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_B->Disp();
+						}
+						else if (CSceneResult::GetRankData(8) == A_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_A->SetProjection(GetProj());
+							m_pRank_A->SetView(GetView());
+							m_pRank_A->SetTexture();
+							m_pRank_A->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_A->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_A->Disp();
+						}
+						else if (CSceneResult::GetRankData(8) == S_RANK)
+						{
+							SetRender2D();
+							Sprite::ReSetSprite();
+							m_pRank_S->SetProjection(GetProj());
+							m_pRank_S->SetView(GetView());
+							m_pRank_S->SetTexture();
+							m_pRank_S->SetPositon(subposX[2] + 60, 100.0f, 140.0f);
+							m_pRank_S->SetSize(90.0f, 75.0f, 100.0f);
+							m_pRank_S->Disp();
+						}
+					}
+				}
+
+				break;
+
 			}
 		}
 	}
 }
+
 
 void CStageSelect::LinieDraw()
 {
@@ -1651,11 +2311,11 @@ void CStageSelect::QrackerDraw()
 	SetRender3D();
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 30.0f, 25.0f, 0.0f, 0.0f));
 	//拡大縮小行列(Scaling)
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
 	//回転行列(Rotation)
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(LinieRotationY), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 	//それぞれの行列を掛け合わせて格納
 	DirectX::XMMATRIX mat = S * R * T;
 
@@ -1670,13 +2330,13 @@ void CStageSelect::QrackerDraw()
 
 	ShaderList::SetWVP(wvp);
 
-	m_pStageLinie->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-	m_pStageLinie->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+	m_pStageQracker->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pStageQracker->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
-	for (int i = 0; i < m_pStageLinie->GetMeshNum(); ++i)
+	for (int i = 0; i < m_pStageQracker->GetMeshNum(); ++i)
 	{
-		Model::Mesh tMesh = *m_pStageLinie->GetMesh(i);
-		Model::Material material = *m_pStageLinie->GetMaterial(tMesh.materialID);
+		Model::Mesh tMesh = *m_pStageQracker->GetMesh(i);
+		Model::Material material = *m_pStageQracker->GetMaterial(tMesh.materialID);
 		material.ambient.x = 0.85f; // x (r) 
 		material.ambient.y = 0.85f; // y (g) 
 		material.ambient.z = 0.85f; // z (b) 
@@ -1688,7 +2348,7 @@ void CStageSelect::QrackerDraw()
 		for (int j = 0; j < tMesh.bones.size(); ++j)
 		{
 			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-				tMesh.bones[j].invOffset * m_pStageLinie->GetBoneMatrix(tMesh.bones[j].nodeIndex)
+				tMesh.bones[j].invOffset * m_pStageQracker->GetBoneMatrix(tMesh.bones[j].nodeIndex)
 			));
 		}
 		ShaderList::SetBones(bones);
@@ -1699,6 +2359,171 @@ void CStageSelect::QrackerDraw()
 		}
 	}
 }
+
+void CStageSelect::NugarDraw()
+{
+	SetRender3D();
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 30.0f, 25.0f, 0.0f, 0.0f));
+	//拡大縮小行列(Scaling)
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
+	//回転行列(Rotation)
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * R * T;
+
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
+
+	Geometory::SetView(wvp[1]);
+	Geometory::SetProjection(wvp[2]);
+
+	ShaderList::SetWVP(wvp);
+
+	m_pStageNugar->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pStageNugar->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+	for (int i = 0; i < m_pStageNugar->GetMeshNum(); ++i)
+	{
+		Model::Mesh tMesh = *m_pStageNugar->GetMesh(i);
+		Model::Material material = *m_pStageNugar->GetMaterial(tMesh.materialID);
+		material.ambient.x = 0.85f; // x (r) 
+		material.ambient.y = 0.85f; // y (g) 
+		material.ambient.z = 0.85f; // z (b) 
+		ShaderList::SetMaterial(material);
+
+		// ボーンの情報をシェーダーに送る
+
+		DirectX::XMFLOAT4X4 bones[200];
+		for (int j = 0; j < tMesh.bones.size(); ++j)
+		{
+			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+				tMesh.bones[j].invOffset * m_pStageNugar->GetBoneMatrix(tMesh.bones[j].nodeIndex)
+			));
+		}
+		ShaderList::SetBones(bones);
+
+		if (m_pStageNugar)
+		{
+			m_pStageNugar->Draw(i);
+		}
+	}
+}
+
+void CStageSelect::BoldowDraw()
+{
+	SetRender3D();
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 30.0f, 25.0f, 0.0f, 0.0f));
+	//拡大縮小行列(Scaling)
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
+	//回転行列(Rotation)
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * R * T;
+
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
+
+	Geometory::SetView(wvp[1]);
+	Geometory::SetProjection(wvp[2]);
+
+	ShaderList::SetWVP(wvp);
+
+	m_pStageBoldow->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pStageBoldow->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+	for (int i = 0; i < m_pStageBoldow->GetMeshNum(); ++i)
+	{
+		Model::Mesh tMesh = *m_pStageBoldow->GetMesh(i);
+		Model::Material material = *m_pStageBoldow->GetMaterial(tMesh.materialID);
+		material.ambient.x = 0.85f; // x (r) 
+		material.ambient.y = 0.85f; // y (g) 
+		material.ambient.z = 0.85f; // z (b) 
+		ShaderList::SetMaterial(material);
+
+		// ボーンの情報をシェーダーに送る
+
+		DirectX::XMFLOAT4X4 bones[200];
+		for (int j = 0; j < tMesh.bones.size(); ++j)
+		{
+			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+				tMesh.bones[j].invOffset * m_pStageBoldow->GetBoneMatrix(tMesh.bones[j].nodeIndex)
+			));
+		}
+		ShaderList::SetBones(bones);
+
+		if (m_pStageBoldow)
+		{
+			m_pStageBoldow->Draw(i);
+		}
+	}
+}
+
+void CStageSelect::KanneleDraw()
+{
+	SetRender3D();
+	DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(subposX[2] + 10.0f, 25.0f, 0.0f, 0.0f));
+	//拡大縮小行列(Scaling)
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.5f, 1.5f, 1.5f);
+	//回転行列(Rotation)
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	//それぞれの行列を掛け合わせて格納
+	DirectX::XMMATRIX mat = S * R * T;
+
+	world = mat;
+
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+	wvp[1] = GetView();
+	wvp[2] = GetProj();
+
+	Geometory::SetView(wvp[1]);
+	Geometory::SetProjection(wvp[2]);
+
+	ShaderList::SetWVP(wvp);
+
+	m_pStageKannele->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pStageKannele->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+	for (int i = 0; i < m_pStageKannele->GetMeshNum(); ++i)
+	{
+		Model::Mesh tMesh = *m_pStageKannele->GetMesh(i);
+		Model::Material material = *m_pStageKannele->GetMaterial(tMesh.materialID);
+		material.ambient.x = 0.85f; // x (r) 
+		material.ambient.y = 0.85f; // y (g) 
+		material.ambient.z = 0.85f; // z (b) 
+		ShaderList::SetMaterial(material);
+
+		// ボーンの情報をシェーダーに送る
+
+		DirectX::XMFLOAT4X4 bones[200];
+		for (int j = 0; j < tMesh.bones.size(); ++j)
+		{
+			DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+				tMesh.bones[j].invOffset * m_pStageKannele->GetBoneMatrix(tMesh.bones[j].nodeIndex)
+			));
+		}
+		ShaderList::SetBones(bones);
+
+		if (m_pStageKannele)
+		{
+			m_pStageKannele->Draw(i);
+		}
+	}
+}
+
+
+
 
 void CStageSelect::SelectAnimation()
 {
