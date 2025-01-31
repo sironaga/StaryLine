@@ -47,8 +47,10 @@ public:
 private:
 
 	void LinieDraw();
+	void QrackerDraw();
 	void SelectAnimation();
 	void ClearCheck();
+	bool ClearCommand(void);
 
 	SpriteEx* m_pGrassLand;
 	SpriteEx* m_pDesert;
@@ -56,13 +58,13 @@ private:
 	SpriteEx* m_pGrassLandStage[3];
 	SpriteEx* m_pDesertStage[3];
 	SpriteEx* m_pSnowFieldStage[3];
-	SpriteEx* m_pLock;
 	SpriteEx* m_pRight_Select;
+	SpriteEx* m_pRight_Select_Lock;
 	SpriteEx* m_pLeft_Select;
+	SpriteEx* m_pLeft_Select_Lock;
 	SpriteEx* m_pStageSelected;
 	SpriteEx* m_pStageSelect_Underbar;
-	SpriteEx* m_pStageSelect;
-	SpriteEx* m_pWorldSelect;
+	SpriteEx* m_pWorldSelect_Backboard;
 	SpriteEx* m_pWorld[3];
 	SpriteEx* m_pDecition;
 
@@ -90,6 +92,7 @@ private:
 
 	CModelEx* m_pModel[StageKindMax];
 	Model* m_pStageLinie;
+	Model* m_pStageQracker;
 	Model* m_pWorldModel;
 	ObjectParam m_ModelWorldParam;
 	ObjectParam m_ModelParam[StageKindMax];
@@ -119,6 +122,8 @@ private:
 	bool m_bEnd;
 	bool m_bMoving;
 	bool m_bClear[MAX_STAGE];
+	bool m_bClearCommand[5];
+	float m_fClearCommandResetTimer;
 
 	int nSlect;
 };
