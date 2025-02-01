@@ -51,6 +51,11 @@ void CSceneRanking::Update()
 			break;
 		case (int)RankModePhase::Check:
 
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
+			{
+				SetNext(SCENE_TITLE);
+			}
+
 			break;
 
 		default:
