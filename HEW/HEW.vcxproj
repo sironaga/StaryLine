@@ -28,6 +28,7 @@
     <ClCompile Include="Conection_Sys.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DebugRoom.cpp" />
+    <ClCompile Include="DirectWriteCustomFont.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="EffectManager.cpp" />
@@ -56,6 +57,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneDebug.cpp" />
     <ClCompile Include="SceneGame.cpp" />
+    <ClCompile Include="SceneRanking.cpp" />
     <ClCompile Include="SceneResult.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -72,6 +74,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transition.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="WriteName.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
@@ -87,6 +90,7 @@
     <ClInclude Include="DebugRoom.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definition.h" />
+    <ClInclude Include="DirectWriteCustomFont.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="EffectManager.h" />
@@ -113,6 +117,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneDebug.h" />
     <ClInclude Include="SceneGame.h" />
+    <ClInclude Include="SceneRanking.h" />
     <ClInclude Include="SceneResult.h" />
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shader.h" />
@@ -128,6 +133,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transition.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="WriteName.h" />
     <ClInclude Include="_StructList.h" />
   </ItemGroup>
   <ItemGroup>

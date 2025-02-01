@@ -71,4 +71,9 @@ private:
 	CEffectManager_sp* m_pStarEfc[MAX_STAR];
 	DirectX::XMFLOAT2 m_tStarPos[MAX_STAR];
 	DirectX::XMFLOAT3 m_tStarRotate[MAX_STAR];
+	
+private:
+	bool CheckRankingCommand();
+	bool m_bRankingCommand[4];
+	float m_fRankingCommandResetTimer;
 };
