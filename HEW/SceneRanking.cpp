@@ -28,7 +28,7 @@ void CSceneRanking::Update()
 		switch (m_nPhase)
 		{
 		case (int)RankModePhase::Naming:
-			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), IsKeyTrigger(VK_ESCAPE)))
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
 			{
 				SetNext(SCENE_TITLE);
 			}
@@ -37,7 +37,7 @@ void CSceneRanking::Update()
 				m_pWrite->Update();
 			}
 
-			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), IsKeyTrigger(VK_SPACE)) || IsKeyTrigger(VK_RETURN))
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A),VK_SPACE) || IsKeyTrigger(VK_RETURN))
 			{
 				if (m_pWrite->GetPlayerName() == "")MessageBox(NULL, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢", "Error", MB_OK);
 				else
