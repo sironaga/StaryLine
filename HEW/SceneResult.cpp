@@ -6,6 +6,7 @@
 #include"InputEx.h"
 #include"Easing.h"
 #include "File.h"
+#include"WriteName.h"
 // ---
 // ---
 
@@ -100,7 +101,7 @@ CSceneResult::CSceneResult()
 		SetData.bNew = true;
 		SetData.nScore = nScore;
 		SetData.Stage_Number = StageLevel.StageSubNumber;
-
+		SetData.UserName = CWriteName::GetPlayerName();
 		SetIP(SAVER_IP);
 		SendData(SetData);
 	}
