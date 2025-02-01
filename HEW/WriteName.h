@@ -9,8 +9,9 @@ public:
 	~CWriteName();
 	void Update();
 	void Draw();
+	static std::string GetPlayerName();
 private:
 	DirectWriteCustomFont* m_pWrite;
 	FontData data;
-	std::string m_Name;
+	static std::string m_Name;
 };
