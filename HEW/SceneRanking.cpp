@@ -39,14 +39,14 @@ void CSceneRanking::Update()
 
 			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), IsKeyTrigger(VK_SPACE)) || IsKeyTrigger(VK_RETURN))
 			{
-				//if (m_pWrite->GetPlayerName() == "")MessageBox(NULL, "名前を入力してください", "Error", MB_OK);
-				//else
-				//{
-				//	if (MessageBox(NULL, m_pWrite->GetPlayerName().c_str(), "確認", MB_YESNO) == IDYES)
-				//	{
-				//		m_nPhase = (int)RankModePhase::Check;
-				//	}
-				//}
+				if (m_pWrite->GetPlayerName() == "")MessageBox(NULL, "名前を入力してください", "Error", MB_OK);
+				else
+				{
+					if (MessageBox(NULL, m_pWrite->GetPlayerName().c_str(), "確認", MB_YESNO) == IDYES)
+					{
+						m_nPhase = (int)RankModePhase::Check;
+					}
+				}
 			}
 			break;
 		case (int)RankModePhase::Check:
