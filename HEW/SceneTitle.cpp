@@ -59,7 +59,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	, m_tTabPos{}, m_tTabSize{}
 	, m_fSelectScale(1.0f), m_tStarPos{ {0.0f,SCREEN_HEIGHT / 2.0f} }
 	, m_pStarEfc{}, m_tStarRotate{}
-	, m_Direction(XINPUT_GAMEPAD_START)
+	, m_Direction(XINPUT_GAMEPAD_START), m_bRankingCommand{},m_fRankingCommandResetTimer(0.0f)
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -248,6 +248,7 @@ void CSceneTitle::Update()
 
 	if (!m_bSelected && !m_pOption->GetOption())
 	{
+		if (CheckRankingCommand())SetNext(SCENE_RANKING);
 		switch (g_Title_type)
 		{
 		case(GAMESTART):
@@ -842,6 +843,36 @@ void CSceneTitle::OptionApply()
 	}
 
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
+}
+
+bool CSceneTitle::CheckRankingCommand()
+{
+	if (IsKeyTrigger('R')) {
+		m_bRankingCommand[0] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bRankingCommand[0]) {
+		m_bRankingCommand[1] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('N') && m_bRankingCommand[1]) {
+		m_bRankingCommand[2] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('K') && m_bRankingCommand[2]) {
+		m_bRankingCommand[3] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+
+	m_fRankingCommandResetTimer += 1.0f / 60.0f;
+
+	if (m_fRankingCommandResetTimer > 4.0f)
+	{
+		for (int i = 0; i < 4; i++)m_bRankingCommand[i] = false;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+
+	return m_bRankingCommand[3];
 }
 
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "UI.h"
 
-#define SIZE (10)
+#define NUMBERSIZE (10)
 
 class CNumberUI : public CUI
 {
