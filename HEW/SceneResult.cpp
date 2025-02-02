@@ -1,12 +1,13 @@
 // --- Include
 #include "SceneResult.h"
-#include"Input.h"
-#include"InputEx.h"
-#include"Controller.h"
-#include"InputEx.h"
-#include"Easing.h"
-#include "File.h"
-#include"WriteName.h"
+#include "Input.h"
+#include "InputEx.h"
+#include "Controller.h"
+#include "InputEx.h"
+#include "Easing.h"
+#include  "File.h"
+#include "WriteName.h"
+#include "Option.h"
 // ---
 // ---
 
@@ -21,7 +22,8 @@ Rank CSceneResult::StageRank[MAX_STAGE];
 // --- 初期化
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
-	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false),nStage(StageLevel.StageSubNumber)
+	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false),nStage(StageLevel.StageSubNumber),
+	m_Direction(NULL)
 {
 	//ResultGameData.bWin = 1;
 	// --- テクスチャの読み込み
@@ -513,12 +515,14 @@ void CSceneResult::DefaultSetPos(void)
 // --- 入力処理
 void CSceneResult::KeyProsess(void)
 {
+	m_Direction = GetControllerLStickTriggerForeDirection();
+
 	// --- 勝利時のボタン処理
 	if (ResultGameData.bWin)
 	{
 		if (!bWorldClear)
 		{
-			if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S'))
+			if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)
 			{
 				// SE
 				if (nSelect != 0)
@@ -534,7 +538,7 @@ void CSceneResult::KeyProsess(void)
 				nSelect = 0;
 			}
 
-			if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyPress('W'))
+			if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyPress('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)
 			{
 				// SE
 				if (nSelect != 1)
@@ -557,7 +561,7 @@ void CSceneResult::KeyProsess(void)
 	// --- 敗北時のボタン処理
 	else
 	{
-		if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S'))
+		if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyPress('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)
 		{
 			// SE
 			if (nSelect != 0)
@@ -576,7 +580,7 @@ void CSceneResult::KeyProsess(void)
 			nSelect = 0;
 		}
 
-		if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyPress('W'))
+		if (WihtGetKeyPress(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyPress('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)
 		{
 			// SE
 			if (nSelect != 1)
@@ -600,7 +604,7 @@ void CSceneResult::KeyProsess(void)
 	if (nSelect == 0)
 	{
 		// StageSelect
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) && !bEnter)
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) && !bEnter)
 		{
 			bEnter = true;
 			nPush[nSelect] = 1;
@@ -614,7 +618,7 @@ void CSceneResult::KeyProsess(void)
 		if (ResultGameData.bWin)
 		{
 			// Next
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) && !bEnter)
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) && !bEnter)
 			{
 				bEnter = true;
 				StageLevel.StageSubNumber++;
@@ -644,7 +648,7 @@ void CSceneResult::KeyProsess(void)
 		else
 		{
 			// Retry
-			if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN ) && !bEnter)
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN ) && !bEnter)
 			{
 				bEnter = true;
 				SetNext(SCENE_GAME, StageLevel);

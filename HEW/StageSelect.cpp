@@ -10,6 +10,7 @@
 #include "SceneResult.h"
 #include "Easing.h"
 #include "Geometory.h"
+#include "Option.h"
 
 #define LOGO_WIND (1000)
 #define LOGO_HID (1000)
@@ -79,6 +80,7 @@ CStageSelect::CStageSelect()
 	, m_bCantMove_Left(false)
 	, m_bCantMove_Right(false)
 	, m_fTime(0.0f)
+	, m_Direction(NULL)
 {
 	g_Select_type.StageMainNumber = GrassField;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -353,9 +355,9 @@ void CStageSelect::Update()
 	static bool bRight = false;
 	//SpriteDebug(&m_ModelParam[WorldField], true);
 	//if (IsKeyTrigger('B'))m_ModelParam[WorldField].rotate.z += DirectX::XMConvertToRadians(120.0f);
-
-	static DirectX::XMFLOAT3 debugpos = { 170.0f, 46.0f, -370.0f };
+	m_Direction = GetControllerLStickTriggerForeDirection();
 #if 0
+	static DirectX::XMFLOAT3 debugpos = { 170.0f, 46.0f, -370.0f };
 	if (IsKeyPress('D'))debugpos.x++;
 	if (IsKeyPress('A'))debugpos.x--;
 	if (IsKeyPress(VK_SPACE))debugpos.y++;
@@ -422,7 +424,7 @@ void CStageSelect::Update()
 					posX[0] = 0.0f;
 					posX[1] = 400.0f;
 					posX[2] = 800.0f;
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[GRASSLAND_STAGE3])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[GRASSLAND_STAGE3])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = DESERT;
@@ -431,11 +433,11 @@ void CStageSelect::Update()
 						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[GRASSLAND_STAGE3])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE3])
 					{
 						m_bCantMove_Right = true;
 					}
-					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT))) && m_bClear[DESERT_STAGE3])
+					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && m_bClear[DESERT_STAGE3])
 					{ 
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = SNOWFIELD;	
@@ -445,7 +447,7 @@ void CStageSelect::Update()
 						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = false;
 					}
-					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT))) && !m_bClear[DESERT_STAGE3])
+					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && !m_bClear[DESERT_STAGE3])
 					{
 						m_bCantMove_Left = true;
 					}
@@ -456,7 +458,7 @@ void CStageSelect::Update()
 					posX[1] = 0.0f;
 					posX[2] = 400.0f;
 					//LinieRotationY = 180.0f;
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[DESERT_STAGE3])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[DESERT_STAGE3])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = SNOWFIELD; 
@@ -464,11 +466,11 @@ void CStageSelect::Update()
 						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE3])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE3])
 					{
 						m_bCantMove_Right = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{ 
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = GRASSLAND;
@@ -483,7 +485,7 @@ void CStageSelect::Update()
 					posX[1] = -400.0f;
 					posX[2] = 0.0f;
 					//LinieRotationY = 180.0f;
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = DESERT;
@@ -491,7 +493,7 @@ void CStageSelect::Update()
 						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
 						bRight = false;
 					}
-					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)))
+					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageMainNumber = GRASSLAND; 
@@ -503,7 +505,7 @@ void CStageSelect::Update()
 					g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
 					break;
 				}
-				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A)))
+				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A))))
 				{
 					StartFade();
 					MainStage ^= true;
@@ -513,7 +515,7 @@ void CStageSelect::Update()
 					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
 
 				}
-				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
 				{
 					StartFade();
 					SetNext(SCENE_TITLE, g_Select_type);
@@ -527,32 +529,32 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(GRASSLAND_STAGE1):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[GRASSLAND_STAGE1])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[GRASSLAND_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE2;
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[GRASSLAND_STAGE1])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE1])
 					{
 						m_bCantMove_Right = true;
 					}
 					break;
 
 				case(GRASSLAND_STAGE2):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[GRASSLAND_STAGE2])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[GRASSLAND_STAGE2])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE3;
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[GRASSLAND_STAGE2])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE2])
 					{
 						m_bCantMove_Right = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
@@ -562,7 +564,7 @@ void CStageSelect::Update()
 					break;
 
 				case(GRASSLAND_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = GRASSLAND_STAGE2; m_bMoving = true;
@@ -576,32 +578,32 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(DESERT_STAGE1):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[DESERT_STAGE1])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[DESERT_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE2; 
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE1])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE1])
 					{
 						m_bCantMove_Right = true;
 					}
 					break;
 
 				case(DESERT_STAGE2):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[DESERT_STAGE2])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[DESERT_STAGE2])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE3; 
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[DESERT_STAGE2])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE2])
 					{
 						m_bCantMove_Right = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE1;
@@ -611,7 +613,7 @@ void CStageSelect::Update()
 					break;
 
 				case(DESERT_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = DESERT_STAGE2;
@@ -626,32 +628,32 @@ void CStageSelect::Update()
 				switch (g_Select_type.StageSubNumber)
 				{
 				case(SNOWFIELD_STAGE1):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[SNOWFIELD_STAGE1])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[SNOWFIELD_STAGE1])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2;
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[SNOWFIELD_STAGE1])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[SNOWFIELD_STAGE1])
 					{
 						m_bCantMove_Right = true;
 					}
 					break;
 
 				case(SNOWFIELD_STAGE2):
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && m_bClear[SNOWFIELD_STAGE2])
+					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[SNOWFIELD_STAGE2])
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE3;
 						m_bMoving = true;
 						bRight = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT))) && !m_bClear[SNOWFIELD_STAGE2])
+					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[SNOWFIELD_STAGE2])
 					{
 						m_bCantMove_Right = true;
 					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
@@ -661,7 +663,7 @@ void CStageSelect::Update()
 					break;
 
 				case(SNOWFIELD_STAGE3):
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)))
+					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
 					{
 						g_OldSelect_type = g_Select_type;
 						g_Select_type.StageSubNumber = SNOWFIELD_STAGE2;
@@ -671,13 +673,13 @@ void CStageSelect::Update()
 					break;
 				}
 			}
-				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A)))
+				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(),XINPUT_GAMEPAD_A))))
 				{
 					CSceneResult::InStageLevel(g_Select_type);
 					SetNext(SCENE_GAME, g_Select_type);
 					m_bEnd = true;
 				}
-				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(XINPUT_GAMEPAD_B))
+				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
 				{
 					StartFade();
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
