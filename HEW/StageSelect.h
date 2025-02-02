@@ -109,6 +109,7 @@ private:
 	ObjectParam m_ModelSubParam[StageKindMax];
 	CBackGround* m_pBackGround;
 
+	WORD m_Direction;
 
 	enum class Effect
 	{

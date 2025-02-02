@@ -258,7 +258,7 @@ void CSceneTitle::Update()
 				m_SelectPos.y += SELECT_MOVE;
 				m_DecisionPos.y += SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_RETURN)|| IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN)|| IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 			{
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_pSelectsound->SetMasterVolume();
@@ -283,7 +283,7 @@ void CSceneTitle::Update()
 				m_SelectPos.y -= SELECT_MOVE;
 				m_DecisionPos.y -= SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 			{
 				//コンティニューシーンへ切り替える処理
 				if (!OutStageData())return;
@@ -308,7 +308,7 @@ void CSceneTitle::Update()
 					m_SelectPos.y -= SELECT_MOVE;
 					m_DecisionPos.y -= SELECT_MOVE;
 				}
-				else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 				{
 					m_bSelected = true;
 					//オプションへ切り替える処理
@@ -326,7 +326,7 @@ void CSceneTitle::Update()
 				m_SelectPos.y -= SELECT_MOVE;
 				m_DecisionPos.y -= SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 			{
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
@@ -476,7 +476,7 @@ void CSceneTitle::Draw()
 	m_pTitleEnd[0]->Disp();
 
 
-	if (m_bSelected)
+	if (m_bSelected && !m_pOption->GetOption())
 	{
 		switch (g_Title_type)
 		{
@@ -874,5 +874,3 @@ bool CSceneTitle::CheckRankingCommand()
 
 	return m_bRankingCommand[3];
 }
-
-
