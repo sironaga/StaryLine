@@ -200,7 +200,7 @@ void CSceneGame::Update()
 
 		m_pField->Update();		// フィールドは常に更新する
 		InitInput();
-		if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyPress(VK_SPACE))
+		if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && (CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyPress(VK_SPACE)))
 		{
 			TimeStart = true;
 			DrawCount++;
