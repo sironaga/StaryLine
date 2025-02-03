@@ -21,7 +21,7 @@ Rank CSceneResult::StageRank[MAX_STAGE];
 
 // --- èâä˙âª
 CSceneResult::CSceneResult()
-	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
+	:nSelect(1), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
 	bTimeProsess(false),nSeconds(0),nMinutes(0),bHPProsess(false),nHitPoint(0),bSpwanProsess(false),nSpawn(0),nAverage(0),nDispCount(0),nScore(0),bBestScore(false),nStage(StageLevel.StageSubNumber),
 	m_Direction(NULL)
 {
@@ -117,7 +117,7 @@ CSceneResult::CSceneResult()
 	}else
 	if (nBestScore[StageLevel.StageSubNumber] <= 5999)
 	{
-			StageRank[StageLevel.StageSubNumber] = A_RANK;
+		StageRank[StageLevel.StageSubNumber] = A_RANK;
 	}
 	else
 	{
@@ -144,7 +144,7 @@ CSceneResult::CSceneResult()
 		NowRank = S_RANK;
 	}
 
-
+	ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
 
 }
 CSceneResult::~CSceneResult()
