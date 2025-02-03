@@ -298,7 +298,7 @@ void CPlayer::Draw()
 		m_pArrowModel->SetViewMatrix(GetView());
 		m_pArrowModel->SetProjectionMatrix(GetProj());
 		/*if(m_eArrowState == SELECTED)*/
-		if(!(m_eDestination == CPlayer::DEFAULT))m_pArrowModel->Draw();//DEFAULTを表示しない
+		if(!(m_eDestination == CPlayer::DEFAULT || GetFade()) )m_pArrowModel->Draw();//DEFAULTを表示しない
 		if (m_ePlayerState == CPlayer::MOVE)
 		{
 			m_pEffect->SetPos(m_tEffectParam.pos);

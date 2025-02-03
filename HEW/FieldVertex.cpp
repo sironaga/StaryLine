@@ -26,6 +26,7 @@
 //グローバル領域のクリーンアップ
 //全体のコメントアウト見直し
 
+#define MAX_SHAPES_DRAW_TIME (0.5f)
 #define TRIANGLE_SIZE (90.0f)//三角形のサイズ
 #define SQUARE_SIZE (90.0f)//正方形のサイズ
 #define TRAPEZOID_SIZE (90.0f)//台形のサイズ
@@ -106,6 +107,8 @@ CFieldVertex::CFieldVertex()
 	, Mode_Player_Move(0)
 	, Ally_Count(0)
 	, NowLine(0)
+	, Shapes_Draw_Time (0.0f)
+	, Now_Shapes_Draw (0)
 	, PlayerPos{}
 	, RoadStop(false)
 	, m_pBattle(nullptr)
@@ -881,231 +884,7 @@ void CFieldVertex::Draw()
 		for (int i = 0; i < Effect_NowShapes; i++)
 		{
 			if (g_pLineEffects[i]->IsPlay())
-			{
-				if (Shapes_Count[i] == 3)//三角形なら
-				{
-					if (Shapes_type_Angle[i][0] == 0)//直角二等辺三角形
-					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + TRIANGLE_SIZE * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + TRIANGLE_SIZE * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
-					}
-					if (Shapes_type_Angle[i][0] == 1)//上向きの直角二等辺三角形
-					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE - 30.0f + (TRIANGLE_SIZE - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE - 30.0f + (TRIANGLE_SIZE - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
-					}
-				}
-				else //四角形なら
-				{
-					switch (Shapes_type_Angle[i][0])
-					{
-					case 2://正方形
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
-						break;
-					case 3://ひし形
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,45.0f }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
-						break;
-					case 4://長方形 
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + SQUARE_SIZE * (Shapes_Length[i][0] - 1),SQUARE_SIZE + SQUARE_SIZE * (Shapes_Length[i][1] - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
-						break;
-					case 5://斜めの長方形
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE * 1.4142f * (Shapes_Length[i][0]),SQUARE_SIZE * 1.4142f * (Shapes_Length[i][1]),1.0f }, { 0.0f,0.0f,-45.0f * Shapes_type_Angle[i][1] }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
-						break;
-					case 6://台形 //斜めの台形考える必要あり
-						if (Shapes_type_Angle[i][1] < 4)
-						{
-							if (Shapes_Length[i][0] - 1 == 0)//1:3
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[3]);
-							}
-							else //3:4
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
-							}
-						}
-						else //斜めの台形
-						{
-							if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
-							}
-							if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[6]);
-							}
-							if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f)//1:4
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[7]);
-							}
-							if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f)//2:3
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[8]);
-							}
-							if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f)//2:4
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE * 2.0f ,TRAPEZOID_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
-							}
-							if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4
-							{
-								DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-								m_pSprite_Shapes->SetTexture(m_pTex_Shapes[9]);
-							}
-						}
-						break;
-					case 7://平行四辺形(右下から左上)
-						if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
-						}
-						if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[11]);
-						}
-						if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[12]);
-						}
-						if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[13]);
-						}
-						if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[14]);
-						}
-						if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE * 2.0f ,PARALLELOGRAM_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
-						}
-						break;
-					case 8://平行四辺形(左下から右上)
-						if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
-						}
-						if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[16]);
-						}
-						if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[17]);
-						}
-						if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[18]);
-						}
-						if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[19]);
-						}
-						if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE * 2.0f ,PARALLELOGRAM_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
-						}
-						break;
-					case 9://カッター型(左尖り)
-						m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
-						if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
-						}
-						if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[21]);
-						}
-						if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[22]);
-						}
-						if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
-						{
-							m_pSprite_Shapes->SetUVPos({ 0.085f,0.0f });
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[23]);
-						}
-						if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
-						{
-							m_pSprite_Shapes->SetUVPos({ 0.13f,0.0f });
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[24]);
-						}
-						if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE * 2.0f,SPECIAL_SHAPE_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
-						}
-						break;
-					case 10://カッター型(右尖り)
-						m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
-						if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
-						}
-						if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[26]);
-						}
-						if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[27]);
-						}
-						if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
-						{
-							m_pSprite_Shapes->SetUVPos({ -0.085f,0.0f });
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[28]);
-						}
-						if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
-						{
-							m_pSprite_Shapes->SetUVPos({ -0.13f,0.0f });
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[29]);
-						}
-						if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
-						{
-							DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE * 2.0f,SPECIAL_SHAPE_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-							m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
-						}
-						break;
-					
-					default:
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
-						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
-						break;
-					}
-				}
-				m_pSprite_Shapes->Draw();
-				
+			{	
 				g_pLineEffects[i]->Update();
 				g_pLineEffects[i]->Draw();
 			}
@@ -1165,6 +944,250 @@ void CFieldVertex::FeverDraw()
 			m_pSprite_Fever_Player->ReSetSprite();//スプライトのリセット
 		}
 	}
+}
+
+void CFieldVertex::ShapesDraw()
+{
+	SetRender2D();
+
+	for (int i = 0;(i < Now_Shapes_Draw) && (i < Effect_NowShapes);i++)
+	{
+		if (Shapes_Count[i] == 3)//三角形なら
+		{
+			if (Shapes_type_Angle[i][0] == 0)//直角二等辺三角形
+			{
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + TRIANGLE_SIZE * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + TRIANGLE_SIZE * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
+			}
+			if (Shapes_type_Angle[i][0] == 1)//上向きの直角二等辺三角形
+			{
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE - 30.0f + (TRIANGLE_SIZE - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE - 30.0f + (TRIANGLE_SIZE - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
+			}
+		}
+		else //四角形なら
+		{
+			switch (Shapes_type_Angle[i][0])
+			{
+			case 2://正方形
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				break;
+			case 3://ひし形
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + SQUARE_SIZE * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,45.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				break;
+			case 4://長方形 
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + SQUARE_SIZE * (Shapes_Length[i][0] - 1),SQUARE_SIZE + SQUARE_SIZE * (Shapes_Length[i][1] - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				break;
+			case 5://斜めの長方形
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE * 1.4142f * (Shapes_Length[i][0]),SQUARE_SIZE * 1.4142f * (Shapes_Length[i][1]),1.0f }, { 0.0f,0.0f,-45.0f * Shapes_type_Angle[i][1] }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				break;
+			case 6://台形 //斜めの台形考える必要あり
+				if (Shapes_type_Angle[i][1] < 4)
+				{
+					if (Shapes_Length[i][0] - 1 == 0)//1:3
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[3]);
+					}
+					else //3:4
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
+					}
+				}
+				else //斜めの台形
+				{
+					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
+					}
+					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[6]);
+					}
+					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f)//1:4
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[7]);
+					}
+					if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f)//2:3
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[8]);
+					}
+					if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f)//2:4
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE * 2.0f ,TRAPEZOID_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
+					}
+					if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4
+					{
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE ,TRAPEZOID_SIZE,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[9]);
+					}
+				}
+				break;
+			case 7://平行四辺形(右下から左上)
+				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
+				}
+				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[11]);
+				}
+				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[12]);
+				}
+				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[13]);
+				}
+				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[14]);
+				}
+				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE * 2.0f ,PARALLELOGRAM_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
+				}
+				break;
+			case 8://平行四辺形(左下から右上)
+				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
+				}
+				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[16]);
+				}
+				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[17]);
+				}
+				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[18]);
+				}
+				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE ,PARALLELOGRAM_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[19]);
+				}
+				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE * 2.0f ,PARALLELOGRAM_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
+				}
+				break;
+			case 9://カッター型(左尖り)
+				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
+				}
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[21]);
+				}
+				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[22]);
+				}
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
+				{
+					m_pSprite_Shapes->SetUVPos({ 0.085f,0.0f });
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[23]);
+				}
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
+				{
+					m_pSprite_Shapes->SetUVPos({ 0.13f,0.0f });
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[24]);
+				}
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE * 2.0f,SPECIAL_SHAPE_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
+				}
+				break;
+			case 10://カッター型(右尖り)
+				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
+				}
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[26]);
+				}
+				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[27]);
+				}
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
+				{
+					m_pSprite_Shapes->SetUVPos({ -0.085f,0.0f });
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[28]);
+				}
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
+				{
+					m_pSprite_Shapes->SetUVPos({ -0.13f,0.0f });
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE ,SPECIAL_SHAPE_SIZE,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[29]);
+				}
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE * 2.0f,SPECIAL_SHAPE_SIZE * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
+				}
+				break;
+
+			default:
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				break;
+			}
+		}
+		m_pSprite_Shapes->Draw();
+	}
+}
+
+bool CFieldVertex::ShapesUpdate()
+{
+	Shapes_Draw_Time += 1.0f / 60.0f;
+	if (Shapes_Draw_Time >= MAX_SHAPES_DRAW_TIME)
+	{
+		Now_Shapes_Draw++;
+		Shapes_Draw_Time = 0.0f;
+	}
+	if (Now_Shapes_Draw > Effect_NowShapes)return false;//全部描画しきったら終了フラグ返す
+	return true;
 }
 
 ////=====ログの更新処理の関数=====//
@@ -1472,6 +1495,8 @@ void CFieldVertex::InitFieldVertex()
 		NowShapes = 0;//格納した図形の数初期化
 		Effect_NowShapes = 0;
 		Fever_Effects_Alpha = 1.0f;
+		Shapes_Draw_Time = 0.0f;
+		Now_Shapes_Draw = 0;
 
 		Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
 		Fever_Draw_Angle_Count = 0.0f;
