@@ -126,7 +126,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				char mes[256];
 				//sprintf→文字列に対してprintfで書き込む
-				sprintf(mes, "描画速度:%d 更新速度:%d", fpsCount,UpdatefpsCount);
+				sprintf(mes, "DRAW_FPS:%d UPDATE_FPS:%d", fpsCount,UpdatefpsCount);
 				//FPSの表示
 				SetWindowText(hWnd, mes);
 				UpdatefpsCount = 0;
