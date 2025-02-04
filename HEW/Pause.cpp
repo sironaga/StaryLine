@@ -49,7 +49,7 @@ void CPause::Init()
 	m_fPos[6] = { -285.0f,330.0f,0.0f };
 	m_fPos[7] = { -285.0f,530.0f,0.0f };
 	m_fPos[8] = { -285.0f,530.0f,0.0f };
-	m_fPos[9] = { -300.0f,340.0f,0.0f };
+	m_fPos[9] = { -310.0f,340.0f,0.0f };
 	m_fPos[10] = { SCREEN_WIDTH / 2.0f,SCREEN_HEIGHT / 2.0f,0.0f };
 
 	//サイズの初期化
@@ -186,8 +186,8 @@ void CPause::Update()
 		}
 	}
 
-	m_fSize[9].X = OutEasing(m_fAnimeTime, 0.0f, 20.0f, 1.0f) + (SCREEN_WIDTH * 0.304f) + 90.0f;
-	m_fSize[9].Y = OutEasing(m_fAnimeTime, 0.0f, 10.0f, 1.0f) + (SCREEN_HEIGHT * 0.087f) + 10.0f;
+	m_fSize[9].X = OutEasing(m_fAnimeTime, 0.0f, 20.0f, 1.0f) + (SCREEN_WIDTH * 0.304f) + 110.0f;
+	m_fSize[9].Y = OutEasing(m_fAnimeTime, 0.0f, 10.0f, 1.0f) + (SCREEN_HEIGHT * 0.087f) + 20.0f;
 
 	//バー選択
 	SetAllMasterVolume(m_pOption->GetMasterVoluem());

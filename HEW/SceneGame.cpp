@@ -9,6 +9,7 @@
 #include "Pause.h"
 #include <future>
 #include <thread>
+#include "Option.h"
 
 ID3D11SamplerState* g_pGameSPSampler;
 
@@ -42,6 +43,8 @@ bool TimeStart;
 float FadeTime;
 bool FadeTimeFlag;
 int DrawCount;
+bool bLine;
+bool DrawShapesFlag;
 
 ResultCheck g_Resltcheck;
 ResultGameInfo g_ResultData;
@@ -67,6 +70,10 @@ CSceneGame::CSceneGame(StageType StageNum)
 	g_GameSound->SetMasterVolume();
 	m_pSourseGameBGM = g_GameSound->GetSound(true);
 
+	SetCameraPos(DirectX::XMFLOAT3(0.0f, 45.0f, -15.0f));
+	SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -90.0f));
+	SetFovY(DirectX::XMConvertToRadians(60.0f));
+
 	m_pBackGround = new CBackGround();
 	m_pFieldVertex = new CFieldVertex();
 	m_pPlayer = new CPlayer();
@@ -85,9 +92,10 @@ CSceneGame::CSceneGame(StageType StageNum)
 
 	// タイマー初期化
  	g_tTime = {};
-
+	bLine = false;
 	m_bPhase = true;
 	m_bFever = false;
+	DrawShapesFlag = false;
 
 	TimeStart = false;
 	g_tTime.GameTime = 0.0f;
@@ -195,7 +203,7 @@ void CSceneGame::Update()
 
 		m_pField->Update();		// フィールドは常に更新する
 		InitInput();
-		if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && (CGetButtons(XINPUT_GAMEPAD_A) || IsKeyPress(VK_SPACE)))
+		if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && (CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyPress(VK_SPACE)))
 		{
 			TimeStart = true;
 			DrawCount++;
@@ -203,7 +211,7 @@ void CSceneGame::Update()
 		// ゲーム中(移動をしてから)は経過時間を記録し続ける
 		if (TimeStart)
 		{
-			g_tTime.GamePhaseTime++;
+			if(!DrawShapesFlag)g_tTime.GamePhaseTime++;//図形の描画をしていないとき
 		}
 		if (!TimeStart && g_tTime.GamePhaseTime == -1.0f)
 		{
@@ -211,7 +219,7 @@ void CSceneGame::Update()
 		}
 
 
-		if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+		if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart && !DrawShapesFlag))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 		{
 			g_tTime.GamePhaseTime++;
 		}
@@ -241,25 +249,29 @@ void CSceneGame::Update()
 			// 召喚開始の時間になったらフィーバーかチェック
 			if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 			{
-				float t;
-				t = m_pFieldVertex->GetFeverPoint();
-
-				if (t == 30.0f)
+				DrawShapesFlag = m_pFieldVertex->ShapesUpdate();
+				if (!DrawShapesFlag)
 				{
-					m_pStarLine->SetLineMode(1);
-					m_pSourseGameBGM->Stop();
-					m_pSourseFeverBGM->FlushSourceBuffers();
-					XAUDIO2_BUFFER buffer;
-					buffer = g_FeverSound->GetBuffer(true);
-					m_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
-					if (m_pSourseFeverBGM)SetVolumeBGM(m_pSourseFeverBGM);
-					m_pSourseFeverBGM->Start();
-					m_bPhase = true;
-					m_bFever = true;
-					g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
-					m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
-					m_pFieldVertex->SetFeverPoint();
-					m_pPlayer->SetMoveStop();
+					float t;
+					t = m_pFieldVertex->GetFeverPoint();
+
+					if (t == 30.0f)
+					{
+						m_pStarLine->SetLineMode(1);
+						m_pSourseGameBGM->Stop();
+						m_pSourseFeverBGM->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = g_FeverSound->GetBuffer(true);
+						m_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
+						if (m_pSourseFeverBGM)SetVolumeBGM(m_pSourseFeverBGM);
+						m_pSourseFeverBGM->Start();
+						m_bPhase = true;
+						m_bFever = true;
+						g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
+						m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
+						m_pFieldVertex->SetFeverPoint();
+						m_pPlayer->SetMoveStop();
+					}
 				}
 			}
 
@@ -305,7 +317,11 @@ void CSceneGame::Update()
 				m_pBattle->SetDrawingStart(false);
 				m_pBattle->SetDrawingEnd(true);
 				m_pBattle->CharacterUpdate(true);
-				m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+				if (!bLine)
+				{
+					bLine = true;
+					m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+				}
 				/*タイマー終了のSE*/
 			}
 			m_pBattle->Update();
@@ -374,6 +390,10 @@ void CSceneGame::Draw()
 		}
 		m_pSourseGameBGM->Start();
 		m_bFever = false;
+	}
+	if (DrawShapesFlag)
+	{
+		m_pFieldVertex->ShapesDraw();
 	}
 	m_pFieldVertex->FeverDraw();
 }

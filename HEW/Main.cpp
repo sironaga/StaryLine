@@ -27,6 +27,7 @@
 #include "SceneGame.h"
 #include "SceneResult.h"
 #include "SceneDebug.h"
+#include "SceneRanking.h"
 #include "StartDirection.h"
 #include "Pause.h"
 #include "Option.h"
@@ -54,6 +55,14 @@ StageType g_stage = {};
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
+	Acquired_Data SetData;
+	SetData.bNew = true;
+	SetData.nScore = 999;
+	SetData.Stage_Number = 999;
+	Conect_Init();
+
+	SetIP(SAVER_IP);
+	SendData(SetData);
 
 	HRESULT hr;
 	// DirectX初期化
@@ -120,7 +129,7 @@ void Uninit()
 	UninitDirectX();
 	ID3D11Debug *pDebug;
 	pDebug = GetDebug();
-	pDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
+	if(pDebug)pDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY);
 	//g_pSourseTitleSE = nullptr;
 }
 
@@ -171,6 +180,7 @@ void Update()
 			break;
 		case SCENE_GAME:g_pScene = new CSceneGame(g_stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
+		case SCENE_RANKING:g_pScene = new CSceneRanking(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
 
@@ -322,6 +332,16 @@ DirectX::XMFLOAT3 GetCameraPos()
 void SetCameraPos(DirectX::XMFLOAT3 look)
 {
 	g_Camera->SetCameraPos(look);
+}
+
+void SetCameraRotate(DirectX::XMFLOAT3 rotate)
+{
+	g_Camera->SetCameraRotate(rotate);
+}
+
+void SetFovY(float radFov)
+{
+	g_Camera->SetFovY(radFov);
 }
 
 void SetCameraKind(CAMERA_KIND kind)
@@ -652,5 +672,56 @@ void SpriteDebug(ObjectParam* param, bool isModel)
 	else a = 0;
 }
 
+std::string GetStringForKey()
+{
+	char value;
+	std::string ReturnString;
+	ReturnString.clear();
+	// 数字チェック
+	for (int i = 48; i < 58; i++)
+	{
+		value = i;
+		if (IsKeyTrigger(value))
+		{
+			if (IsKeyPress(VK_SHIFT))
+			{
+				value = i - 16;
+				ReturnString += value;
+				if (i == 48) return "Error";
+				return ReturnString;
+			}
+			else
+			{
+				ReturnString += value;
+				return ReturnString;
+			}
+		}
+	}
+
+	// 文字チェック
+	for (int i = 65; i < 90; i++)
+	{
+		value = i;
+		if (IsKeyTrigger(value))
+		{
+			if (IsKeyPress(VK_SHIFT))
+			{
+				value = i;
+				ReturnString += value;
+				return ReturnString;
+			}
+			else
+			{
+				value = i + 32;
+				ReturnString += value;
+				return ReturnString;
+			}
+		}
+	}
+
+	if (IsKeyTrigger(VK_BACK)) return "Back";
+
+	return "Error";
+}
 
 // EOF

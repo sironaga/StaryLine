@@ -12,15 +12,15 @@
 #include "Geometory.h"
 #include "FadeBlack.h"
 #include "Transition.h"
-
-#define SELECT_MOVE (70.0f)
+#include "File.h"
+#define SELECT_MOVE (80.0f)
 #define CENTER_POS_X SCREEN_WIDTH / 2.0f
 #define CENTER_POS_Y SCREEN_HEIGHT / 2.0f
 #define STAR_SPEED 2.0f
 #define DECISION_SPEED 1.0f
 #define SELECT_POW 1.2f
 #define STAR_AJUSTPOS_X SCREEN_WIDTH / 2.0f
-#define SELECT_JUST_Y 20.0f
+#define SELECT_JUST_Y 30.0f
 
 enum
 {
@@ -59,7 +59,7 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	, m_tTabPos{}, m_tTabSize{}
 	, m_fSelectScale(1.0f), m_tStarPos{ {0.0f,SCREEN_HEIGHT / 2.0f} }
 	, m_pStarEfc{}, m_tStarRotate{}
-	, m_Direction(XINPUT_GAMEPAD_START)
+	, m_Direction(XINPUT_GAMEPAD_START), m_bRankingCommand{},m_fRankingCommandResetTimer(0.0f)
 {
 	g_Title_type = GAMESTART;
 	//if(FAILED(m_pSelect->Create(TEX_PASS("TitleBackGround/Select.png"))))MessageBox(NULL,"Select.png","Error",MB_OK);
@@ -248,6 +248,7 @@ void CSceneTitle::Update()
 
 	if (!m_bSelected && !m_pOption->GetOption())
 	{
+		if (CheckRankingCommand())SetNext(SCENE_RANKING);
 		switch (g_Title_type)
 		{
 		case(GAMESTART):
@@ -257,7 +258,7 @@ void CSceneTitle::Update()
 				m_SelectPos.y += SELECT_MOVE;
 				m_DecisionPos.y += SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_RETURN)|| IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN)|| IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 			{
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_pSelectsound->SetMasterVolume();
@@ -282,9 +283,11 @@ void CSceneTitle::Update()
 				m_SelectPos.y -= SELECT_MOVE;
 				m_DecisionPos.y -= SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 			{
 				//コンティニューシーンへ切り替える処理
+				if (!OutStageData())return;
+				SetNext(STAGE_SELECT);
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
 			}
@@ -305,7 +308,7 @@ void CSceneTitle::Update()
 					m_SelectPos.y -= SELECT_MOVE;
 					m_DecisionPos.y -= SELECT_MOVE;
 				}
-				else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+				else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 				{
 					m_bSelected = true;
 					//オプションへ切り替える処理
@@ -323,7 +326,7 @@ void CSceneTitle::Update()
 				m_SelectPos.y -= SELECT_MOVE;
 				m_DecisionPos.y -= SELECT_MOVE;
 			}
-			else if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(XINPUT_GAMEPAD_A))
+			else if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 			{
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
@@ -411,7 +414,7 @@ void CSceneTitle::Draw()
 	m_pLini[0]->SetView(Get2DView());
 	m_pLini[0]->SetPositon(CENTER_POS_X - 210.0, CENTER_POS_Y, 0.0f);
 	m_pLini[0]->SetSize(1920.0f, -1080.0f, 0.0f);
-	m_pLini[0]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pLini[0]->SetUvSize(1.0f,1.0f);
 	m_pLini[0]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[0]->Disp();
 	
@@ -420,7 +423,7 @@ void CSceneTitle::Draw()
 	m_pLini[1]->SetView(Get2DView());
 	m_pLini[1]->SetPositon(m_tLiniPos.x, m_tLiniPos.y, 0.0f);
 	m_pLini[1]->SetSize(1500.0f, -1080.0f, 0.0f);
-	m_pLini[1]->SetUvSize(m_tCharaLogoTexPos[0].x, m_tCharaLogoTexPos[0].y);
+	m_pLini[1]->SetUvSize(1.0f,1.0f);
 	m_pLini[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLini[1]->Disp();
 
@@ -473,7 +476,7 @@ void CSceneTitle::Draw()
 	m_pTitleEnd[0]->Disp();
 
 
-	if (m_bSelected)
+	if (m_bSelected && !m_pOption->GetOption())
 	{
 		switch (g_Title_type)
 		{
@@ -544,7 +547,7 @@ void CSceneTitle::Draw()
 	m_pTitleUnderbar->SetSize(1920.0f, -60, 0.0f);
 	m_pTitleUnderbar->Disp();
 
-	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 245,-m_SelectPos.y,0.0f });
+	m_pEffect[(int)Effect::Choice]->SetPos({ m_SelectPos.x - 255,-m_SelectPos.y,0.0f });
 	m_pEffect[(int)Effect::Choice]->SetSize({ 100.0f,100.0f,100.0f });
 	m_pEffect[(int)Effect::Choice]->SetRotate({ 0.0f,0.0f,0.0f });
 	m_pEffect[(int)Effect::Choice]->Draw(false);
@@ -671,45 +674,45 @@ void CSceneTitle::TitleAnimation()
 		m_pStarEfc[i]->Update();
 	}
 
-	if (g_eTitleAnim == LogoToBar)m_nLiniYCount += 2;
+	m_nLiniYCount += 2;
 	float rad = DirectX::XMConvertToRadians(m_nLiniYCount);
 	float cosMove = cosf(rad) - 0.5f;
 	float Y = CENTER_POS_Y + 75.0f;
 
-	switch (g_eTitleAnim)
-	{
-	case AnimeStart:
+	//switch (g_eTitleAnim)
+	//{
+	//case AnimeStart:
 
-		if (m_nAnimCount >= StartToChara)
-		{
-			g_eTitleAnim = StartToChara;
-		}
-		break;
-	case StartToChara:
+	//	if (m_nAnimCount >= StartToChara)
+	//	{
+	//		g_eTitleAnim = StartToChara;
+	//	}
+	//	break;
+	//case StartToChara:
 
-		for (int i = 0; i < 2; i++)
-		{
-			m_tCharaLogoTexPos[i] =
-			{ (m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)),
-				(m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)) };
-		}
-		if (m_nAnimCount >= CharaToLogo)
-		{
-			g_eTitleAnim = CharaToLogo;
-		}
-		break;
-	case CharaToLogo:
-		if (m_nAnimCount >= LogoToBar)
-		{
-			g_eTitleAnim = LogoToBar;
-		}
-		break;
-	case LogoToBar:
-		m_tLiniPos.y = Y + cosMove * 50.0f;
-		break;
-	default:
-		break;
-	}
+	//	for (int i = 0; i < 2; i++)
+	//	{
+	//		m_tCharaLogoTexPos[i] =
+	//		{ (m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)),
+	//			(m_nAnimCount - StartToChara) * (1.0f / (float)(CharaToLogo - StartToChara)) };
+	//	}
+	//	if (m_nAnimCount >= CharaToLogo)
+	//	{
+	//		g_eTitleAnim = CharaToLogo;
+	//	}
+	//	break;
+	//case CharaToLogo:
+	//	if (m_nAnimCount >= LogoToBar)
+	//	{
+	//		g_eTitleAnim = LogoToBar;
+	//	}
+	//	break;
+	//case LogoToBar:
+	//	break;
+	//default:
+	//	break;
+	//}
+	m_tLiniPos.y = Y + cosMove * 50.0f;
 
 	static int SelectProcess = 0;
 	static float TotalMove = 485.0f * 2.0f + 60.0f;
@@ -746,13 +749,13 @@ void CSceneTitle::TitleAnimation()
 		if (g_Title_type == i)
 		{
 			m_tTabPos[i] = { CENTER_POS_X + 550.0f, CENTER_POS_Y + 135.0f + i * SELECT_MOVE };
-			m_tTabSize[i] = { 500.0f * SELECT_POW,-60.0f * SELECT_POW };
+			m_tTabSize[i] = { 500.0f * SELECT_POW,-75.0f * SELECT_POW };
 		}
 		else
 		{
 			if(i < g_Title_type)m_tTabPos[i].y = CENTER_POS_Y + 135.0f + i * SELECT_MOVE - SELECT_JUST_Y;
 			else m_tTabPos[i].y = CENTER_POS_Y + 130.0f + i * SELECT_MOVE + SELECT_JUST_Y;
-			m_tTabSize[i] = { 500.0f,-60.0f };
+			m_tTabSize[i] = { 500.0f,-75.0f };
 		}
 	}
 	static float deg = 0.0f;    //度数
@@ -842,4 +845,32 @@ void CSceneTitle::OptionApply()
 	if (g_pSourseTitleBGM)SetVolumeBGM(g_pSourseTitleBGM);
 }
 
+bool CSceneTitle::CheckRankingCommand()
+{
+	if (IsKeyTrigger('R')) {
+		m_bRankingCommand[0] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('A') && m_bRankingCommand[0]) {
+		m_bRankingCommand[1] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('N') && m_bRankingCommand[1]) {
+		m_bRankingCommand[2] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+	if (IsKeyTrigger('K') && m_bRankingCommand[2]) {
+		m_bRankingCommand[3] = true;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
 
+	m_fRankingCommandResetTimer += 1.0f / 60.0f;
+
+	if (m_fRankingCommandResetTimer > 4.0f)
+	{
+		for (int i = 0; i < 4; i++)m_bRankingCommand[i] = false;
+		m_fRankingCommandResetTimer = 0.0f;
+	}
+
+	return m_bRankingCommand[3];
+}

@@ -1,14 +1,15 @@
 #pragma once
 // --- Include
 #include "Scene.h"
-#include"_StructList.h"
-#include"SpriteEx.h"
-#include"Main.h"
-#include"NumberUI.h"
+#include "_StructList.h"
+#include "SpriteEx.h"
+#include "Main.h"
+#include "NumberUI.h"
 #include "SoundList.h"
-#include"Conection_Sys.h"
-#include"StageSelect.h"
+#include "Conection_Sys.h"
+#include "StageSelect.h"
 
+#define SAVER_IP ("14.133.0.16")
 
 enum Rank
 {
@@ -118,6 +119,9 @@ private:
 	CSoundList* m_pResultSelectSound;
 	IXAudio2SourceVoice* m_pResultBGM;
 	IXAudio2SourceVoice* m_pResultSelectSE;
+
+	// --- Input
+	WORD m_Direction;
 
 	// --- スタティック系
 	static StageType StageLevel; 

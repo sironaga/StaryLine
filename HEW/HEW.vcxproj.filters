@@ -228,6 +228,15 @@
     <ClCompile Include="Transition.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="DirectWriteCustomFont.cpp">
+      <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneRanking.cpp">
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteName.cpp">
+      <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -311,9 +320,6 @@
     <ClInclude Include="Conection_Sys.h">
       <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
-    <ClInclude Include="SceneTitle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="DebugRoom.h">
       <Filter>ヘッダー ファイル\Systems</Filter>
     </ClInclude>
@@ -328,9 +334,6 @@
     </ClInclude>
     <ClInclude Include="SpriteEx.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneDebug.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="LibEffekseer.h">
       <Filter>ヘッダー ファイル\Systems\DirectX\Plus</Filter>
@@ -354,9 +357,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="NumberUI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
@@ -388,6 +388,24 @@
     </ClInclude>
     <ClInclude Include="SaverMode.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWriteCustomFont.h">
+      <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneRanking.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneDebug.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTitle.h">
+      <Filter>ヘッダー ファイル\App</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteName.h">
+      <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

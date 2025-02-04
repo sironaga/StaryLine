@@ -132,18 +132,43 @@ std::vector<std::string> split(const std::string text, const char delimiter) {
 	}
 	return columns;
 }
-void InStageData(int Inscore,Rank InRankData,bool InStageClear)
+void InStageData()
 {
-	int RankData = InRankData;
+	int Inscore; 
+	Rank InRankData;
+	bool InStageClear;
+	
 	fstream file;
 	file.open(FILENAME_STAGEDATA, ios::binary | ios::out);
-	file.write((char*)&Inscore, sizeof(Inscore));
-	file.write((char*)&RankData, sizeof(RankData));
-	file.write((char*)&InStageClear, sizeof(InStageClear));
+	for (int i=0,k = 0; i < 3; i++,k+=3)
+	{
+		for (int j = 0 + k; j < 3+k; j++)
+		{
+			StageType nowstage;
+			nowstage.StageMainNumber = i;
+			nowstage.StageSubNumber = j;
+			Inscore = CSceneResult::OutBestScore(nowstage);
+			file.write((char*)&Inscore, sizeof(Inscore));
+		}
+	}
+	for (int i = 0; i < MAX_STAGE; i++)
+	{
+		InRankData = CSceneResult::GetRankData(i);
+		int RankData = InRankData;
+		file.write((char*)&RankData, sizeof(RankData));
+	}
+	for (int i = 0; i < MAX_STAGE; i++)
+	{
+		InStageClear = CSceneResult::GetStageClear(i);
+		file.write((char*)&InStageClear, sizeof(InStageClear));
+	}
 	file.close();
 }
-bool OutStageData(int *score, Rank *RankData, bool *StageClear)
+bool OutStageData()
 {
+	int score;
+	Rank RankData;
+	bool StageClear;
 	int InRankData;
 	fstream file;
 	file.open(FILENAME_STAGEDATA, ios::binary | ios::in);
@@ -151,11 +176,30 @@ bool OutStageData(int *score, Rank *RankData, bool *StageClear)
 	{
 		return false;
 	}
-	file.read((char*)&score, sizeof(score));
-	file.read((char*)&InRankData, sizeof(InRankData));
-	file.read((char*)&StageClear, sizeof(StageClear));
+	for (int i = 0, k = 0; i < 3; i++, k += 3)
+	{
+		for (int j = 0 + k; j < 3 + k; j++)
+		{
+			StageType nowstage;
+			nowstage.StageMainNumber = i;
+			nowstage.StageSubNumber = j;
+			file.read((char*)&score, sizeof(score));
+			CSceneResult::InBestScore(score, nowstage);
+		}
+	}
+	for (int i = 0; i < MAX_STAGE; i++)
+	{
+		file.read((char*)&InRankData, sizeof(InRankData));
+		RankData = (Rank)InRankData;
+		CSceneResult::SetRankData(i, RankData);
+	}
+	for (int i = 0; i < MAX_STAGE; i++)
+	{
+		file.read((char*)&StageClear, sizeof(StageClear));
+		CSceneResult::SetStageClear(i, StageClear);
+	}
+	
 	file.close();
-	*RankData = (Rank)InRankData;
-
+	
 	return true;
 }

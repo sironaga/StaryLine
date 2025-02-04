@@ -66,3 +66,12 @@ void Camera::SetCameraPos(DirectX::XMFLOAT3 look)
 {
 
 }
+
+void Camera::SetCameraRotate(DirectX::XMFLOAT3 rotate)
+{
+}
+
+void Camera::SetFovY(float radFov)
+{
+	m_fovy = radFov;
+}

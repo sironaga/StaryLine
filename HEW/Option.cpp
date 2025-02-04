@@ -84,13 +84,13 @@ void COption::Update()
 			break;
 		default:break;
 		}
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
 		{
 			m_nSelect = SEC_SOUND;
 			m_nSection = MASTER;
 			m_bOptionMode = false;
 		}
-		if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_RETURN) || IsKeyTrigger(VK_SPACE))m_bSetValue = true;
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) || IsKeyTrigger(VK_SPACE))m_bSetValue = true;
 	}
 }
 
@@ -608,7 +608,7 @@ void COption::SetValue(int kind)
 		break;
 	}
 
-	if (WithGetKeyTriger(XINPUT_GAMEPAD_A, VK_SPACE) || IsKeyTrigger(VK_RETURN))
+	if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_SPACE) || IsKeyTrigger(VK_RETURN))
 	{
 		m_nValue[kind] = m_nTempValue[kind];
 		m_bSetValue = false;
@@ -622,7 +622,7 @@ void COption::SetValue(int kind)
 		m_pParam[TAB_KEYBOARD]->color.w = 1.0f;
 		m_pParam[TAB_CONTROLLER]->color.w = 1.0f;
 	}
-	if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
+	if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
 	{
 		m_nTempValue[kind] = m_nValue[kind];
 		m_bSetValue = false;

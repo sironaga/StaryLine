@@ -100,8 +100,8 @@ CPlayer::CPlayer()
 
 	m_pEffect = new CEffectManager_sp(EFFECT_PASS("Sprite/Drawing.png"), 4, 6);
 	m_pEffect->Play(true);
-	m_tEffectParam.pos = { 0.0f,0.0f,0.0f };
-	m_tEffectParam.size = { 100.0f,100.0f,100.0f };
+	m_tEffectParam.pos = { 0.0f,10000.0f,0.0f };
+	m_tEffectParam.size = { 50.0f,50.0f,100.0f };
 	m_tEffectParam.rotate = { 0.0f,0.0f,0.0f };
 	m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
 }
@@ -142,8 +142,9 @@ void CPlayer::Update()
 	}
 	// タイマー処理
 	TimeProcess();
-	   
-
+	m_tEffectParam.pos = m_tBrushPos;
+	if (GetFeverMode())m_tEffectParam.color = { 1.0f,0.0f,0.0f,1.0f };
+	else m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
 
 	// 状態別更新処理
 	if (m_bDrawing)	//召喚フェーズじゃない時
@@ -297,7 +298,7 @@ void CPlayer::Draw()
 		m_pArrowModel->SetViewMatrix(GetView());
 		m_pArrowModel->SetProjectionMatrix(GetProj());
 		/*if(m_eArrowState == SELECTED)*/
-		if(!(m_eDestination == CPlayer::DEFAULT))m_pArrowModel->Draw();//DEFAULTを表示しない
+		if(!(m_eDestination == CPlayer::DEFAULT || GetFade()) )m_pArrowModel->Draw();//DEFAULTを表示しない
 		if (m_ePlayerState == CPlayer::MOVE)
 		{
 			m_pEffect->SetPos(m_tEffectParam.pos);
@@ -361,8 +362,8 @@ void CPlayer::Reload()
 	SAFE_DELETE(m_pEffect);
 	m_pEffect = new CEffectManager_sp(EFFECT_PASS("Sprite/Drawing.png"), 4, 6);
 	m_pEffect->Play(true);
-	m_tEffectParam.pos = { 0.0f,0.0f,0.0f };
-	m_tEffectParam.size = { 100.0f,100.0f,100.0f };
+	m_tEffectParam.pos = { 0.0f,10000.0f,0.0f };
+	m_tEffectParam.size = { 50.0f,50.0f,100.0f };
 	m_tEffectParam.rotate = { 0.0f,0.0f,0.0f };
 	m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
 
@@ -459,8 +460,6 @@ void CPlayer::UpdateMove()
 	else m_fBrushSpeed = BRUSH_SPEED;
 
 	m_pEffect->Update();
-
-	m_tEffectParam.pos = m_tBrushPos;
 
 	// 各種方向別移動処理
 	switch (m_eDestination)

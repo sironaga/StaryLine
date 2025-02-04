@@ -32,6 +32,9 @@ public:
 	void Draw();//FieldVertexのメイン描画処理
 	void FeverDraw();//フィーバー時の描画用関数
 
+	bool ShapesUpdate();//できた図形を更新する関数
+	void ShapesDraw();//できた図形を描画する関数
+
 	DirectX::XMFLOAT3 GetVertexPos(int);//引数の頂点番号の座標を返す関数
 	bool GetRoadStop(int);//引数でもらった方向が進めるかどうかの情報を渡す関数
 	float GetFeverPoint() { return nFeverPoint; }//フィーバーポイントを取得する関数
@@ -120,6 +123,9 @@ private:
 
 	int BreakVertex;//壊れる頂点情報
 
+	float Shapes_Draw_Time;//図形描画の間隔
+	int Now_Shapes_Draw;
+
 	int SuperStarCount;//スーパースターの個数
 	int nFeverPoint;//ポイントカウント
 	float fFeverPoint;//ポイントをちょっとづつ増やす用
@@ -153,7 +159,7 @@ private:
 	Texture* m_pTex_Summon_Log[2];
 	Texture* m_pTex_Ally_Count[4];
 	Texture* m_pTex_Ally_Number[10];
-	Texture* m_pTex_Shapes[7];
+	Texture* m_pTex_Shapes[30];
 
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[4];//フィーバースター
