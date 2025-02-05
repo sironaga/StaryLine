@@ -44,7 +44,6 @@ float FadeTime;
 bool FadeTimeFlag;
 int DrawCount;
 bool bLine;
-bool DrawShapesFlag;
 
 ResultCheck g_Resltcheck;
 ResultGameInfo g_ResultData;
@@ -95,7 +94,6 @@ CSceneGame::CSceneGame(StageType StageNum)
 	bLine = false;
 	m_bPhase = true;
 	m_bFever = false;
-	DrawShapesFlag = false;
 
 	TimeStart = false;
 	g_tTime.GameTime = 0.0f;
@@ -197,6 +195,8 @@ void CSceneGame::Update()
 
 		m_pBattle->CreateLeader();
 
+		m_pFieldVertex->ShapesUpdate();
+
 		m_pFieldVertex->LogUpdate();
 
 		ModelUpDate();
@@ -211,7 +211,7 @@ void CSceneGame::Update()
 		// ゲーム中(移動をしてから)は経過時間を記録し続ける
 		if (TimeStart)
 		{
-			if(!DrawShapesFlag)g_tTime.GamePhaseTime++;//図形の描画をしていないとき
+			g_tTime.GamePhaseTime++;//図形の描画をしていないとき
 		}
 		if (!TimeStart && g_tTime.GamePhaseTime == -1.0f)
 		{
@@ -219,7 +219,7 @@ void CSceneGame::Update()
 		}
 
 
-		if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart && !DrawShapesFlag))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+		if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 		{
 			g_tTime.GamePhaseTime++;
 		}
@@ -248,31 +248,28 @@ void CSceneGame::Update()
 		{
 			// 召喚開始の時間になったらフィーバーかチェック
 			if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
-			{
-				DrawShapesFlag = m_pFieldVertex->ShapesUpdate();
-				if (!DrawShapesFlag)
-				{
-					float t;
-					t = m_pFieldVertex->GetFeverPoint();
+			{		
+				float t;
+				t = m_pFieldVertex->GetFeverPoint();
 
-					if (t == 30.0f)
-					{
-						m_pStarLine->SetLineMode(1);
-						m_pSourseGameBGM->Stop();
-						m_pSourseFeverBGM->FlushSourceBuffers();
-						XAUDIO2_BUFFER buffer;
-						buffer = g_FeverSound->GetBuffer(true);
-						m_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
-						if (m_pSourseFeverBGM)SetVolumeBGM(m_pSourseFeverBGM);
-						m_pSourseFeverBGM->Start();
-						m_bPhase = true;
-						m_bFever = true;
-						g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
-						m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
-						m_pFieldVertex->SetFeverPoint();
-						m_pPlayer->SetMoveStop();
-					}
+				if (t == 30.0f)
+				{
+					m_pStarLine->SetLineMode(1);
+					m_pSourseGameBGM->Stop();
+					m_pSourseFeverBGM->FlushSourceBuffers();
+					XAUDIO2_BUFFER buffer;
+					buffer = g_FeverSound->GetBuffer(true);
+					m_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
+					if (m_pSourseFeverBGM)SetVolumeBGM(m_pSourseFeverBGM);
+					m_pSourseFeverBGM->Start();
+					m_bPhase = true;
+					m_bFever = true;
+					g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
+					m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
+					m_pFieldVertex->SetFeverPoint();
+					m_pPlayer->SetMoveStop();
 				}
+				
 			}
 
 			//毎描画開始時スーパースターをセット
@@ -337,6 +334,7 @@ void CSceneGame::Draw()
 {
 	m_pBackGround->Draw(m_pBattle->m_nStageNum.StageMainNumber >= 2);
 	m_pField->Draw();	// フィールドは常に描画する
+    m_pFieldVertex->ShapesDraw();
 
 	m_pFieldVertex->Draw();
 	m_pPlayer->Draw();
@@ -391,10 +389,7 @@ void CSceneGame::Draw()
 		m_pSourseGameBGM->Start();
 		m_bFever = false;
 	}
-	if (DrawShapesFlag)
-	{
-		m_pFieldVertex->ShapesDraw();
-	}
+	
 	m_pFieldVertex->FeverDraw();
 }
 
