@@ -91,8 +91,8 @@ void CBackGround::Draw(bool isAjust)
 
 	if (isAjust)
 	{
-		T = DirectX::XMMatrixTranslation(m_tWorld.x, m_tWorld.y, m_tWorld.z  * 1.5f);
-		S = DirectX::XMMatrixScaling(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, 1.0f);
+		T = DirectX::XMMatrixTranslation(m_tWorld.x, m_tWorld.y, m_tWorld.z  * 5.0f);
+		S = DirectX::XMMatrixScaling(SCREEN_WIDTH * 3.5f, SCREEN_HEIGHT * 3.5f, 1.0f);
 	}
 
 	DirectX::XMMATRIX mWorld = S * R * T;
