@@ -54,7 +54,7 @@ void CBackGround::Update()
 {
 
 }
-void CBackGround::Draw()
+void CBackGround::Draw(bool isAjust)
 {
 	SetRender2D();
 
@@ -87,6 +87,11 @@ void CBackGround::Draw()
 	case SCENE_DEBUGROOM: SetRender3D(); break;
 	case SCENE_MAX: break;
 	default:MessageBox(NULL, "シーン参照エラー", "BackGround.cpp", MB_OK);	break;
+	}
+
+	if (isAjust)
+	{
+		size = { SCREEN_WIDTH  * 3.0f, SCREEN_HEIGHT * 3.0f };
 	}
 
 	DirectX::XMMATRIX mWorld = S * R * T;

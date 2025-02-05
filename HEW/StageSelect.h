@@ -74,6 +74,7 @@ private:
 	SpriteEx* m_pRank_B;
 	SpriteEx* m_pRank_A;
 	SpriteEx* m_pRank_S;
+	SpriteEx* m_pTransition[2];
 
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* m_BGMSound;
@@ -107,6 +108,7 @@ private:
 	ObjectParam m_ModelWorldParam;
 	ObjectParam m_ModelParam[StageKindMax];
 	ObjectParam m_ModelSubParam[StageKindMax];
+	ObjectParam m_tTransitionParam[2];
 	CBackGround* m_pBackGround;
 
 	WORD m_Direction;
@@ -135,6 +137,7 @@ private:
 	bool m_bClear[MAX_STAGE];
 	bool m_bCantMove_Left;
 	bool m_bCantMove_Right;
+	bool m_bTransition;
 	float m_fTime;
 	bool m_bClearCommand[5];
 	float m_fClearCommandResetTimer;

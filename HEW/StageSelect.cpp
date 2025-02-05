@@ -81,6 +81,9 @@ CStageSelect::CStageSelect()
 	, m_bCantMove_Right(false)
 	, m_fTime(0.0f)
 	, m_Direction(NULL)
+	, m_bTransition(false)
+	, m_pTransition{}
+	, m_tTransitionParam{}
 {
 	g_Select_type.StageMainNumber = GrassField;
 	g_Select_type.StageSubNumber = GRASSLAND_STAGE1; 
@@ -117,6 +120,9 @@ CStageSelect::CStageSelect()
 	m_pRank_B = new SpriteEx("Assets/Texture/Result/Rank/Rank_B.png");
 	m_pRank_A = new SpriteEx("Assets/Texture/Result/Rank/Rank_A.png");
 	m_pRank_S = new SpriteEx("Assets/Texture/Result/Rank/Rank_S.png");
+
+	m_pTransition[0] = new SpriteEx("Assets/Texture/Transition/001.png");
+	m_pTransition[1] = new SpriteEx("Assets/Texture/Transition/TransitionStarB.png");
 	
 	m_pStageSelect_Underbar = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Underbar.png");
 	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);
@@ -345,6 +351,11 @@ CStageSelect::~CStageSelect()
 	{
 		m_pStarEfc[i] = nullptr;
 	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		SAFE_DELETE(m_pTransition[i]);
+	}
 }
 
 void CStageSelect::Update()
@@ -356,6 +367,20 @@ void CStageSelect::Update()
 	//SpriteDebug(&m_ModelParam[WorldField], true);
 	//if (IsKeyTrigger('B'))m_ModelParam[WorldField].rotate.z += DirectX::XMConvertToRadians(120.0f);
 	m_Direction = GetControllerLStickTriggerForeDirection();
+
+
+	if (IsKeyPress('Q'))
+	{
+		m_tTransitionParam[0].size.x += 16.0f;
+		m_tTransitionParam[0].size.y += 9.0f;
+	}
+	if (IsKeyPress('E'))
+	{
+		m_tTransitionParam[0].size.x -= 16.0f;
+		m_tTransitionParam[0].size.y -= 9.0f;
+	}
+	m_tTransitionParam[0].pos = { CENTER_POS_X,CENTER_POS_Y,0.0f };
+
 #if 0
 	static DirectX::XMFLOAT3 debugpos = { 170.0f, 46.0f, -370.0f };
 	if (IsKeyPress('D'))debugpos.x++;
@@ -391,10 +416,18 @@ void CStageSelect::Update()
 		for (int i = 0; i < MAX_STAGE; i++)
 		{
 			m_bClear[i] = true;
-			
+
 		}
 	}
 #endif
+
+	if (ClearCommand())
+	{
+		for (int i = 0; i < MAX_STAGE; i++)
+		{
+			m_bClear[i] = true;
+		}
+	}
 #if 1
 	if (MainStage)
 	{
@@ -2327,7 +2360,28 @@ void CStageSelect::Draw()
 
 			}
 #endif
-	}
+}
+
+
+
+	SetRender2D();	
+	m_pTransition[0]->SetTexture();
+	m_pTransition[0]->SetPositon(m_tTransitionParam[0].pos.x, m_tTransitionParam[0].pos.y, m_tTransitionParam[0].pos.z);
+	m_pTransition[0]->SetSize(m_tTransitionParam[0].size.x, m_tTransitionParam[0].size.y, m_tTransitionParam[0].size.z);
+	m_pTransition[0]->SetRotation(m_tTransitionParam[0].rotate.x, m_tTransitionParam[0].rotate.y, m_tTransitionParam[0].rotate.z);
+	m_pTransition[0]->Setcolor(1.0f,1.0f,1.0f,1.0f);
+	m_pTransition[0]->SetView(Get2DView());
+	m_pTransition[0]->SetProjection(Get2DProj());
+	m_pTransition[0]->Disp();
+
+	//m_pTransition[1]->SetTexture();
+	//m_pTransition[1]->SetPositon(CENTER_POS_X, CENTER_POS_Y,0.0f);
+	//m_pTransition[1]->SetSize(CENTER_POS_X, CENTER_POS_Y,0.0f);
+	//m_pTransition[1]->SetRotation(0.0f, 0.0f, 0.0f);
+	//m_pTransition[1]->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+	//m_pTransition[1]->SetView(Get2DView());
+	//m_pTransition[1]->SetProjection(Get2DProj());
+	//m_pTransition[1]->Disp();
 }
 
 
