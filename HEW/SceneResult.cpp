@@ -144,7 +144,7 @@ CSceneResult::CSceneResult()
 		NowRank = S_RANK;
 	}
 
-	ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
+	if(ResultGameData.nSpawnCount > 0 && ResultGameData.nDrawCount > 0)ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
 
 }
 CSceneResult::~CSceneResult()
