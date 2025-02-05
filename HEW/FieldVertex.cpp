@@ -952,6 +952,7 @@ void CFieldVertex::ShapesDraw()
 
 	for (int i = 0;(i < Now_Shapes_Draw) && (i < Effect_NowShapes);i++)
 	{
+		m_pSprite_Shapes->SetUVPos({ 0.0f,0.0f });
 		if (Shapes_Count[i] == 3)//ŽOŠpŒ`‚È‚ç
 		{
 			if (Shapes_type_Angle[i][0] == 0)//’¼Šp“ñ“™•ÓŽOŠpŒ`
