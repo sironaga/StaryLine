@@ -2364,15 +2364,15 @@ void CStageSelect::Draw()
 
 
 
-	SetRender2D();	
-	m_pTransition[0]->SetTexture();
-	m_pTransition[0]->SetPositon(m_tTransitionParam[0].pos.x, m_tTransitionParam[0].pos.y, m_tTransitionParam[0].pos.z);
-	m_pTransition[0]->SetSize(m_tTransitionParam[0].size.x, m_tTransitionParam[0].size.y, m_tTransitionParam[0].size.z);
-	m_pTransition[0]->SetRotation(m_tTransitionParam[0].rotate.x, m_tTransitionParam[0].rotate.y, m_tTransitionParam[0].rotate.z);
-	m_pTransition[0]->Setcolor(1.0f,1.0f,1.0f,1.0f);
-	m_pTransition[0]->SetView(Get2DView());
-	m_pTransition[0]->SetProjection(Get2DProj());
-	m_pTransition[0]->Disp();
+	//SetRender2D();	
+	//m_pTransition[0]->SetTexture();
+	//m_pTransition[0]->SetPositon(m_tTransitionParam[0].pos.x, m_tTransitionParam[0].pos.y, m_tTransitionParam[0].pos.z);
+	//m_pTransition[0]->SetSize(m_tTransitionParam[0].size.x, m_tTransitionParam[0].size.y, m_tTransitionParam[0].size.z);
+	//m_pTransition[0]->SetRotation(m_tTransitionParam[0].rotate.x, m_tTransitionParam[0].rotate.y, m_tTransitionParam[0].rotate.z);
+	//m_pTransition[0]->Setcolor(1.0f,1.0f,1.0f,1.0f);
+	//m_pTransition[0]->SetView(Get2DView());
+	//m_pTransition[0]->SetProjection(Get2DProj());
+	//m_pTransition[0]->Disp();
 
 	//m_pTransition[1]->SetTexture();
 	//m_pTransition[1]->SetPositon(CENTER_POS_X, CENTER_POS_Y,0.0f);
