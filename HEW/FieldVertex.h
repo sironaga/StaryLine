@@ -32,7 +32,7 @@ public:
 	void Draw();//FieldVertexのメイン描画処理
 	void FeverDraw();//フィーバー時の描画用関数
 
-	bool ShapesUpdate();//できた図形を更新する関数
+	void ShapesUpdate();//できた図形を更新する関数
 	void ShapesDraw();//できた図形を描画する関数
 
 	DirectX::XMFLOAT3 GetVertexPos(int);//引数の頂点番号の座標を返す関数
@@ -120,6 +120,7 @@ private:
 	float Shapes_Size[MAX_ALLY];//できた図形の面積
 	int Shapes_type_Angle[MAX_ALLY][2];//[0][0]=type; [0][1]=Angle;(0～3)
 	float Shapes_Angle_Save[MAX_ALLY][4][2];
+	float Shapes_Color_Time[MAX_ALLY];
 
 	int BreakVertex;//壊れる頂点情報
 
