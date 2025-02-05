@@ -12,22 +12,22 @@ Field::Field(StageType StageNum)
 	switch (StageNum.StageMainNumber)
 	{
 	case (int)EStageType::STAGE_GRASSLAND:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage1_Meadow.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_GrassField.fbx"), 1.0f, Model::ZFlip))MessageBox(NULL, "Ground", "Error", MB_OK);
 		m_Pos = DirectX::XMFLOAT3(30.0f, -3.0f, 40.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(0.0f), TORAD(180), TORAD(0));
-		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(0.0f), TORAD(0.0f), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		break;
 	case (int)EStageType::STAGE_DESERT:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::ZFlip))MessageBox(NULL, "Ground", "Error", MB_OK);
 		m_Pos = DirectX::XMFLOAT3(30.0f, -8.0f, 40.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
-		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(0.0f), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		break;
 	case (int)EStageType::STAGE_SNOWFIELD:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage3_SnowField.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
-		m_Pos = DirectX::XMFLOAT3(30.0f, 5.0f, 130.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(5), TORAD(180), TORAD(0));
-		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_SnowField.fbx"), 1.0f, Model::ZFlip))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -3.0f, 22.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(5), TORAD(0.0f), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		break;
 	}
 
@@ -43,6 +43,28 @@ Field::~Field()
 
 void Field::Update()
 {
+#if 1
+	if (IsKeyPress('D'))m_Pos.x++;
+	if (IsKeyPress('A'))m_Pos.x--;
+	if (IsKeyPress(VK_SPACE))m_Pos.y++;
+	if (IsKeyPress(VK_SHIFT))m_Pos.y--;
+	if (IsKeyPress('W'))m_Pos.z++;
+	if (IsKeyPress('S'))m_Pos.z--;
+
+	if (IsKeyPress('Q'))m_Angle.x += DirectX::XMConvertToRadians(1.0f);
+	if (IsKeyPress('E'))m_Angle.x -= DirectX::XMConvertToRadians(1.0f);
+
+	OutputDebugStringA("X:");
+	OutputDebugStringA(std::to_string(m_Pos.x).c_str());
+	OutputDebugStringA("Y:");
+	OutputDebugStringA(std::to_string(m_Pos.y).c_str());
+	OutputDebugStringA("Z:");
+	OutputDebugStringA(std::to_string(m_Pos.z).c_str());
+	OutputDebugStringA("\n");
+	OutputDebugStringA("XRotate:");
+	OutputDebugStringA(std::to_string(m_Angle.x).c_str());
+	OutputDebugStringA("\n");
+#endif
 	//FieldModelUpdate(m_Field_Model, MAX_FIELD_MODEL);
 }
 
@@ -103,22 +125,22 @@ void Field::Reload(StageType StageNum)
 	switch (StageNum.StageMainNumber)
 	{
 	case (int)EStageType::STAGE_GRASSLAND:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage1_Meadow.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
-		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
-		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage01_GrassField.fbx"), 1.0f, Model::ZFlip))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -3.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(0.0f), TORAD(0.0f), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		break;
 	case (int)EStageType::STAGE_DESERT:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
-		m_Pos = DirectX::XMFLOAT3(30.0f, -12.0f, 40.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(180), TORAD(0));
-		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage02_Desert.fbx"), 1.0f, Model::ZFlip))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -8.0f, 40.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(-5), TORAD(0.0f), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		break;
 	case (int)EStageType::STAGE_SNOWFIELD:
-		if (!m_pModel->Load(MODEL_PASS("Stage/Stage3_SnowField.fbx"), 1.0f, Model::None))MessageBox(NULL, "Ground", "Error", MB_OK);
-		m_Pos = DirectX::XMFLOAT3(30.0f, 5.0f, 130.0f);
-		m_Angle = DirectX::XMFLOAT3(TORAD(5), TORAD(180), TORAD(0));
-		m_Scale = DirectX::XMFLOAT3(0.5f, 0.6f, 0.4f);
+		if (!m_pModel->Load(MODEL_PASS("Stage/Stage03_SnowField.fbx"), 1.0f, Model::ZFlip))MessageBox(NULL, "Ground", "Error", MB_OK);
+		m_Pos = DirectX::XMFLOAT3(30.0f, -3.0f, 22.0f);
+		m_Angle = DirectX::XMFLOAT3(TORAD(0.0f), TORAD(0.0f), TORAD(0));
+		m_Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 		break;
 	}
 }

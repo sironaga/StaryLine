@@ -335,7 +335,7 @@ void CSceneGame::Update()
 
 void CSceneGame::Draw()
 {
-	m_pBackGround->Draw();
+	m_pBackGround->Draw(m_pBattle->m_nStageNum.StageMainNumber >= 2);
 	m_pField->Draw();	// フィールドは常に描画する
 
 	m_pFieldVertex->Draw();

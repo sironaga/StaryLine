@@ -9,7 +9,7 @@ public:
 	CBackGround();
 	~CBackGround();
 	void Update();
-	void Draw();
+	void Draw(bool isAjust);
 	void MultiScrollPos(DirectX::XMFLOAT3 MovePower);
 	void MultiScrollRotate(DirectX::XMFLOAT3 MovePower);
 private:
