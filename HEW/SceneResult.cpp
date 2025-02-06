@@ -490,15 +490,15 @@ void CSceneResult::DefaultSetPos(void)
 
 		m_pLighting->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pLighting->SetSize(969 * 1.1f, 642 * 1.1f, 0.0f);
-		m_pLighting->SetPositon(960, 520.0f, 0.0f);
+		m_pLighting->SetPositon(960, 450.0f, 0.0f);
 
 		m_pCharacter->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pCharacter->SetSize(705, 430, 0.0f);
-		m_pCharacter->SetPositon(960, 620.0f, 0.0f);
+		m_pCharacter->SetPositon(960, 600.0f, 0.0f);
 
 		m_pCharacterShadow->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pCharacterShadow->SetSize(440.0f * 1.5f, 81.0f * 1.5f, 0.0f);
-		m_pCharacterShadow->SetPositon(920.0f, 800.0f, 0.0f);
+		m_pCharacterShadow->SetPositon(920.0f, 700.0f, 0.0f);
 
 		m_pText->SetRotation(0.0f, TORAD(180.0f), TORAD(180.0f));
 		m_pText->SetSize(913.0f, 145.0f, 0.0f);
@@ -834,7 +834,7 @@ void CSceneResult::LoseAnimation(void)
 	{
 		float fAnime;
 		fAnime = nAnimationFrame * 0.02f;
-		m_pCharacter->SetPositon(960, 620.0f - Easing39(fAnime,0.3f,0.9f) * 1920.0f + 1920.0f , 0.0f);
+		m_pCharacter->SetPositon(960, 530.0f - Easing39(fAnime,0.3f,0.9f) * 1920.0f + 1920.0f , 0.0f);
 	}
 }
 
