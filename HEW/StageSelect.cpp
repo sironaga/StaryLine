@@ -169,7 +169,8 @@ CStageSelect::CStageSelect()
 	m_pSESound[GRASS_SE] = new CSoundList(SE_WALKGRASS);
 	m_pSESound[DESERT_SE] = new CSoundList(SE_WALKDESERT);
 	m_pSESound[SNOW_SE] = new CSoundList(SE_WALKSNOW);
-	for (int i = 0; i < 4; i++)
+	m_pSESound[LOCK_SE] = new CSoundList(SE_LOCK);
+	for (int i = 0; i < 5; i++)
 	{
 		m_pSESound[i]->SetMasterVolume();
 		m_pSourseStageSelectSE[i] = m_pSESound[i]->GetSound(false);
@@ -260,7 +261,7 @@ CStageSelect::~CStageSelect()
 		delete m_BGMSound;
 		m_BGMSound = nullptr;
 	}
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		SAFE_DELETE(m_pSESound[i]);
 		m_pSourseStageSelectSE[i] = nullptr;
@@ -468,6 +469,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE3])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && m_bClear[DESERT_STAGE3])
@@ -482,6 +490,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && !m_bClear[DESERT_STAGE3])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Left = true;
 					}
 					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
@@ -501,6 +516,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE3])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
@@ -571,6 +593,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE1])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					break;
@@ -585,6 +614,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE2])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
@@ -620,6 +656,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE1])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					break;
@@ -634,6 +677,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE2])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
@@ -670,6 +720,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[SNOWFIELD_STAGE1])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					break;
@@ -684,6 +741,13 @@ void CStageSelect::Update()
 					}
 					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[SNOWFIELD_STAGE2])
 					{
+						m_pSourseStageSelectSE[LOCK_SE]->Stop();
+						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+						m_pSourseStageSelectSE[LOCK_SE]->Start();
 						m_bCantMove_Right = true;
 					}
 					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)

@@ -3,7 +3,7 @@
 #include "iostream"
 #include "vector"
 
-#define MAX_SOUND (23)
+#define MAX_SOUND (24)
 
 #define FILENAME_WALKSE (L"Assets/Sound/walk.wav")
 #define FILENAME_WALKGRASSSE (L"Assets/Sound/walkgrass.wav")
@@ -19,7 +19,8 @@
 #define FILENAME_WANDONOFFSE (L"Assets/Sound/wandonoff.wav") 
 #define FILENAME_SUMMONSE (L"Assets/Sound/summon.wav") 
 #define FILENAME_SUMMONENEMYSE (L"Assets/Sound/SummonEnemy.wav") 
-#define FILENAME_DEATHSE (L"Assets/Sound/death.wav") 
+#define FILENAME_DEATHSE (L"Assets/Sound/death.wav")  
+#define FILENAME_LOCKSE (L"Assets/Sound/lock.wav") 
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
 #define FILENAME_SELECTEBGM (L"Assets/Sound/StageSelect.wav")
@@ -81,6 +82,9 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case SE_DEATH:
 		m_sound = new CSound(FILENAME_DEATHSE);
+		break;
+	case SE_LOCK:
+		m_sound = new CSound(FILENAME_LOCKSE);
 		break;
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);
