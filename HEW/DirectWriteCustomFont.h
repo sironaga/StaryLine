@@ -28,7 +28,7 @@ namespace FontList
 	const std::wstring FontPath[] =
 	{
 		L"Assets\\Font\\Kazesawa-Extrabold.ttf",
-		L"Assets\\Font\\Kazesawa-Extrabold.ttf",
+		L"Assets\\Font\\LINESeedJP_TTF_Eb.ttf",
 		L"Assets\\Font\\Kazesawa-Extrabold.ttf",
 	};
 }

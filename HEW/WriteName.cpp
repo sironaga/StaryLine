@@ -1,6 +1,7 @@
 #include "WriteName.h"
 #include "DirectX.h"
 #include "Main.h"
+#include "Defines.h"
 
 std::string CWriteName::m_Name;
 
@@ -13,8 +14,8 @@ CWriteName::CWriteName()
 	// フォントデータを改変
 	data.fontSize = 60;
 	data.fontWeight = DWRITE_FONT_WEIGHT_ULTRA_BLACK;
-	data.Color = D2D1::ColorF(D2D1::ColorF::Red);
-	data.font = m_pWrite->GetFontName(0);
+	data.Color = D2D1::ColorF(D2D1::ColorF::LightYellow);
+	data.font = m_pWrite->GetFontName(1);
 	data.shadowColor = D2D1::ColorF(D2D1::ColorF::White);
 	data.shadowOffset = D2D1::Point2F(5.0f, -5.0f);
 
@@ -32,7 +33,7 @@ void CWriteName::Update()
 {
 	std::string checkkey = GetStringForKey();
 
-	if (checkkey != "Error" && checkkey != "Back")
+	if (checkkey != "Error" && checkkey != "Back" && m_Name.size() < 10)
 	{
 		m_Name += checkkey;
 	}
@@ -44,7 +45,7 @@ void CWriteName::Update()
 
 void CWriteName::Draw()
 {
-	m_pWrite->DrawString(m_Name, DirectX::XMFLOAT2(90, 90), D2D1_DRAW_TEXT_OPTIONS_NONE);
+	m_pWrite->DrawString(m_Name, SCREEN_CENTER, D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NONE);
 }
 
 std::string CWriteName::GetPlayerName()
