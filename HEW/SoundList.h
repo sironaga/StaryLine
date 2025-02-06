@@ -35,6 +35,8 @@ enum NAME
 	, SE_SUMMONENEMY
 	//敗北音
 	, SE_DEATH
+	//ロック音
+	, SE_LOCK
 	//タイトルBGM
 	, BGM_TITLE
 	//セレクトBGM
