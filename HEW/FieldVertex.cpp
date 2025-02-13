@@ -716,6 +716,7 @@ void CFieldVertex::Draw()
 	{
 		for (int i = 0; i < NowSummonLog; i++)
 		{
+			m_pSprite_Summon_Log->SetUVPos({ 0.0f, 0.0f });
 			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, {0.0f,0.0f,0.0f},m_pSprite_Summon_Log);//座標と大きさの設定
 			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//色と透明度の設定
 			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
