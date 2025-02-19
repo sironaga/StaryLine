@@ -31,6 +31,22 @@ enum class CharacterAnimation
 	MAX,
 };
 
+enum class LinieAnimation
+{
+	Idle,
+	Summon,
+	Win,
+	Damage,
+	MAX,
+};
+
+enum class BossAnimation
+{
+	Idle,
+	Damage,
+	MAX,
+};
+
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
@@ -335,16 +351,23 @@ private:
 	void BattleUpdate(bool IsStart = false, bool IsEnd = false);
 	void DeathUpdate(void);
 
+public:
+	bool m_bWin;
+	bool m_bSummon;
+	bool m_bDamage;
 private:
 	bool m_bReLoadFlag;
 
+	int m_nModelNo;//モデル番号
+
+
 	Status m_tStatus;				//ステータス状態
-	Model* m_pModel;
+	std::vector <Model*> m_pModel;
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
 	bool m_bSubModelCreate;
 
-	Model* m_pSubModel;
+	std::vector <Model*> m_pSubModel;
 	DirectX::XMFLOAT3 m_tSubPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSubSize;		//サイズ
 
@@ -356,6 +379,8 @@ private:
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
 public:
+
+
 	//モデル読み込みフラグの切り替え
 	void SetReLoadFlag(void) { m_bReLoadFlag = true; }
 	//ステータスのSet

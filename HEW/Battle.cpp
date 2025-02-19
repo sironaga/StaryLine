@@ -260,6 +260,10 @@ void CBattle::Update(void)
 		//味方を生成順に処理
 		for (int i = 0; i < m_nAllyCount; i++)
 		{
+			if (m_pAlly[i]->GetStatus() == St_Create)
+			{
+				m_pAllyLeader->m_bSummon = true;
+			}
 			//Z軸順に描画
 			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
 			{
@@ -418,6 +422,7 @@ void CBattle::Update(void)
 		//敵のリーダーがnullptrになっていたら
 		if (m_pEnemyLeader == nullptr)
 		{
+			m_pAllyLeader->m_bWin = true;
 			m_bWin = true;
 			m_bEnd = true;
 		}
@@ -509,6 +514,16 @@ void CBattle::Draw(void)
 			}
 		}
 
+		//味方リーダーが生成されているか
+		if (m_pAllyLeader)
+		{
+			//Z軸の範囲判定
+			if (m_pAllyLeader->GetPos().z > Z - 1.0f && m_pAllyLeader->GetPos().z < Z + 1.0f)
+			{
+				//描画処理
+				m_pAllyLeader->Draw();
+			}
+		}
 		//敵のリーダーが生成されているか
 		if (m_pEnemyLeader)
 		{
@@ -520,16 +535,6 @@ void CBattle::Draw(void)
 			}
 		}
 
-		//味方リーダーが生成されているか
-		if (m_pAllyLeader)
-		{
-			//Z軸の範囲判定
-			if (m_pAllyLeader->GetPos().z > Z - 1.0f && m_pAllyLeader->GetPos().z < Z + 1.0f)
-			{
-				//描画処理
-				m_pAllyLeader->Draw();
-			}
-		}
 	}
 	if (m_pAllyLeader)
 	{
@@ -656,6 +661,7 @@ void CBattle::TimeLapse(void)
 //味方の生成処理
 void CBattle::CreateAlly(void)
 {
+	m_pAllyLeader->m_bSummon = true;
 	//保存済み数分処理する
 	while (m_nAllyDateCount)
 	{

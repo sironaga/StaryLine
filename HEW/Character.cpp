@@ -36,14 +36,13 @@ enum class Enemy
 	MAX,
 };
 
-//リーダーたちの列挙型
-enum class Leader
+//ボスたちの列挙型
+enum class Boss
 {
-	Linie,
-	Quracker = 1,
-	Nugar = 1,
-	Kannele = 1,
-	Boldow = 2,
+	Quracker = 0,
+	Nugar = 0,
+	Kannele = 0,
+	Boldow = 1,
 	MAX,
 };
 
@@ -90,9 +89,13 @@ Model* g_pEnemyModel[(int)Enemy::MAX];
 Model::AnimeNo g_pEnemy_Anima[(int)CharacterAnimation::MAX][(int)Enemy::MAX];
 
 //リーダーたち
-Model* g_pLeaderModel[(int)Leader::MAX];
+Model* g_pLinieModel[(int)LinieAnimation::MAX];
+Model* g_pBossModel[(int)BossAnimation::MAX][(int)Boss::MAX];
+
 //リーダー用アニメーション
-Model::AnimeNo g_pLeader_Anima;
+Model::AnimeNo g_pLinie_Anima[(int)LinieAnimation::MAX];
+Model::AnimeNo g_pBoss_Anima[(int)BossAnimation::MAX][(int)Boss::MAX];
+
 //ボスの車
 Model* g_pBosCar;
 
@@ -119,9 +122,6 @@ void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Spri
 //事前読み込み用関数
 void InitCharacterTexture(StageType StageType)
 {
-	g_pLeaderModel[0] = nullptr;
-	g_pLeaderModel[1] = nullptr;
-	g_pLeaderModel[2] = nullptr;
 	/*味方キャラクターのModel読み込み*/
 	for (int i = 0; i < (int)Ally::MAX; i++)
 	{
@@ -186,15 +186,37 @@ void InitCharacterTexture(StageType StageType)
 	g_pHpGageTex[(int)HpTexture::Linie] = new Texture();
 	g_pHpGageTex[(int)HpTexture::Linie]->Create(TEX_PASS("HpGage/Battle_HP_Gage_Linie.png"));
 
-	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage] = new Texture();
-	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top] = new Texture();
-	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Linie.png"));
-	//g_pHpGageTex[(int)Leader::Linie][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Linie.png"));
 	//モデル
-	g_pLeaderModel[(int)Leader::Linie] = new Model();
-	g_pLeaderModel[(int)Leader::Linie]->Load(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"), 1.0f, Model::None);
-	g_pLeader_Anima = g_pLeaderModel[(int)Leader::Linie]->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"));
+	for (int i = 0; i < (int)LinieAnimation::MAX; i++)
+	{
+		g_pLinieModel[i] = new Model();
+	}
 
+	//g_pLeaderModel[(int)Leader::Linie]
+	//	->Load(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"), 1.0f, Model::None);
+	//g_pLeader_Anima = g_pLeaderModel[(int)Leader::Linie]
+	//	->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Char_Main_Linie_WandON.fbx"));
+
+	g_pLinieModel[(int)LinieAnimation::Idle]
+		->Load(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Idle.fbx"), 1.0f, Model::None);
+	g_pLinie_Anima[(int)LinieAnimation::Idle] = g_pLinieModel[(int)LinieAnimation::Idle]
+		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Idle.fbx"));
+	
+	g_pLinieModel[(int)LinieAnimation::Summon]
+		->Load(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Summon.fbx"), 1.0f, Model::None);
+	g_pLinie_Anima[(int)LinieAnimation::Summon] = g_pLinieModel[(int)LinieAnimation::Summon]
+		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Summon.fbx"));
+	
+	g_pLinieModel[(int)LinieAnimation::Damage]
+		->Load(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Damage.fbx"), 1.0f, Model::None);
+	g_pLinie_Anima[(int)LinieAnimation::Damage] = g_pLinieModel[(int)LinieAnimation::Damage]
+		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Damage.fbx"));
+	
+	g_pLinieModel[(int)LinieAnimation::Win]
+		->Load(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Win.fbx"), 1.0f, Model::None);
+	g_pLinie_Anima[(int)LinieAnimation::Win] = g_pLinieModel[(int)LinieAnimation::Win]
+		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Win.fbx"));
+	
 	g_pDamageTex[(int)DamageDraw::NormalBlue] = new Texture();
 	g_pDamageTex[(int)DamageDraw::NormalBlue]->Create(TEX_PASS("DamageLog/Battle_Damage_Blue.png"));
 	g_pDamageTex[(int)DamageDraw::NormalRed] = new Texture();
@@ -238,10 +260,24 @@ void InitCharacterTexture(StageType StageType)
 		//g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Gage] ->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
 		//g_pHpGageTex[(int)Leader::Quracker][(int)HpTexture::Top]  ->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
-		g_pLeaderModel[(int)Leader::Quracker] = new Model();
-		g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::None);
-		g_pLeaderModel[2] = nullptr;
+		//g_pLeaderModel[(int)Leader::Quracker] = new Model();
+		//g_pLeaderModel[(int)Leader::Quracker]->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::None);
+		//g_pLeaderModel[2] = nullptr;
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Quracker] = new Model();
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Quracker] = new Model();
+		g_pBossModel[(int)BossAnimation::Idle][1] = nullptr;
+		g_pBossModel[(int)BossAnimation::Damage][1] = nullptr;
 
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Quracker]
+			->Load(MODEL_PASS("Leader/Qracker/Anim_Boss01_Qracker_Idle.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Idle][(int)Boss::Quracker] = g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Quracker]
+			->AddAnimation(MODEL_PASS("Leader/Qracker/Anim_Boss01_Qracker_Idle.fbx"));
+		
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Quracker]
+			->Load(MODEL_PASS("Leader/Qracker/Anim_Boss01_Qracker_Damage.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Damage][(int)Boss::Quracker] = g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Quracker]
+			->AddAnimation(MODEL_PASS("Leader/Qracker/Anim_Boss01_Qracker_Damage.fbx"));
+		
 		switch (StageType.StageSubNumber)
 		{
 		case (int)E_SELECT_STAGENUMBER::GRASSLAND_STAGE1:
@@ -295,9 +331,23 @@ void InitCharacterTexture(StageType StageType)
 		//g_pHpGageTex[(int)Leader::Nugar][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		
 		//モデル
-		g_pLeaderModel[(int)Leader::Nugar] = new Model();
-		g_pLeaderModel[(int)Leader::Nugar]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
-		g_pLeaderModel[2] = nullptr;
+		//g_pLeaderModel[(int)Leader::Nugar] = new Model();
+		//g_pLeaderModel[(int)Leader::Nugar]->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::None);
+		//g_pLeaderModel[2] = nullptr;
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Nugar] = new Model();
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Nugar] = new Model();
+		g_pBossModel[(int)BossAnimation::Idle][1] = nullptr;
+		g_pBossModel[(int)BossAnimation::Damage][1] = nullptr;
+
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Nugar]
+			->Load(MODEL_PASS("Leader/Nugar/Anim_Boss02_Nugar_Idle.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Idle][(int)Boss::Nugar] = g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Nugar]
+			->AddAnimation(MODEL_PASS("Leader/Nugar/Anim_Boss02_Nugar_Idle.fbx"));
+
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Nugar]
+			->Load(MODEL_PASS("Leader/Nugar/Anim_Boss02_Nugar_Damage.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Damage][(int)Boss::Nugar] = g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Nugar]
+			->AddAnimation(MODEL_PASS("Leader/Nugar/Anim_Boss02_Nugar_Damage.fbx"));
 
 		switch (StageType.StageSubNumber)
 		{
@@ -352,11 +402,36 @@ void InitCharacterTexture(StageType StageType)
 		//g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Gage]->Create(TEX_PASS("HpGage/UI_HP_Gage_Nugar.png"));
 		//g_pHpGageTex[(int)Leader::Kannele][(int)HpTexture::Top]->Create(TEX_PASS("HpGage/UI_HP_top_Nugar.png"));
 		//モデル
-		g_pLeaderModel[(int)Leader::Kannele] = new Model();
-		g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Kannele/Char_Boss03_Kannele.fbx"), 1.0f, Model::None);
-		g_pLeaderModel[(int)Leader::Boldow] = new Model();
-		g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Boldow/Char_Boss03_Boldow.fbx"), 1.0f, Model::None);
-		
+		//g_pLeaderModel[(int)Leader::Kannele] = new Model();
+		//g_pLeaderModel[(int)Leader::Kannele]->Load(MODEL_PASS("Leader/Kannele/Char_Boss03_Kannele.fbx"), 1.0f, Model::None);
+		//g_pLeaderModel[(int)Leader::Boldow] = new Model();
+		//g_pLeaderModel[(int)Leader::Boldow]->Load(MODEL_PASS("Leader/Boldow/Char_Boss03_Boldow.fbx"), 1.0f, Model::None);
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Kannele] = new Model();
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Kannele] = new Model();
+
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Kannele]
+			->Load(MODEL_PASS("Leader/Kannele/Anim_Boss03_Kannele_Idle.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Idle][(int)Boss::Kannele] = g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Kannele]
+			->AddAnimation(MODEL_PASS("Leader/Kannele/Anim_Boss03_Kannele_Idle.fbx"));
+
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Kannele]
+			->Load(MODEL_PASS("Leader/Kannele/Anim_Boss03_Kannele_Damage.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Damage][(int)Boss::Kannele] = g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Kannele]
+			->AddAnimation(MODEL_PASS("Leader/Kannele/Anim_Boss03_Kannele_Damage.fbx"));
+
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Boldow] = new Model();
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Boldow] = new Model();
+
+		g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Boldow]
+			->Load(MODEL_PASS("Leader/Boldow/Anim_Boss03_Boldow_Idle.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Idle][(int)Boss::Boldow] = g_pBossModel[(int)BossAnimation::Idle][(int)Boss::Boldow]
+			->AddAnimation(MODEL_PASS("Leader/Boldow/Anim_Boss03_Boldow_Idle.fbx"));
+
+		g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Boldow]
+			->Load(MODEL_PASS("Leader/Boldow/Anim_Boss03_Boldow_Damage.fbx"), 1.0f, Model::None);
+		g_pBoss_Anima[(int)BossAnimation::Damage][(int)Boss::Boldow] = g_pBossModel[(int)BossAnimation::Damage][(int)Boss::Boldow]
+			->AddAnimation(MODEL_PASS("Leader/Boldow/Anim_Boss03_Boldow_Damage.fbx"));
+
 		switch (StageType.StageSubNumber)
 		{
 		case (int)E_SELECT_STAGENUMBER::SNOWFIELD_STAGE1:
@@ -419,8 +494,10 @@ void UnInitCharacterTexture()
 	for (int i = 0; i < (int)Ally::MAX; i++)for (int j = 0; j < (int)CharacterAnimation::MAX; j++)SAFE_DELETE(g_pAllyModel[j][i]);
 	//敵モデルの破棄
 	for (int i = 0; i < (int)Enemy::MAX; i++)SAFE_DELETE(g_pEnemyModel[i]);
-	//リーダーたちのモデルの破棄
-	for (int i = 0; i < (int)Leader::MAX; i++)SAFE_DELETE(g_pLeaderModel[i]);
+	//Linieのモデルの破棄
+	for (int j = 0; j < (int)LinieAnimation::MAX; j++)SAFE_DELETE(g_pLinieModel[j]);
+	//ボスたちのモデルの破棄
+	for (int i = 0; i < (int)Boss::MAX; i++)for (int j = 0; j < (int)BossAnimation::MAX; j++)SAFE_DELETE(g_pBossModel[j][i]);
 	//Hpテクスチャの破棄
 	for (int i = 0; i < (int)HpTexture::MAX; i++)SAFE_DELETE(g_pHpGageTex[i]);
 	//ダメーログジテクスチャの破棄
@@ -465,6 +542,37 @@ void ModelUpDate(void)
 			{
 				g_pAllyModel[j][i]->PlayAnime(0, true);
 				g_pAllyModel[j][i]->SetAnimeTime(g_pAllyModel[j][i]->GetAnimePlayNo(), 0.0f);
+			}
+		}
+	}
+
+	for (int i = 0; i < (int)LinieAnimation::MAX; i++)
+	{
+		if (g_pLinieModel[i]->IsAnimePlay(0))
+		{
+			g_pLinieModel[i]->Step(0.01f);
+		}
+		else
+		{
+			g_pLinieModel[i]->PlayAnime(0, true);
+			g_pLinieModel[i]->SetAnimeTime(g_pLinieModel[i]->GetAnimePlayNo(), 0.0f);
+		}
+	}
+	for (int i = 0; i < (int)BossAnimation::MAX; i++)
+	{
+		for (int j = 0; j< (int)(int)Boss::MAX; j++)
+		{
+			if (g_pBossModel[i][j] != nullptr)
+			{
+				if (g_pBossModel[i][j]->IsAnimePlay(0))
+				{
+					g_pBossModel[i][j]->Step(0.01f);
+				}
+				else
+				{
+					g_pBossModel[i][j]->PlayAnime(0, true);
+					g_pBossModel[i][j]->SetAnimeTime(g_pBossModel[i][j]->GetAnimePlayNo(), 0.0f);
+				}
 			}
 		}
 	}
@@ -1651,10 +1759,10 @@ void CEnemy::SettingStatus(void)
 
 CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, bool SubModelCreate)
 	:m_tStatus(St_Create)
-	, m_pModel(nullptr)
+	//, m_pModel{ nullptr }
 	, m_tPos()
 	, m_tSize()
-	, m_pSubModel(nullptr)
+	//, m_pSubModel{ nullptr }
 	, m_tSubPos()
 	, m_tSubSize()
 	, m_fHp(15000.0f)
@@ -1664,55 +1772,64 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	, m_bSubModelCreate(SubModelCreate)
 	, m_bAnimationPlay(false)
 	, m_bReLoadFlag(false)
+	, m_bWin(false)
+	, m_bDamage(false)
+	, m_bSummon(false)
+	, m_nModelNo(0)
 {
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
-		m_pModel = g_pLeaderModel[(int)Leader::Linie];
+		for (int i = 0; i < (int)LinieAnimation::MAX; i++)
+		{
+			m_pModel.push_back(g_pLinieModel[i]);
+		}
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
 		break;
 	case 1://ボス
-		m_pModel = g_pLeaderModel[1];
-		if (m_bSubModelCreate)
+		for (int i = 0; i < (int)BossAnimation::MAX; i++)
 		{
-			m_pSubModel = g_pLeaderModel[2];
+			m_pModel.push_back(g_pBossModel[i][0]);
+
+			if (m_bSubModelCreate)
+			{
+				m_pSubModel.push_back(g_pBossModel[i][1]);
+			}
+			else
+			{
+				m_pSubModel.push_back(nullptr);
+			}
 		}
 		m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
 		break;
 
 	}
 	//メインモデルのサイズと位置
-	if (m_pModel)
+	switch (m_nTextureNumber)
 	{
-		switch (m_nTextureNumber)
-		{
-		case 0:
-			m_tPos.x = FirstPos.x;
-			m_tPos.y = FirstPos.y;
-			m_tPos.z = FirstPos.z - 5.0f;
-			m_tSize.x = InSize;
-			m_tSize.y = InSize;
-			m_tSize.z = InSize;
-			break;
-		case 1:
-			m_tPos.x = FirstPos.x - 12.0f;
-			m_tPos.y = FirstPos.y;
-			m_tPos.z = FirstPos.z - 5.0f;
-			m_tSize.x = InSize;
-			m_tSize.y = InSize;
-			m_tSize.z = InSize;
-			break;
-		}
+	case 0:
+		m_tPos.x = FirstPos.x;
+		m_tPos.y = FirstPos.y;
+		m_tPos.z = FirstPos.z - 5.0f;
+		m_tSize.x = InSize;
+		m_tSize.y = InSize;
+		m_tSize.z = InSize;
+		break;
+	case 1:
+		m_tPos.x = FirstPos.x - 12.0f;
+		m_tPos.y = FirstPos.y;
+		m_tPos.z = FirstPos.z - 5.0f;
+		m_tSize.x = InSize;
+		m_tSize.y = InSize;
+		m_tSize.z = InSize;
+		break;
 	}
-	if (m_pSubModel)
-	{
-		m_tSubPos.x = FirstPos.x - 15.0f;
-		m_tSubPos.y = FirstPos.y + 0.5f;
-		m_tSubPos.z = FirstPos.z + 5.0f;
-		m_tSubSize.x = InSize;
-		m_tSubSize.y = InSize;
-		m_tSubSize.z = InSize;
-	}
+	m_tSubPos.x = FirstPos.x - 15.0f;
+	m_tSubPos.y = FirstPos.y + 0.5f;
+	m_tSubPos.z = FirstPos.z + 5.0f;
+	m_tSubSize.x = InSize;
+	m_tSubSize.y = InSize;
+	m_tSubSize.z = InSize;
 }
 CLeader::~CLeader()
 {
@@ -1721,14 +1838,8 @@ CLeader::~CLeader()
 		delete m_pHpGage;
 		m_pHpGage = nullptr;
 	}
-	if (m_pModel)
-	{
-		m_pModel = nullptr;
-	}
-	if (m_pSubModel)
-	{
-		m_pSubModel = nullptr;
-	}
+	m_pModel.clear();
+	m_pSubModel.clear();
 }
 
 void CLeader::Update(bool IsStart, bool IsEnd)
@@ -1738,14 +1849,25 @@ void CLeader::Update(bool IsStart, bool IsEnd)
 		switch (m_nTextureNumber)
 		{
 		case 0://プレイヤー
-			m_pModel = g_pLeaderModel[(int)Leader::Linie];
+			for (int i = 0; i < (int)LinieAnimation::MAX; i++)
+			{
+				m_pModel.push_back(g_pLinieModel[i]);
+			}
 			m_pHpGage = new CHpUI(m_fHp, CHpUI::Player);
 			break;
 		case 1://ボス
-			m_pModel = g_pLeaderModel[1];
-			if (m_bSubModelCreate)
+			for (int i = 0; i < (int)BossAnimation::MAX; i++)
 			{
-				m_pSubModel = g_pLeaderModel[2];
+				m_pModel.push_back(g_pBossModel[i][0]);
+
+				if (m_bSubModelCreate)
+				{
+					m_pSubModel.push_back(g_pBossModel[i][1]);
+				}
+				else
+				{
+					m_pSubModel.push_back(nullptr);
+				}
 			}
 			m_pHpGage = new CHpUI(m_fHp, CHpUI::Bos);
 			break;
@@ -1771,12 +1893,29 @@ void CLeader::Draw(int StageNum)
 	switch (m_nTextureNumber)
 	{
 	case 0://プレイヤー
-		if (m_pModel)
+		if (m_bWin)
+		{
+			m_nModelNo = (int)LinieAnimation::Win;
+		}
+		else if (m_bSummon)
+		{
+			m_nModelNo = (int)LinieAnimation::Summon;
+		}
+		else if (m_bDamage)
+		{
+			m_nModelNo = (int)LinieAnimation::Damage;
+		}
+		else
+		{
+			m_nModelNo = (int)LinieAnimation::Idle;
+		}
+
+		if (m_pModel[m_nModelNo])
 		{
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x , m_tPos.y, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
@@ -1795,14 +1934,14 @@ void CLeader::Draw(int StageNum)
 
 			ShaderList::SetWVP(wvp);
 
-			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-			
+			m_pModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+			m_pModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
 			const Model::Mesh* tMesh;
-			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+			for (int i = 0; i < m_pModel[m_nModelNo]->GetMeshNum(); ++i)
 			{
-				tMesh = m_pModel->GetMesh(i);
-				Model::Material material = *m_pModel->GetMaterial(tMesh->materialID);
+				tMesh = m_pModel[m_nModelNo]->GetMesh(i);
+				Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
@@ -1813,14 +1952,14 @@ void CLeader::Draw(int StageNum)
 				for (int j = 0; j < tMesh->bones.size(); ++j)
 				{
 					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-						tMesh->bones[j].invOffset * m_pModel->GetBoneMatrix(tMesh->bones[j].nodeIndex)
+						tMesh->bones[j].invOffset * m_pModel[m_nModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
 					));
 				}
 				ShaderList::SetBones(bones);
 
 
-				if (m_pModel) {
-					m_pModel->Draw(i);
+				if (m_pModel[m_nModelNo]) {
+					m_pModel[m_nModelNo]->Draw(i);
 				}
 			}
 		}
@@ -1833,7 +1972,7 @@ void CLeader::Draw(int StageNum)
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
 			DirectX::XMMATRIX T, S, R;
-			
+
 			switch (StageNum)
 			{
 			case 0:
@@ -1844,24 +1983,24 @@ void CLeader::Draw(int StageNum)
 				R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 				break;
 			case 1:
-				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y - 17.0f, m_tPos.z + 6.0f, 0.0f));
+				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x - 2.0f, m_tPos.y - 17.0f, m_tPos.z + 6.0f, 0.0f));
 				//拡大縮小行列(Scaling)
-				 S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
+				S = DirectX::XMMatrixScaling(0.4f, 0.4f, 0.4f);
 				//回転行列(Rotation)
-				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 				break;
 			case 2:
-				 T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x + 2.0f, m_tPos.y - 5.0f, m_tPos.z, 0.0f));
+				T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x + 2.0f, m_tPos.y - 5.0f, m_tPos.z, 0.0f));
 				//拡大縮小行列(Scaling)
-				 S = DirectX::XMMatrixScaling(0.35f, 0.35f, 0.35f);
+				S = DirectX::XMMatrixScaling(0.35f, 0.35f, 0.35f);
 				//回転行列(Rotation)
-				 R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(1.0f), DirectX::XMConvertToRadians(170.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(1.0f), DirectX::XMConvertToRadians(170.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
 				break;
 			}
 			//それぞれの行列を掛け合わせて格納
 			DirectX::XMMATRIX mat = S * R * T;
 			world = mat;
-			
+
 
 			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
 			wvp[1] = GetView();
@@ -1877,7 +2016,7 @@ void CLeader::Draw(int StageNum)
 
 			for (int i = 0; i < g_pBosCar->GetMeshNum(); ++i)
 			{
-				Model::Material material = *g_pBosCar->GetMaterial(m_pModel->GetMesh(i)->materialID);
+				Model::Material material = *g_pBosCar->GetMaterial(g_pBosCar->GetMesh(i)->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
@@ -1888,12 +2027,20 @@ void CLeader::Draw(int StageNum)
 				}
 			}
 		}
-		if (m_pModel)
+		if (m_bDamage)
+		{
+			m_nModelNo = (int)BossAnimation::Damage;
+		}
+		else
+		{
+			m_nModelNo = (int)BossAnimation::Idle;
+		}
+		if (m_pModel[m_nModelNo])
 		{
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x , m_tPos.y, m_tPos.z, 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
 			//回転行列(Rotation)
@@ -1912,28 +2059,42 @@ void CLeader::Draw(int StageNum)
 
 			ShaderList::SetWVP(wvp);
 
-			m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-			m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+			m_pModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+			m_pModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
-			for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+			const Model::Mesh* tMesh;
+
+			for (int i = 0; i < m_pModel[m_nModelNo]->GetMeshNum(); ++i)
 			{
-				Model::Material material = *m_pModel->GetMaterial(m_pModel->GetMesh(i)->materialID);
+				tMesh = m_pModel[m_nModelNo]->GetMesh(i);
+				Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
 				ShaderList::SetMaterial(material);
 
-				if (m_pModel) {
-					m_pModel->Draw(i);
+				// ボーンの情報をシェーダーに送る
+				DirectX::XMFLOAT4X4 bones[200];
+				for (int j = 0; j < tMesh->bones.size(); ++j)
+				{
+					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+						tMesh->bones[j].invOffset * m_pModel[m_nModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
+					));
+				}
+
+				ShaderList::SetBones(bones);
+
+				if (m_pModel[m_nModelNo]) {
+					m_pModel[m_nModelNo]->Draw(i);
 				}
 			}
 		}
-		if (m_pSubModel)
+		if (m_pSubModel[m_nModelNo])
 		{
 			SetRender3D();
 			DirectX::XMFLOAT4X4 wvp[3];
 			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x, m_tSubPos.y, m_tSubPos.z , 0.0f));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x, m_tSubPos.y, m_tSubPos.z, 0.0f));
 			//拡大縮小行列(Scaling)
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
 			//回転行列(Rotation)
@@ -1952,37 +2113,56 @@ void CLeader::Draw(int StageNum)
 
 			ShaderList::SetWVP(wvp);
 
-			m_pSubModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-			m_pSubModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+			m_pSubModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+			m_pSubModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
 
-			for (int i = 0; i < m_pSubModel->GetMeshNum(); ++i)
+			const Model::Mesh* tSubMesh;
+
+			for (int i = 0; i < m_pSubModel[m_nModelNo]->GetMeshNum(); ++i)
 			{
-				Model::Material material = *m_pSubModel->GetMaterial(m_pSubModel->GetMesh(i)->materialID);
+				tSubMesh = m_pSubModel[m_nModelNo]->GetMesh(i);
+
+				Model::Material material = *m_pSubModel[m_nModelNo]->GetMaterial(tSubMesh->materialID);
 				material.ambient.x = 0.85f; // x (r) 
 				material.ambient.y = 0.85f; // y (g) 
 				material.ambient.z = 0.85f; // z (b) 
 				ShaderList::SetMaterial(material);
 
-				if (m_pSubModel) {
-					m_pSubModel->Draw(i);
+				// ボーンの情報をシェーダーに送る
+				DirectX::XMFLOAT4X4 bones[200];
+				for (int j = 0; j < tSubMesh->bones.size(); ++j)
+				{
+					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+						tSubMesh->bones[j].invOffset * m_pSubModel[m_nModelNo]->GetBoneMatrix(tSubMesh->bones[j].nodeIndex)
+					));
+				}
+
+				ShaderList::SetBones(bones);
+
+
+				if (m_pSubModel[m_nModelNo]) {
+					m_pSubModel[m_nModelNo]->Draw(i);
 				}
 			}
 		}
 		break;
 	}
-/*Modelテスト用*/
-	//SetRender3D();
-	//DirectX::XMFLOAT4X4 wvp[3];
-	//DirectX::XMMATRIX world;
-	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.z, 0.0f));
-	////拡大縮小行列(Scaling)
-	//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
-	////回転行列(Rotation)
-	//if (IsKeyPress('K'))Y -= 1.0f;
-	//if (IsKeyPress('L'))Y += 1.0f;
-	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(Y), DirectX::XMConvertToRadians(0.0f), 0.0f));
-	////それぞれの行列を掛け合わせて格納
-	//DirectX::XMMATRIX mat = S * R * T;
+	m_bDamage = false;
+	m_bSummon = false;
+	m_bWin = false;
+	/*Modelテスト用*/
+		//SetRender3D();
+		//DirectX::XMFLOAT4X4 wvp[3];
+		//DirectX::XMMATRIX world;
+		//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.z, 0.0f));
+		////拡大縮小行列(Scaling)
+		//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
+		////回転行列(Rotation)
+		//if (IsKeyPress('K'))Y -= 1.0f;
+		//if (IsKeyPress('L'))Y += 1.0f;
+		//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(Y), DirectX::XMConvertToRadians(0.0f), 0.0f));
+		////それぞれの行列を掛け合わせて格納
+		//DirectX::XMMATRIX mat = S * R * T;
 }
 
 void CLeader::HpDraw(void)
@@ -1993,6 +2173,8 @@ void CLeader::HpDraw(void)
 
 void CLeader::Damage(CFighter* pFighter)
 {
+	m_bDamage = true;
+
 	m_fHp -= pFighter->GetAtk();
 	pFighter->m_bDamageLogDraw[0] = true;
 	pFighter->m_bDamageLogDraw[1] = true;
@@ -2020,46 +2202,46 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 		//筆を離す
 		if (IsStart)
 		{
-			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
-			{
-				m_pModel->Step(-0.01f);
-			}
-			else if (!m_bAnimationPlay)
-			{
-				g_pSourceWandonoff->Stop();
-				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-				m_pModel->PlayAnime(g_pLeader_Anima, false);
-				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
-				g_pSourceWandonoff->FlushSourceBuffers();
-				XAUDIO2_BUFFER buffer;
-				buffer = g_wandonoffSound->GetBuffer(false);
-				g_pSourceWandonoff->SubmitSourceBuffer(&buffer);
-				SetVolumeSE(g_pSourceWandonoff);
-				g_pSourceWandonoff->Start();
-				m_bAnimationPlay = true;
-			}
+			//if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+			//{
+			//	m_pModel->Step(-0.01f);
+			//}
+			//else if (!m_bAnimationPlay)
+			//{
+			//	g_pSourceWandonoff->Stop();
+			//	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+			//	m_pModel->PlayAnime(g_pLeader_Anima, false);
+			//	m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), m_pModel->GetPlayAnimeInfo()->totalTime);
+			//	g_pSourceWandonoff->FlushSourceBuffers();
+			//	XAUDIO2_BUFFER buffer;
+			//	buffer = g_wandonoffSound->GetBuffer(false);
+			//	g_pSourceWandonoff->SubmitSourceBuffer(&buffer);
+			//	SetVolumeSE(g_pSourceWandonoff);
+			//	g_pSourceWandonoff->Start();
+			//	m_bAnimationPlay = true;
+			//}
 		}
 		//筆を持つ
 		if (IsEnd)
 		{
-			if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
-			{
-				m_pModel->Step(0.01f);
-			}
-			else if(!m_bAnimationPlay)
-			{
-				g_pSourceWandonoff->Stop();
-				m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-				m_pModel->PlayAnime(g_pLeader_Anima, false);
-				m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
-				g_pSourceWandonoff->FlushSourceBuffers();
-				XAUDIO2_BUFFER buffer;
-				buffer = g_wandonoffSound->GetBuffer(false);
-				g_pSourceWandonoff->SubmitSourceBuffer(&buffer);
-				SetVolumeSE(g_pSourceWandonoff);
-				g_pSourceWandonoff->Start();
-				m_bAnimationPlay = true;
-			}
+			//if (m_pModel->IsAnimePlay(m_pModel->GetAnimePlayNo()))
+			//{
+			//	m_pModel->Step(0.01f);
+			//}
+			//else if(!m_bAnimationPlay)
+			//{
+			//	g_pSourceWandonoff->Stop();
+			//	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+			//	m_pModel->PlayAnime(g_pLeader_Anima, false);
+			//	m_pModel->SetAnimeTime(m_pModel->GetAnimePlayNo(), 0.0f);
+			//	g_pSourceWandonoff->FlushSourceBuffers();
+			//	XAUDIO2_BUFFER buffer;
+			//	buffer = g_wandonoffSound->GetBuffer(false);
+			//	g_pSourceWandonoff->SubmitSourceBuffer(&buffer);
+			//	SetVolumeSE(g_pSourceWandonoff);
+			//	g_pSourceWandonoff->Start();
+			//	m_bAnimationPlay = true;
+			//}
 		}
 		break;
 	}
