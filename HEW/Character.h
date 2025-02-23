@@ -351,11 +351,13 @@ private:
 	void BattleUpdate(bool IsStart = false, bool IsEnd = false);
 	void DeathUpdate(void);
 
-public:
+private:
 	bool m_bWin;
 	bool m_bSummon;
 	bool m_bDamage;
-private:
+	float m_fDamageTimer;
+	float m_fWinTimer;
+
 	bool m_bReLoadFlag;
 
 	int m_nModelNo;//モデル番号
@@ -379,7 +381,20 @@ private:
 	int m_nTextureNumber;
 	CHpUI* m_pHpGage;
 public:
-
+	//勝利アニメーションタイマーのGet
+	float GetWinTImer(void) { return m_fWinTimer; }
+	//勝利アニメーションフラグのSet
+	void SetWinFlag(bool Flag) { m_bWin = Flag; }
+	//勝利アニメーションフラグのGet
+	bool GetWinFlag(void) { return m_bWin; }
+	//被弾アニメーションフラグのSet
+	void SetDamageFlag(bool Flag) { m_bDamage = Flag; }
+	//被弾アニメーションフラグのGet
+	bool GetDamageFlag(void) { return m_bDamage; }
+	//召喚アニメーションフラグのSet
+	void SetSummonFlag(bool Flag) { m_bSummon = Flag; }
+	//召喚アニメーションフラグのGet
+	bool GetSummonFlag(void) { return m_bSummon; }
 
 	//モデル読み込みフラグの切り替え
 	void SetReLoadFlag(void) { m_bReLoadFlag = true; }

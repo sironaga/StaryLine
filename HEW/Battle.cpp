@@ -262,7 +262,7 @@ void CBattle::Update(void)
 		{
 			if (m_pAlly[i]->GetStatus() == St_Create)
 			{
-				m_pAllyLeader->m_bSummon = true;
+				m_pAllyLeader->SetSummonFlag(true);
 			}
 			//Z軸順に描画
 			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
@@ -422,9 +422,13 @@ void CBattle::Update(void)
 		//敵のリーダーがnullptrになっていたら
 		if (m_pEnemyLeader == nullptr)
 		{
-			m_pAllyLeader->m_bWin = true;
-			m_bWin = true;
-			m_bEnd = true;
+			m_pAllyLeader->SetWinFlag(true);
+			
+			if (m_pAllyLeader->GetWinTImer() > 6.0f)
+			{
+				m_bWin = true;
+				m_bEnd = true;
+			}
 		}
 		//味方のリーダーがnullptrになっていたら
 		if (m_pAllyLeader == nullptr)
@@ -585,6 +589,7 @@ void CBattle::SaveAllyData(int InCornerCount,bool IsStella)
 	//保存数を加算
 	m_nAllyDateCount++;
 }
+
 //敵の情報保存処理
 //void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
 //{
@@ -661,7 +666,7 @@ void CBattle::TimeLapse(void)
 //味方の生成処理
 void CBattle::CreateAlly(void)
 {
-	m_pAllyLeader->m_bSummon = true;
+	m_pAllyLeader->SetSummonFlag(true);
 	//保存済み数分処理する
 	while (m_nAllyDateCount)
 	{
@@ -1338,10 +1343,13 @@ void CBattle::Battle(int i, int l, Entity Entity)
 			//攻撃チャージがたまっているかどうか
 			if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())
 			{
-				//相手の体力を減らす
-				m_pEnemyLeader->Damage(m_pAlly[i]);
-				//攻撃したのでチャージをリセットする
-				m_pAlly[i]->ChargeReset();
+				if (!m_pAllyLeader->GetWinFlag())
+				{
+					//相手の体力を減らす
+					m_pEnemyLeader->Damage(m_pAlly[i]);
+					//攻撃したのでチャージをリセットする
+					m_pAlly[i]->ChargeReset();
+				}
 			}
 			//攻撃チャージが溜まっていなかったら
 			else
