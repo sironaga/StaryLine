@@ -208,9 +208,9 @@ void InitCharacterTexture(StageType StageType)
 		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Summon.fbx"));
 	
 	g_pLinieModel[(int)LinieAnimation::Damage]
-		->Load(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Damage.fbx"), 1.0f, Model::None);
+		->Load(MODEL_PASS("Leader/Linie/Anim_Linie_Damage.fbx"), 1.0f, Model::None);
 	g_pLinie_Anima[(int)LinieAnimation::Damage] = g_pLinieModel[(int)LinieAnimation::Damage]
-		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Damage.fbx"));
+		->AddAnimation(MODEL_PASS("Leader/Linie/Anim_Linie_Damage.fbx"));
 	
 	g_pLinieModel[(int)LinieAnimation::Win]
 		->Load(MODEL_PASS("Leader/Linie/Anim_Main_Linie_Win.fbx"), 1.0f, Model::None);
@@ -1634,14 +1634,17 @@ void CEnemy::BattleUpdate(void)
 		//攻撃エフェクト
 		if (!m_pEffect[(int)FighterEffect::Attack]->IsPlay() && !IsAttackEffectPlay)
 		{
-			m_pEffect[(int)FighterEffect::Attack]->SetPos({ m_tTargetPos.x ,m_tTargetPos.y,m_tTargetPos.z });
-			if (m_nCornerCount == 3)
-				m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
-			else
-				m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
-			m_pEffect[(int)FighterEffect::Attack]->SetSize({ 10.0f,10.0f,10.0f });
-			m_pEffect[(int)FighterEffect::Attack]->Play();
-			IsAttackEffectPlay = true;
+			if (m_tTargetPos.x != 0.0f && m_tTargetPos.y != 0.0f && m_tTargetPos.z != 0.0f)
+			{
+				m_pEffect[(int)FighterEffect::Attack]->SetPos({ m_tTargetPos.x ,m_tTargetPos.y,m_tTargetPos.z });
+				if (m_nCornerCount == 3)
+					m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
+				else
+					m_pEffect[(int)FighterEffect::Attack]->SetRotate({ 0.0f,0.0f,0.0f });
+				m_pEffect[(int)FighterEffect::Attack]->SetSize({ 10.0f,10.0f,10.0f });
+				m_pEffect[(int)FighterEffect::Attack]->Play();
+				IsAttackEffectPlay = true;
+			}
 		}
 		//攻撃音
 		if (!m_bTimeSoundStart)
@@ -1776,6 +1779,8 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	, m_bDamage(false)
 	, m_bSummon(false)
 	, m_nModelNo(0)
+	, m_fDamageTimer(5.0f)
+	, m_fWinTimer(0.0f)
 {
 	switch (m_nTextureNumber)
 	{
@@ -1901,7 +1906,7 @@ void CLeader::Draw(int StageNum)
 		{
 			m_nModelNo = (int)LinieAnimation::Summon;
 		}
-		else if (m_bDamage)
+		else if (m_bDamage || m_fDamageTimer < 1.5f)
 		{
 			m_nModelNo = (int)LinieAnimation::Damage;
 		}
@@ -1942,9 +1947,9 @@ void CLeader::Draw(int StageNum)
 			{
 				tMesh = m_pModel[m_nModelNo]->GetMesh(i);
 				Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
-				material.ambient.x = 0.85f; // x (r) 
-				material.ambient.y = 0.85f; // y (g) 
-				material.ambient.z = 0.85f; // z (b) 
+				material.ambient.x = 0.85f; // x (r)
+				material.ambient.y = 0.85f; // y (g)
+				material.ambient.z = 0.85f; // z (b)
 				ShaderList::SetMaterial(material);
 
 				// ボーンの情報をシェーダーに送る
@@ -2123,9 +2128,9 @@ void CLeader::Draw(int StageNum)
 				tSubMesh = m_pSubModel[m_nModelNo]->GetMesh(i);
 
 				Model::Material material = *m_pSubModel[m_nModelNo]->GetMaterial(tSubMesh->materialID);
-				material.ambient.x = 0.85f; // x (r) 
-				material.ambient.y = 0.85f; // y (g) 
-				material.ambient.z = 0.85f; // z (b) 
+				material.ambient.x = 0.85f; // x (r)
+				material.ambient.y = 0.85f; // y (g)
+				material.ambient.z = 0.85f; // z (b)
 				ShaderList::SetMaterial(material);
 
 				// ボーンの情報をシェーダーに送る
@@ -2139,7 +2144,6 @@ void CLeader::Draw(int StageNum)
 
 				ShaderList::SetBones(bones);
 
-
 				if (m_pSubModel[m_nModelNo]) {
 					m_pSubModel[m_nModelNo]->Draw(i);
 				}
@@ -2149,20 +2153,20 @@ void CLeader::Draw(int StageNum)
 	}
 	m_bDamage = false;
 	m_bSummon = false;
-	m_bWin = false;
+	//m_bWin = false;
 	/*Modelテスト用*/
-		//SetRender3D();
-		//DirectX::XMFLOAT4X4 wvp[3];
-		//DirectX::XMMATRIX world;
-		//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.z, 0.0f));
-		////拡大縮小行列(Scaling)
-		//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
-		////回転行列(Rotation)
-		//if (IsKeyPress('K'))Y -= 1.0f;
-		//if (IsKeyPress('L'))Y += 1.0f;
-		//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(Y), DirectX::XMConvertToRadians(0.0f), 0.0f));
-		////それぞれの行列を掛け合わせて格納
-		//DirectX::XMMATRIX mat = S * R * T;
+	//SetRender3D();
+	//DirectX::XMFLOAT4X4 wvp[3];
+	//DirectX::XMMATRIX world;
+	//DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0.0f, 10.0f, m_tPos.z, 0.0f));
+	////拡大縮小行列(Scaling)
+	//DirectX::XMMATRIX S = DirectX::XMMatrixScaling(4.0f, 4.0f, 4.0f);
+	////回転行列(Rotation)
+	//if (IsKeyPress('K'))Y -= 1.0f;
+	//if (IsKeyPress('L'))Y += 1.0f;
+	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(Y), DirectX::XMConvertToRadians(0.0f), 0.0f));
+	////それぞれの行列を掛け合わせて格納
+	//DirectX::XMMATRIX mat = S * R * T;
 }
 
 void CLeader::HpDraw(void)
@@ -2174,8 +2178,13 @@ void CLeader::HpDraw(void)
 void CLeader::Damage(CFighter* pFighter)
 {
 	m_bDamage = true;
+	m_fDamageTimer = 0.0f;
 
 	m_fHp -= pFighter->GetAtk();
+	if (m_fHp < 0)
+	{
+		m_fHp = 0;
+	}
 	pFighter->m_bDamageLogDraw[0] = true;
 	pFighter->m_bDamageLogDraw[1] = true;
 	pFighter->m_bDamageLogDraw[2] = false;
@@ -2245,6 +2254,12 @@ void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
 		}
 		break;
 	}
+	m_fDamageTimer += 1.0f / fFPS;
+	if (m_bWin)
+	{
+		m_fWinTimer += 1.0f / fFPS;
+	}
+
 	//HPUIの更新処理
 	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 }
@@ -2300,7 +2315,7 @@ CHpUI::~CHpUI()
 
 void CHpUI::Update(float InHp,DirectX::XMFLOAT3 InPos, float InSizeY)
 {
-int HpRatio = 0;
+	int HpRatio = 0;
 	m_fNowHp = InHp;
 
 	switch (m_tNumber)
