@@ -144,20 +144,20 @@ CStageSelect::CStageSelect()
 	m_pStageLinie->SetAnimeTime(g_AnimNo[0], 0.0f);
 
 	m_pStageQracker = new Model();
-	m_pStageQracker->Load(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"), 1.0f, Model::ZFlip);
+	m_pStageQracker->Load(MODEL_PASS("Leader/Qracker/Anim_Boss01_Qracker_Idle.fbx"), 1.0f, Model::ZFlip);
 	//g_AnimNo[1] = m_pStageQracker->AddAnimation(MODEL_PASS("Leader/Qracker/Char_Boss01_Qracker.fbx"));
 	//m_pStageQracker->PlayAnime(g_AnimNo[1], false);
 	//m_pStageQracker->Step(0.01f);
 	//m_pStageQracker->SetAnimeTime(g_AnimNo[1], 0.0f);
 
 	m_pStageNugar = new Model();
-	m_pStageNugar->Load(MODEL_PASS("Leader/Nugar/Char_Boss02_Nugar.fbx"), 1.0f, Model::ZFlip);
+	m_pStageNugar->Load(MODEL_PASS("Leader/Nugar/Anim_Boss02_Nugar_Idle.fbx"), 1.0f, Model::ZFlip);
 
 	m_pStageBoldow = new Model();
-	m_pStageBoldow->Load(MODEL_PASS("Leader/Boldow/Char_Boss03_Boldow.fbx"), 1.0f, Model::ZFlip);
+	m_pStageBoldow->Load(MODEL_PASS("Leader/Boldow/Anim_Boss03_Boldow_Idle.fbx"), 1.0f, Model::ZFlip);
 
 	m_pStageKannele = new Model();
-	m_pStageKannele->Load(MODEL_PASS("Leader/Kannele/Char_Boss03_Kannele.fbx"), 1.0f, Model::ZFlip);
+	m_pStageKannele->Load(MODEL_PASS("Leader/Kannele/Anim_Boss03_Kannele_Idle.fbx"), 1.0f, Model::ZFlip);
 
 	//m_BGMSound = new CSoundList(BGM_TITLE);
 	m_BGMSound = new CSoundList(BGM_SELECT);
