@@ -110,6 +110,7 @@ private:
 		HELP_BGM,
 		HELP_SE,
 		HELP_WINDOWMODE,
+		HELP_DEFAULT,
 		
 		// 操作方法アイコン
 		ICON_CONTROLLER_A,
@@ -137,7 +138,9 @@ private:
 
 		// 操作方法選択
 		INPUT_TIPE_A,
+		INPUT_TIPE_A2,
 		INPUT_TIPE_B,
+		INPUT_TIPE_B2,
 
 		// FPS選択
 		FPS_30,
@@ -162,6 +165,8 @@ private:
 		TAB_BGM,
 		TAB_SE,
 		TAB_WINDOWMODE,
+		TAB_DEFAULT,
+		//TAB_DEFAULTBACK,
 
 		BACK_SWAP,
 
@@ -186,6 +191,7 @@ private:
 		FRAME_RATE,
 		KEY_BOARD,
 		CONTROLLER,
+		DEFAULTBACK,
 
 		TAB_MAX
 	};
