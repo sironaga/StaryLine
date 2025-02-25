@@ -14,13 +14,19 @@ public:
 	void Disp();
 
 	void SetPositon(float X, float Y, float Z);
+	void SetPositon(DirectX::XMFLOAT3 Pos);
 	void SetSize(float X, float Y, float Z);
+	void SetSize(DirectX::XMFLOAT3 Size);
 	void SetRotation(float X, float Y, float Z);
+	void SetRotate(DirectX::XMFLOAT3 rotate);
 	void SetUvSize(float X, float Y);
+	void SetUvSize(DirectX::XMFLOAT2 uvSize);
 	void SetUvPos(float X, float Y);
+	void SetUvPos(DirectX::XMFLOAT2 uvPos);
 	void SetTexture();
 
 	void Setcolor(float R, float G, float B, float A);
+	void Setcolor(DirectX::XMFLOAT4 color);
 
 	void SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos);
 
