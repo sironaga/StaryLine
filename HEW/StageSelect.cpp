@@ -616,6 +616,12 @@ void CStageSelect::InitValue()
 		m_StoryParam[i].uvSize = { 1.0f,1.0f };
 	}
 
+	m_StoryParam[(int)StoryTex::SecondLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+	m_StoryParam[(int)StoryTex::FirstLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+	m_StoryParam[(int)StoryTex::SecondLinie].pos.y = CENTER_POS_Y + 180.0f;
+	m_StoryParam[(int)StoryTex::FirstLinie].pos.y = CENTER_POS_Y + 180.0f;
+	m_StoryParam[(int)StoryTex::Grail].size = { SCREEN_WIDTH * 0.8f,-SCREEN_HEIGHT * 0.8f,0.0f };
+
 	if (CSceneTitle::IsFirstPlay())m_nPhase = (int)SelectPhase::Story;
 	else m_nPhase = (int)SelectPhase::Select;
 }
@@ -778,14 +784,28 @@ void CStageSelect::LoadSound()
 void CStageSelect::UpdateStory()
 {
 	static float time = 0.0f;
+	static float time2 = 0.0f;
 	static float EasTime = 0.0f;
+	static float DegCnt = 0;
+	static float GrailPosY = 0.0f;
+	float EasVal = 0.0f;
+	float cosVal = 0.0f;
+
 	switch (m_nPage)
 	{
 	case 0:
+		m_StoryParam[(int)StoryTex::FirstLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+		m_StoryParam[(int)StoryTex::FirstLinie].color.w = 1.0f;
+		m_StoryParam[(int)StoryTex::SecondLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(),XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 		{
+			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::LinieHands].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::Grail].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::BackStar].color.w = 0.0f;
 			m_nPage++;
 			time = 0.0f;
+			time2 = 0.0f;
 		}
 		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
 		{
@@ -793,28 +813,81 @@ void CStageSelect::UpdateStory()
 		}
 		break;
 	case 1:
+		time += 1.0f / 60.0f;
+		cosVal = DirectX::XMConvertToRadians((float)DegCnt * 5.0f);
+		cosVal = cosf(cosVal) - 0.5f;
+		m_StoryParam[(int)StoryTex::Grail].pos.y = CENTER_POS_Y + cosVal * 50.0f;
+		m_StoryParam[(int)StoryTex::BackStar].pos.y = CENTER_POS_Y - cosVal * 50.0f;
+
+
+		if (time <= 3.0f)
+		{
+			m_StoryParam[(int)StoryTex::FirstLinie].size.x -= SCREEN_WIDTH / 800.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].size.y += SCREEN_HEIGHT / 800.0f;		
+			m_StoryParam[(int)StoryTex::SecondLinie].size.x -= SCREEN_WIDTH / 800.0f;
+			m_StoryParam[(int)StoryTex::SecondLinie].size.y += SCREEN_HEIGHT / 800.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].pos.y -= 1.0f;
+			m_StoryParam[(int)StoryTex::SecondLinie].pos.y -= 1.0f;
+		}
+		else
+		{
+			time2 += 1.0f / 60.0f;
+
+			m_StoryParam[(int)StoryTex::SecondLinie].color.w = (time2) / 1.0f - 0.5f;
+			m_StoryParam[(int)StoryTex::FirstLinie].color.w = (1.0f - time2) / 1.0f + 0.5f;
+			m_StoryParam[(int)StoryTex::LinieHands].color.w = (time2) / 1.0f - 0.5f;
+			m_StoryParam[(int)StoryTex::Grail].color.w = (time2) / 1.0f - 0.5f;
+			m_StoryParam[(int)StoryTex::BackStar].color.w = (time2) / 1.0f - 0.5f;
+		}
+
+
+		DegCnt+= 0.5f;
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage++;
 			time = 0.0f;
+			m_StoryParam[(int)StoryTex::Grail].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::LinieHands].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = SCREEN_HEIGHT * 2;
+			DegCnt = 0;
+			cosVal = 0.0f;
+			EasTime = 0.0f;
 		}
 		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
 		{
+			m_StoryParam[(int)StoryTex::SecondLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+			m_StoryParam[(int)StoryTex::FirstLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+			m_StoryParam[(int)StoryTex::SecondLinie].pos.y = CENTER_POS_Y + 180.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].pos.y = CENTER_POS_Y + 180.0f;
+			m_StoryParam[(int)StoryTex::Grail].size = { SCREEN_WIDTH * 0.8f,-SCREEN_HEIGHT * 0.8f,0.0f };
 			m_nPage--;
 			time = 0.0f;
 		}
 		break;
 	case 2:
 		time += 1.0f / 60.0f;
+
 		m_StoryParam[(int)StoryTex::SecondLinie].color.w = (1.0f - time) / 1.0f + 0.5f;
 		m_StoryParam[(int)StoryTex::LinieHands].color.w = (1.0f - time) / 1.0f + 0.5f;
-		if (m_StoryParam[(int)StoryTex::SecondLinie].color.w <= 0.0f)
+
+
+		DegCnt += 0.5f;
+
+		if (m_StoryParam[(int)StoryTex::SecondLinie].color.w <= 0.0f && EasTime <= 1.0f)
 		{
 			EasTime += 1.0f / 60.0f / 2.0f;
-			m_StoryParam[(int)StoryTex::Bosses].pos.y = 0.0f + Easing39(EasTime,0.5f,0.9f) * CENTER_POS_Y;
+			EasVal = Easing39(EasTime, 0.5f, 0.9f);
+			m_StoryParam[(int)StoryTex::Bosses].pos.y = 0.0f + EasVal * CENTER_POS_Y;
+			m_StoryParam[(int)StoryTex::Grail].pos.y = 0.0f + EasVal * CENTER_POS_Y - 200.0f;
+			GrailPosY = m_StoryParam[(int)StoryTex::Grail].pos.y;
+		}
+		else if(EasTime >= 1.0f)
+		{
+			cosVal = DirectX::XMConvertToRadians((float)DegCnt * 5.0f);
+			cosVal = cosf(cosVal) - 0.5f;
+			cosVal = cosVal * 30.0f;
+			m_StoryParam[(int)StoryTex::Grail].pos.y = GrailPosY + cosVal;
 		}
 
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
@@ -830,6 +903,21 @@ void CStageSelect::UpdateStory()
 			m_nPage--;
 			time = 0.0f;
 			EasTime = 0.0f;
+			cosVal = 0.0f;
+			time2 = 0.0f;
+			m_StoryParam[(int)StoryTex::SecondLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+			m_StoryParam[(int)StoryTex::FirstLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+			m_StoryParam[(int)StoryTex::SecondLinie].pos.y = CENTER_POS_Y + 180.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].pos.y = CENTER_POS_Y + 180.0f;
+			m_StoryParam[(int)StoryTex::Grail].pos.y = CENTER_POS_Y;
+			m_StoryParam[(int)StoryTex::Grail].size = { SCREEN_WIDTH * 0.8f,-SCREEN_HEIGHT * 0.8f,0.0f };
+			m_StoryParam[(int)StoryTex::FirstLinie].color.w = 1.0f;
+			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::LinieHands].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::Grail].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::BackStar].color.w = 0.0f;
+			m_StoryParam[(int)StoryTex::Bosses].pos.y = SCREEN_HEIGHT;
+
 		}
 		break;
 	case 3:
@@ -1480,6 +1568,14 @@ void CStageSelect::DrawStory()
 		m_pStory[(int)StoryTex::Back]->SetView(Get2DView());
 		m_pStory[(int)StoryTex::Back]->SetProjection(Get2DProj());
 		m_pStory[(int)StoryTex::Back]->Disp();
+		m_pStory[(int)StoryTex::FirstLinie]->SetPositon(m_StoryParam[(int)StoryTex::FirstLinie].pos);
+		m_pStory[(int)StoryTex::FirstLinie]->SetSize(m_StoryParam[(int)StoryTex::FirstLinie].size);
+		m_pStory[(int)StoryTex::FirstLinie]->SetRotate(m_StoryParam[(int)StoryTex::FirstLinie].rotate);
+		m_pStory[(int)StoryTex::FirstLinie]->Setcolor(m_StoryParam[(int)StoryTex::FirstLinie].color);
+		m_pStory[(int)StoryTex::FirstLinie]->SetTexture();
+		m_pStory[(int)StoryTex::FirstLinie]->SetView(Get2DView());
+		m_pStory[(int)StoryTex::FirstLinie]->SetProjection(Get2DProj());
+		m_pStory[(int)StoryTex::FirstLinie]->Disp();
 		m_pStory[(int)StoryTex::SecondLinie]->SetPositon(m_StoryParam[(int)StoryTex::SecondLinie].pos);
 		m_pStory[(int)StoryTex::SecondLinie]->SetSize(m_StoryParam[(int)StoryTex::SecondLinie].size);
 		m_pStory[(int)StoryTex::SecondLinie]->SetRotate(m_StoryParam[(int)StoryTex::SecondLinie].rotate);
