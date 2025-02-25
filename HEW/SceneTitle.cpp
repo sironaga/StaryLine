@@ -22,6 +22,8 @@
 #define STAR_AJUSTPOS_X SCREEN_WIDTH / 2.0f
 #define SELECT_JUST_Y 30.0f
 
+bool CSceneTitle::m_bFirstPlay = false;
+
 enum
 {
 	SCREEN_800,
@@ -265,6 +267,7 @@ void CSceneTitle::Update()
 				if (m_pSourseSelectSE)SetVolumeSE(m_pSourseSelectSE);
 				m_pSourseSelectSE->Start();
 				m_bSelected = true;
+				m_bFirstPlay = true;
 
 			}
 			break;
@@ -290,6 +293,7 @@ void CSceneTitle::Update()
 				SetNext(STAGE_SELECT);
 				if (!m_pEffect[(int)Effect::Choice]->IsPlay())m_pEffect[(int)Effect::Choice]->Play(false);
 				m_bSelected = true;
+				m_bFirstPlay = false;
 			}
 			break;
 
@@ -873,4 +877,9 @@ bool CSceneTitle::CheckRankingCommand()
 	}
 
 	return m_bRankingCommand[3];
+}
+
+bool CSceneTitle::IsFirstPlay()
+{
+	return m_bFirstPlay;
 }

@@ -70,9 +70,24 @@ void SpriteEx::SetPositon(float X, float Y, float Z)
 	));
 }
 
+void SpriteEx::SetPositon(DirectX::XMFLOAT3 Pos)
+{
+	T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(
+		Pos.x,
+		Pos.y,
+		Pos.z,
+		0.0f
+	));
+}
+
 void SpriteEx::SetSize(float X, float Y, float Z)
 {
 	S = DirectX::XMMatrixScaling(X, Y, Z);
+}
+
+void SpriteEx::SetSize(DirectX::XMFLOAT3 Size)
+{
+	S = DirectX::XMMatrixScaling(Size.x,Size.y,Size.z);
 }
 
 void SpriteEx::SetRotation(float X, float Y, float Z)
@@ -85,6 +100,10 @@ void SpriteEx::SetRotation(float X, float Y, float Z)
 	));
 }
 
+void SpriteEx::SetRotate(DirectX::XMFLOAT3 rotate)
+{
+}
+
 void SpriteEx::SetUvSize(float X, float Y)
 {
 	DirectX::XMFLOAT2 ReSize;
@@ -93,12 +112,22 @@ void SpriteEx::SetUvSize(float X, float Y)
 	m_Sprite->SetUVScale(ReSize);
 }
 
+void SpriteEx::SetUvSize(DirectX::XMFLOAT2 uvSize)
+{
+	m_Sprite->SetUVScale(uvSize);
+}
+
 void SpriteEx::SetUvPos(float X, float Y)
 {
 	DirectX::XMFLOAT2 RePos;
 	RePos.x = X;
 	RePos.y = Y;
 	m_Sprite->SetUVPos(RePos);
+}
+
+void SpriteEx::SetUvPos(DirectX::XMFLOAT2 uvPos)
+{
+	m_Sprite->SetUVPos(uvPos);
 }
 
 void SpriteEx::SetTexture()
@@ -115,6 +144,11 @@ void SpriteEx::Setcolor(float R, float G, float B, float A)
 	C.z = B;
 
 	m_Sprite->SetColor(C);
+}
+
+void SpriteEx::Setcolor(DirectX::XMFLOAT4 color)
+{
+	m_Sprite->SetColor(color);
 }
 
 void SpriteEx::SetCenterPosAndRotation(DirectX::XMFLOAT3 StartPos, DirectX::XMFLOAT3 NowPos)

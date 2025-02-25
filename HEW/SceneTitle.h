@@ -59,6 +59,7 @@ private:
 	bool m_bChange;
 	int m_nAnimCount;
 	int m_nLiniYCount;
+	static bool m_bFirstPlay;
 	DirectX::XMFLOAT2 m_tCharaLogoTexPos[2];
 	enum class Effect
 	{
@@ -76,4 +77,6 @@ private:
 	bool CheckRankingCommand();
 	bool m_bRankingCommand[4];
 	float m_fRankingCommandResetTimer;
+public:
+	static bool IsFirstPlay();
 };

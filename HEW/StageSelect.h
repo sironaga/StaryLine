@@ -90,7 +90,7 @@ private:
 	};
 
 	DirectX::XMFLOAT3 m_rotate;
-		enum StageKind
+	enum StageKind
 	{
 		GrassField = 0,
 		DesertField,
@@ -143,5 +143,32 @@ private:
 	bool m_bClearCommand[5];
 	float m_fClearCommandResetTimer;
 
-	int nSlect;
+	int m_nPhase;
+	int m_nPage;
+	SpriteEx* m_pStory[9];
+	ObjectParam m_StoryParam[9];
+	enum class StoryTex
+	{
+		Cinema = 0,
+		Back,
+		FirstLinie,
+		SecondLinie,
+		LinieHands,
+		BackStar,
+		Grail,
+		Bosses,
+		ReruxLinie,
+
+		Max
+	};
+private:
+	void InitValue();
+	void LoadFile();
+	void LoadSound();
+	void SetVP();
+	void InitConposite();
+	void UpdateStory();
+	void UpdateSelect();
+	void DrawStory();
+	void DrawSelect();
 };
