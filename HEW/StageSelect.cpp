@@ -261,7 +261,6 @@ void CStageSelect::Draw()
 	}
 }
 
-
 void CStageSelect::LinieDraw()
 {
 	SetRender3D();
@@ -820,14 +819,14 @@ void CStageSelect::UpdateStory()
 		m_StoryParam[(int)StoryTex::BackStar].pos.y = CENTER_POS_Y - cosVal * 50.0f;
 
 
-		if (time <= 3.0f)
+		if (time <= 1.5f)
 		{
-			m_StoryParam[(int)StoryTex::FirstLinie].size.x -= SCREEN_WIDTH / 800.0f;
-			m_StoryParam[(int)StoryTex::FirstLinie].size.y += SCREEN_HEIGHT / 800.0f;		
-			m_StoryParam[(int)StoryTex::SecondLinie].size.x -= SCREEN_WIDTH / 800.0f;
-			m_StoryParam[(int)StoryTex::SecondLinie].size.y += SCREEN_HEIGHT / 800.0f;
-			m_StoryParam[(int)StoryTex::FirstLinie].pos.y -= 1.0f;
-			m_StoryParam[(int)StoryTex::SecondLinie].pos.y -= 1.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].size.x -= SCREEN_WIDTH / 400.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].size.y += SCREEN_HEIGHT / 400.0f;		
+			m_StoryParam[(int)StoryTex::SecondLinie].size.x -= SCREEN_WIDTH / 400.0f;
+			m_StoryParam[(int)StoryTex::SecondLinie].size.y += SCREEN_HEIGHT / 400.0f;
+			m_StoryParam[(int)StoryTex::FirstLinie].pos.y -= 2.0f;
+			m_StoryParam[(int)StoryTex::SecondLinie].pos.y -= 2.0f;
 		}
 		else
 		{
@@ -876,7 +875,7 @@ void CStageSelect::UpdateStory()
 
 		if (m_StoryParam[(int)StoryTex::SecondLinie].color.w <= 0.0f && EasTime <= 1.0f)
 		{
-			EasTime += 1.0f / 60.0f / 2.0f;
+			EasTime += 1.0f / 60.0f;
 			EasVal = Easing39(EasTime, 0.5f, 0.9f);
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = 0.0f + EasVal * CENTER_POS_Y;
 			m_StoryParam[(int)StoryTex::Grail].pos.y = 0.0f + EasVal * CENTER_POS_Y - 200.0f;
