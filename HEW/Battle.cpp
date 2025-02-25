@@ -262,7 +262,10 @@ void CBattle::Update(void)
 		{
 			if (m_pAlly[i]->GetStatus() == St_Create)
 			{
-				m_pAllyLeader->SetSummonFlag(true);
+				if (m_pAllyLeader)
+				{
+					m_pAllyLeader->SetSummonFlag(true);
+				}
 			}
 			//Z軸順に描画
 			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
@@ -422,12 +425,15 @@ void CBattle::Update(void)
 		//敵のリーダーがnullptrになっていたら
 		if (m_pEnemyLeader == nullptr)
 		{
-			m_pAllyLeader->SetWinFlag(true);
-			
-			if (m_pAllyLeader->GetWinTImer() > 6.0f)
+			if (m_pAllyLeader)
 			{
-				m_bWin = true;
-				m_bEnd = true;
+				m_pAllyLeader->SetWinFlag(true);
+
+				if (m_pAllyLeader->GetWinTImer() > 6.0f)
+				{
+					m_bWin = true;
+					m_bEnd = true;
+				}
 			}
 		}
 		//味方のリーダーがnullptrになっていたら
@@ -471,7 +477,10 @@ void CBattle::CharacterUpdate(bool AnimationFlag)
 	}
 	if (AnimationFlag)
 	{
-		m_pAllyLeader->SetAnimationPlayFlag(false);
+		if (m_pAllyLeader)
+		{
+			m_pAllyLeader->SetAnimationPlayFlag(false);
+		}
 	}
 }
 
@@ -666,7 +675,10 @@ void CBattle::TimeLapse(void)
 //味方の生成処理
 void CBattle::CreateAlly(void)
 {
-	m_pAllyLeader->SetSummonFlag(true);
+	if (m_pAllyLeader)
+	{
+		m_pAllyLeader->SetSummonFlag(true);
+	}
 	//保存済み数分処理する
 	while (m_nAllyDateCount)
 	{
