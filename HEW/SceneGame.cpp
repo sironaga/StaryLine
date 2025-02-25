@@ -87,6 +87,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	SetFileAddress(m_pBattle);
 
 	InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
+	m_pBattle->CreateLeader();
 	m_pBattle->m_nStageNum = StageNum;
 
 	// タイマー初期化
@@ -193,7 +194,7 @@ void CSceneGame::Update()
 
 		m_pBackGround->Update();
 
-		m_pBattle->CreateLeader();
+		
 
 		m_pFieldVertex->ShapesUpdate();
 
