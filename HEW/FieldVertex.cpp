@@ -412,13 +412,13 @@ CFieldVertex::CFieldVertex()
 		case 11:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq03.png")); break;//1:2
 		case 12:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq05.png")); break;//1:3
 		case 13:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq26.png")); break;//3:1
-		case 14:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq01.png")); break;//2:1
+		case 14:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq28.png")); break;//2:1
 
 		case 15:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq02.png")); break;//1:1平行四辺形左下から右下
 		case 16:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq04.png")); break;//1:2
 		case 17:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq06.png")); break;//1:3
 		case 18:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq27.png")); break;//3:1
-		case 19:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq02.png")); break;//2:1
+		case 19:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq29.png")); break;//2:1
 
 		case 20:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq19.png")); break;//1:2左上が尖っている
 		case 21:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq21.png")); break;//2:3
@@ -1033,7 +1033,7 @@ void CFieldVertex::ShapesDraw()
 						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (TRAPEZOID_SIZE + size) * 2.0f ,(TRAPEZOID_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
 					}
-					if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4
+					if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4//大きさ変更必要
 					{
 						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[9]);
@@ -1053,7 +1053,7 @@ void CFieldVertex::ShapesDraw()
 				}
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[12]);
 				}
 				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
@@ -1085,7 +1085,7 @@ void CFieldVertex::ShapesDraw()
 				}
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[17]);
 				}
 				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
@@ -1118,7 +1118,7 @@ void CFieldVertex::ShapesDraw()
 				}
 				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[22]);
 				}
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
@@ -1130,12 +1130,12 @@ void CFieldVertex::ShapesDraw()
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
 				{
 					m_pSprite_Shapes->SetUVPos({ 0.13f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[24]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4//大きさ変更
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size) * 2.0f,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
 				}
 				break;
@@ -1153,7 +1153,7 @@ void CFieldVertex::ShapesDraw()
 				}
 				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[27]);
 				}
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
@@ -1165,13 +1165,13 @@ void CFieldVertex::ShapesDraw()
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
 				{
 					m_pSprite_Shapes->SetUVPos({ -0.13f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[29]);
 				}
 				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size )* 2.0f,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				}
 				break;
 
