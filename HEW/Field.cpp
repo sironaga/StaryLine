@@ -43,7 +43,7 @@ Field::~Field()
 
 void Field::Update()
 {
-#if 1
+#if 0
 	if (IsKeyPress('D'))m_Pos.x++;
 	if (IsKeyPress('A'))m_Pos.x--;
 	if (IsKeyPress(VK_SPACE))m_Pos.y++;
