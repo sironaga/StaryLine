@@ -125,6 +125,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	if (FAILED(hr)) { return; }
 	GetContext()->PSSetSamplers(0, 1, &g_pGameSPSampler);
 
+
 	SetCameraKind(NOMAL_CAMERA);
 }
 
@@ -350,7 +351,9 @@ void CSceneGame::Update()
 		{
 			if (!m_bEnd)
 			{
-				ModelUpDate();
+				WinModelUpdate(true);
+				
+				m_pBattle->LinieRotation({ 0.0f,-90.0f, 0.0f });
 				m_pBattle->CharacterUpdate(true);	// 生成されたキャラクターのアニメーションを行う
 				m_pBattle->SetWinAnimation(true);
 				if (m_pBattle->GetWinAnimation())
@@ -377,17 +380,19 @@ void CSceneGame::Draw()
 	{
 		m_pFieldVertex->Draw();
 		m_pPlayer->Draw();
+		std::thread Th_BattleDraw(&CBattle::Draw, m_pBattle);
+		Th_BattleDraw.join();
+	}
+	else if (GetCameraKind() == EVENT_CAMERA)
+	{
+		m_pBattle->LinieDraw();
 	}
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
-		std::thread Th_BattleCharacterDraw(&CBattle::CharacterDraw, m_pBattle);
-		Th_BattleCharacterDraw.join();
 		if(!m_bFever)TimeStart = false;
 	}
 
-	std::thread Th_BattleDraw(&CBattle::Draw, m_pBattle);
-	Th_BattleDraw.join();
 	//m_pBattle->Draw();	// バトル全体の描画
 	
 

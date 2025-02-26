@@ -12,6 +12,7 @@
 #include "Main.h"
 
 #define MAX_ALLY  (200)	//味方情報の最大数
+#define LINIEWINTIME (6.8f)
 //#define MAX_ENEMY (200)	//敵の最大数
 //#define NORMAL_SIZE (10)//キャラクターの基本サイズ
 enum class MODEL_DEFAULTSIZE
@@ -50,7 +51,8 @@ enum class BossAnimation
 void InitCharacterTexture(StageType StageType);	//テクスチャ読み込み
 void UnInitCharacterTexture();//テクスチャの終了処理
 void ReLoadCharacterTexture(StageType StageType);//テクスチャの再読み込み
-void ModelUpDate(void);
+void ModelUpDate(void);//モデルの更新
+void WinModelUpdate(bool IsStep);//勝利モデルの更新
 
 void ReLoadSound();//音の再読み込み
 void SetCharacterMasterVolume();//マスターヴォリュームの設定
@@ -367,6 +369,7 @@ private:
 	std::vector <Model*> m_pModel;
 	DirectX::XMFLOAT3 m_tPos;		//位置座標
 	DirectX::XMFLOAT3 m_tSize;		//サイズ
+	DirectX::XMFLOAT3 m_tRotate;	//回転
 	bool m_bSubModelCreate;
 
 	std::vector <Model*> m_pSubModel;
@@ -408,6 +411,11 @@ public:
 
 	//サイズのGet
 	DirectX::XMFLOAT3 GetSize(void) { return m_tSize; }
+
+	//回転のSet
+	void SetRotate(DirectX::XMFLOAT3 InRotate) { m_tRotate = InRotate; }
+	//回転のGet
+	DirectX::XMFLOAT3 GetRotate(void) { return m_tRotate; }
 
 	//現在HpのGet
 	float GetHp(void) { return m_fHp; }
