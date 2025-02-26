@@ -428,12 +428,8 @@ void CBattle::Update(void)
 			if (m_pAllyLeader)
 			{
 				m_pAllyLeader->SetWinFlag(true);
-
-				if (m_pAllyLeader->GetWinTImer() > 6.0f)
-				{
-					m_bWin = true;
-					m_bEnd = true;
-				}
+				m_bEnd = true;
+				m_bWin = true;
 			}
 		}
 		//–¡•û‚ÌƒŠ[ƒ_[‚ªnullptr‚É‚È‚Á‚Ä‚¢‚½‚ç

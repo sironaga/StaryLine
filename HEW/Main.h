@@ -29,6 +29,7 @@ enum CAMERA_KIND
 	MAX_CAMERA
 };
 void SetCameraKind(CAMERA_KIND kind);
+int GetCameraKind();
 void CameraEvent(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 endPos, float time, CCameraEvent::EASE_KIND kind);
 bool GetIsEvent();
 bool GetCameraEvent();

@@ -53,11 +53,15 @@ public:
 	bool GetWin(void) { return m_bWin; }
 	//味方の召喚総数のGet
 	int GetSummonAllyCount(void) { return m_nSummonAllyCount; }
+	//勝利アニメーションが終了したかのGet
+	bool GetWinAnimation() { return m_pAllyLeader->GetWinTImer() >= 6.0f; }
 
 	//描画開始判定のSet
 	void SetDrawingStart(bool IsStart) { m_bDrawingStart = IsStart; }
 	//描画終了判定のSet
 	void SetDrawingEnd(bool IsEnd) { m_bDrawingEnd = IsEnd; }
+	//勝利アニメーションのSet
+	void SetWinAnimation(bool IsWin) { m_pAllyLeader->SetWinFlag(IsWin); }
 private:
 	//時間軸処理
 	void TimeLapse(void);

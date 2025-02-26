@@ -346,7 +346,7 @@ void SetFovY(float radFov)
 
 void SetCameraKind(CAMERA_KIND kind)
 {
-	SAFE_DELETE(g_Camera);
+
 	switch (kind)
 	{
 	case NOMAL_CAMERA:
@@ -361,6 +361,11 @@ void SetCameraKind(CAMERA_KIND kind)
 		MessageBox(NULL, "SetCameraKind out of range", "Main.cpp", MB_OK);
 		break;
 	}
+}
+
+int GetCameraKind()
+{
+	return g_nEvent;
 }
 
 void CameraEvent(DirectX::XMFLOAT3 startPos, DirectX::XMFLOAT3 endPos, float time, CCameraEvent::EASE_KIND kind)
