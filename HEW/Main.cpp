@@ -31,7 +31,7 @@
 #include "StartDirection.h"
 #include "Pause.h"
 #include "Option.h"
-
+ 
 //--- グローバル変数
 CStageSelect* g_pSceneSelect;
 Camera* g_Camera;
