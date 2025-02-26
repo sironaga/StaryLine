@@ -191,8 +191,12 @@ void CSceneGame::Update()
 				g_ResultData.nTime = g_tTime.GameTime / 60.0f;
 				CSceneResult::InResultData(g_ResultData);
 				CSceneResult::InStageLevel(m_pBattle->m_nStageNum);
-				SetCameraKind(EVENT_CAMERA);
-				if(g_ResultData.bWin)CameraEvent(GetCameraPos(), {-90.0f, 20.0f, 50.0f}, 1.0f, CCameraEvent::easeOutQuint);
+				
+				if (g_ResultData.bWin)
+				{
+					SetCameraKind(EVENT_CAMERA);
+					CameraEvent(GetCameraPos(), { -90.0f, 20.0f, 50.0f }, 1.0f, CCameraEvent::easeOutQuint);
+				}
 				else
 				{
 					m_bEnd = true;

@@ -104,6 +104,7 @@ CStageSelect::CStageSelect()
 	SetVP();
 	InitConposite();
 	ClearCheck();
+	SetCameraKind(NOMAL_CAMERA);
 }
 
 CStageSelect::~CStageSelect()

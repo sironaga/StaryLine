@@ -883,3 +883,8 @@ bool CSceneTitle::IsFirstPlay()
 {
 	return m_bFirstPlay;
 }
+
+void CSceneTitle::SetPlayed()
+{
+	m_bFirstPlay = false;
+}

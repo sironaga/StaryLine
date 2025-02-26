@@ -79,4 +79,5 @@ private:
 	float m_fRankingCommandResetTimer;
 public:
 	static bool IsFirstPlay();
+	static void SetPlayed();
 };

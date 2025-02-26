@@ -8,6 +8,7 @@
 #include  "File.h"
 #include "WriteName.h"
 #include "Option.h"
+#include "SceneTitle.h"
 // ---
 // ---
 
@@ -146,6 +147,7 @@ CSceneResult::CSceneResult()
 
 	if(ResultGameData.nSpawnCount > 0 && ResultGameData.nDrawCount > 0)ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
 
+	CSceneTitle::SetPlayed();
 }
 CSceneResult::~CSceneResult()
 {
