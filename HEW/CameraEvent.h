@@ -11,6 +11,8 @@ public:
 	enum EASE_KIND
 	{
 		InEasing = 0,
+		easeOutQuint,
+		easeOutQuad,
 
 		EASE_MAX
 	};
@@ -21,4 +23,5 @@ private:
 	DirectX::XMFLOAT3 m_end;
 	float m_time;
 	float m_totalTime;
+	EASE_KIND m_eKind;
 };

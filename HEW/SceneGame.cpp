@@ -124,6 +124,8 @@ CSceneGame::CSceneGame(StageType StageNum)
 	HRESULT hr = GetDevice()->CreateSamplerState(&samplerDesc, &g_pGameSPSampler);
 	if (FAILED(hr)) { return; }
 	GetContext()->PSSetSamplers(0, 1, &g_pGameSPSampler);
+
+	SetCameraKind(NOMAL_CAMERA);
 }
 
 CSceneGame::~CSceneGame()
@@ -152,183 +154,213 @@ CSceneGame::~CSceneGame()
 
 void CSceneGame::Update()
 {
-	if (CPause::GetRetry())
+	switch (GetCameraKind())
 	{
-		CPause::SetRetry();
-		SetNext(SCENE_GAME, m_pBattle->m_nStageNum);
-	}
-	if (CPause::GetSelect())
-	{
-		CPause::SetSelect();
-		SetNext(STAGE_SELECT);
-	}
-	if (IsFadeFinish())
-	{
-		if (FadeTimeFlag)
+	case NOMAL_CAMERA:
+		if (CPause::GetRetry())
 		{
-			FadeTime++;
-			m_pBattle->SetDrawingStart(true);
-			m_pBattle->SetDrawingEnd(false);
+			CPause::SetRetry();
+			SetNext(SCENE_GAME, m_pBattle->m_nStageNum);
 		}
-		if (FadeTime > 4.0f * 60.0f)
+		if (CPause::GetSelect())
 		{
-			FadeTimeFlag = false;
-			g_tTime.GameTime++;//フェードタイム終わったらゲームのタイマースタート
-
+			CPause::SetSelect();
+			SetNext(STAGE_SELECT);
 		}
-		if (m_pBattle->GetEnd() && !m_bEnd)
+		if (IsFadeFinish())
 		{
-			g_ResultData.bWin = m_pBattle->GetWin();
-			g_ResultData.nHitPoint = m_pBattle->GetPlayerHpProportion();
-			g_ResultData.nAverageSpwn = m_pBattle->GetSummonAllyCount();
-			g_ResultData.nDrawCount = DrawCount;
-			g_ResultData.nSpawnCount = m_pBattle->GetSummonAllyCount();
-			g_ResultData.nTime = g_tTime.GameTime / 60.0f;
-			CSceneResult::InResultData(g_ResultData);
-			CSceneResult::InStageLevel(m_pBattle->m_nStageNum);
-			SetNext(SCENE_RESULT);
-			m_bEnd = true;
-		}
-
-		if (m_bEnd)return;
-
-		m_pBackGround->Update();
-
-		
-
-		m_pFieldVertex->ShapesUpdate();
-
-		m_pFieldVertex->LogUpdate();
-
-		ModelUpDate();
-
-		m_pField->Update();		// フィールドは常に更新する
-		InitInput();
-		if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && (CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyPress(VK_SPACE)))
-		{
-			TimeStart = true;
-			DrawCount++;
-		}
-		// ゲーム中(移動をしてから)は経過時間を記録し続ける
-		if (TimeStart)
-		{
-			g_tTime.GamePhaseTime++;//図形の描画をしていないとき
-		}
-		if (!TimeStart && g_tTime.GamePhaseTime == -1.0f)
-		{
-			m_pPlayer->UpdateStop();
-		}
-
-
-		if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
-		{
-			g_tTime.GamePhaseTime++;
-		}
-
-		// 移動が詰んだ時
-		if (m_pPlayer->GetMoveStop() && m_bPhase && (g_tTime.GamePhaseTime != -1.0f))
-		{
-			// 召喚開始の時間(本来の値 + 前回のサイクルが終了した時間)と現在時間(経過時間)の差を求めて
-			// フェーズごとの補正値(STimePheseAjust)に代入する
-			if (!m_bFever)
+			if (FadeTimeFlag)
 			{
-				if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GamePhaseTime) && ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GamePhaseTime) <= 600.0f)
+				FadeTime++;
+				m_pBattle->SetDrawingStart(true);
+				m_pBattle->SetDrawingEnd(false);
+			}
+			if (FadeTime > 4.0f * 60.0f)
+			{
+				FadeTimeFlag = false;
+				g_tTime.GameTime++;//フェードタイム終わったらゲームのタイマースタート
+
+			}
+			if (m_pBattle->GetEnd() && !m_bEnd)
+			{
+				g_ResultData.bWin = m_pBattle->GetWin();
+				g_ResultData.nHitPoint = m_pBattle->GetPlayerHpProportion();
+				g_ResultData.nAverageSpwn = m_pBattle->GetSummonAllyCount();
+				g_ResultData.nDrawCount = DrawCount;
+				g_ResultData.nSpawnCount = m_pBattle->GetSummonAllyCount();
+				g_ResultData.nTime = g_tTime.GameTime / 60.0f;
+				CSceneResult::InResultData(g_ResultData);
+				CSceneResult::InStageLevel(m_pBattle->m_nStageNum);
+				SetCameraKind(EVENT_CAMERA);
+				if(g_ResultData.bWin)CameraEvent(GetCameraPos(), {-90.0f, 20.0f, 50.0f}, 1.0f, CCameraEvent::easeOutQuint);
+				else
 				{
-					g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GamePhaseTime;
+					m_bEnd = true;
+					SetNext(SCENE_RESULT);
 				}
-			}
-			else
-			{
-				g_tTime.GameSTimeFeverAjust = g_tTime.GamePhaseTime - ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust - g_tTime.GameSTimeFeverStellaAjust);
-				m_pFieldVertex->ResetFeverPoint();
-				m_pPlayer->SetMoveStop();
-			}
-			m_bPhase = false;
-		}
-		if (!m_GameDirection->GetDraw())
-		{
-			// 召喚開始の時間になったらフィーバーかチェック
-			if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
-			{		
-				float t;
-				t = m_pFieldVertex->GetFeverPoint();
 
-				if (t == 30.0f)
+			}
+
+
+
+			m_pBackGround->Update();
+
+
+
+			m_pFieldVertex->ShapesUpdate();
+
+			m_pFieldVertex->LogUpdate();
+
+			ModelUpDate();
+
+			m_pField->Update();		// フィールドは常に更新する
+			InitInput();
+			if (!FadeTimeFlag && !TimeStart && (g_tTime.GamePhaseTime == -1.0f) && (CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyPress(VK_SPACE)))
+			{
+				TimeStart = true;
+				DrawCount++;
+			}
+			// ゲーム中(移動をしてから)は経過時間を記録し続ける
+			if (TimeStart)
+			{
+				g_tTime.GamePhaseTime++;//図形の描画をしていないとき
+			}
+			if (!TimeStart && g_tTime.GamePhaseTime == -1.0f)
+			{
+				m_pPlayer->UpdateStop();
+			}
+
+
+			if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+			{
+				g_tTime.GamePhaseTime++;
+			}
+
+			// 移動が詰んだ時
+			if (m_pPlayer->GetMoveStop() && m_bPhase && (g_tTime.GamePhaseTime != -1.0f))
+			{
+				// 召喚開始の時間(本来の値 + 前回のサイクルが終了した時間)と現在時間(経過時間)の差を求めて
+				// フェーズごとの補正値(STimePheseAjust)に代入する
+				if (!m_bFever)
 				{
-					m_pStarLine->SetLineMode(1);
-					m_pSourseGameBGM->Stop();
-					m_pSourseFeverBGM->FlushSourceBuffers();
-					XAUDIO2_BUFFER buffer;
-					buffer = g_FeverSound->GetBuffer(true);
-					m_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
-					if (m_pSourseFeverBGM)SetVolumeBGM(m_pSourseFeverBGM);
-					m_pSourseFeverBGM->Start();
-					m_bPhase = true;
-					m_bFever = true;
-					g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
-					m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
-					m_pFieldVertex->SetFeverPoint();
+					if (0.0f <= ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GamePhaseTime) && ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GamePhaseTime) <= 600.0f)
+					{
+						g_tTime.GameSTimePheseAjust = (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GamePhaseTime;
+					}
+				}
+				else
+				{
+					g_tTime.GameSTimeFeverAjust = g_tTime.GamePhaseTime - ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust - g_tTime.GameSTimeFeverStellaAjust);
+					m_pFieldVertex->ResetFeverPoint();
 					m_pPlayer->SetMoveStop();
 				}
-				
+				m_bPhase = false;
 			}
-
-			//毎描画開始時スーパースターをセット
-			if ((float)SHAPE_DRAW_START * 60.0f == g_tTime.GamePhaseTime)
+			if (!m_GameDirection->GetDraw())
 			{
-				m_pStarLine->SetLineMode(0);
-
-			}
-			m_pPlayer->Update();
-			m_pPlayer->TimerReCharge();
-			// 図形を作る時間
-			// 経過時間が作図開始の時間から召喚開始の時間になるまで
-			if (((float)SHAPE_DRAW_START * 60.0f <= g_tTime.GamePhaseTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
-				(g_tTime.GamePhaseTime < (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
-			{
-				// プレイヤーと作図処理は図形を作っている間更新する
-
-				m_pFieldVertex->Update();
-			}
-			else
-			{
-				//描画時間外だと停止
-				m_pFieldVertex->SoundStop();
-				m_pPlayer->Reset();
-			}
-
-			// 召喚開始の時間になったら
-			if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
-			{
-				m_pBattle->CreateAlly();	// キャラクターのデータを生成する
-			}
-
-			// フィーバーの召喚開始時間になったら
-			if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust == g_tTime.GamePhaseTime) && m_bFever)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
-			{
-				m_pBattle->CreateAlly();	// キャラクターのデータを生成する
-			}
-
-			// 描画時間終了時間または描画時間+フィーバーの終了時間
-			if (g_tTime.GamePhaseTime == (float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
-			{
-				m_pBattle->SetDrawingStart(false);
-				m_pBattle->SetDrawingEnd(true);
-				m_pBattle->CharacterUpdate(true);
-				if (!bLine)
+				// 召喚開始の時間になったらフィーバーかチェック
+				if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 				{
-					bLine = true;
-					m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+					float t;
+					t = m_pFieldVertex->GetFeverPoint();
+
+					if (t == 30.0f)
+					{
+						m_pStarLine->SetLineMode(1);
+						m_pSourseGameBGM->Stop();
+						m_pSourseFeverBGM->FlushSourceBuffers();
+						XAUDIO2_BUFFER buffer;
+						buffer = g_FeverSound->GetBuffer(true);
+						m_pSourseFeverBGM->SubmitSourceBuffer(&buffer);
+						if (m_pSourseFeverBGM)SetVolumeBGM(m_pSourseFeverBGM);
+						m_pSourseFeverBGM->Start();
+						m_bPhase = true;
+						m_bFever = true;
+						g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
+						m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
+						m_pFieldVertex->SetFeverPoint();
+						m_pPlayer->SetMoveStop();
+					}
+
 				}
-				/*タイマー終了のSE*/
+
+				//毎描画開始時スーパースターをセット
+				if ((float)SHAPE_DRAW_START * 60.0f == g_tTime.GamePhaseTime)
+				{
+					m_pStarLine->SetLineMode(0);
+
+				}
+				m_pPlayer->Update();
+				m_pPlayer->TimerReCharge();
+				// 図形を作る時間
+				// 経過時間が作図開始の時間から召喚開始の時間になるまで
+				if (((float)SHAPE_DRAW_START * 60.0f <= g_tTime.GamePhaseTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
+					(g_tTime.GamePhaseTime < (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
+				{
+					// プレイヤーと作図処理は図形を作っている間更新する
+
+					m_pFieldVertex->Update();
+				}
+				else
+				{
+					//描画時間外だと停止
+					m_pFieldVertex->SoundStop();
+					m_pPlayer->Reset();
+				}
+
+				// 召喚開始の時間になったら
+				if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+				{
+					m_pBattle->CreateAlly();	// キャラクターのデータを生成する
+				}
+
+				// フィーバーの召喚開始時間になったら
+				if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust == g_tTime.GamePhaseTime) && m_bFever)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+				{
+					m_pBattle->CreateAlly();	// キャラクターのデータを生成する
+				}
+
+				// 描画時間終了時間または描画時間+フィーバーの終了時間
+				if (g_tTime.GamePhaseTime == (float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+				{
+					m_pBattle->SetDrawingStart(false);
+					m_pBattle->SetDrawingEnd(true);
+					m_pBattle->CharacterUpdate(true);
+					if (!bLine)
+					{
+						bLine = true;
+						m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+					}
+					/*タイマー終了のSE*/
+				}
+				m_pBattle->Update();
 			}
-			m_pBattle->Update();
+			if (FadeTimeFlag)
+			{
+				m_pBattle->CharacterUpdate(true);	// 生成されたキャラクターのアニメーションを行う
+			}
 		}
-		if (FadeTimeFlag)
+		break;
+	case EVENT_CAMERA:
+		if (!GetIsEvent())
 		{
-			m_pBattle->CharacterUpdate(true);	// 生成されたキャラクターのアニメーションを行う
+			if (!m_bEnd)
+			{
+				ModelUpDate();
+				m_pBattle->CharacterUpdate(true);	// 生成されたキャラクターのアニメーションを行う
+				m_pBattle->SetWinAnimation(true);
+				if (m_pBattle->GetWinAnimation())
+				{
+					SetNext(SCENE_RESULT);
+					m_bEnd = true;
+				}
+			}
 		}
+		break;
+	default:
+		break;
 	}
+
 }
 
 void CSceneGame::Draw()
@@ -337,9 +369,11 @@ void CSceneGame::Draw()
 	m_pField->Draw();	// フィールドは常に描画する
     m_pFieldVertex->ShapesDraw();
 
-	m_pFieldVertex->Draw();
-	m_pPlayer->Draw();
-
+	if (GetCameraKind() == NOMAL_CAMERA)
+	{
+		m_pFieldVertex->Draw();
+		m_pPlayer->Draw();
+	}
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
