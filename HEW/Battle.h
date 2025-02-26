@@ -36,8 +36,8 @@ public:
 	void Update(void);
 	//キャラクターたちの更新
 	void CharacterUpdate(bool AnimationFlag = false);
-	//キャラクターたちの描画
-	void CharacterDraw(void);
+	//Linieの描画
+	void LinieDraw(void);
 	//描画処理
 	void Draw(void);		
 	//リザルトにいく
@@ -54,7 +54,7 @@ public:
 	//味方の召喚総数のGet
 	int GetSummonAllyCount(void) { return m_nSummonAllyCount; }
 	//勝利アニメーションが終了したかのGet
-	bool GetWinAnimation() { return m_pAllyLeader->GetWinTImer() >= 6.0f; }
+	bool GetWinAnimation() { return m_pAllyLeader->GetWinTImer() >= LINIEWINTIME; }
 
 	//描画開始判定のSet
 	void SetDrawingStart(bool IsStart) { m_bDrawingStart = IsStart; }
@@ -62,6 +62,8 @@ public:
 	void SetDrawingEnd(bool IsEnd) { m_bDrawingEnd = IsEnd; }
 	//勝利アニメーションのSet
 	void SetWinAnimation(bool IsWin) { m_pAllyLeader->SetWinFlag(IsWin); }
+	//Linieの回転
+	void LinieRotation(DirectX::XMFLOAT3 InRotate) { m_pAllyLeader->SetRotate(InRotate); };
 private:
 	//時間軸処理
 	void TimeLapse(void);

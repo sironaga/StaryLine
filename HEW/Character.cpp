@@ -116,7 +116,7 @@ CSoundList* g_wandonoffSound;
 IXAudio2SourceVoice* g_pSourceSummon[2];//スピーカー
 IXAudio2SourceVoice* g_pSourceWandonoff;//スピーカー
 
-
+//描画設定
 void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Sprite);
 
 //事前読み込み用関数
@@ -520,7 +520,9 @@ void UnInitCharacterTexture()
 	g_pSourceWandonoff = nullptr;
 	//エフェクトの破棄
 	for (int i = 0; i < (int)CharactersEffect::MAX; i++)SAFE_DELETE(g_pCharacterEffects[i]);
+
 }
+
 
 void ReLoadCharacterTexture(StageType StageType)
 {
@@ -548,6 +550,7 @@ void ModelUpDate(void)
 
 	for (int i = 0; i < (int)LinieAnimation::MAX; i++)
 	{
+		if (i == (int)LinieAnimation::Win)continue;
 		if (g_pLinieModel[i]->IsAnimePlay(0))
 		{
 			g_pLinieModel[i]->Step(0.01f);
@@ -556,6 +559,7 @@ void ModelUpDate(void)
 		{
 			g_pLinieModel[i]->PlayAnime(0, true);
 			g_pLinieModel[i]->SetAnimeTime(g_pLinieModel[i]->GetAnimePlayNo(), 0.0f);
+
 		}
 	}
 	for (int i = 0; i < (int)BossAnimation::MAX; i++)
@@ -575,6 +579,27 @@ void ModelUpDate(void)
 				}
 			}
 		}
+	}
+}
+
+/*
+* @brief キャラクターのモデルの勝利アニメーションを更新する
+*/
+void WinModelUpdate(bool IsStep)
+{
+	//Linieの勝利アニメーション
+	if (g_pLinieModel[(int)LinieAnimation::Win]->IsAnimePlay(0))
+	{
+		if (IsStep)
+		{
+			g_pLinieModel[(int)LinieAnimation::Win]->Step(0.01f);
+		}
+	}
+	else
+	{
+		g_pLinieModel[(int)LinieAnimation::Win]->PlayAnime(0, false);
+		g_pLinieModel[(int)LinieAnimation::Win]->SetAnimeTime(g_pLinieModel[(int)LinieAnimation::Win]->GetAnimePlayNo(), 0.0f);
+		g_pLinieModel[(int)LinieAnimation::Win]->Step(0.01f);
 	}
 }
 
@@ -1185,6 +1210,7 @@ void CAlly::Draw(void)
 				m_pModel[(int)m_eModelNo]->Draw(i);
 			}
 		}
+
 	}
 }
 //生成更新処理
@@ -1583,6 +1609,7 @@ void CEnemy::Draw(void)
 			m_pModel[0]->Draw(i);
 		}
 	}
+
 	//エフェクトの描画
 	for (int i = 0; i < (int)FighterEffect::MAX; i++)
 	{
@@ -1591,6 +1618,7 @@ void CEnemy::Draw(void)
 			m_pEffect[i]->Draw(true);
 		}
 	}
+
 }
 
 void CEnemy::CreateUpdate(void)
@@ -1819,6 +1847,7 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 		m_tSize.x = InSize;
 		m_tSize.y = InSize;
 		m_tSize.z = InSize;
+		m_tRotate = { 0.0f,85.0f,0.0f };
 		break;
 	case 1:
 		m_tPos.x = FirstPos.x - 12.0f;
@@ -1897,7 +1926,7 @@ void CLeader::Draw(int StageNum)
 {
 	switch (m_nTextureNumber)
 	{
-	case 0://プレイヤー
+	case 0://Linie
 		if (m_bWin)
 		{
 			m_nModelNo = (int)LinieAnimation::Win;
@@ -1917,54 +1946,57 @@ void CLeader::Draw(int StageNum)
 
 		if (m_pModel[m_nModelNo])
 		{
-			SetRender3D();
-			DirectX::XMFLOAT4X4 wvp[3];
-			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
-			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
-			//回転行列(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(85.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
-			//それぞれの行列を掛け合わせて格納
-			DirectX::XMMATRIX mat = S * R * T;
-
-			world = mat;
-
-			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-			wvp[1] = GetView();
-			wvp[2] = GetProj();
-
-			Geometory::SetView(wvp[1]);
-			Geometory::SetProjection(wvp[2]);
-
-			ShaderList::SetWVP(wvp);
-
-			m_pModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-			m_pModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-
-			const Model::Mesh* tMesh;
-			for (int i = 0; i < m_pModel[m_nModelNo]->GetMeshNum(); ++i)
+			if (m_pModel[m_nModelNo]->IsAnimePlay(0))
 			{
-				tMesh = m_pModel[m_nModelNo]->GetMesh(i);
-				Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
-				material.ambient.x = 0.85f; // x (r)
-				material.ambient.y = 0.85f; // y (g)
-				material.ambient.z = 0.85f; // z (b)
-				ShaderList::SetMaterial(material);
+				SetRender3D();
+				DirectX::XMFLOAT4X4 wvp[3];
+				DirectX::XMMATRIX world;
+				DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
+				//拡大縮小行列(Scaling)
+				DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+				//回転行列(Rotation)
+				DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(m_tRotate.x), DirectX::XMConvertToRadians(m_tRotate.y), DirectX::XMConvertToRadians(m_tRotate.z), 0.0f));
+				//それぞれの行列を掛け合わせて格納
+				DirectX::XMMATRIX mat = S * R * T;
 
-				// ボーンの情報をシェーダーに送る
-				DirectX::XMFLOAT4X4 bones[200];
-				for (int j = 0; j < tMesh->bones.size(); ++j)
+				world = mat;
+
+				DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+				wvp[1] = GetView();
+				wvp[2] = GetProj();
+
+				Geometory::SetView(wvp[1]);
+				Geometory::SetProjection(wvp[2]);
+
+				ShaderList::SetWVP(wvp);
+
+				m_pModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+				m_pModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+				const Model::Mesh* tMesh;
+				for (int i = 0; i < m_pModel[m_nModelNo]->GetMeshNum(); ++i)
 				{
-					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-						tMesh->bones[j].invOffset * m_pModel[m_nModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
-					));
-				}
-				ShaderList::SetBones(bones);
+					tMesh = m_pModel[m_nModelNo]->GetMesh(i);
+					Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
+					material.ambient.x = 0.85f; // x (r)
+					material.ambient.y = 0.85f; // y (g)
+					material.ambient.z = 0.85f; // z (b)
+					ShaderList::SetMaterial(material);
+
+					// ボーンの情報をシェーダーに送る
+					DirectX::XMFLOAT4X4 bones[200];
+					for (int j = 0; j < tMesh->bones.size(); ++j)
+					{
+						DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+							tMesh->bones[j].invOffset * m_pModel[m_nModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
+						));
+					}
+					ShaderList::SetBones(bones);
 
 
-				if (m_pModel[m_nModelNo]) {
-					m_pModel[m_nModelNo]->Draw(i);
+					if (m_pModel[m_nModelNo]) {
+						m_pModel[m_nModelNo]->Draw(i);
+					}
 				}
 			}
 		}
@@ -2042,110 +2074,116 @@ void CLeader::Draw(int StageNum)
 		}
 		if (m_pModel[m_nModelNo])
 		{
-			SetRender3D();
-			DirectX::XMFLOAT4X4 wvp[3];
-			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
-			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
-			//回転行列(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
-			//それぞれの行列を掛け合わせて格納
-			DirectX::XMMATRIX mat = S * R * T;
-
-			world = mat;
-
-			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-			wvp[1] = GetView();
-			wvp[2] = GetProj();
-
-			Geometory::SetView(wvp[1]);
-			Geometory::SetProjection(wvp[2]);
-
-			ShaderList::SetWVP(wvp);
-
-			m_pModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-			m_pModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-
-			const Model::Mesh* tMesh;
-
-			for (int i = 0; i < m_pModel[m_nModelNo]->GetMeshNum(); ++i)
+			if (m_pModel[m_nModelNo]->IsAnimePlay(0))
 			{
-				tMesh = m_pModel[m_nModelNo]->GetMesh(i);
-				Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
-				material.ambient.x = 0.85f; // x (r) 
-				material.ambient.y = 0.85f; // y (g) 
-				material.ambient.z = 0.85f; // z (b) 
-				ShaderList::SetMaterial(material);
+				SetRender3D();
+				DirectX::XMFLOAT4X4 wvp[3];
+				DirectX::XMMATRIX world;
+				DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tPos.x, m_tPos.y, m_tPos.z, 0.0f));
+				//拡大縮小行列(Scaling)
+				DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSize.x, m_tSize.y, m_tSize.z);
+				//回転行列(Rotation)
+				DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				//それぞれの行列を掛け合わせて格納
+				DirectX::XMMATRIX mat = S * R * T;
 
-				// ボーンの情報をシェーダーに送る
-				DirectX::XMFLOAT4X4 bones[200];
-				for (int j = 0; j < tMesh->bones.size(); ++j)
+				world = mat;
+
+				DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+				wvp[1] = GetView();
+				wvp[2] = GetProj();
+
+				Geometory::SetView(wvp[1]);
+				Geometory::SetProjection(wvp[2]);
+
+				ShaderList::SetWVP(wvp);
+
+				m_pModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+				m_pModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+				const Model::Mesh* tMesh;
+
+				for (int i = 0; i < m_pModel[m_nModelNo]->GetMeshNum(); ++i)
 				{
-					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-						tMesh->bones[j].invOffset * m_pModel[m_nModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
-					));
-				}
+					tMesh = m_pModel[m_nModelNo]->GetMesh(i);
+					Model::Material material = *m_pModel[m_nModelNo]->GetMaterial(tMesh->materialID);
+					material.ambient.x = 0.85f; // x (r) 
+					material.ambient.y = 0.85f; // y (g) 
+					material.ambient.z = 0.85f; // z (b) 
+					ShaderList::SetMaterial(material);
 
-				ShaderList::SetBones(bones);
+					// ボーンの情報をシェーダーに送る
+					DirectX::XMFLOAT4X4 bones[200];
+					for (int j = 0; j < tMesh->bones.size(); ++j)
+					{
+						DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+							tMesh->bones[j].invOffset * m_pModel[m_nModelNo]->GetBoneMatrix(tMesh->bones[j].nodeIndex)
+						));
+					}
 
-				if (m_pModel[m_nModelNo]) {
-					m_pModel[m_nModelNo]->Draw(i);
+					ShaderList::SetBones(bones);
+
+					if (m_pModel[m_nModelNo]) {
+						m_pModel[m_nModelNo]->Draw(i);
+					}
 				}
 			}
 		}
 		if (m_pSubModel[m_nModelNo])
 		{
-			SetRender3D();
-			DirectX::XMFLOAT4X4 wvp[3];
-			DirectX::XMMATRIX world;
-			DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x, m_tSubPos.y, m_tSubPos.z, 0.0f));
-			//拡大縮小行列(Scaling)
-			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
-			//回転行列(Rotation)
-			DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
-			//それぞれの行列を掛け合わせて格納
-			DirectX::XMMATRIX mat = S * R * T;
-
-			world = mat;
-
-			DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
-			wvp[1] = GetView();
-			wvp[2] = GetProj();
-
-			Geometory::SetView(wvp[1]);
-			Geometory::SetProjection(wvp[2]);
-
-			ShaderList::SetWVP(wvp);
-
-			m_pSubModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
-			m_pSubModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
-
-			const Model::Mesh* tSubMesh;
-
-			for (int i = 0; i < m_pSubModel[m_nModelNo]->GetMeshNum(); ++i)
+			if (m_pSubModel[m_nModelNo]->IsAnimePlay(0))
 			{
-				tSubMesh = m_pSubModel[m_nModelNo]->GetMesh(i);
+				SetRender3D();
+				DirectX::XMFLOAT4X4 wvp[3];
+				DirectX::XMMATRIX world;
+				DirectX::XMMATRIX T = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(m_tSubPos.x, m_tSubPos.y, m_tSubPos.z, 0.0f));
+				//拡大縮小行列(Scaling)
+				DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_tSubSize.x, m_tSubSize.y, m_tSubSize.z);
+				//回転行列(Rotation)
+				DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(265.0f), DirectX::XMConvertToRadians(0.0f), 0.0f));
+				//それぞれの行列を掛け合わせて格納
+				DirectX::XMMATRIX mat = S * R * T;
 
-				Model::Material material = *m_pSubModel[m_nModelNo]->GetMaterial(tSubMesh->materialID);
-				material.ambient.x = 0.85f; // x (r)
-				material.ambient.y = 0.85f; // y (g)
-				material.ambient.z = 0.85f; // z (b)
-				ShaderList::SetMaterial(material);
+				world = mat;
 
-				// ボーンの情報をシェーダーに送る
-				DirectX::XMFLOAT4X4 bones[200];
-				for (int j = 0; j < tSubMesh->bones.size(); ++j)
+				DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));
+				wvp[1] = GetView();
+				wvp[2] = GetProj();
+
+				Geometory::SetView(wvp[1]);
+				Geometory::SetProjection(wvp[2]);
+
+				ShaderList::SetWVP(wvp);
+
+				m_pSubModel[m_nModelNo]->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
+				m_pSubModel[m_nModelNo]->SetPixelShader(ShaderList::GetPS(ShaderList::PS_TOON));
+
+				const Model::Mesh* tSubMesh;
+
+				for (int i = 0; i < m_pSubModel[m_nModelNo]->GetMeshNum(); ++i)
 				{
-					DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
-						tSubMesh->bones[j].invOffset * m_pSubModel[m_nModelNo]->GetBoneMatrix(tSubMesh->bones[j].nodeIndex)
-					));
-				}
+					tSubMesh = m_pSubModel[m_nModelNo]->GetMesh(i);
 
-				ShaderList::SetBones(bones);
+					Model::Material material = *m_pSubModel[m_nModelNo]->GetMaterial(tSubMesh->materialID);
+					material.ambient.x = 0.85f; // x (r)
+					material.ambient.y = 0.85f; // y (g)
+					material.ambient.z = 0.85f; // z (b)
+					ShaderList::SetMaterial(material);
 
-				if (m_pSubModel[m_nModelNo]) {
-					m_pSubModel[m_nModelNo]->Draw(i);
+					// ボーンの情報をシェーダーに送る
+					DirectX::XMFLOAT4X4 bones[200];
+					for (int j = 0; j < tSubMesh->bones.size(); ++j)
+					{
+						DirectX::XMStoreFloat4x4(&bones[j], DirectX::XMMatrixTranspose(
+							tSubMesh->bones[j].invOffset * m_pSubModel[m_nModelNo]->GetBoneMatrix(tSubMesh->bones[j].nodeIndex)
+						));
+					}
+
+					ShaderList::SetBones(bones);
+
+					if (m_pSubModel[m_nModelNo]) {
+						m_pSubModel[m_nModelNo]->Draw(i);
+					}
 				}
 			}
 		}
