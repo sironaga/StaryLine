@@ -428,6 +428,7 @@ void CBattle::Update(void)
 			if (m_pAllyLeader)
 			{
 				m_pAllyLeader->SetWinFlag(true);
+
 				m_bEnd = true;
 				m_bWin = true;
 			}
@@ -480,14 +481,13 @@ void CBattle::CharacterUpdate(bool AnimationFlag)
 	}
 }
 
-//–¡•ûƒLƒƒƒ‰ƒNƒ^[‚Ì•`‰æˆ—
-void CBattle::CharacterDraw(void)
+//Linie‚Ì•`‰æ
+void CBattle::LinieDraw(void)
 {
-	//–¡•û‚Ì•`‰æ
-	//for (int i = 0; i < m_nAllyCount; i++)
-	//{
-	//	m_pAlly[i]->Draw();
-	//}
+	if (m_pAllyLeader)
+	{
+		m_pAllyLeader->Draw();
+	}
 }
 
 //•`‰æˆ—
