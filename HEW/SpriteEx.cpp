@@ -102,6 +102,12 @@ void SpriteEx::SetRotation(float X, float Y, float Z)
 
 void SpriteEx::SetRotate(DirectX::XMFLOAT3 rotate)
 {
+	R = DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVectorSet(
+		rotate.x,
+		rotate.y,
+		rotate.z,
+		0.0f
+	));
 }
 
 void SpriteEx::SetUvSize(float X, float Y)

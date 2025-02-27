@@ -4,6 +4,7 @@
 // --- EasingŒvŽZ—p
 float InEasing(float Time, float StartValue, float ValueDifference, float Tween)
 {
+	if (Time >= Tween) return ValueDifference - StartValue;
 	Time /= Tween;
 	return ValueDifference * Time * Time + StartValue;
 }
