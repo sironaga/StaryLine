@@ -278,15 +278,24 @@ void COption::LoadPass()
 	m_pTexture[DEFAULT_CANSEL]->Create(TEX_PASS("Option/Option_Cancel.png"));
 	m_pTexture[DEFAULT_SELECTED]->Create(TEX_PASS("Option/Option_Confirmation_Selected.png"));
 	m_pTexture[DEFAULT_CONFIRMATION]->Create(TEX_PASS("Option/Option_Confirmation.png"));
-	m_pTexture[HELP_CONTROLLER]->Create(TEX_PASS("Option/Option_Help_Control_Controler.png"));
-	m_pTexture[HELP_KEYBOARD]->Create(TEX_PASS("Option/Option_Help_Control_Keyboard.png"));
-	m_pTexture[HELP_FPS]->Create(TEX_PASS("Option/Option_Help_FPS.png"));
-	m_pTexture[HELP_RESOLUSION]->Create(TEX_PASS("Option/Option_Help_Resolusion.png"));
-	m_pTexture[HELP_MASTERVOLUME]->Create(TEX_PASS("Option/Option_Help_Mastervolume.png"));
-	m_pTexture[HELP_BGM]->Create(TEX_PASS("Option/Option_Help_BGM.png"));
-	m_pTexture[HELP_SE]->Create(TEX_PASS("Option/Option_Help_SE.png"));
-	m_pTexture[HELP_WINDOWMODE]->Create(TEX_PASS("Option/Option_Help_Windowmode.png"));
-	m_pTexture[HELP_DEFAULT]->Create(TEX_PASS("Option/Option_Help_Default.png"));
+	m_pTexture[HELP_CONTROLLER_A]->Create(TEX_PASS("Option/Option_Help_Control_Controler.png"));
+	m_pTexture[HELP_KEYBOARD_A]->Create(TEX_PASS("Option/Option_Help_Control_Keyboard.png"));
+	m_pTexture[HELP_FPS_A]->Create(TEX_PASS("Option/Option_Help_FPS.png"));
+	m_pTexture[HELP_RESOLUSION_A]->Create(TEX_PASS("Option/Option_Help_Resolusion.png"));
+	m_pTexture[HELP_MASTERVOLUME_A]->Create(TEX_PASS("Option/Option_Help_Mastervolume.png"));
+	m_pTexture[HELP_BGM_A]->Create(TEX_PASS("Option/Option_Help_BGM.png"));
+	m_pTexture[HELP_SE_A]->Create(TEX_PASS("Option/Option_Help_SE.png"));
+	m_pTexture[HELP_WINDOWMODE_A]->Create(TEX_PASS("Option/Option_Help_Windowmode.png"));
+	m_pTexture[HELP_DEFAULT_A]->Create(TEX_PASS("Option/Option_Help_Default.png"));
+	m_pTexture[HELP_CONTROLLER_B]->Create(TEX_PASS("Option/Option_Help_Control_ControlerB.png"));
+	m_pTexture[HELP_KEYBOARD_B]->Create(TEX_PASS("Option/Option_Help_Control_KeyboardB.png"));
+	m_pTexture[HELP_FPS_B]->Create(TEX_PASS("Option/Option_Help_FPSB.png"));
+	m_pTexture[HELP_RESOLUSION_B]->Create(TEX_PASS("Option/Option_Help_ResolusionB.png"));
+	m_pTexture[HELP_MASTERVOLUME_B]->Create(TEX_PASS("Option/Option_Help_MastervolumeB.png"));
+	m_pTexture[HELP_BGM_B]->Create(TEX_PASS("Option/Option_Help_BGMB.png"));
+	m_pTexture[HELP_SE_B]->Create(TEX_PASS("Option/Option_Help_SEB.png"));
+	m_pTexture[HELP_WINDOWMODE_B]->Create(TEX_PASS("Option/Option_Help_WindowmodeB.png"));
+	m_pTexture[HELP_DEFAULT_B]->Create(TEX_PASS("Option/Option_Help_DefaultB.png"));
 	m_pTexture[ICON_CONTROLLER_A]->Create(TEX_PASS("Option/Option_Icon_Controler_TypeA.png"));
 	m_pTexture[ICON_CONTROLLER_B]->Create(TEX_PASS("Option/Option_Icon_Controler_TypeB.png"));
 	m_pTexture[ICON_KEYBOARD_A]->Create(TEX_PASS("Option/Option_Icon_Keyboard_TypeA.png"));
@@ -343,24 +352,44 @@ void COption::InitParam()
 	m_pParam[DEFAULT_SELECTED]->size = { 435.0f,70.0f };
 	m_pParam[DEFAULT_CONFIRMATION]->pos =	{ 0.0f,0.0f };
 	m_pParam[DEFAULT_CONFIRMATION]->size =	{ 1980.0f,960.0f };
-	m_pParam[HELP_CONTROLLER]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_CONTROLLER]->size =	{ 1700.0f,105.0f };
-	m_pParam[HELP_KEYBOARD]->pos =		{ 0.0f,-345.0f };
-	m_pParam[HELP_KEYBOARD]->size =		{ 1700.0f,105.0 };
-	m_pParam[HELP_FPS]->pos =			{ 0.0f,-345.0f };
-	m_pParam[HELP_FPS]->size =			{ 1700.0f,105.0 };
-	m_pParam[HELP_RESOLUSION]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_RESOLUSION]->size =	{ 1700.0f,105.0 };
-	m_pParam[HELP_MASTERVOLUME]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_MASTERVOLUME]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_BGM]->pos =			{ 0.0f,-345.0f };
-	m_pParam[HELP_BGM]->size =			{ 1700.0f,105.0 };
-	m_pParam[HELP_SE]->pos =			{ 0.0f,-345.0f };
-	m_pParam[HELP_SE]->size =			{ 1700.0f,105.0 };
-	m_pParam[HELP_WINDOWMODE]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_WINDOWMODE]->size =	{ 1700.0f,105.0 };
-	m_pParam[HELP_DEFAULT]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_DEFAULT]->size =	{ 1700.0f,105.0 };
+	m_pParam[HELP_CONTROLLER_A]->pos =	{ 0.0f,-345.0f };
+	m_pParam[HELP_CONTROLLER_A]->size =	{ 1700.0f,105.0f };
+	m_pParam[HELP_KEYBOARD_A]->pos =		{ 0.0f,-345.0f };
+	m_pParam[HELP_KEYBOARD_A]->size =		{ 1700.0f,105.0 };
+	m_pParam[HELP_FPS_A]->pos =			{ 0.0f,-345.0f };
+	m_pParam[HELP_FPS_A]->size =			{ 1700.0f,105.0 };
+	m_pParam[HELP_RESOLUSION_A]->pos =	{ 0.0f,-345.0f };
+	m_pParam[HELP_RESOLUSION_A]->size =	{ 1700.0f,105.0 };
+	m_pParam[HELP_MASTERVOLUME_A]->pos =	{ 0.0f,-345.0f };
+	m_pParam[HELP_MASTERVOLUME_A]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_BGM_A]->pos =			{ 0.0f,-345.0f };
+	m_pParam[HELP_BGM_A]->size =			{ 1700.0f,105.0 };
+	m_pParam[HELP_SE_A]->pos =			{ 0.0f,-345.0f };
+	m_pParam[HELP_SE_A]->size =			{ 1700.0f,105.0 };
+	m_pParam[HELP_WINDOWMODE_A]->pos =	{ 0.0f,-345.0f };
+	m_pParam[HELP_WINDOWMODE_A]->size =	{ 1700.0f,105.0 };
+	m_pParam[HELP_DEFAULT_A]->pos =	{ 0.0f,-345.0f };
+	m_pParam[HELP_DEFAULT_A]->size =	{ 1700.0f,105.0 };
+
+	m_pParam[HELP_CONTROLLER_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_CONTROLLER_B]->size = { 1700.0f,105.0f };
+	m_pParam[HELP_KEYBOARD_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_KEYBOARD_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_FPS_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_FPS_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_RESOLUSION_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_RESOLUSION_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_MASTERVOLUME_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_MASTERVOLUME_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_BGM_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_BGM_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_SE_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_SE_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_WINDOWMODE_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_WINDOWMODE_B]->size = { 1700.0f,105.0 };
+	m_pParam[HELP_DEFAULT_B]->pos = { 0.0f,-345.0f };
+	m_pParam[HELP_DEFAULT_B]->size = { 1700.0f,105.0 };
+
 	m_pParam[ICON_CONTROLLER_A]->pos =	{ 230.0f,-80.0f };
 	m_pParam[ICON_CONTROLLER_A]->size = { 910.0f,410.0f };
 	m_pParam[ICON_CONTROLLER_B]->pos =	{ 230.0f,-80.0f };
@@ -954,24 +983,60 @@ void COption::DrawSound()
 	switch (m_nSelect)
 	{
 	case MASTER:
-		Sprite::SetParam(m_pParam[HELP_MASTERVOLUME]);
-		Sprite::SetTexture(m_pTexture[HELP_MASTERVOLUME]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_MASTERVOLUME_A]);
+			Sprite::SetTexture(m_pTexture[HELP_MASTERVOLUME_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_MASTERVOLUME_B]);
+			Sprite::SetTexture(m_pTexture[HELP_MASTERVOLUME_B]);
+			Sprite::Draw();
+		}
 		break;
 	case BGM:
-		Sprite::SetParam(m_pParam[HELP_BGM]);
-		Sprite::SetTexture(m_pTexture[HELP_BGM]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_BGM_A]);
+			Sprite::SetTexture(m_pTexture[HELP_BGM_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_BGM_B]);
+			Sprite::SetTexture(m_pTexture[HELP_BGM_B]);
+			Sprite::Draw();
+		}
 		break;
 	case SE:
-		Sprite::SetParam(m_pParam[HELP_SE]);
-		Sprite::SetTexture(m_pTexture[HELP_SE]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_SE_A]);
+			Sprite::SetTexture(m_pTexture[HELP_SE_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_SE_B]);
+			Sprite::SetTexture(m_pTexture[HELP_SE_B]);
+			Sprite::Draw();
+		}
 		break;
 	case DEFAULTSOUND:
-		Sprite::SetParam(m_pParam[HELP_DEFAULT]);
-		Sprite::SetTexture(m_pTexture[HELP_DEFAULT]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_DEFAULT_A]);
+			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_DEFAULT_B]);
+			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_B]);
+			Sprite::Draw();
+		}
 		break;
 	default:break;
 	}
@@ -1231,34 +1296,63 @@ void COption::DrawScreen()
 	switch (m_nSelect)
 	{
 	case SCREEN_MODE:
-		Sprite::SetParam(m_pParam[HELP_WINDOWMODE]);
-		Sprite::SetTexture(m_pTexture[HELP_WINDOWMODE]);
-		Sprite::Draw();
-		Sprite::SetParam(m_pParam[TAB_WINDOWMODE]);
-		Sprite::SetTexture(m_pTexture[TAB_WINDOWMODE]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_WINDOWMODE_A]);
+			Sprite::SetTexture(m_pTexture[HELP_WINDOWMODE_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_WINDOWMODE_B]);
+			Sprite::SetTexture(m_pTexture[HELP_WINDOWMODE_B]);
+			Sprite::Draw();
+		}
 		break;
 	case RESOLUSION:
-		Sprite::SetParam(m_pParam[HELP_RESOLUSION]);
-		Sprite::SetTexture(m_pTexture[HELP_RESOLUSION]);
-		Sprite::Draw();
-		Sprite::SetParam(m_pParam[TAB_WINDOWMODE]);
-		Sprite::SetTexture(m_pTexture[TAB_WINDOWMODE]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_RESOLUSION_A]);
+			Sprite::SetTexture(m_pTexture[HELP_RESOLUSION_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_RESOLUSION_B]);
+			Sprite::SetTexture(m_pTexture[HELP_RESOLUSION_B]);
+			Sprite::Draw();
+		}
 		break;
 	case FRAME_RATE:
-		Sprite::SetParam(m_pParam[HELP_FPS]);
-		Sprite::SetTexture(m_pTexture[HELP_FPS]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_FPS_A]);
+			Sprite::SetTexture(m_pTexture[HELP_FPS_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_FPS_B]);
+			Sprite::SetTexture(m_pTexture[HELP_FPS_B]);
+			Sprite::Draw();
+		}
 		break;
 	case DEFAULTSCREEN:
-		Sprite::SetParam(m_pParam[HELP_DEFAULT]);
-		Sprite::SetTexture(m_pTexture[HELP_DEFAULT]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_DEFAULT_A]);
+			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_DEFAULT_B]);
+			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_B]);
+			Sprite::Draw();
+		}
 		break;
 	default:break;
 	}
-
 	if (m_bSetValue && m_nSelect == DEFAULTSCREEN)
 	{
 		m_pParam[TAB_SELECT]->pos.y = 1500.0f;
@@ -1275,8 +1369,6 @@ void COption::DrawScreen()
 		Sprite::SetTexture(m_pTexture[DEFAULT_SELECTED]);
 		Sprite::Draw();
 	}
-
-
 }
 
 void COption::DrawInput()
@@ -1287,16 +1379,16 @@ void COption::DrawInput()
 	Sprite::SetParam(m_pParam[TAB_CONTROLLER]);
 	Sprite::SetTexture(m_pTexture[TAB_CONTROLLER]);
 	Sprite::Draw();
-	m_pParam[SELECT_LEFT]->pos.y = (300.0f * m_fMul) + MovePos.Y;
-	m_pParam[SELECT_RIGHT]->pos.y = (300.0f * m_fMul) + MovePos.Y;
+	/*m_pParam[SELECT_LEFT]->pos.y = (300.0f * m_fMul) + MovePos.Y;
+	m_pParam[SELECT_RIGHT]->pos.y = (300.0f * m_fMul) + MovePos.Y;*/
 	Sprite::SetParam(m_pParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
 	Sprite::SetParam(m_pParam[SELECT_RIGHT]);
 	Sprite::SetTexture(m_pTexture[SELECT_RIGHT]);
 	Sprite::Draw();
-	m_pParam[SELECT_LEFT]->pos.y = (200.0f * m_fMul) + MovePos.Y;
-	m_pParam[SELECT_RIGHT]->pos.y = (200.0f * m_fMul) + MovePos.Y;
+	/*m_pParam[SELECT_LEFT]->pos.y = (200.0f * m_fMul) + MovePos.Y;
+	m_pParam[SELECT_RIGHT]->pos.y = (200.0f * m_fMul) + MovePos.Y;*/
 	Sprite::SetParam(m_pParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
@@ -1488,10 +1580,19 @@ void COption::DrawInput()
 	switch (m_nSelect)
 	{
 	case KEY_BOARD:
-		Sprite::SetParam(m_pParam[HELP_KEYBOARD]);
-		Sprite::SetTexture(m_pTexture[HELP_KEYBOARD]);
-		Sprite::Draw();
-
+		
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_KEYBOARD_A]);
+			Sprite::SetTexture(m_pTexture[HELP_KEYBOARD_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_KEYBOARD_B]);
+			Sprite::SetTexture(m_pTexture[HELP_KEYBOARD_B]);
+			Sprite::Draw();
+		}
 		Sprite::SetParam(m_pParam[ICON_KEYBOARD_A]);
 		switch (m_nTempValue[KEY_BOARD])
 		{
@@ -1503,10 +1604,18 @@ void COption::DrawInput()
 		Sprite::Draw();
 		break;
 	case CONTROLLER:
-		Sprite::SetParam(m_pParam[HELP_CONTROLLER]);
-		Sprite::SetTexture(m_pTexture[HELP_CONTROLLER]);
-		Sprite::Draw();
-
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_CONTROLLER_A]);
+			Sprite::SetTexture(m_pTexture[HELP_CONTROLLER_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_CONTROLLER_B]);
+			Sprite::SetTexture(m_pTexture[HELP_CONTROLLER_B]);
+			Sprite::Draw();
+		}
 		Sprite::SetParam(m_pParam[ICON_CONTROLLER_A]);
 		switch (m_nTempValue[CONTROLLER])
 		{
@@ -1518,9 +1627,18 @@ void COption::DrawInput()
 		Sprite::Draw();
 		break;
 	case DEFAULTINPUT:
-		Sprite::SetParam(m_pParam[HELP_DEFAULT]);
-		Sprite::SetTexture(m_pTexture[HELP_DEFAULT]);
-		Sprite::Draw();
+		if (m_nTempValue[CONTROLLER] == 0)
+		{
+			Sprite::SetParam(m_pParam[HELP_DEFAULT_A]);
+			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_A]);
+			Sprite::Draw();
+		}
+		if (m_nTempValue[CONTROLLER] == 1)
+		{
+			Sprite::SetParam(m_pParam[HELP_DEFAULT_B]);
+			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_B]);
+			Sprite::Draw();
+		}
 		break;
 	default:
 		break;
