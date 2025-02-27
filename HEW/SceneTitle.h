@@ -28,39 +28,9 @@ public:
 	virtual void Draw()override;
 private:
 	void SetResolusion(float wide, float height, bool fullscreen);
+private:
 	void TitleAnimation();
-	void OptionApply();
-private:
-	IXAudio2SourceVoice* g_pSourseTitleBGM;
-	CSoundList* g_TitleSound;
-	CBackGround* g_pTitleBG;
-	COption* m_pOption;
-	CSoundList* m_pSelectsound;
-	IXAudio2SourceVoice* m_pSourseSelectSE;
-private:
-	SpriteEx* m_pTitleLogo;
-	SpriteEx* m_pTitleBack;
-	SpriteEx* m_pLini[2];
-	SpriteEx* m_pTitleFrame;
-	SpriteEx* m_pTitleUnderbar;
-	SpriteEx* m_pTitleStart[2];
-	SpriteEx* m_pTitleContinued[2];
-	SpriteEx* m_pTitleOption[2];
-	SpriteEx* m_pTitleEnd[2];
-	SpriteEx* m_pDecition;
-	DirectX::XMFLOAT2 m_SelectPos;
-	DirectX::XMFLOAT2 m_DecisionPos;
-	DirectX::XMFLOAT2 m_tLiniPos;
-	DirectX::XMFLOAT2 m_tTabPos[4];
-	DirectX::XMFLOAT2 m_tTabSize[4];
-	WORD m_Direction;
-	float m_fSelectScale;
-	bool m_bSelected;
-	bool m_bChange;
-	int m_nAnimCount;
-	int m_nLiniYCount;
-	static bool m_bFirstPlay;
-	DirectX::XMFLOAT2 m_tCharaLogoTexPos[2];
+	void EffectUpdate();
 	enum class Effect
 	{
 		Star = 0,
@@ -72,12 +42,62 @@ private:
 	CEffectManager_sp* m_pStarEfc[MAX_STAR];
 	DirectX::XMFLOAT2 m_tStarPos[MAX_STAR];
 	DirectX::XMFLOAT3 m_tStarRotate[MAX_STAR];
+	int m_nAnimCount;
+	float m_fAnimTime;
+	enum class TitleAnim
+	{
+		Hat,
+		Logo,
+		LinieBack,
+		Linie,
+		UnderBar,
+
+		Max
+	};
+	SpriteEx* m_pAnimSprite[(int)TitleAnim::Max];
+	ObjectParam m_AnimParam[(int)TitleAnim::Max];
+private:
+	void TitleInput();
+	SpriteEx* m_pTitleBack;
+	SpriteEx* m_pTitleFrame;
+	SpriteEx* m_pTitleStart[2];
+	SpriteEx* m_pTitleContinued[2];
+	SpriteEx* m_pTitleOption[2];
+	SpriteEx* m_pTitleEnd[2];
+	SpriteEx* m_pDecition;
+	DirectX::XMFLOAT2 m_SelectPos;
+	DirectX::XMFLOAT2 m_DecisionPos;
+	float m_fTabInitPosY;
+	DirectX::XMFLOAT2 m_tTabPos[4];
+	DirectX::XMFLOAT2 m_tTabSize[4];
+	WORD m_Direction;
+	float m_fSelectScale;
+	bool m_bSelected;
+	bool m_bChange;
+	int m_nLiniYCount;
+	DirectX::XMFLOAT2 m_tCharaLogoTexPos[2];
+
+private:
+	void OptionApply();
+	COption* m_pOption;
+
+private:
+	IXAudio2SourceVoice* g_pSourseTitleBGM;
+	CSoundList* g_TitleSound;
+	CSoundList* m_pSelectsound;
+	IXAudio2SourceVoice* m_pSourseSelectSE;
+
+private:
+	CBackGround* g_pTitleBG;
+
+private:
+	static bool m_bFirstPlay;
+public:
+	static bool IsFirstPlay();
+	static void SetPlayed();
 	
 private:
 	bool CheckRankingCommand();
 	bool m_bRankingCommand[4];
 	float m_fRankingCommandResetTimer;
-public:
-	static bool IsFirstPlay();
-	static void SetPlayed();
 };
