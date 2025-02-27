@@ -385,7 +385,9 @@ void CSceneGame::Draw()
 	}
 	else if (GetCameraKind() == EVENT_CAMERA)
 	{
-		m_pBattle->LinieDraw();
+		std::thread Th_BattleLinieDraw(&CBattle::LinieDraw, m_pBattle);
+		Th_BattleLinieDraw.join();
+		//m_pBattle->LinieDraw();
 	}
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)

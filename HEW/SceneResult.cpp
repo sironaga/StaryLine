@@ -147,6 +147,7 @@ CSceneResult::CSceneResult()
 
 	if(ResultGameData.nSpawnCount > 0 && ResultGameData.nDrawCount > 0)ResultGameData.nAverageSpwn = ResultGameData.nSpawnCount / ResultGameData.nDrawCount;
 
+	SetCameraKind(NOMAL_CAMERA);
 	CSceneTitle::SetPlayed();
 }
 CSceneResult::~CSceneResult()
@@ -259,6 +260,7 @@ void CSceneResult::Update()
 // --- ‘S‘Ì‚Ì•`‰æˆ—
 void CSceneResult::Draw()
 {
+	SetRender2D();
 	// ”wŒi•`‰æ
 	m_pBackGround->SetTexture();
 	m_pBackGround->Disp();
