@@ -101,6 +101,7 @@ void CPause::Uninit()
 
 void CPause::Update()
 {
+	if (GetCameraKind() == CAMERA_KIND::EVENT_CAMERA)return;
 	static float t = 0.0f;
 	static int section = SEC_RETURN;//‘I‘ğ’†‚Ìƒo[‚ÌêŠ
 	XAUDIO2_BUFFER buffer;
