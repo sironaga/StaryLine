@@ -371,7 +371,7 @@ void CSceneResult::SetRankData(int nStage, Rank SetRank)
 // --- テクスチャの読み込み
 void CSceneResult::LoadTexture(void)
 {
-	m_pBackGround		= new SpriteEx("Assets/Texture/Result/B.png");
+	m_pBackGround		= new SpriteEx("Assets/Texture/Result/BackGround.png");
 	m_pUnberUI			= new SpriteEx("Assets/Texture/Result/UI/Result_Underbar.png");
 	m_pStageSelectUI[0] = new SpriteEx("Assets/Texture/Result/UI/Result_01.png");
 	m_pStageSelectUI[1] = new SpriteEx("Assets/Texture/Result/UI/Result_02.png");

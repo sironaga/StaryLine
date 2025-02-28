@@ -74,8 +74,6 @@ private:
 	SpriteEx* m_pRank_B;
 	SpriteEx* m_pRank_A;
 	SpriteEx* m_pRank_S;
-	SpriteEx* m_pTransition[2];
-
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* m_BGMSound;
 	IXAudio2SourceVoice* m_pSourseStageSelectSE[5];
