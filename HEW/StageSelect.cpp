@@ -92,7 +92,6 @@ CStageSelect::CStageSelect()
 	, m_fTime(0.0f)
 	, m_Direction(NULL)
 	, m_bTransition(false)
-	, m_pTransition{}
 	, m_tTransitionParam{}
 	, m_nPage(0)
 	, m_pStory{}
@@ -221,10 +220,6 @@ CStageSelect::~CStageSelect()
 		m_pStarEfc[i] = nullptr;
 	}
 
-	for (int i = 0; i < 2; i++)
-	{
-		SAFE_DELETE(m_pTransition[i]);
-	}
 }
 
 void CStageSelect::Update()
@@ -661,8 +656,6 @@ void CStageSelect::LoadFile()
 	m_pRank_A = new SpriteEx("Assets/Texture/Result/Rank/Rank_A.png");
 	m_pRank_S = new SpriteEx("Assets/Texture/Result/Rank/Rank_S.png");
 
-	m_pTransition[0] = new SpriteEx("Assets/Texture/Transition/001.png");
-	m_pTransition[1] = new SpriteEx("Assets/Texture/Transition/TransitionStarB.png");
 
 	m_pStageSelect_Underbar = new SpriteEx("Assets/Texture/StageSelectBackGround/Stageselect_Underbar.png");
 	m_pModel[GrassField] = new CModelEx(MODEL_PASS("StageSelect/StageSelect_Stage01_GrassField.fbx"), false);

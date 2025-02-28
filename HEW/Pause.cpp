@@ -36,7 +36,7 @@ void CPause::Init()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
-	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/kuro.png"));
+	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/black.png"));
 
 
 	//É|ÉWÉVÉáÉìÇÃèâä˙âª
@@ -712,7 +712,7 @@ void CPause::InitReload()
 	m_pPauseTex[7] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect.png"));
 	m_pPauseTex[8] = new SpriteEx(TEX_PASS("Pause/Pause_Stageselect_Push.png"));
 	m_pPauseTex[9] = new SpriteEx(TEX_PASS("Pause/Pause_Selected.png"));
-	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/kuro.png"));
+	m_pPauseTex[10] = new SpriteEx(TEX_PASS("Pause/black.png"));
 
 	m_pSoundPause[0] = new CSoundList(SE_CANCEL);
 	m_pSoundPause[1] = new CSoundList(SE_DECISION);

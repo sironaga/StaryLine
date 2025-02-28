@@ -199,7 +199,7 @@ CFieldVertex::CFieldVertex()
 	m_pStarLine = new StarLine();
 	
 	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 10, 2.0f);
-	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/ê}å`ê∂ê¨.png"), 4, 8, 1.0f);
+	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
 	for (int i = 0; i < 32; i++)
 	{
 		g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
@@ -353,8 +353,8 @@ CFieldVertex::CFieldVertex()
 			{
 			case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
 			case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
-			case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/UI11.png")); break;
-			case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/UI10.png")); break;
+			case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/Red_Fever_Star_Back.png")); break;
+			case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star_Front.png")); break;
 			default:
 				break;
 			}
@@ -1635,7 +1635,7 @@ void CFieldVertex::InitTextureModel()
 		m_pStarLine = new StarLine();
 
 		g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
-		g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/ê}å`ê∂ê¨.png"), 4, 8, 1.0f);
+		g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
 		for (int i = 0; i < 32; i++)
 		{
 			g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
@@ -1720,8 +1720,8 @@ void CFieldVertex::InitTextureModel()
 			{
 			case 0:hrFeverStar = m_pTex_Fever_Gage[0]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star.png")); break;
 			case 1:hrFeverStar = m_pTex_Fever_Gage[1]->Create(TEX_PASS("Fever_Star/Red_Fever_Star.png")); break;
-			case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/UI11.png")); break;
-			case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/UI10.png")); break;
+			case 2:hrFeverStar = m_pTex_Fever_Gage[2]->Create(TEX_PASS("Fever_Star/Red_Fever_Star_Back.png")); break;
+			case 3:hrFeverStar = m_pTex_Fever_Gage[3]->Create(TEX_PASS("Fever_Star/Gray_Fever_Star_Front.png")); break;
 			default:
 				break;
 			}
