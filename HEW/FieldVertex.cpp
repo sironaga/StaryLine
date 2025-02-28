@@ -105,6 +105,7 @@ CFieldVertex::CFieldVertex()
 	, Fever_Draw_Angle{}
 	, Fever_Draw_Angle_Count (FEVER_DRAW_ANGLE_COUNT)
 	, Fever_Player_Draw_Pos{}
+	, g_pShapesEffects_Pos{}
 	, Fever_Stop_Player_time(0.0f)
 	, Mode_Player_Move(0)
 	, Ally_Count(0)
@@ -133,6 +134,8 @@ CFieldVertex::CFieldVertex()
 	, g_pFeverEffects{nullptr}
 	, g_pLineEffects_Sprite( nullptr)
 	, g_pLineEffects{nullptr}
+	, g_pShapesEffects_Sprite(nullptr)
+	, g_pShapesEffects{nullptr}
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
 	, Fever_Effects_Alpha(1.0f)
@@ -198,8 +201,13 @@ CFieldVertex::CFieldVertex()
 
 	m_pStarLine = new StarLine();
 	
+	g_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
 	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 10, 2.0f);
 	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/図形生成.png"), 4, 8, 1.0f);
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		g_pShapesEffects[i] = new CEffectManager_sp(g_pShapesEffects_Sprite);
+	}
 	for (int i = 0; i < 32; i++)
 	{
 		g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
@@ -233,6 +241,7 @@ CFieldVertex::CFieldVertex()
 	Fill(Shapes_Angle_Save, -1.0f);
 	Fill(Shapes_Length, -1.0f);
 	Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
+	Fill(g_pShapesEffects_Pos, -1.0f);
 
 	// 頂点２５個座標情報初期化
 	{
@@ -633,6 +642,47 @@ void CFieldVertex::Update()
 	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
 	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
 	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
+}
+
+////=====図形から召喚のエフェクトの描画
+void CFieldVertex::ShapesEffectDraw()
+{
+	//-----Effectの描画-----//
+	{
+		SetRender2D();
+		if (!g_pShapesEffects[0]->IsPlay())
+		{
+			for (int i = 0; i < Effect_NowShapes; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
+					{
+						g_pShapesEffects[i]->SetSize({ 10.0f,10.0f, 0.0f });
+						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
+						g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+						g_pShapesEffects[i]->Play(false);
+					}
+				}
+			}
+		}
+		for (int i = 0; i < Effect_NowShapes; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				if (g_pShapesEffects[i]->IsPlay())
+				{
+					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
+					{
+						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
+						g_pShapesEffects[i]->Update();
+						g_pShapesEffects[i]->Draw();
+					}
+				}
+			}
+		}
+		
+	}
 }
 
 ////=====FieldVertexの描画処理の関数=====//
@@ -1529,6 +1579,7 @@ void CFieldVertex::InitFieldVertex()
 		Fill(Shapes_Angle_Save, -1.0f);
 		Fill(Shapes_Length, -1.0f);
 		Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
+		Fill(g_pShapesEffects_Pos, -1.0f);
 	
 		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
 		OrderVertexCount = 1;//たどった頂点の数初期化
@@ -2179,6 +2230,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						//Shapes_Pos[NowShapes].y = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].x - pos[2].x) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].x - pos[0].x) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].x - pos[1].x)) / (2.0f * ((pos[1].x - pos[2].x) * (pos[0].y - pos[1].y) - (pos[0].x - pos[1].x) * (pos[1].y - pos[2].y)));
 						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
 						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
+						g_pShapesEffects_Pos[NowShapes][0].x = Effect_Shapes_Pos[NowShapes].x;
+						g_pShapesEffects_Pos[NowShapes][0].y = Effect_Shapes_Pos[NowShapes].y;
+						g_pShapesEffects_Pos[NowShapes][0].z = 0.0f;
 						bool typeflag = false;
 						float CornerAngle = -1.0f;
 						int CornerNumber = -1;
@@ -2236,8 +2290,11 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 						Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
 						Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
-						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
-						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
+						Effect_Shapes_Pos[NowShapes].x = Shapes_Pos[NowShapes].x;
+						Effect_Shapes_Pos[NowShapes].y = Shapes_Pos[NowShapes].y;
+						g_pShapesEffects_Pos[NowShapes][0].x = Effect_Shapes_Pos[NowShapes].x;
+						g_pShapesEffects_Pos[NowShapes][0].y = Effect_Shapes_Pos[NowShapes].y;
+						g_pShapesEffects_Pos[NowShapes][0].z = 0.0f;
 
 						float Length[4][2];//四辺の長さを求める
 						for (int m = 0; m < 3; m++)
