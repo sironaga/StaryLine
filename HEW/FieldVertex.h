@@ -29,6 +29,7 @@ public:
 	void Update();//FieldVertexのメイン更新処理
 	void LogUpdate();//ログの更新処理
 
+	void ShapesEffectDraw();//図形から召喚のエフェクト
 	void Draw();//FieldVertexのメイン描画処理
 	void FeverDraw();//フィーバー時の描画用関数
 
@@ -150,6 +151,8 @@ private:
 	float Shapes_Length[MAX_ALLY][2];//縦と横の長さ
 	//float
 
+	DirectX::XMFLOAT3 g_pShapesEffects_Pos[MAX_ALLY][3];//図形から召喚のエフェクトの座標
+
 	CBattle* m_pBattle;//バトルクラスのポインター
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
 	StarLine* m_pStarLine;
@@ -172,6 +175,9 @@ private:
 
 	CEffectManager_sp* g_pLineEffects_Sprite;
 	CEffectManager_sp* g_pLineEffects[MAX_ALLY];
+
+	CEffectManager_sp* g_pShapesEffects_Sprite;
+	CEffectManager_sp* g_pShapesEffects[MAX_ALLY];
 
 	CEffectManager_sp* g_pFeverEffects_Sprite;
 	CEffectManager_sp* g_pFeverEffects[32];

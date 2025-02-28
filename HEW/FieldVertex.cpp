@@ -1,5 +1,5 @@
 //FieldVertex.cpp
-//•ÒWÒFAT12A25 ’†“‡¹—…
+//ç·¨é›†è€…ï¼šAT12A25 ä¸­å³¶è–ç¾…
 #include "FieldVertex.h"
 #include "DirectXTex/TextureLoad.h"
 #include "Player.h"
@@ -10,65 +10,65 @@
 #include "Main.h"
 #include "SoundList.h"
 
-//}Œ`‚Ì‚â‚Â
-//OŠpŒ`‚ğ‰ñ“]‚³‚¹‚é(•Ó‚ªˆê”Ô’·‚¢‚Æ‚±‚ë‚Ì2’¸“_‚ªŠOS‚Ìã‰º¶‰E‚ğ“¯‚É–‚½‚·Š‚ğæ“¾‚·‚é‚ê‚Î‚¢‚¯‚»‚¤)
-//lŠpŒ`‚ğ‰ñ“]‚³‚¹‚é(????)
-//“Áê‚ÈOŠpŒ`‚Ì”»’è(1í—Ş)
-//“Áê‚ÈlŠpŒ`‚Ì”»’è(4í—Ş)
-//‚Ğ‚µŒ`‚Æ³•ûŒ`ˆµ‚¢•Ï‚¦‚é
-//³•ûŒ`‚Æ’·•ûŒ`‚Ç‚¤‚·‚é
+//å›³å½¢ã®ã‚„ã¤
+//ä¸‰è§’å½¢ã‚’å›è»¢ã•ã›ã‚‹(è¾ºãŒä¸€ç•ªé•·ã„ã¨ã“ã‚ã®2é ‚ç‚¹ãŒå¤–å¿ƒã®ä¸Šä¸‹å·¦å³ã‚’åŒæ™‚ã«æº€ãŸã™æ‰€ã‚’å–å¾—ã™ã‚‹ã‚Œã°ã„ã‘ãã†)
+//å››è§’å½¢ã‚’å›è»¢ã•ã›ã‚‹(????)
+//ç‰¹æ®Šãªä¸‰è§’å½¢ã®åˆ¤å®š(1ç¨®é¡)
+//ç‰¹æ®Šãªå››è§’å½¢ã®åˆ¤å®š(4ç¨®é¡)
+//ã²ã—å½¢ã¨æ­£æ–¹å½¢æ‰±ã„å¤‰ãˆã‚‹
+//æ­£æ–¹å½¢ã¨é•·æ–¹å½¢ã©ã†ã™ã‚‹
 
 
-//«FieldVertex‚Ì‚Ü‚¾‚â‚Á‚Ä‚È‚¢–«
-//Še•Ï”–¼‚ÌC³
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Æupdate‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
-//ƒwƒbƒ_[‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
-//ƒOƒ[ƒoƒ‹—Ìˆæ‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
-//‘S‘Ì‚ÌƒRƒƒ“ƒgƒAƒEƒgŒ©’¼‚µ
+//â†“FieldVertexã®ã¾ã ã‚„ã£ã¦ãªã„äº‹â†“
+//å„å¤‰æ•°åã®ä¿®æ­£
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã¨updateã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+//ãƒ˜ãƒƒãƒ€ãƒ¼ã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«é ˜åŸŸã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+//å…¨ä½“ã®ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆè¦‹ç›´ã—
 
 #define MAX_SHAPES_DRAW_TIME (0.75f)
-#define TRIANGLE_SIZE (90.0f)//OŠpŒ`‚ÌƒTƒCƒY
-#define SQUARE_SIZE (80.0f)//³•ûŒ`‚ÌƒTƒCƒY
-#define TRAPEZOID_SIZE (80.0f)//‘äŒ`‚ÌƒTƒCƒY
-#define PARALLELOGRAM_SIZE (80.0f)//•½sl•ÓŒ`‚ÌƒTƒCƒY
-#define SPECIAL_SHAPE_SIZE (80.0f)//ƒJƒbƒ^[Œ^‚Ì}Œ`‚ÌƒTƒCƒY
+#define TRIANGLE_SIZE (90.0f)//ä¸‰è§’å½¢ã®ã‚µã‚¤ã‚º
+#define SQUARE_SIZE (80.0f)//æ­£æ–¹å½¢ã®ã‚µã‚¤ã‚º
+#define TRAPEZOID_SIZE (80.0f)//å°å½¢ã®ã‚µã‚¤ã‚º
+#define PARALLELOGRAM_SIZE (80.0f)//å¹³è¡Œå››è¾ºå½¢ã®ã‚µã‚¤ã‚º
+#define SPECIAL_SHAPE_SIZE (80.0f)//ã‚«ãƒƒã‚¿ãƒ¼å‹ã®å›³å½¢ã®ã‚µã‚¤ã‚º
 
-#define VERTEX_POS_X (-30.0f)//¯(’¸“_)‚Ì•`‰æˆÊ’uX
-#define VERTEX_POS_Y (95.0f)//¯(’¸“_)‚Ì•`‰æˆÊ’uY
-#define VERTEX_SPACE_X (15.0f)//¯(’¸“_)ŠÔ‚ÌŠÔŠuX
-#define VERTEX_SPACE_Y (15.0f)//¯(’¸“_)ŠÔ‚ÌŠÔŠuY
+#define VERTEX_POS_X (-30.0f)//æ˜Ÿ(é ‚ç‚¹)ã®æç”»ä½ç½®X
+#define VERTEX_POS_Y (95.0f)//æ˜Ÿ(é ‚ç‚¹)ã®æç”»ä½ç½®Y
+#define VERTEX_SPACE_X (15.0f)//æ˜Ÿ(é ‚ç‚¹)é–“ã®é–“éš”X
+#define VERTEX_SPACE_Y (15.0f)//æ˜Ÿ(é ‚ç‚¹)é–“ã®é–“éš”Y
 
-#define LINE_SIZE (0.1f)//ü‚ÌƒTƒCƒY
-#define STAR_SIZE (10.0f)//¯(’¸“_)‚ÌƒTƒCƒY
+#define LINE_SIZE (0.1f)//ç·šã®ã‚µã‚¤ã‚º
+#define STAR_SIZE (10.0f)//æ˜Ÿ(é ‚ç‚¹)ã®ã‚µã‚¤ã‚º
 
-#define FEVER_ADD_TIME (1.0f)//ƒtƒB[ƒo[‚ÌƒXƒeƒ‰æ‚Á‚½‚Ì’Ç‰ÁŠÔ
-#define FEVER_TIME (10.0f)//ƒtƒB[ƒo[‚ÌŠÔ
-#define MAX_FEVER_POINT (30.0f)//ƒtƒB[ƒo[ƒQ[ƒW‚ÌãŒÀƒ|ƒCƒ“ƒg
-#define FEVER_GAGE_POS_X (-83.0f)//ƒtƒB[ƒo[ƒQ[ƒW‚ÌXÀ•W
-#define FEVER_GAGE_POS_Y (65.0f)//ƒtƒB[ƒo[ƒQ[ƒW‚ÌYÀ•W
+#define FEVER_ADD_TIME (1.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã®ã‚¹ãƒ†ãƒ©å–ã£ãŸæ™‚ã®è¿½åŠ æ™‚é–“
+#define FEVER_TIME (10.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã®æ™‚é–“
+#define MAX_FEVER_POINT (30.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚²ãƒ¼ã‚¸ã®ä¸Šé™ãƒã‚¤ãƒ³ãƒˆ
+#define FEVER_GAGE_POS_X (-83.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚²ãƒ¼ã‚¸ã®Xåº§æ¨™
+#define FEVER_GAGE_POS_Y (65.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚²ãƒ¼ã‚¸ã®Yåº§æ¨™
 
 #define FEVER_PLAYER_DRAW_POS_X (0.0f)
-#define FEVER_PLAYER_DRAW_POS_Y (-87.0f)//‰ºŒÀ-63.0f ’†ŒÀ-30.0f@ãŒÀ-27.0f
-#define FEVER_STOP_PLAYER_TIME (1.0f)//ƒtƒB[ƒo[’†ƒvƒŒƒCƒ„[‚ª~‚Ü‚Á‚Ä‚¢‚éŠÔ
+#define FEVER_PLAYER_DRAW_POS_Y (-87.0f)//ä¸‹é™-63.0f ä¸­é™-30.0fã€€ä¸Šé™-27.0f
+#define FEVER_STOP_PLAYER_TIME (1.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ä¸­ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ­¢ã¾ã£ã¦ã„ã‚‹æ™‚é–“
 
-#define SUMMON_LOG_SIZE_X (40.0f)//ƒƒO‚ÌXƒTƒCƒY
-#define SUMMON_LOG_SIZE_Y (10.0f)//ƒƒO‚ÌYƒTƒCƒY
-#define MAX_DRAW_LOG (15)//ƒƒO‚Ì•`‰æ”
-#define DRAW_LOG_TIME (0.5f) //ƒƒO‚ÌIn‚Ì•\¦ŠÔ
-#define DRAW_MAIN_LOG_TIME (2.0f) //ƒƒO‚Ì’†ŠÔ‚Ì•\¦ŠÔ
-#define FADE_LOG_TIME (0.25f) //ƒƒO‚ªˆÚ“®‚·‚éŠÔŠu
-#define FADE_LOG_SPEED (0.5f) //ƒƒO‚ÌIn‚ÌƒXƒs[ƒh
-#define MAIN_LOG_SPEED (1.0f) //ƒƒO‚Ì’†ŠÔ‚ÌƒXƒs[ƒh
+#define SUMMON_LOG_SIZE_X (40.0f)//ãƒ­ã‚°ã®Xã‚µã‚¤ã‚º
+#define SUMMON_LOG_SIZE_Y (10.0f)//ãƒ­ã‚°ã®Yã‚µã‚¤ã‚º
+#define MAX_DRAW_LOG (15)//ãƒ­ã‚°ã®æç”»æ•°
+#define DRAW_LOG_TIME (0.5f) //ãƒ­ã‚°ã®çµ‚å§‹ã®è¡¨ç¤ºæ™‚é–“
+#define DRAW_MAIN_LOG_TIME (2.0f) //ãƒ­ã‚°ã®ä¸­é–“ã®è¡¨ç¤ºæ™‚é–“
+#define FADE_LOG_TIME (0.25f) //ãƒ­ã‚°ãŒç§»å‹•ã™ã‚‹é–“éš”
+#define FADE_LOG_SPEED (0.5f) //ãƒ­ã‚°ã®çµ‚å§‹ã®ã‚¹ãƒ”ãƒ¼ãƒ‰
+#define MAIN_LOG_SPEED (1.0f) //ãƒ­ã‚°ã®ä¸­é–“ã®ã‚¹ãƒ”ãƒ¼ãƒ‰
 
 #define BOARD_SIZE_X (20.0f)
 #define BOARD_SIZE_Y (20.0f)
 
-#define FEVER_DRAW_ANGLE_TIME (1.0f)//ƒtƒB[ƒo[‚Ì•`‰æUI‚ğ‰½•b‚Å1‰ñ“]‚³‚¹‚é‚©
-#define FEVER_DRAW_ANGLE_COUNT (2.0f)//ƒtƒB[ƒo[‚Ì•`‰æUI‚ğ‰½‰ñ“]‚³‚¹‚é‚©
+#define FEVER_DRAW_ANGLE_TIME (1.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã®æç”»UIã‚’ä½•ç§’ã§1å›è»¢ã•ã›ã‚‹ã‹
+#define FEVER_DRAW_ANGLE_COUNT (2.0f)//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã®æç”»UIã‚’ä½•å›è»¢ã•ã›ã‚‹ã‹
 
-Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//ü‚Ìl’¸“_À•W•Û‘¶—p
-IXAudio2SourceVoice* g_FieldSe;//FieldVertex‚ÌƒTƒEƒ“ƒh‰¹—Ê
-CSoundList* g_Fieldsound;//FieldVertex‚ÌƒTƒEƒ“ƒhƒ|ƒCƒ“ƒ^[
+Sprite::Vertex vtx_FieldLine[MAX_LINE][4];//ç·šã®å››é ‚ç‚¹åº§æ¨™ä¿å­˜ç”¨
+IXAudio2SourceVoice* g_FieldSe;//FieldVertexã®ã‚µã‚¦ãƒ³ãƒ‰éŸ³é‡
+CSoundList* g_Fieldsound;//FieldVertexã®ã‚µã‚¦ãƒ³ãƒ‰ãƒã‚¤ãƒ³ã‚¿ãƒ¼
 
 float Xx = 0.0f;
 float Yy = 0.0f;
@@ -105,6 +105,7 @@ CFieldVertex::CFieldVertex()
 	, Fever_Draw_Angle{}
 	, Fever_Draw_Angle_Count (FEVER_DRAW_ANGLE_COUNT)
 	, Fever_Player_Draw_Pos{}
+	, g_pShapesEffects_Pos{}
 	, Fever_Stop_Player_time(0.0f)
 	, Mode_Player_Move(0)
 	, Ally_Count(0)
@@ -133,6 +134,8 @@ CFieldVertex::CFieldVertex()
 	, g_pFeverEffects{nullptr}
 	, g_pLineEffects_Sprite( nullptr)
 	, g_pLineEffects{nullptr}
+	, g_pShapesEffects_Sprite(nullptr)
+	, g_pShapesEffects{nullptr}
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
 	, Fever_Effects_Alpha(1.0f)
@@ -142,14 +145,14 @@ CFieldVertex::CFieldVertex()
 	, Shapes_Length{}
 	, Shapes_Color_Time{}
 {
-	//-----ƒTƒEƒ“ƒh‚Ì‰Šú‰»-----//
+	//-----ã‚µã‚¦ãƒ³ãƒ‰ã®åˆæœŸåŒ–-----//
 	{
-		g_Fieldsound = new CSoundList(SE_COMPLETE);//ƒTƒEƒ“ƒh‚Ìƒƒ‚ƒŠŠm•Û
+		g_Fieldsound = new CSoundList(SE_COMPLETE);//ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿
 		g_Fieldsound->SetMasterVolume();//
 		g_FieldSe = g_Fieldsound->GetSound(false);//
 	}
 
-	//-----ƒXƒvƒ‰ƒCƒg‚Ìƒƒ‚ƒŠŠm•Û-----//
+	//-----ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒ¡ãƒ¢ãƒªç¢ºä¿-----//
 	{
 		/*m_pSprite_SuperStar_Number = new Sprite();*/
 		m_pSprite_Fever_Gage[0] = new Sprite();
@@ -169,7 +172,7 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
-	//-----ƒeƒNƒXƒ`ƒƒ‚Ìƒƒ‚ƒŠŠm•Û-----//
+	//-----ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿-----//
 	{
 		m_pTex_Fever_Gage[0] = new Texture();
 		m_pTex_Fever_Gage[1] = new Texture();
@@ -198,8 +201,14 @@ CFieldVertex::CFieldVertex()
 
 	m_pStarLine = new StarLine();
 	
+	g_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
 	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 10, 2.0f);
 	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
+
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		g_pShapesEffects[i] = new CEffectManager_sp(g_pShapesEffects_Sprite);
+	}
 	for (int i = 0; i < 32; i++)
 	{
 		g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
@@ -213,13 +222,13 @@ CFieldVertex::CFieldVertex()
 	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
 	m_pStar_Model[2] = new CModelEx(MODEL_PASS("Board_Star/Red/Board_Star_Red.fbx"));
 
-	StartVertex = START_PLAYER;	// n“_‰Šú‰»
-	GoalVertex = START_PLAYER;	// I“_‰Šú‰»
-	NowShapes = 0;				// Ši”[‚µ‚½}Œ`‚Ì”‰Šú‰»
+	StartVertex = START_PLAYER;	// å§‹ç‚¹åˆæœŸåŒ–
+	GoalVertex = START_PLAYER;	// çµ‚ç‚¹åˆæœŸåŒ–
+	NowShapes = 0;				// æ ¼ç´ã—ãŸå›³å½¢ã®æ•°åˆæœŸåŒ–
 
 	Size = 0.0f;
 
-	// Še”z—ñ‚ğ-1‚Å‰Šú‰»
+	// å„é…åˆ—ã‚’-1ã§åˆæœŸåŒ–
 	Fill(OrderVertex, -1);
 	Fill(Shapes_Size, -1.0f);
 	Fill(Comparison_Shapes_Vertex_Save, -1);
@@ -233,8 +242,9 @@ CFieldVertex::CFieldVertex()
 	Fill(Shapes_Angle_Save, -1.0f);
 	Fill(Shapes_Length, -1.0f);
 	Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
+	Fill(g_pShapesEffects_Pos, -1.0f);
 
-	// ’¸“_‚Q‚TŒÂÀ•Wî•ñ‰Šú‰»
+	// é ‚ç‚¹ï¼’ï¼•å€‹åº§æ¨™æƒ…å ±åˆæœŸåŒ–
 	{
 		FieldVertex* Vertexp;
 		Vertexp = m_tVertex;
@@ -259,7 +269,7 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
-	//ƒZƒ“ƒ^[’¸“_16ŒÂÀ•Wî•ñ‰Šú‰»
+	//ã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹16å€‹åº§æ¨™æƒ…å ±åˆæœŸåŒ–
 	{
 		CenterVertex* CenterVertexp;
 		CenterVertexp = m_tCenter_Vertex;
@@ -275,28 +285,28 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
-	//‚½‚Ç‚é‡‚ÉƒvƒŒƒCƒ„[‚ÌÅ‰‚ÌˆÊ’u•Û‘¶
+	//ãŸã©ã‚‹é †ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æœ€åˆã®ä½ç½®ä¿å­˜
 	OrderVertex[0] = StartVertex;
-	OrderVertexCount = 1;//‚½‚Ç‚Á‚½’¸“_‚Ì”‰Šú‰»
+	OrderVertexCount = 1;//ãŸã©ã£ãŸé ‚ç‚¹ã®æ•°åˆæœŸåŒ–
 
-	m_tVertex[START_PLAYER].Use = true;//Å‰‚Ì’¸“_‚ğg—p‚É
+	m_tVertex[START_PLAYER].Use = true;//æœ€åˆã®é ‚ç‚¹ã‚’ä½¿ç”¨ã«
 
 	SetSuperStar();
 
-	//¢Š«ƒƒO‰Šú‰»
+	//å¬å–šãƒ­ã‚°åˆæœŸåŒ–
 	{
 		HRESULT hrSummon_Log;
 		hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
 		if (FAILED(hrSummon_Log)) {
-			MessageBox(NULL, "Summon_Log_Triangular ‰æ‘œ", "Error", MB_OK);
+			MessageBox(NULL, "Summon_Log_Triangular ç”»åƒ", "Error", MB_OK);
 		}
 		hrSummon_Log = m_pTex_Summon_Log[1]->Create(TEX_PASS("Summon_Log/Log_Square.png"));
 		if (FAILED(hrSummon_Log)) {
-			MessageBox(NULL, "Summon_Log_Square ‰æ‘œ", "Error", MB_OK);
+			MessageBox(NULL, "Summon_Log_Square ç”»åƒ", "Error", MB_OK);
 		}
 	}
 
-	//ƒX[ƒp[ƒXƒ^‚Ì”š‰Šú‰»
+	//ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¹ã‚¿ã®æ•°å­—åˆæœŸåŒ–
 	{
 		/*HRESULT hrSuperStar;
 		for (int i = 0; i < 6; i++)
@@ -313,12 +323,12 @@ CFieldVertex::CFieldVertex()
 				break;
 			}
 			if (FAILED(hrSuperStar)) {
-				MessageBox(NULL, "Vertex ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Vertex ç”»åƒ", "Error", MB_OK);
 			}
 		}*/
 	}
 
-	//¢Š«”‚Ì”š‰Šú‰»
+	//å¬å–šæ•°ã®æ•°å­—åˆæœŸåŒ–
 	{
 		HRESULT hrNumber;
 		for (int i = 0; i < 10; i++)
@@ -339,12 +349,12 @@ CFieldVertex::CFieldVertex()
 				break;
 			}
 			if (FAILED(hrNumber)) {
-				MessageBox(NULL, "Numbers ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Numbers ç”»åƒ", "Error", MB_OK);
 			}
 		}
 	}
 
-	//ƒtƒB[ƒo[‚Ì‰Šú‰»
+	//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã®åˆæœŸåŒ–
 	{
 		HRESULT hrFeverStar;
 		for (int i = 0; i < 4; i++)
@@ -359,19 +369,19 @@ CFieldVertex::CFieldVertex()
 				break;
 			}
 			if (FAILED(hrFeverStar)) {
-				MessageBox(NULL, "Fever_Star ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Fever_Star ç”»åƒ", "Error", MB_OK);
 			}
 		}
 		HRESULT hrFeverPlayer;
 		hrFeverPlayer = m_pTex_Fever_Player->Create(TEX_PASS("Fever_Star/FieldVertex_Player_UI.png"));
 		if (FAILED(hrFeverStar)) {
-			MessageBox(NULL, "Fever_Player ‰æ‘œ", "Error", MB_OK);
+			MessageBox(NULL, "Fever_Player ç”»åƒ", "Error", MB_OK);
 		}
 
 		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f};
 	}
 
-	//¢Š«”‚Ìƒ{[ƒh‰Šú‰»
+	//å¬å–šæ•°ã®ãƒœãƒ¼ãƒ‰åˆæœŸåŒ–
 	{
 		HRESULT hrBoard;
 		for (int i = 0; i < 4; i++)
@@ -386,7 +396,7 @@ CFieldVertex::CFieldVertex()
 				break;
 			}
 			if (FAILED(hrBoard)) {
-				MessageBox(NULL, "Summon_Count_Board ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Summon_Count_Board ç”»åƒ", "Error", MB_OK);
 			}
 		}
 	}
@@ -395,12 +405,12 @@ CFieldVertex::CFieldVertex()
 	{
 		switch (i)
 		{
-		case 0:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Tr00.png")); break;//OŠpŒ`
-		case 1:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Tr01.png")); break;//£
+		case 0:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Tr00.png")); break;//ä¸‰è§’å½¢
+		case 1:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Tr01.png")); break;//â–²
 
-		case 2:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq00.png")); break;//¡³•ûŒ`
+		case 2:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq00.png")); break;//â– æ­£æ–¹å½¢
 
-		case 3:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq24.png")); break;//1:3‘äŒ`
+		case 3:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq24.png")); break;//1:3å°å½¢
 		case 4:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq25.png")); break;//2:4
 		case 5:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq11.png")); break;//1:2
 		case 6:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq13.png")); break;//1:3
@@ -408,25 +418,25 @@ CFieldVertex::CFieldVertex()
 		case 8:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq07.png")); break;//2:3
 		case 9:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq09.png")); break;//3:4
 
-		case 10:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq01.png")); break;//1:1•½sl•ÓŒ`‰E‰º‚©‚ç¶‰º
+		case 10:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq01.png")); break;//1:1å¹³è¡Œå››è¾ºå½¢å³ä¸‹ã‹ã‚‰å·¦ä¸‹
 		case 11:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq03.png")); break;//1:2
 		case 12:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq05.png")); break;//1:3
 		case 13:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq26.png")); break;//3:1
 		case 14:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq28.png")); break;//2:1
 
-		case 15:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq02.png")); break;//1:1•½sl•ÓŒ`¶‰º‚©‚ç‰E‰º
+		case 15:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq02.png")); break;//1:1å¹³è¡Œå››è¾ºå½¢å·¦ä¸‹ã‹ã‚‰å³ä¸‹
 		case 16:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq04.png")); break;//1:2
 		case 17:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq06.png")); break;//1:3
 		case 18:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq27.png")); break;//3:1
 		case 19:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq29.png")); break;//2:1
 
-		case 20:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq19.png")); break;//1:2¶ã‚ªë‚Á‚Ä‚¢‚é
+		case 20:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq19.png")); break;//1:2å·¦ä¸ŠãŒå°–ã£ã¦ã„ã‚‹
 		case 21:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq21.png")); break;//2:3
 		case 22:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq23.png")); break;//3:4
 		case 23:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq32.png")); break;//1:3 
 		case 24:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq34.png")); break;//1:4
 
-		case 25:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq18.png")); break;//1:2‰Eã‚ªë‚Á‚Ä‚¢‚é
+		case 25:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq18.png")); break;//1:2å³ä¸ŠãŒå°–ã£ã¦ã„ã‚‹
 		case 26:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq20.png")); break;//2:3
 		case 27:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq22.png")); break;//3:4
 		case 28:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq31.png")); break;//1:3 
@@ -436,7 +446,7 @@ CFieldVertex::CFieldVertex()
 		}
 		
 		if (FAILED(hrShapes)) {
-			MessageBox(NULL, "Shapes ‰æ‘œ", "Error", MB_OK);
+			MessageBox(NULL, "Shapes ç”»åƒ", "Error", MB_OK);
 		}
 	}
 
@@ -444,7 +454,7 @@ CFieldVertex::CFieldVertex()
 	Yy = 0.0f;
 }
 
-////=====FieldVertex‚ÌƒfƒXƒgƒ‰ƒNƒ^=====//
+////=====FieldVertexã®ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿=====//
 CFieldVertex::~CFieldVertex()
 {
 	g_FieldSe->Stop();
@@ -516,105 +526,105 @@ void CFieldVertex::Update()
 {
 	FieldVertex* Vertexp;
 	CenterVertex* CenterVertexp;
-	//ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚Ìî•ñ‚ğæ“¾
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã®æƒ…å ±ã‚’å–å¾—
 	PlayerPos = m_pPlayer->GetPlayerPos();
 
-	//’¸“_‚Ì‰ó‚ê‚éî•ñæ“¾
+	//é ‚ç‚¹ã®å£Šã‚Œã‚‹æƒ…å ±å–å¾—
 	//BreakVertex = ;
 
-	////’¸“_‚ğ‰ó‚·ˆ—
+	////é ‚ç‚¹ã‚’å£Šã™å‡¦ç†
 	//if (BreakVertex != -1)
 	//{
-	//	m_tVertex[BreakVertex].Use = false;//g—p‚µ‚Ä–³‚¢‚É‚·‚é
-	//	//‰ó‚ê‚é’¸“_‚Æ‚Â‚È‚ª‚Á‚Ä‚¢‚é’¸“_‚Ì‰ó‚ê‚é’¸“_‚Æ‚ÌƒRƒlƒNƒgî•ñ‚ğÁ‚·
+	//	m_tVertex[BreakVertex].Use = false;//ä½¿ç”¨ã—ã¦ç„¡ã„ã«ã™ã‚‹
+	//	//å£Šã‚Œã‚‹é ‚ç‚¹ã¨ã¤ãªãŒã£ã¦ã„ã‚‹é ‚ç‚¹ã®å£Šã‚Œã‚‹é ‚ç‚¹ã¨ã®ã‚³ãƒã‚¯ãƒˆæƒ…å ±ã‚’æ¶ˆã™
 	//	for (int i = 0; i < 8; i++)
 	//	{
 	//		if (m_tVertex[BreakVertex].Connect[i] == -1)continue;
 	//		for (int j = 0; j < 8; j++)
 	//		{
-	//			if (m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] == BreakVertex)//‰ó‚ê‚é’¸“_‚ªƒRƒlƒNƒg‚É“ü‚Á‚Ä‚¢‚½‚ç
+	//			if (m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] == BreakVertex)//å£Šã‚Œã‚‹é ‚ç‚¹ãŒã‚³ãƒã‚¯ãƒˆã«å…¥ã£ã¦ã„ãŸã‚‰
 	//			{
-	//				m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] = -1;//‰Šú‰»
+	//				m_tVertex[m_tVertex[BreakVertex].Connect[i]].Connect[j] = -1;//åˆæœŸåŒ–
 	//			}
 	//		}
 	//	}
-	//	Fill(m_tVertex[BreakVertex].Connect, -1);//‰ó‚ê‚é’¸“_‚ÌƒRƒlƒNƒgî•ñÁ‚·
+	//	Fill(m_tVertex[BreakVertex].Connect, -1);//å£Šã‚Œã‚‹é ‚ç‚¹ã®ã‚³ãƒã‚¯ãƒˆæƒ…å ±æ¶ˆã™
 	//	for (int i = 0,j = 0, NowLine = 0; OrderVertex[i] != -1; i++)
 	//	{
 	//		if (OrderVertex[i] == BreakVertex || OrderVertex[i + 1] == BreakVertex)continue;
 	//		vtx_FieldLine[j][0] = vtx_FieldLine[i][0];
-	//		j++;//‰ó‚ê‚½’¸“_‚ğg—p‚µ‚Ä‚È‚¢‚Æ‚«‘‚â‚·
+	//		j++;//å£Šã‚ŒãŸé ‚ç‚¹ã‚’ä½¿ç”¨ã—ã¦ãªã„ã¨ãå¢—ã‚„ã™
 	//		NowLine++;
 	//	}
 	//}
 
-	//¡‚ÌƒtƒF[ƒY‚ªDraw‚ÌAŒq‚ª‚Á‚Ä‚¢‚é’¸“_‚ğŠe’¸“_‚É•Û‘¶‚·‚é
+	//ä»Šã®ãƒ•ã‚§ãƒ¼ã‚ºãŒDrawã®æ™‚ã€ç¹‹ãŒã£ã¦ã„ã‚‹é ‚ç‚¹ã‚’å„é ‚ç‚¹ã«ä¿å­˜ã™ã‚‹
 
 	Vertexp = m_tVertex;
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
-		//ƒvƒŒƒCƒ„[‚Æ’¸“_‚ÌêŠ‚ª“¯‚¶‚ÅA‚©‚ÂAÅI’n“_‚ª¡‚Ì’n“_‚Å‚È‚¢‚©‚Â‰ó‚ê‚Ä‚¢‚é’¸“_‚Å‚È‚¢‚Æ‚«
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨é ‚ç‚¹ã®å ´æ‰€ãŒåŒã˜ã§ã€ã‹ã¤ã€æœ€çµ‚åœ°ç‚¹ãŒä»Šã®åœ°ç‚¹ã§ãªã„ã‹ã¤å£Šã‚Œã¦ã„ã‚‹é ‚ç‚¹ã§ãªã„ã¨ã
 		if (PlayerPos.x == Vertexp->Pos.x && PlayerPos.y == Vertexp->Pos.y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
 		{
-			OrderVertex[OrderVertexCount] = Vertexp->Number;//’…‚¢‚½’¸“_‚Ì”Ô†‚ğ•Û‘¶
-			OrderVertexCount++;//Ÿ‚ÌêŠ‚ÉƒJƒEƒ“ƒgƒAƒbƒv‚·‚é
+			OrderVertex[OrderVertexCount] = Vertexp->Number;//ç€ã„ãŸé ‚ç‚¹ã®ç•ªå·ã‚’ä¿å­˜
+			OrderVertexCount++;//æ¬¡ã®å ´æ‰€ã«ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—ã™ã‚‹
 
-			int ConnectSave[2] = { -1,-1 };//ƒRƒlƒNƒg‚ğ•Û‘¶‚·‚éˆÊ’u‚ğ•Û‘¶‚·‚é
+			int ConnectSave[2] = { -1,-1 };//ã‚³ãƒã‚¯ãƒˆã‚’ä¿å­˜ã™ã‚‹ä½ç½®ã‚’ä¿å­˜ã™ã‚‹
 
-			//‘O‚Ì’¸“_‚Æ‚Â‚È‚°‚é
-			for (int j = 7; j >= 0; j--)//’¸“_‚ÌŠi”[ˆÊ’u‚ğŒˆ’è‚·‚é
+			//å‰ã®é ‚ç‚¹ã¨ã¤ãªã’ã‚‹
+			for (int j = 7; j >= 0; j--)//é ‚ç‚¹ã®æ ¼ç´ä½ç½®ã‚’æ±ºå®šã™ã‚‹
 			{
 				if (m_tVertex[GoalVertex].Connect[j] == -1)ConnectSave[0] = j;
 				if (Vertexp->Connect[j] == -1)ConnectSave[1] = j;
 			}
 
-			//‚¨Œİ‚¢‚Ì’¸“_‚ğ‚Â‚È‚°‚é
+			//ãŠäº’ã„ã®é ‚ç‚¹ã‚’ã¤ãªã’ã‚‹
 			m_tVertex[GoalVertex].Connect[ConnectSave[0]] = Vertexp->Number;
 			Vertexp->Connect[ConnectSave[1]] = m_tVertex[GoalVertex].Number;
 
-			//Œğ“_d•¡”»’è
+			//äº¤ç‚¹é‡è¤‡åˆ¤å®š
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
-				//Œq‚ª‚Á‚Ä‚¢‚é‚Q“_‚Ì’†S‚ªƒZƒ“ƒ^[’¸“_‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©
+				//ç¹‹ãŒã£ã¦ã„ã‚‹ï¼’ç‚¹ã®ä¸­å¿ƒãŒã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹ã¨ç­‰ã—ã„ã‹ã©ã†ã‹
 				if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2.0f == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2.0f == CenterVertexp->Pos.y))
 				{
 					if (!CenterVertexp->Use)CenterVertexp->Use = true;
 				}
 			}
 
-			//ƒRƒlƒNƒgˆ—‚ªI‚í‚Á‚½‚Ì‚ÅI“_‚ğ¡‚Ì’n“_‚Éİ’è
+			//ã‚³ãƒã‚¯ãƒˆå‡¦ç†ãŒçµ‚ã‚ã£ãŸã®ã§çµ‚ç‚¹ã‚’ä»Šã®åœ°ç‚¹ã«è¨­å®š
 			GoalVertex = Vertexp->Number;
 
 			for (int i = 0; i < MAX_LINE + 1; i++)
 			{
 				if (OrderVertex[i] > 24)
 				{
-					MessageBox(NULL, "‘¶İ‚µ‚È‚¢’¸“_‚ğ‚½‚Ç‚Á‚Ä‚¢‚Ü‚·!", "Error", MB_OK);
+					MessageBox(NULL, "å­˜åœ¨ã—ãªã„é ‚ç‚¹ã‚’ãŸã©ã£ã¦ã„ã¾ã™!", "Error", MB_OK);
 				}
 			}
 
-			//‘½ŠpŒ`”»’è
-			if (OrderVertex[3] != -1 && Vertexp->Use)//‚½‚Ç‚Á‚Ä‚«‚½’¸“_‚ª‚S‚ÂˆÈã‚È‚ç‚©‚Â¡‚Ì’¸“_‚ª‰ß‹‚Ég‚í‚ê‚½A‘½ŠpŒ`”»’è
+			//å¤šè§’å½¢åˆ¤å®š
+			if (OrderVertex[3] != -1 && Vertexp->Use)//ãŸã©ã£ã¦ããŸé ‚ç‚¹ãŒï¼”ã¤ä»¥ä¸Šãªã‚‰ã‹ã¤ä»Šã®é ‚ç‚¹ãŒéå»ã«ä½¿ã‚ã‚ŒãŸæ™‚ã€å¤šè§’å½¢åˆ¤å®š
 			{
-				ShapesCheck(m_tVertex[StartVertex]);//Ä‹Aˆ—(ŠJn’¸“_‚Ì‚İ)
+				ShapesCheck(m_tVertex[StartVertex]);//å†å¸°å‡¦ç†(é–‹å§‹é ‚ç‚¹ã®ã¿)
 			}
-			Vertexp->Use = true;//’¸“_‚ª’Ç‰Á‚³‚ê‚½‚Ì‚Å¡‚Ì’¸“_‚ğture‚É
+			Vertexp->Use = true;//é ‚ç‚¹ãŒè¿½åŠ ã•ã‚ŒãŸã®ã§ä»Šã®é ‚ç‚¹ã‚’tureã«
 			Vertexp->Angle[1] = 181.0f;
-			NowLine++;//ü‚Ì”‘‚â‚·
+			NowLine++;//ç·šã®æ•°å¢—ã‚„ã™
 		}
 	}
 
-	//•`‰æ‚Ì‚½‚ß‚ÌXVˆ—
-	int PlayerDestination;//ƒvƒŒƒCƒ„[‚Ì•ûŒü•Û‘¶
-	PlayerDestination = m_pPlayer->GetPlayerDestination();//ƒvƒŒƒCƒ„[‚Ì•ûŒüæ“¾
-	DirectX::XMFLOAT3 PosA[4];//‰ñ“]ŒãÀ•WŠi”[—p
-	DirectX::XMFLOAT3 Size;//ü‚ÌƒTƒCƒY
+	//æç”»ã®ãŸã‚ã®æ›´æ–°å‡¦ç†
+	int PlayerDestination;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ä¿å­˜
+	PlayerDestination = m_pPlayer->GetPlayerDestination();//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘å–å¾—
+	DirectX::XMFLOAT3 PosA[4];//å›è»¢å¾Œåº§æ¨™æ ¼ç´ç”¨
+	DirectX::XMFLOAT3 Size;//ç·šã®ã‚µã‚¤ã‚º
 
 	Size.x = LINE_SIZE;
 	Size.y = LINE_SIZE;
 
-	//ü‚Ì‰ñ“]
+	//ç·šã®å›è»¢
 	PosA[0].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (-Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
 	PosA[0].y = -Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (-Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
 	PosA[1].x = -Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
@@ -624,18 +634,59 @@ void CFieldVertex::Update()
 	PosA[3].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
 	PosA[3].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
 
-	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//¶ã‚Ì‚˜À•W
-	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//¶ã‚Ì‚™À•W
-	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//‰Eã‚Ì‚˜À•W
-	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//‰Eã‚Ì‚™À•W
+	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//å·¦ä¸Šã®ï½˜åº§æ¨™
+	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//å·¦ä¸Šã®ï½™åº§æ¨™
+	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//å³ä¸Šã®ï½˜åº§æ¨™
+	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//å³ä¸Šã®ï½™åº§æ¨™
 
-	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//¶‰º‚Ì‚˜À•W
-	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//¶‰º‚Ì‚™À•W
-	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//‰E‰º‚Ì‚˜À•W
-	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//‰E‰º‚Ì‚™À•W
+	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//å·¦ä¸‹ã®ï½˜åº§æ¨™
+	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//å·¦ä¸‹ã®ï½™åº§æ¨™
+	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//å³ä¸‹ã®ï½˜åº§æ¨™
+	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//å³ä¸‹ã®ï½™åº§æ¨™
 }
 
-////=====FieldVertex‚Ì•`‰æˆ—‚ÌŠÖ”=====//
+////=====å›³å½¢ã‹ã‚‰å¬å–šã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»
+void CFieldVertex::ShapesEffectDraw()
+{
+	//-----Effectã®æç”»-----//
+	{
+		SetRender2D();
+		if (!g_pShapesEffects[0]->IsPlay())
+		{
+			for (int i = 0; i < Effect_NowShapes; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
+					{
+						g_pShapesEffects[i]->SetSize({ 10.0f,10.0f, 0.0f });
+						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
+						g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+						g_pShapesEffects[i]->Play(false);
+					}
+				}
+			}
+		}
+		for (int i = 0; i < Effect_NowShapes; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				if (g_pShapesEffects[i]->IsPlay())
+				{
+					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
+					{
+						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
+						g_pShapesEffects[i]->Update();
+						g_pShapesEffects[i]->Draw();
+					}
+				}
+			}
+		}
+		
+	}
+}
+
+////=====FieldVertexã®æç”»å‡¦ç†ã®é–¢æ•°=====//
 void CFieldVertex::Draw()
 {
 	if (GetFeverMode())
@@ -662,15 +713,15 @@ void CFieldVertex::Draw()
 		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
 	}
 
-	SetRender3D();//3D•`‰æ€”õ
+	SetRender3D();//3Dæç”»æº–å‚™
 
-	//-----ü‚Ì•`‰æ-----//
+	//-----ç·šã®æç”»-----//
 	{
 		/*if (GetFeverMode())m_pStarLine->SetLineMode(1);
 		else m_pStarLine->SetLineMode(0);*/
 		for (int i = 0; i <= NowLine; i++)
 		{
-			m_pStarLine->SetLineInfo(//’¸“_î•ñŠi”[
+			m_pStarLine->SetLineInfo(//é ‚ç‚¹æƒ…å ±æ ¼ç´
 			{
 					vtx_FieldLine[i][1].pos[0],
 					vtx_FieldLine[i][1].pos[1],
@@ -691,56 +742,56 @@ void CFieldVertex::Draw()
 			        vtx_FieldLine[i][2].pos[1],
 			        0.0f
 		    });
-			m_pStarLine->DispLine();//ü‚Ì•`‰æ
+			m_pStarLine->DispLine();//ç·šã®æç”»
 		}
 	}
 
-	//-----’¸“_(¯)‚Ì•`‰æ-----//
+	//-----é ‚ç‚¹(æ˜Ÿ)ã®æç”»-----//
 	{
-		FieldVertex* Vertexp;//’¸“_‚Ìî•ñŠi”[ƒ|ƒCƒ“ƒ^[
-		Vertexp = m_tVertex;//æ“ª‚Ìî•ñŠi”[
+		FieldVertex* Vertexp;//é ‚ç‚¹ã®æƒ…å ±æ ¼ç´ãƒã‚¤ãƒ³ã‚¿ãƒ¼
+		Vertexp = m_tVertex;//å…ˆé ­ã®æƒ…å ±æ ¼ç´
 		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 		{
-			if (Vertexp->SuperStar)DrawStarModel(2, i);//ƒXƒeƒ‰‚Ì•`‰æ(ƒŒƒbƒh)
+			if (Vertexp->SuperStar)DrawStarModel(2, i);//ã‚¹ãƒ†ãƒ©ã®æç”»(ãƒ¬ãƒƒãƒ‰)
 			else
 			{
-				if (Vertexp->Use)DrawStarModel(1, i);//g—p’†‚Ì’¸“_(¯)‚Ì•`‰æ(ƒuƒ‹[)
-				else DrawStarModel(0, i);//–¢g—p‚Ì’¸“_(¯)‚Ì•`‰æ(ƒIƒŒƒ“ƒW)
+				if (Vertexp->Use)DrawStarModel(1, i);//ä½¿ç”¨ä¸­ã®é ‚ç‚¹(æ˜Ÿ)ã®æç”»(ãƒ–ãƒ«ãƒ¼)
+				else DrawStarModel(0, i);//æœªä½¿ç”¨ã®é ‚ç‚¹(æ˜Ÿ)ã®æç”»(ã‚ªãƒ¬ãƒ³ã‚¸)
 			}
 		}
 	}
 
-	SetRender2D();//2D•`‰æ€”õ
+	SetRender2D();//2Dæç”»æº–å‚™
 
-	//-----¢Š«ƒƒO-----//
+	//-----å¬å–šãƒ­ã‚°-----//
 	{
 		for (int i = 0; i < NowSummonLog; i++)
 		{
 			m_pSprite_Summon_Log->SetUVPos({ 0.0f, 0.0f });
-			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, {0.0f,0.0f,0.0f},m_pSprite_Summon_Log);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//F‚Æ“§–¾“x‚Ìİ’è
-			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//OŠpŒ`‚ÌƒeƒNƒXƒ`ƒƒİ’è
-			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//lŠpŒ`‚ÌƒeƒNƒXƒ`ƒƒİ’èƒƒO
-			if (i < MAX_DRAW_LOG)m_pSprite_Summon_Log->Draw();//15ŒÂ‚Ì‚İ•`‰æ
+			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, {0.0f,0.0f,0.0f},m_pSprite_Summon_Log);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//ä¸‰è§’å½¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//å››è§’å½¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®šãƒ­ã‚°
+			if (i < MAX_DRAW_LOG)m_pSprite_Summon_Log->Draw();//15å€‹ã®ã¿æç”»
 		}
-		m_pSprite_Summon_Log->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+		m_pSprite_Summon_Log->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 	}
 
-	//-----ƒXƒeƒ‰‚Ì”•`‰æ-----//
+	//-----ã‚¹ãƒ†ãƒ©ã®æ•°æç”»-----//
 	{
-		//DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-		//m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-		//m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//”CˆÓ‚Ì”š‚ÌƒeƒNƒXƒ`ƒƒİ’è
-		//m_pSprite_SuperStar_Number->Draw();//•`‰æ
-		//m_pSprite_SuperStar_Number->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+		//DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+		//m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+		//m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//ä»»æ„ã®æ•°å­—ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+		//m_pSprite_SuperStar_Number->Draw();//æç”»
+		//m_pSprite_SuperStar_Number->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 	}
 
-	//-----ƒtƒB[ƒo[ƒQ[ƒW•`‰æ-----//
+	//-----ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚²ãƒ¼ã‚¸æç”»-----//
 	{
-		//ƒtƒB[ƒo[”wŒi//
+		//ãƒ•ã‚£ãƒ¼ãƒãƒ¼èƒŒæ™¯//
 		if (GetFeverMode())
 		{
-			Fever_Draw_Angle.y += (360.0f / (60.0f * FEVER_DRAW_ANGLE_TIME));//1.0f•b‚Å‚P‰ñ“]
+			Fever_Draw_Angle.y += (360.0f / (60.0f * FEVER_DRAW_ANGLE_TIME));//1.0fç§’ã§ï¼‘å›è»¢
 			if (Fever_Draw_Angle.y >= 360.0f)
 			{
 				Fever_Draw_Angle.y = 0.0f;
@@ -756,65 +807,65 @@ void CFieldVertex::Draw()
 			Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
 		}
 		float Fever_Gage_Size = 50.0f;
-		if (GetFeverMode())//ƒtƒB[ƒo[ƒ^ƒCƒ€‚ÌAŒã‚Ì”wŒioŒ»
+		if (GetFeverMode())//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚¿ã‚¤ãƒ ã®æ™‚ã€å¾Œã®èƒŒæ™¯å‡ºç¾
 		{
-			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[2]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-			m_pSprite_Fever_Gage[2]->Draw();//•`‰æ
-			m_pSprite_Fever_Gage[2]->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[2]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+			m_pSprite_Fever_Gage[2]->Draw();//æç”»
+			m_pSprite_Fever_Gage[2]->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 		}
 
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[0]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-		m_pSprite_Fever_Gage[0]->Draw();//•`‰æ
-		m_pSprite_Fever_Gage[0]->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[0]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+		m_pSprite_Fever_Gage[0]->Draw();//æç”»
+		m_pSprite_Fever_Gage[0]->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 
 
-		if (!GetFeverMode())fFeverPoint += 0.2f;//ƒtƒB[ƒo[ƒ^ƒCƒ€‚¶‚á‚È‚¢‚Æ‚«‚Ó‚â‚·
-		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//’l‚Ì•â³
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[1]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });//UV‚ÌÀ•Wİ’è
-		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UV‚Ì‘å‚«‚³İ’è
-		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-		m_pSprite_Fever_Gage[1]->SetTexture(m_pTex_Fever_Gage[1]);//¯Œ`‚ÌƒtƒB[ƒo[ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒİ’è
-		m_pSprite_Fever_Gage[1]->Draw();//•`‰æ
-		m_pSprite_Fever_Gage[1]->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+		if (!GetFeverMode())fFeverPoint += 0.2f;//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚¿ã‚¤ãƒ ã˜ã‚ƒãªã„ã¨ããµã‚„ã™
+		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//å€¤ã®è£œæ­£
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[1]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });//UVã®åº§æ¨™è¨­å®š
+		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UVã®å¤§ãã•è¨­å®š
+		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+		m_pSprite_Fever_Gage[1]->SetTexture(m_pTex_Fever_Gage[1]);//æ˜Ÿå½¢ã®ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚²ãƒ¼ã‚¸ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+		m_pSprite_Fever_Gage[1]->Draw();//æç”»
+		m_pSprite_Fever_Gage[1]->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[3]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-		m_pSprite_Fever_Gage[3]->Draw();//•`‰æ
-		m_pSprite_Fever_Gage[3]->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[3]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+		m_pSprite_Fever_Gage[3]->Draw();//æç”»
+		m_pSprite_Fever_Gage[3]->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 	}
 
-	//-----Œ»İ‚ÌƒLƒƒƒ‰ƒNƒ^[‚Ì”•`‰æ‚Ìƒ{[ƒh-----//
+	//-----ç¾åœ¨ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ•°æç”»ã®ãƒœãƒ¼ãƒ‰-----//
 	{
 		for (int i = 0; i < 4; i++)
 		{
 			switch (i)
 			{
-			case 0:DrawSetting({ -107.0f, 52.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 0:DrawSetting({ -107.0f, 52.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				break;
-			case 1:DrawSetting({ -107.0f, 78.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 1:DrawSetting({ -107.0f, 78.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				break;
-			case 2:DrawSetting({ 67.0f, 55.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 2:DrawSetting({ 67.0f, 55.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				break;
-			case 3:DrawSetting({ 67.0f, 75.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 3:DrawSetting({ 67.0f, 75.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				break;
 			default:
 				break;
 			}
 			
-			m_pSprite_Ally_Count[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-			m_pSprite_Ally_Count[i]->SetTexture(m_pTex_Ally_Count[i]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-			m_pSprite_Ally_Count[i]->Draw();//•`‰æ
-			m_pSprite_Ally_Count[i]->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+			m_pSprite_Ally_Count[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+			m_pSprite_Ally_Count[i]->SetTexture(m_pTex_Ally_Count[i]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+			m_pSprite_Ally_Count[i]->Draw();//æç”»
+			m_pSprite_Ally_Count[i]->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 		}
 	}
 
-	//-----Œ»İ‚ÌƒLƒƒƒ‰ƒNƒ^[‚Ì”•`‰æ-----//
+	//-----ç¾åœ¨ã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ•°æç”»-----//
 	{
 		int Ally_Enemy_Count[4];
 		Ally_Enemy_Count[0] = m_pBattle->GetAllyTypeCount(0);
@@ -833,48 +884,48 @@ void CFieldVertex::Draw()
 			if (i == 2)M = 174.0f;
 			if (Ally_Enemy_Count[i] / 100 >= 1)
 			{
-				DrawSetting({ -107.0f + M - 4.0f, Pos_Y[i],10.0f}, {10.0f,10.0f,1.0f}, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 100]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-				m_pSprite_Ally_Number[i]->Draw();//•`‰æ
+				DrawSetting({ -107.0f + M - 4.0f, Pos_Y[i],10.0f}, {10.0f,10.0f,1.0f}, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 100]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+				m_pSprite_Ally_Number[i]->Draw();//æç”»
 
-				DrawSetting({ -107.0f + M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[(Ally_Enemy_Count[i] % 100) / 10]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-				m_pSprite_Ally_Number[i]->Draw();//•`‰æ
+				DrawSetting({ -107.0f + M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[(Ally_Enemy_Count[i] % 100) / 10]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+				m_pSprite_Ally_Number[i]->Draw();//æç”»
 
-				DrawSetting({ -107.0f + M + 3.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-				m_pSprite_Ally_Number[i]->Draw();//•`‰æ
+				DrawSetting({ -107.0f + M + 3.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+				m_pSprite_Ally_Number[i]->Draw();//æç”»
 			}
 			else
 			{
 				if (Ally_Enemy_Count[i] / 10 >= 1)
 				{
-					DrawSetting({ -107.0f + M - 2.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 10]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-					m_pSprite_Ally_Number[i]->Draw();//•`‰æ
+					DrawSetting({ -107.0f + M - 2.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 10]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+					m_pSprite_Ally_Number[i]->Draw();//æç”»
 
-					DrawSetting({ -107.0f + M + 2.0f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-					m_pSprite_Ally_Number[i]->Draw();//•`‰æ
+					DrawSetting({ -107.0f + M + 2.0f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+					m_pSprite_Ally_Number[i]->Draw();//æç”»
 				}
 				else
 				{
-					DrawSetting({ -107.0f + M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-					m_pSprite_Ally_Number[i]->Draw();//•`‰æ
+					DrawSetting({ -107.0f + M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+					m_pSprite_Ally_Number[i]->Draw();//æç”»
 				}
 			}
-			m_pSprite_Ally_Number[i]->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+			m_pSprite_Ally_Number[i]->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 		}
 	}
 
-	//-----Effect‚Ì•`‰æ-----//
+	//-----Effectã®æç”»-----//
 	{
 		for (int i = Effect_NowShapes; i < MAX_ALLY; i++)
 		{
@@ -901,7 +952,7 @@ void CFieldVertex::Draw()
 
 void CFieldVertex::FeverDraw()
 {
-	//-----ƒtƒB[ƒo[ƒvƒŒƒCƒ„[‚Ì•`‰æ-----//
+	//-----ãƒ•ã‚£ãƒ¼ãƒãƒ¼ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æç”»-----//
 	{
 		
 		if (GetFeverMode())
@@ -941,11 +992,11 @@ void CFieldVertex::FeverDraw()
 			default:
 				break;
 			}
-			DrawSetting(Fever_Player_Draw_Pos, { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//À•W‚Æ‘å‚«‚³‚Ìİ’è
-			m_pSprite_Fever_Player->SetColor({ 1.0f,1.0f,1.0f,1.0f });//F‚Æ“§–¾“x‚Ìİ’è
-			m_pSprite_Fever_Player->SetTexture(m_pTex_Fever_Player);//¯Œ`‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒİ’è
-			m_pSprite_Fever_Player->Draw();//•`‰æ
-			m_pSprite_Fever_Player->ReSetSprite();//ƒXƒvƒ‰ƒCƒg‚ÌƒŠƒZƒbƒg
+			DrawSetting(Fever_Player_Draw_Pos, { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
+			m_pSprite_Fever_Player->SetColor({ 1.0f,1.0f,1.0f,1.0f });//è‰²ã¨é€æ˜åº¦ã®è¨­å®š
+			m_pSprite_Fever_Player->SetTexture(m_pTex_Fever_Player);//æ˜Ÿå½¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£è¨­å®š
+			m_pSprite_Fever_Player->Draw();//æç”»
+			m_pSprite_Fever_Player->ReSetSprite();//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒªã‚»ãƒƒãƒˆ
 		}
 	}
 }
@@ -959,224 +1010,224 @@ void CFieldVertex::ShapesDraw()
 		m_pSprite_Shapes->SetUVPos({ 0.0f,0.0f });		
 		m_pSprite_Shapes->SetColor({ 0.5f,0.5f,0.5f,1.0f });
 		if(Shapes_Color_Time[i] > 0.0f)m_pSprite_Shapes->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-		if (Shapes_Count[i] == 3)//OŠpŒ`‚È‚ç
+		if (Shapes_Count[i] == 3)//ä¸‰è§’å½¢ãªã‚‰
 		{
-			if (Shapes_type_Angle[i][0] == 0)//’¼Šp“ñ“™•ÓOŠpŒ`
+			if (Shapes_type_Angle[i][0] == 0)//ç›´è§’äºŒç­‰è¾ºä¸‰è§’å½¢
 			{
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
 			}
-			if (Shapes_type_Angle[i][0] == 1)//ãŒü‚«‚Ì’¼Šp“ñ“™•ÓOŠpŒ`
+			if (Shapes_type_Angle[i][0] == 1)//ä¸Šå‘ãã®ç›´è§’äºŒç­‰è¾ºä¸‰è§’å½¢
 			{
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
 			}
 		}
-		else //lŠpŒ`‚È‚ç
+		else //å››è§’å½¢ãªã‚‰
 		{
 			switch (Shapes_type_Angle[i][0])
 			{
-			case 2://³•ûŒ`
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 2://æ­£æ–¹å½¢
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
-			case 3://‚Ğ‚µŒ`
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,45.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 3://ã²ã—å½¢
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,45.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
-			case 4://’·•ûŒ` 
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (Shapes_Length[i][0] - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (Shapes_Length[i][1] - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 4://é•·æ–¹å½¢ 
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (Shapes_Length[i][0] - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (Shapes_Length[i][1] - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
-			case 5://Î‚ß‚Ì’·•ûŒ`
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SQUARE_SIZE + size) * 1.4142f * (Shapes_Length[i][0]),(SQUARE_SIZE + size) * 1.4142f * (Shapes_Length[i][1]),1.0f }, { 0.0f,0.0f,-45.0f * Shapes_type_Angle[i][1] }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+			case 5://æ–œã‚ã®é•·æ–¹å½¢
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SQUARE_SIZE + size) * 1.4142f * (Shapes_Length[i][0]),(SQUARE_SIZE + size) * 1.4142f * (Shapes_Length[i][1]),1.0f }, { 0.0f,0.0f,-45.0f * Shapes_type_Angle[i][1] }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
-			case 6://‘äŒ` //Î‚ß‚Ì‘äŒ`l‚¦‚é•K—v‚ ‚è
+			case 6://å°å½¢ //æ–œã‚ã®å°å½¢è€ƒãˆã‚‹å¿…è¦ã‚ã‚Š
 				if (Shapes_type_Angle[i][1] < 4)
 				{
 					if (Shapes_Length[i][0] - 1 == 0)//1:3
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[3]);
 					}
 					else //3:4
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
 					}
 				}
-				else //Î‚ß‚Ì‘äŒ`
+				else //æ–œã‚ã®å°å½¢
 				{
 					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
 					}
 					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[6]);
 					}
 					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f)//1:4
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[7]);
 					}
 					if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f)//2:3
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[8]);
 					}
 					if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f)//2:4
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (TRAPEZOID_SIZE + size) * 2.0f ,(TRAPEZOID_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (TRAPEZOID_SIZE + size) * 2.0f ,(TRAPEZOID_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
 					}
-					if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4//‘å‚«‚³•ÏX•K—v
+					if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4//å¤§ãã•å¤‰æ›´å¿…è¦
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[9]);
 					}
 				}
 				break;
-			case 7://•½sl•ÓŒ`(‰E‰º‚©‚ç¶ã)
+			case 7://å¹³è¡Œå››è¾ºå½¢(å³ä¸‹ã‹ã‚‰å·¦ä¸Š)
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
 				}
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[11]);
 				}
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[12]);
 				}
 				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[13]);
 				}
 				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[14]);
 				}
 				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
 				}
 				break;
-			case 8://•½sl•ÓŒ`(¶‰º‚©‚ç‰Eã)
+			case 8://å¹³è¡Œå››è¾ºå½¢(å·¦ä¸‹ã‹ã‚‰å³ä¸Š)
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
 				}
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[16]);
 				}
 				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[17]);
 				}
 				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[18]);
 				}
 				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[19]);
 				}
 				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
 				}
 				break;
-			case 9://ƒJƒbƒ^[Œ^(¶ë‚è)
+			case 9://ã‚«ãƒƒã‚¿ãƒ¼å‹(å·¦å°–ã‚Š)
 				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
 				}
 				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[21]);
 				}
 				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[22]);
 				}
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
 				{
 					m_pSprite_Shapes->SetUVPos({ 0.085f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[23]);
 				}
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
 				{
 					m_pSprite_Shapes->SetUVPos({ 0.13f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[24]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4//‘å‚«‚³•ÏX
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4//å¤§ãã•å¤‰æ›´
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
 				}
 				break;
-			case 10://ƒJƒbƒ^[Œ^(‰Eë‚è)
+			case 10://ã‚«ãƒƒã‚¿ãƒ¼å‹(å³å°–ã‚Š)
 				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				}
 				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[26]);
 				}
 				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[27]);
 				}
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
 				{
 					m_pSprite_Shapes->SetUVPos({ -0.085f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[28]);
 				}
 				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
 				{
 					m_pSprite_Shapes->SetUVPos({ -0.13f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[29]);
 				}
 				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				}
 				break;
 
 			default:
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//À•W‚Æ‘å‚«‚³‚Ìİ’è
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//åº§æ¨™ã¨å¤§ãã•ã®è¨­å®š
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
 			}
@@ -1199,16 +1250,16 @@ void CFieldVertex::ShapesUpdate()
 	//	Shapes_Draw_Time = 0.0f;
 	//	//Size = 0.0f;
 	//}
-	//if (Now_Shapes_Draw > Effect_NowShapes)return false;//‘S•”•`‰æ‚µ‚«‚Á‚½‚çI—¹ƒtƒ‰ƒO•Ô‚·
+	//if (Now_Shapes_Draw > Effect_NowShapes)return false;//å…¨éƒ¨æç”»ã—ãã£ãŸã‚‰çµ‚äº†ãƒ•ãƒ©ã‚°è¿”ã™
 	//return true;
 }
 
-////=====ƒƒO‚ÌXVˆ—‚ÌŠÖ”=====//
+////=====ãƒ­ã‚°ã®æ›´æ–°å‡¦ç†ã®é–¢æ•°=====//
 void CFieldVertex::LogUpdate()
 {
-	int DeleteCount = 0;//íœ‚·‚é”‚ğŠi”[‚·‚é•Ï”
+	int DeleteCount = 0;//å‰Šé™¤ã™ã‚‹æ•°ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
 
-	//ƒXƒ^[ƒgƒƒO‚ÌŠÔŠuƒ^ƒCƒ}[ˆ—//
+	//ã‚¹ã‚¿ãƒ¼ãƒˆãƒ­ã‚°ã®é–“éš”ã‚¿ã‚¤ãƒãƒ¼å‡¦ç†//
 	if (MoveFlagStartTime > 0.0f)MoveFlagStartTime += 1.0f / 60.0f;
 	if (MoveFlagStartTime > FADE_LOG_TIME)
 	{
@@ -1216,7 +1267,7 @@ void CFieldVertex::LogUpdate()
 		MoveFlagStart = true;
 	}
 
-	//ƒGƒ“ƒhƒƒO‚ÌŠÔŠuƒ^ƒCƒ}[ˆ—//
+	//ã‚¨ãƒ³ãƒ‰ãƒ­ã‚°ã®é–“éš”ã‚¿ã‚¤ãƒãƒ¼å‡¦ç†//
 	if (MoveFlagEndTime > 0.0f)MoveFlagEndTime += 1.0f / 60.0f;
 	if (MoveFlagEndTime > FADE_LOG_TIME)
 	{
@@ -1224,8 +1275,8 @@ void CFieldVertex::LogUpdate()
 		MoveFlagEnd = true;
 	}
 
-	int SDC = 0;//‚R‚Ìˆ—‚Ì”‚ğŠi”[‚·‚é•Ï”
-	for (int i = 0; SummonLog[i].MoveType == 3; i++)SDC++;//‚R‚Ìˆ—‚Ì”‚ğ‚Ó‚â‚·
+	int SDC = 0;//ï¼“ã®å‡¦ç†ã®æ•°ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+	for (int i = 0; SummonLog[i].MoveType == 3; i++)SDC++;//ï¼“ã®å‡¦ç†ã®æ•°ã‚’ãµã‚„ã™
 
 	for (int i = 0; i < NowSummonLog; i++)
 	{
@@ -1233,14 +1284,14 @@ void CFieldVertex::LogUpdate()
 		{
 			switch (SummonLog[i].MoveType)
 			{
-			case 1://ƒXƒ^[ƒgƒƒO‚Ìˆ—
-				SummonLog[i].time -= 1.0f / 60.0f;//ƒ^ƒCƒ}[
-				SummonLog[i].Alpha += 1.0f / (60.0f * FADE_LOG_SPEED);//“§–¾“x
-				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ƒƒO‚ÌˆÚ“®
-				if (SummonLog[i].Pos.x < 97.0f)SummonLog[i].Pos.x = 97.0f;//’l‚Ì•â³
+			case 1://ã‚¹ã‚¿ãƒ¼ãƒˆãƒ­ã‚°ã®å‡¦ç†
+				SummonLog[i].time -= 1.0f / 60.0f;//ã‚¿ã‚¤ãƒãƒ¼
+				SummonLog[i].Alpha += 1.0f / (60.0f * FADE_LOG_SPEED);//é€æ˜åº¦
+				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ãƒ­ã‚°ã®ç§»å‹•
+				if (SummonLog[i].Pos.x < 97.0f)SummonLog[i].Pos.x = 97.0f;//å€¤ã®è£œæ­£
 				if (SummonLog[i].time <= 0.0f && MoveFlagStart)
 				{
-					//‚P‚Ìˆ—‚ğ”²‚¯‚Ä‚Q‚Ìˆ—‚Ì‰Šú‰»
+					//ï¼‘ã®å‡¦ç†ã‚’æŠœã‘ã¦ï¼’ã®å‡¦ç†ã®åˆæœŸåŒ–
 					SummonLog[i].MoveType = 2;
 					SummonLog[i].time = DRAW_MAIN_LOG_TIME;
 					SummonLog[i].Alpha = 1.0f;
@@ -1248,25 +1299,25 @@ void CFieldVertex::LogUpdate()
 					MoveFlagStart = false;
 				}
 				break;
-			case 2://ƒƒCƒ“ƒƒO‚Ìˆ—
-				SummonLog[i].time -= 1.0f / 60.0f;//ƒ^ƒCƒ}[
-				SummonLog[i].Pos.y += 0.5f;//ƒƒO‚ÌˆÚ“®
-				if (SummonLog[i].Pos.y > 100.0f - (i - SDC) * 5.0f)SummonLog[i].Pos.y -= 0.5f;//’l‚Ì•â³
+			case 2://ãƒ¡ã‚¤ãƒ³ãƒ­ã‚°ã®å‡¦ç†
+				SummonLog[i].time -= 1.0f / 60.0f;//ã‚¿ã‚¤ãƒãƒ¼
+				SummonLog[i].Pos.y += 0.5f;//ãƒ­ã‚°ã®ç§»å‹•
+				if (SummonLog[i].Pos.y > 100.0f - (i - SDC) * 5.0f)SummonLog[i].Pos.y -= 0.5f;//å€¤ã®è£œæ­£
 				if (SummonLog[i].time <= 0.0f && SummonLog[i].Pos.y == 100.0f && MoveFlagEnd)
 				{
-					//‚Q‚Ìˆ—‚ğ”²‚¯‚Ä‚R‚Ìˆ—‚Ì‰Šú‰»
+					//ï¼’ã®å‡¦ç†ã‚’æŠœã‘ã¦ï¼“ã®å‡¦ç†ã®åˆæœŸåŒ–
 					SummonLog[i].MoveType = 3;
 					SummonLog[i].time = DRAW_LOG_TIME;
 					MoveFlagEnd = false;
 					MoveFlagEndTime += 1.0f / 60.0f;
 				}
 				break;
-			case 3://ƒGƒ“ƒhƒƒO‚Ìˆ—
-				SummonLog[i].time -= 1.0f / 60.0f;//ƒ^ƒCƒ}[
-				SummonLog[i].Alpha -= 1.0f / (60.0f * FADE_LOG_SPEED);//“§–¾“x
-				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ƒƒO‚ÌˆÚ“®
+			case 3://ã‚¨ãƒ³ãƒ‰ãƒ­ã‚°ã®å‡¦ç†
+				SummonLog[i].time -= 1.0f / 60.0f;//ã‚¿ã‚¤ãƒãƒ¼
+				SummonLog[i].Alpha -= 1.0f / (60.0f * FADE_LOG_SPEED);//é€æ˜åº¦
+				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ãƒ­ã‚°ã®ç§»å‹•
 				//SummonLog[i].Pos.y += 40.0f / (60.0f * 1.0f);
-				if (SummonLog[i].time <= 0.0f && SummonLog[i].Alpha <= 0.0f)DeleteCount = i + 1;//íœ‘ÎÛ‚ğƒJƒEƒ“ƒg
+				if (SummonLog[i].time <= 0.0f && SummonLog[i].Alpha <= 0.0f)DeleteCount = i + 1;//å‰Šé™¤å¯¾è±¡ã‚’ã‚«ã‚¦ãƒ³ãƒˆ
 				break;
 			default:
 				break;
@@ -1274,7 +1325,7 @@ void CFieldVertex::LogUpdate()
 		}
 	}
 
-	//íœ‚Ì””z—ñ‚ğ‘O‚É‚¸‚ç‚·
+	//å‰Šé™¤ã®æ•°é…åˆ—ã‚’å‰ã«ãšã‚‰ã™
 	if (DeleteCount > 0)
 	{
 		for (int i = 0, j = DeleteCount; j < NowSummonLog; i++, j++)
@@ -1285,161 +1336,161 @@ void CFieldVertex::LogUpdate()
 	}
 }
 
-////=====ˆø”‚Ì’¸“_”Ô†‚ÌÀ•W‚ğ•Ô‚·ŠÖ”=====//
+////=====å¼•æ•°ã®é ‚ç‚¹ç•ªå·ã®åº§æ¨™ã‚’è¿”ã™é–¢æ•°=====//
 DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
 {
-	return m_tVertex[VertexNumber].Pos;//’¸“_À•W‚ğ•Ô‚·
+	return m_tVertex[VertexNumber].Pos;//é ‚ç‚¹åº§æ¨™ã‚’è¿”ã™
 }
 
-////=====ˆø”‚Å‚à‚ç‚Á‚½•ûŒü‚ªi‚ß‚é‚©‚Ç‚¤‚©‚Ìî•ñ‚ğ“n‚·ŠÖ”=====//
+////=====å¼•æ•°ã§ã‚‚ã‚‰ã£ãŸæ–¹å‘ãŒé€²ã‚ã‚‹ã‹ã©ã†ã‹ã®æƒ…å ±ã‚’æ¸¡ã™é–¢æ•°=====//
 bool CFieldVertex::GetRoadStop(int Direction)
 {
-	CenterVertex* CenterVertexp;//Œğ“_‚Ìî•ñ‚ğŠi”[‚·‚éƒ|ƒCƒ“ƒ^[
-	RoadStop = false;//‰Šú‰»
+	CenterVertex* CenterVertexp;//äº¤ç‚¹ã®æƒ…å ±ã‚’æ ¼ç´ã™ã‚‹ãƒã‚¤ãƒ³ã‚¿ãƒ¼
+	RoadStop = false;//åˆæœŸåŒ–
 
-	//s‚¯‚È‚¢•ûŒü‚ğ”»•Ê
+	//è¡Œã‘ãªã„æ–¹å‘ã‚’åˆ¤åˆ¥
 	switch (Direction)
 	{
-	case 0://ã
-		if (GoalVertex - 5 < 0)RoadStop = true;//’¸“_‚Ì”Ô†‚ª‚O‚æ‚è¬‚³‚¢
+	case 0://ä¸Š
+		if (GoalVertex - 5 < 0)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒï¼ã‚ˆã‚Šå°ã•ã„æ™‚
 		else
 		{
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5].Number)RoadStop = true;
 			}
-			if (GoalVertex - 5 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex - 5 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 1://‰Eã
-		if (GoalVertex - 5 + 1 < 0 || GoalVertex % 5 == 4)RoadStop = true;//’¸“_‚Ì”Ô†‚ª‚O‚æ‚è¬‚³‚¢‚Ü‚½‚Í¡‚¢‚é‚Æ‚±‚ª‰E’[‚Ì
+	case 1://å³ä¸Š
+		if (GoalVertex - 5 + 1 < 0 || GoalVertex % 5 == 4)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒï¼ã‚ˆã‚Šå°ã•ã„æ™‚ã¾ãŸã¯ä»Šã„ã‚‹ã¨ã“ãŒå³ç«¯ã®æ™‚
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
-				//Œq‚ª‚Á‚Ä‚¢‚é‚Q“_‚Ì’†S‚ªƒZƒ“ƒ^[’¸“_‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©
+				//ç¹‹ãŒã£ã¦ã„ã‚‹ï¼’ç‚¹ã®ä¸­å¿ƒãŒã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹ã¨ç­‰ã—ã„ã‹ã©ã†ã‹
 				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex - 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex - 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//Œğ“_g‚Á‚Ä‚¢‚½‚çs‚¯‚È‚¢
+					if (CenterVertexp->Use)RoadStop = true;//äº¤ç‚¹ä½¿ã£ã¦ã„ãŸã‚‰è¡Œã‘ãªã„
 					break;
 				}
 			}
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚ç
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 + 1].Number)RoadStop = true;
 			}
-			if (GoalVertex - 5 + 1 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex - 5 + 1 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 2://‰E
-		if (GoalVertex + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//’¸“_‚Ì”Ô†‚ª24‚æ‚è‘å‚«‚¢‚Ü‚½‚Í¡‚¢‚é‚Æ‚±‚ª‰E’[‚Ì
+	case 2://å³
+		if (GoalVertex + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒ24ã‚ˆã‚Šå¤§ãã„æ™‚ã¾ãŸã¯ä»Šã„ã‚‹ã¨ã“ãŒå³ç«¯ã®æ™‚
 		else
 		{
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚ç
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 1].Number)RoadStop = true;
 			}
-			if (GoalVertex + 1 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex + 1 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 3://‰E‰º
-		if (GoalVertex + 5 + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//’¸“_‚Ì”Ô†‚ª24‚æ‚è‘å‚«‚¢‚Ü‚½‚Í¡‚¢‚é‚Æ‚±‚ª‰E’[‚Ì
+	case 3://å³ä¸‹
+		if (GoalVertex + 5 + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒ24ã‚ˆã‚Šå¤§ãã„æ™‚ã¾ãŸã¯ä»Šã„ã‚‹ã¨ã“ãŒå³ç«¯ã®æ™‚
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
-				//Œq‚ª‚Á‚Ä‚¢‚é‚Q“_‚Ì’†S‚ªƒZƒ“ƒ^[’¸“_‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©
+				//ç¹‹ãŒã£ã¦ã„ã‚‹ï¼’ç‚¹ã®ä¸­å¿ƒãŒã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹ã¨ç­‰ã—ã„ã‹ã©ã†ã‹
 				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex + 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex + 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//Œğ“_g‚Á‚Ä‚¢‚½‚çs‚¯‚È‚¢
+					if (CenterVertexp->Use)RoadStop = true;//äº¤ç‚¹ä½¿ã£ã¦ã„ãŸã‚‰è¡Œã‘ãªã„
 					break;
 				}
 			}
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚ç
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 + 1].Number)RoadStop = true;
 			}
-			if (GoalVertex + 5 + 1 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex + 5 + 1 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 4://‰º
-		if (GoalVertex + 5 > 24)RoadStop = true;//’¸“_‚Ì”Ô†‚ª24‚æ‚è‘å‚«‚¢
+	case 4://ä¸‹
+		if (GoalVertex + 5 > 24)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒ24ã‚ˆã‚Šå¤§ãã„æ™‚
 		else
 		{
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚ç
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5].Number)RoadStop = true;
 			}
-			if (GoalVertex + 5 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex + 5 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 5://¶‰º
-		if (GoalVertex + 5 - 1 > 24 || GoalVertex % 5 == 0)RoadStop = true;//’¸“_‚Ì”Ô†‚ª24‚æ‚è‘å‚«‚¢‚Ü‚½‚Í¡‚¢‚é‚Æ‚±‚ª¶’[‚Ì
+	case 5://å·¦ä¸‹
+		if (GoalVertex + 5 - 1 > 24 || GoalVertex % 5 == 0)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒ24ã‚ˆã‚Šå¤§ãã„æ™‚ã¾ãŸã¯ä»Šã„ã‚‹ã¨ã“ãŒå·¦ç«¯ã®æ™‚
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
-				//Œq‚ª‚Á‚Ä‚¢‚é‚Q“_‚Ì’†S‚ªƒZƒ“ƒ^[’¸“_‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©
+				//ç¹‹ãŒã£ã¦ã„ã‚‹ï¼’ç‚¹ã®ä¸­å¿ƒãŒã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹ã¨ç­‰ã—ã„ã‹ã©ã†ã‹
 				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex + 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex + 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//Œğ“_g‚Á‚Ä‚¢‚½‚çs‚¯‚È‚¢
+					if (CenterVertexp->Use)RoadStop = true;//äº¤ç‚¹ä½¿ã£ã¦ã„ãŸã‚‰è¡Œã‘ãªã„
 					break;
 				}
 			}
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚ç
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 - 1].Number)RoadStop = true;
 			}
-			if (GoalVertex + 5 - 1 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex + 5 - 1 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 6://¶
-		if (GoalVertex - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//’¸“_‚Ì”Ô†‚ª0‚æ‚è¬‚³‚¢‚Ü‚½‚Í¡‚¢‚é‚Æ‚±‚ª¶’[‚Ì
+	case 6://å·¦
+		if (GoalVertex - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒ0ã‚ˆã‚Šå°ã•ã„æ™‚ã¾ãŸã¯ä»Šã„ã‚‹ã¨ã“ãŒå·¦ç«¯ã®æ™‚
 		else
 		{
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚ç
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 1].Number)RoadStop = true;
 			}
-			if (GoalVertex - 1 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex - 1 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
-	case 7://¶ã
-		if (GoalVertex - 5 - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//’¸“_‚Ì”Ô†‚ª0‚æ‚è¬‚³‚¢‚Ü‚½‚Í¡‚¢‚é‚Æ‚±‚ª¶’[‚Ì
+	case 7://å·¦ä¸Š
+		if (GoalVertex - 5 - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//é ‚ç‚¹ã®ç•ªå·ãŒ0ã‚ˆã‚Šå°ã•ã„æ™‚ã¾ãŸã¯ä»Šã„ã‚‹ã¨ã“ãŒå·¦ç«¯ã®æ™‚
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
-				//Œq‚ª‚Á‚Ä‚¢‚é‚Q“_‚Ì’†S‚ªƒZƒ“ƒ^[’¸“_‚Æ“™‚µ‚¢‚©‚Ç‚¤‚©
+				//ç¹‹ãŒã£ã¦ã„ã‚‹ï¼’ç‚¹ã®ä¸­å¿ƒãŒã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹ã¨ç­‰ã—ã„ã‹ã©ã†ã‹
 				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex - 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex - 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//Œğ“_g‚Á‚Ä‚¢‚½‚çs‚¯‚È‚¢
+					if (CenterVertexp->Use)RoadStop = true;//äº¤ç‚¹ä½¿ã£ã¦ã„ãŸã‚‰è¡Œã‘ãªã„
 					break;
 				}
 			}
-			//s‚«‚½‚¢•ûŒü‚Ì’¸“_‚ÆŒq‚ª‚Á‚Ä‚¢‚½‚çtrue
+			//è¡ŒããŸã„æ–¹å‘ã®é ‚ç‚¹ã¨ç¹‹ãŒã£ã¦ã„ãŸã‚‰true
 			for (int i = 0; i < 8; i++)
 			{
 				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 - 1].Number)RoadStop = true;
 			}
-			if (GoalVertex - 5 - 1 == BreakVertex)RoadStop = true;//s‚«æ‚ª‰ó‚ê‚½’¸“_‚È‚ç
+			if (GoalVertex - 5 - 1 == BreakVertex)RoadStop = true;//è¡Œãå…ˆãŒå£Šã‚ŒãŸé ‚ç‚¹ãªã‚‰
 		}
 		break;
 	default:
 		break;
 	}
 
-	return RoadStop;//‚¢‚¯‚é‚©‚¢‚¯‚È‚¢‚©‚ğ•Ô‚·
+	return RoadStop;//ã„ã‘ã‚‹ã‹ã„ã‘ãªã„ã‹ã‚’è¿”ã™
 }
 
 void CFieldVertex::SetFeverPoint()
@@ -1447,13 +1498,13 @@ void CFieldVertex::SetFeverPoint()
 	fFeverPoint = nFeverPoint;
 }
 
-////=====CBattleƒNƒ‰ƒX‚ÌƒAƒhƒŒƒXî•ñ‚ğƒZƒbƒg‚·‚éŠÖ”=====//
+////=====CBattleã‚¯ãƒ©ã‚¹ã®ã‚¢ãƒ‰ãƒ¬ã‚¹æƒ…å ±ã‚’ã‚»ãƒƒãƒˆã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::SetBattleAddress(CBattle* InAddress)
 {
 	m_pBattle = InAddress;
 }
 
-////=====CPlayerƒNƒ‰ƒX‚ÌƒAƒhƒŒƒXî•ñ‚ğƒZƒbƒg‚·‚éŠÖ”=====//
+////=====CPlayerã‚¯ãƒ©ã‚¹ã®ã‚¢ãƒ‰ãƒ¬ã‚¹æƒ…å ±ã‚’ã‚»ãƒƒãƒˆã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::SetPlayerAddress(CPlayer* InAddress)
 {
 	m_pPlayer = InAddress;
@@ -1469,13 +1520,13 @@ void CFieldVertex::SetMasterVolume()
 	g_Fieldsound->SetMasterVolume();
 }
 
-////=====FieldVertex‚Ì’¸“_î•ñ‚È‚Ç‚ğ‰Šú‰»‚·‚éŠÖ”=====//
+////=====FieldVertexã®é ‚ç‚¹æƒ…å ±ãªã©ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::InitFieldVertex()
 {
-	//-----’¸“_‚Q‚TŒÂ‰Šú‰»-----//
+	//-----é ‚ç‚¹ï¼’ï¼•å€‹åˆæœŸåŒ–-----//
 	{
-		FieldVertex* Vertexp;//’¸“_‚Ìî•ñ‚ğŠi”[‚·‚éƒ|ƒCƒ“ƒ^[
-		Vertexp = m_tVertex;//æ“ª‚ÌƒAƒhƒŒƒX‚ğƒZƒbƒg
+		FieldVertex* Vertexp;//é ‚ç‚¹ã®æƒ…å ±ã‚’æ ¼ç´ã™ã‚‹ãƒã‚¤ãƒ³ã‚¿ãƒ¼
+		Vertexp = m_tVertex;//å…ˆé ­ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ã‚»ãƒƒãƒˆ
 		for (int j = 0; j < MAX_VERTEX; j++, Vertexp++)
 		{
 			Vertexp->Use = false;
@@ -1489,23 +1540,23 @@ void CFieldVertex::InitFieldVertex()
 		}
 	}
 
-	//-----ƒZƒ“ƒ^[’¸“_16ŒÂ‰Šú‰»-----//
+	//-----ã‚»ãƒ³ã‚¿ãƒ¼é ‚ç‚¹16å€‹åˆæœŸåŒ–-----//
 	{
-		CenterVertex* CenterVertexp;//Œğ“_‚Ìî•ñ‚ğŠi”[‚·‚éƒ|ƒCƒ“ƒ^[
-		CenterVertexp = m_tCenter_Vertex;//æ“ª‚ÌƒAƒhƒŒƒX‚ğƒZƒbƒg
+		CenterVertex* CenterVertexp;//äº¤ç‚¹ã®æƒ…å ±ã‚’æ ¼ç´ã™ã‚‹ãƒã‚¤ãƒ³ã‚¿ãƒ¼
+		CenterVertexp = m_tCenter_Vertex;//å…ˆé ­ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ã‚»ãƒƒãƒˆ
 		for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 		{
 			CenterVertexp->Use = false;
 		}
 	}
 
-	//-----‚»‚Ì‘¼•K—v‚È‰Šú‰»ˆ—-----//
+	//-----ãã®ä»–å¿…è¦ãªåˆæœŸåŒ–å‡¦ç†-----//
 	{
 		Fever_Stop_Player_time = 0.0f;
 		Mode_Player_Move = 0;
 		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f };
-		StartVertex = GoalVertex;//n“_‚ğ¡‚Ì’n“_‚É‰Šú‰»
-		NowShapes = 0;//Ši”[‚µ‚½}Œ`‚Ì”‰Šú‰»
+		StartVertex = GoalVertex;//å§‹ç‚¹ã‚’ä»Šã®åœ°ç‚¹ã«åˆæœŸåŒ–
+		NowShapes = 0;//æ ¼ç´ã—ãŸå›³å½¢ã®æ•°åˆæœŸåŒ–
 		Effect_NowShapes = 0;
 		Fever_Effects_Alpha = 1.0f;
 		Shapes_Draw_Time = 0.0f;
@@ -1515,7 +1566,7 @@ void CFieldVertex::InitFieldVertex()
 		Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
 		Fever_Draw_Angle_Count = 0.0f;
 
-		Fill(OrderVertex, -1);//”z—ñ-1‚Å‰Šú‰»
+		Fill(OrderVertex, -1);//é…åˆ—-1ã§åˆæœŸåŒ–
 		Fill(Shapes_Size, -1.0f);
 		Fill(Comparison_Shapes_Vertex_Save, -1);
 		Fill(Shapes_Vertex_Save, -1);
@@ -1529,40 +1580,41 @@ void CFieldVertex::InitFieldVertex()
 		Fill(Shapes_Angle_Save, -1.0f);
 		Fill(Shapes_Length, -1.0f);
 		Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
+		Fill(g_pShapesEffects_Pos, -1.0f);
 	
-		OrderVertex[0] = StartVertex;//‚½‚Ç‚é‡‚ÉƒvƒŒƒCƒ„[‚ÌÅ‰‚ÌˆÊ’u•Û‘¶
-		OrderVertexCount = 1;//‚½‚Ç‚Á‚½’¸“_‚Ì”‰Šú‰»
-		m_tVertex[StartVertex].Use = true;//Å‰‚Ì’¸“_‚ğg—p‚É
+		OrderVertex[0] = StartVertex;//ãŸã©ã‚‹é †ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æœ€åˆã®ä½ç½®ä¿å­˜
+		OrderVertexCount = 1;//ãŸã©ã£ãŸé ‚ç‚¹ã®æ•°åˆæœŸåŒ–
+		m_tVertex[StartVertex].Use = true;//æœ€åˆã®é ‚ç‚¹ã‚’ä½¿ç”¨ã«
 
-		NowLine = 0;//ü‚Ìî•ñ‚ğ‰Šú‰»
+		NowLine = 0;//ç·šã®æƒ…å ±ã‚’åˆæœŸåŒ–
 
-		SuperStarCount = 0;//ƒXƒeƒ‰‚ÌƒJƒEƒ“ƒg‚ğ‰Šú‰»
+		SuperStarCount = 0;//ã‚¹ãƒ†ãƒ©ã®ã‚«ã‚¦ãƒ³ãƒˆã‚’åˆæœŸåŒ–
 
 		Xx = 0.0f;
 		Yy = 0.0f;
 	}
 }
 
-////=====ƒXƒeƒ‰‚ÌˆÊ’u‚ğİ’è‚·‚éŠÖ”=====//
+////=====ã‚¹ãƒ†ãƒ©ã®ä½ç½®ã‚’è¨­å®šã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::SetSuperStar()
 {
-	//’¸“_‚Q‚TŒÂ‰Šú‰»
-	FieldVertex* Vertexp;//’¸“_‚Ìî•ñŠi”[ƒ|ƒCƒ“ƒ^[
-	Vertexp = m_tVertex;//æ“ª‚ÌƒAƒhƒŒƒX‚ğƒZƒbƒg
-	int UseCount = 0;//g‚Á‚½ƒX[ƒp[ƒXƒ^[‚ğ”‚¦‚é
+	//é ‚ç‚¹ï¼’ï¼•å€‹åˆæœŸåŒ–
+	FieldVertex* Vertexp;//é ‚ç‚¹ã®æƒ…å ±æ ¼ç´ãƒã‚¤ãƒ³ã‚¿ãƒ¼
+	Vertexp = m_tVertex;//å…ˆé ­ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ã‚»ãƒƒãƒˆ
+	int UseCount = 0;//ä½¿ã£ãŸã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¹ã‚¿ãƒ¼ã‚’æ•°ãˆã‚‹
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
-		//‰Šú‰»//
+		//åˆæœŸåŒ–//
 		Vertexp->SuperStar = false;
 		Vertexp->SuperStarUse = false;
 	}
 	
-	//V‚µ‚¢ƒXƒeƒ‰‚Ìİ’è//
+	//æ–°ã—ã„ã‚¹ãƒ†ãƒ©ã®è¨­å®š//
 	for (int i = 0; i < 1;)
 	{
-		int Vertex;//ƒXƒeƒ‰‚Ì’¸“_•Û‘¶—p•Ï”
-		Vertex = rand() % 25;//0`24‚Åƒ‰ƒ“ƒ_ƒ€‚ÉƒZƒbƒg
-		if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//Šù‚ÉƒX[ƒp[ƒXƒ^[‚©¡‚¢‚é’¸“_‚©Šù‚Ég—p‚µ‚Ä‚¢‚é’¸“_‚È‚ç‚à‚¤ˆê“x’Š‘I
+		int Vertex;//ã‚¹ãƒ†ãƒ©ã®é ‚ç‚¹ä¿å­˜ç”¨å¤‰æ•°
+		Vertex = rand() % 25;//0ï½24ã§ãƒ©ãƒ³ãƒ€ãƒ ã«ã‚»ãƒƒãƒˆ
+		if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//æ—¢ã«ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¹ã‚¿ãƒ¼ã‹ä»Šã„ã‚‹é ‚ç‚¹ã‹æ—¢ã«ä½¿ç”¨ã—ã¦ã„ã‚‹é ‚ç‚¹ãªã‚‰ã‚‚ã†ä¸€åº¦æŠ½é¸
 		{
 			m_tVertex[Vertex].SuperStar = true;
 			i++;
@@ -1571,28 +1623,28 @@ void CFieldVertex::SetSuperStar()
 
 }
 
-////=====‰¹‚ğ~‚ß‚éŠÖ”=====//
+////=====éŸ³ã‚’æ­¢ã‚ã‚‹é–¢æ•°=====//
 void CFieldVertex::SoundStop()
 {
 	g_FieldSe->Stop();
 }
 
-////=====ƒtƒB[ƒo[’†‚ÉƒtƒB[ƒo[ƒQ[ƒW‚ğŒ¸‚ç‚·ŠÖ”=====//
+////=====ãƒ•ã‚£ãƒ¼ãƒãƒ¼ä¸­ã«ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã‚²ãƒ¼ã‚¸ã‚’æ¸›ã‚‰ã™é–¢æ•°=====//
 void CFieldVertex::SubtractFeverPoint()
 {
 	fFeverPoint -= (MAX_FEVER_POINT / 60.0f) / FEVER_TIME;
-	if (fFeverPoint < 0.0f)//’l‚Ì•â³
+	if (fFeverPoint < 0.0f)//å€¤ã®è£œæ­£
 	{
 		nFeverPoint = 0;
 		fFeverPoint = 0.0f;
 	}
 }
 
-////=====ƒ‚ƒfƒ‹‚Ì‰Šú‰»‚ğ‚·‚éŠÖ”=====//
+////=====ãƒ¢ãƒ‡ãƒ«ã®åˆæœŸåŒ–ã‚’ã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::InitTextureModel()
 {
 
-	//-----ƒXƒvƒ‰ƒCƒg‚Ìƒƒ‚ƒŠŠm•Û-----//
+	//-----ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ãƒ¡ãƒ¢ãƒªç¢ºä¿-----//
 	{
 	  /*m_pSprite_SuperStar_Number = new Sprite();*/
 		m_pSprite_Fever_Gage[0] = new Sprite();
@@ -1611,7 +1663,7 @@ void CFieldVertex::InitTextureModel()
 		}
 	}
 
-	//-----ƒeƒNƒXƒ`ƒƒ‚Ìƒƒ‚ƒŠŠm•Û-----//
+	//-----ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿-----//
 	{
 		m_pTex_Fever_Gage[0] = new Texture();
 		m_pTex_Fever_Gage[1] = new Texture();
@@ -1650,20 +1702,20 @@ void CFieldVertex::InitTextureModel()
 		m_pStar_Model[2] = new CModelEx(MODEL_PASS("Board_Star/Red/Board_Star_Red.fbx"));
 	}
 
-	//¢Š«ƒƒO‰Šú‰»
+	//å¬å–šãƒ­ã‚°åˆæœŸåŒ–
 	{
 		HRESULT hrSummon_Log;
 		hrSummon_Log = m_pTex_Summon_Log[0]->Create(TEX_PASS("Summon_Log/Log_Triangular.png"));
 		if (FAILED(hrSummon_Log)) {
-			MessageBox(NULL, "Summon_Log_Triangular ‰æ‘œ", "Error", MB_OK);
+			MessageBox(NULL, "Summon_Log_Triangular ç”»åƒ", "Error", MB_OK);
 		}
 		hrSummon_Log = m_pTex_Summon_Log[1]->Create(TEX_PASS("Summon_Log/Log_Square.png"));
 		if (FAILED(hrSummon_Log)) {
-			MessageBox(NULL, "Summon_Log_Square ‰æ‘œ", "Error", MB_OK);
+			MessageBox(NULL, "Summon_Log_Square ç”»åƒ", "Error", MB_OK);
 		}
 	}
 
-	//ƒX[ƒp[ƒXƒ^[‚ÌŒÂ”‚Ì”š‰Šú‰»
+	//ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¹ã‚¿ãƒ¼ã®å€‹æ•°ã®æ•°å­—åˆæœŸåŒ–
 	{
 		/*HRESULT hrSuperStar;
 		for (int i = 0; i < 6; i++)
@@ -1680,12 +1732,12 @@ void CFieldVertex::InitTextureModel()
 				break;
 			}
 			if (FAILED(hrSuperStar)) {
-				MessageBox(NULL, "Vertex ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Vertex ç”»åƒ", "Error", MB_OK);
 			}
 		}*/
 	}
 
-	//¢Š«”‚Ì”š‚Ì‰Šú‰»
+	//å¬å–šæ•°ã®æ•°å­—ã®åˆæœŸåŒ–
 	{
 		HRESULT hrNumber;
 		for (int i = 0; i < 10; i++)
@@ -1706,12 +1758,12 @@ void CFieldVertex::InitTextureModel()
 				break;
 			}
 			if (FAILED(hrNumber)) {
-				MessageBox(NULL, "Numbers ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Numbers ç”»åƒ", "Error", MB_OK);
 			}
 		}
 	}
 
-	//ƒtƒB[ƒo[‚Ì‰Šú‰»
+	//ãƒ•ã‚£ãƒ¼ãƒãƒ¼ã®åˆæœŸåŒ–
 	{
 		HRESULT hrFeverStar;
 		for (int i = 0; i < 4; i++)
@@ -1726,13 +1778,13 @@ void CFieldVertex::InitTextureModel()
 				break;
 			}
 			if (FAILED(hrFeverStar)) {
-				MessageBox(NULL, "Fever_Star ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Fever_Star ç”»åƒ", "Error", MB_OK);
 			}
 		}
 		m_pTex_Fever_Player->Create(TEX_PASS("Fever_Star/FieldVertex_Player_UI.png"));
 	}
 
-	//¢Š«”‚Ìƒ{[ƒh‰Šú‰»
+	//å¬å–šæ•°ã®ãƒœãƒ¼ãƒ‰åˆæœŸåŒ–
 	{
 		HRESULT hrBoard;
 		for (int i = 0; i < 4; i++)
@@ -1747,7 +1799,7 @@ void CFieldVertex::InitTextureModel()
 				break;
 			}
 			if (FAILED(hrBoard)) {
-				MessageBox(NULL, "Summon_Count_Board ‰æ‘œ", "Error", MB_OK);
+				MessageBox(NULL, "Summon_Count_Board ç”»åƒ", "Error", MB_OK);
 			}
 		}
 	}
@@ -1761,48 +1813,48 @@ void CFieldVertex::InitSound()
 	g_FieldSe = g_Fieldsound->GetSound(false);
 }
 
-////=====ƒtƒB[ƒo[ƒ|ƒCƒ“ƒg‚ğƒŠƒZƒbƒg‚·‚éŠÖ”=====//
+////=====ãƒ•ã‚£ãƒ¼ãƒãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::ResetFeverPoint()
 {
 	nFeverPoint = 0;
 	fFeverPoint = 0.0f;
 }
 
-////=====ˆê”ÔÅŒã‚Ìü‚ğ•\¦‚µ‚È‚¢—p‚É‚·‚éŠÖ”=====//
+////=====ä¸€ç•ªæœ€å¾Œã®ç·šã‚’è¡¨ç¤ºã—ãªã„ç”¨ã«ã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::SetNowLine()
 {
 	NowLine = NowLine - 1;
 	if (NowLine < 0)NowLine = 0;
 }
 
-////=====}Œ`”»’è‚ÌÄ‹Aˆ—ŠÖ”=====//
+////=====å›³å½¢åˆ¤å®šã®å†å¸°å‡¦ç†é–¢æ•°=====//
 void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 {
-	int NowVertex = 0;//‰¼’¸“_•Û‘¶‚Ì‚Ç‚ÌˆÊ’u‚É¡Ši”[‚µ‚½‚Ì‚©‚ğ•Û‘¶‚·‚é
-	bool ShapesFlag = false;//•Û‘¶Ï‚İ‚Ì‚Æ”äŠr‚µ‚Ä•Û‘¶‚³‚ê‚Ä‚¢‚½‚çfalse
-	bool ShapesSaveFalg = false;//•Û‘¶‚ğs‚Á‚½‚©‚Ç‚¤‚©
+	int NowVertex = 0;//ä»®é ‚ç‚¹ä¿å­˜ã®ã©ã®ä½ç½®ã«ä»Šæ ¼ç´ã—ãŸã®ã‹ã‚’ä¿å­˜ã™ã‚‹
+	bool ShapesFlag = false;//ä¿å­˜æ¸ˆã¿ã®ã¨æ¯”è¼ƒã—ã¦ä¿å­˜ã•ã‚Œã¦ã„ãŸã‚‰false
+	bool ShapesSaveFalg = false;//ä¿å­˜ã‚’è¡Œã£ãŸã‹ã©ã†ã‹
 
 	for (int k = 0; k < MAX_VERTEX; k++)
 	{
 		if (NowShapes >= 200)
 		{
-			MessageBox(NULL, "200ˆÈã‚Ì}Œ`‚ª•Û‘¶‚³‚ê‚Ü‚µ‚½!‚±‚êˆÈã•Û‘¶‚Å‚«‚Ü‚¹‚ñ!!", "Error", MB_OK);
+			MessageBox(NULL, "200ä»¥ä¸Šã®å›³å½¢ãŒä¿å­˜ã•ã‚Œã¾ã—ãŸ!ã“ã‚Œä»¥ä¸Šä¿å­˜ã§ãã¾ã›ã‚“!!", "Error", MB_OK);
 		}
-		if (Comparison[k] == VertexNumber.Number)//‰ß‹‚É©•ª‚Æ“¯‚¶’¸“_‚ªŠi”[‚³‚ê‚Ä‚¢‚½‚ç}Œ`‚Æ‚µ‚Ä‚İ‚È‚µŠi”[‚·‚é	
+		if (Comparison[k] == VertexNumber.Number)//éå»ã«è‡ªåˆ†ã¨åŒã˜é ‚ç‚¹ãŒæ ¼ç´ã•ã‚Œã¦ã„ãŸã‚‰å›³å½¢ã¨ã—ã¦ã¿ãªã—æ ¼ç´ã™ã‚‹	
 		{
-			int Comparison2[MAX_VERTEX];//‰ß‹‚É©•ª‚Æ“¯‚¶’¸“_‚ªŠi”[‚³‚ê‚Ä‚¢‚éêŠ‚©‚ç¡‚ÌêŠ‚Ü‚Å‚Ì’¸“_‚ğ•Û‘¶‚·‚é//~‡‚É•À‚Ñ‘Ö‚¦‚é
-			int Comparison3[MAX_VERTEX];//~‡‚É‚·‚é‘O‚Ì’¸“_î•ñ
+			int Comparison2[MAX_VERTEX];//éå»ã«è‡ªåˆ†ã¨åŒã˜é ‚ç‚¹ãŒæ ¼ç´ã•ã‚Œã¦ã„ã‚‹å ´æ‰€ã‹ã‚‰ä»Šã®å ´æ‰€ã¾ã§ã®é ‚ç‚¹ã‚’ä¿å­˜ã™ã‚‹//é™é †ã«ä¸¦ã³æ›¿ãˆã‚‹
+			int Comparison3[MAX_VERTEX];//é™é †ã«ã™ã‚‹å‰ã®é ‚ç‚¹æƒ…å ±
 			for (int l = k; l < MAX_VERTEX; l++)
 			{
-				Comparison2[l - k] = Comparison[l];//Comparison2‚Ìæ“ª‚©‚çŠi”[‚·‚é
+				Comparison2[l - k] = Comparison[l];//Comparison2ã®å…ˆé ­ã‹ã‚‰æ ¼ç´ã™ã‚‹
 				Comparison3[l - k] = Comparison[l];
 			}
 			for (int l = 0; l < k; l++)
 			{
-				Comparison2[MAX_VERTEX - 1 - l] = -1;//•Û‘¶‚µ‚«‚ê‚È‚©‚Á‚½•”•ª‚ğ‰Šú‰»
+				Comparison2[MAX_VERTEX - 1 - l] = -1;//ä¿å­˜ã—ãã‚Œãªã‹ã£ãŸéƒ¨åˆ†ã‚’åˆæœŸåŒ–
 				Comparison3[MAX_VERTEX - 1 - l] = -1;
 			}
-			for (int l = 0; l < MAX_VERTEX; l++)//~‡‚É•À‚Ñ‘Ö‚¦‚é
+			for (int l = 0; l < MAX_VERTEX; l++)//é™é †ã«ä¸¦ã³æ›¿ãˆã‚‹
 			{
 				for (int m = MAX_VERTEX - 1; m > l; m--)
 				{
@@ -1814,100 +1866,100 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 				}
 			}
-			for (int l = 0; l < NowShapes; l++)//•Û‘¶‚·‚é}Œ`‚ª•Û‘¶Ï‚İ‚©‚Ç‚¤‚©
+			for (int l = 0; l < NowShapes; l++)//ä¿å­˜ã™ã‚‹å›³å½¢ãŒä¿å­˜æ¸ˆã¿ã‹ã©ã†ã‹
 			{
-				int EqualCount = 0;//“™‚µ‚¢‰ñ”
+				int EqualCount = 0;//ç­‰ã—ã„å›æ•°
 				for (int m = 0; m < MAX_VERTEX; m++)
 				{
-					if (Comparison_Shapes_Vertex_Save[l][m] == Comparison2[m])EqualCount++;//“™‚µ‚¯‚ê‚ÎƒJƒEƒ“ƒg‘‚â‚·
-					if (EqualCount == MAX_VERTEX)ShapesFlag = true;//‘S‚Ä“™‚µ‚¢‚È‚ç}Œ`‚ğ•Û‘¶‚µ‚Ä‚Í‚¢‚¯‚È‚¢ƒtƒ‰ƒO—§‚Ä‚é
+					if (Comparison_Shapes_Vertex_Save[l][m] == Comparison2[m])EqualCount++;//ç­‰ã—ã‘ã‚Œã°ã‚«ã‚¦ãƒ³ãƒˆå¢—ã‚„ã™
+					if (EqualCount == MAX_VERTEX)ShapesFlag = true;//å…¨ã¦ç­‰ã—ã„ãªã‚‰å›³å½¢ã‚’ä¿å­˜ã—ã¦ã¯ã„ã‘ãªã„ãƒ•ãƒ©ã‚°ç«‹ã¦ã‚‹
 				}
 			}
-			if (!ShapesFlag)//•Û‘¶Ï‚İ‚Å‚È‚¯‚ê‚Î•Û‘¶‚·‚é
+			if (!ShapesFlag)//ä¿å­˜æ¸ˆã¿ã§ãªã‘ã‚Œã°ä¿å­˜ã™ã‚‹
 			{
 				for (int l = 0; l < MAX_VERTEX; l++)
 				{
-					Comparison_Shapes_Vertex_Save[NowShapes][l] = Comparison2[l];//}Œ`‚Ì’¸“_‚ğ•Û‘¶
-					Shapes_Vertex_Save[NowShapes][l] = Comparison3[l];//Draw‡‚Ì}Œ`’¸“_•Û‘¶
+					Comparison_Shapes_Vertex_Save[NowShapes][l] = Comparison2[l];//å›³å½¢ã®é ‚ç‚¹ã‚’ä¿å­˜
+					Shapes_Vertex_Save[NowShapes][l] = Comparison3[l];//Drawé †ã®å›³å½¢é ‚ç‚¹ä¿å­˜
 				}
-				//‰½ŠpŒ`‚©”»’è
+				//ä½•è§’å½¢ã‹åˆ¤å®š
 				int Count = 0;
 				for (int l = 2; l < MAX_VERTEX; l++)
 				{
-					if (Comparison3[l] != -1)//ÅŒã‚Ì“_‚Ü‚Å
+					if (Comparison3[l] != -1)//æœ€å¾Œã®ç‚¹ã¾ã§
 					{
-						//O“_‚ªc‚©‰¡‚Ìˆê’¼üã‚Å‚È‚¢‚Æ‚«
+						//ä¸‰ç‚¹ãŒç¸¦ã‹æ¨ªã®ä¸€ç›´ç·šä¸Šã§ãªã„ã¨ã
 						if (!((m_tVertex[Comparison3[l - 2]].Pos.x == m_tVertex[Comparison3[l - 1]].Pos.x && m_tVertex[Comparison3[l - 1]].Pos.x == m_tVertex[Comparison3[l]].Pos.x)
 							|| (m_tVertex[Comparison3[l - 2]].Pos.y == m_tVertex[Comparison3[l - 1]].Pos.y && m_tVertex[Comparison3[l - 1]].Pos.y == m_tVertex[Comparison3[l]].Pos.y)))
 						{
-							//O“_‚ªÎ‚ß‚Ìˆê’¼üã‚Å‚È‚¢‚Æ‚«
+							//ä¸‰ç‚¹ãŒæ–œã‚ã®ä¸€ç›´ç·šä¸Šã§ãªã„ã¨ã
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
-								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//Šp‚Ì’¸“_”Ô†‚ğ•Û‘¶
-								Count++;//•Ó‚ªŒq‚ª‚Á‚Ä‚È‚¢‚Æ‚«Šp‚ª‚Å‚«‚Ä‚é
+								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//è§’ã®é ‚ç‚¹ç•ªå·ã‚’ä¿å­˜
+								Count++;//è¾ºãŒç¹‹ãŒã£ã¦ãªã„ã¨ãè§’ãŒã§ãã¦ã‚‹
 							}
 						}
 					}
 					else
 					{
-						//ÅŒã‚Ì•Ó‚Æ‚»‚ÌˆêŒÂ‘O‚Ì•Ó‚Ì”äŠr
-						//O“_‚ªc‚©‰¡‚Ìˆê’¼üã‚Å‚È‚¢‚Æ‚«
+						//æœ€å¾Œã®è¾ºã¨ãã®ä¸€å€‹å‰ã®è¾ºã®æ¯”è¼ƒ
+						//ä¸‰ç‚¹ãŒç¸¦ã‹æ¨ªã®ä¸€ç›´ç·šä¸Šã§ãªã„ã¨ã
 						if (!((m_tVertex[Comparison3[l - 2]].Pos.x == m_tVertex[Comparison3[l - 1]].Pos.x && m_tVertex[Comparison3[l - 1]].Pos.x == m_tVertex[Comparison3[0]].Pos.x)
 							|| (m_tVertex[Comparison3[l - 2]].Pos.y == m_tVertex[Comparison3[l - 1]].Pos.y && m_tVertex[Comparison3[l - 1]].Pos.y == m_tVertex[Comparison3[0]].Pos.y)))
 						{
-							//O“_‚ªÎ‚ß‚Ìˆê’¼üã‚Å‚È‚¢‚Æ‚«
+							//ä¸‰ç‚¹ãŒæ–œã‚ã®ä¸€ç›´ç·šä¸Šã§ãªã„ã¨ã
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
-								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//Šp‚Ì’¸“_”Ô†‚ğ•Û‘¶
-								Count++;//•Ó‚ªŒq‚ª‚Á‚Ä‚È‚¢‚Æ‚«Šp‚ª‚Å‚«‚Ä‚é	
+								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//è§’ã®é ‚ç‚¹ç•ªå·ã‚’ä¿å­˜
+								Count++;//è¾ºãŒç¹‹ãŒã£ã¦ãªã„ã¨ãè§’ãŒã§ãã¦ã‚‹	
 							}
 						}
-						//Å‰‚Ì•Ó‚ÆÅŒã‚Ì•Ó‚ğ”äŠr
-						//O“_‚ªc‚©‰¡‚Ìˆê’¼üã‚Å‚È‚¢‚Æ‚«
+						//æœ€åˆã®è¾ºã¨æœ€å¾Œã®è¾ºã‚’æ¯”è¼ƒ
+						//ä¸‰ç‚¹ãŒç¸¦ã‹æ¨ªã®ä¸€ç›´ç·šä¸Šã§ãªã„ã¨ã
 						if (!((m_tVertex[Comparison3[l - 1]].Pos.x == m_tVertex[Comparison3[0]].Pos.x && m_tVertex[Comparison3[0]].Pos.x == m_tVertex[Comparison3[1]].Pos.x)
 							|| (m_tVertex[Comparison3[l - 1]].Pos.y == m_tVertex[Comparison3[0]].Pos.y && m_tVertex[Comparison3[0]].Pos.y == m_tVertex[Comparison3[1]].Pos.y)))
 						{
-							//O“_‚ªÎ‚ß‚Ìˆê’¼üã‚Å‚È‚¢‚Æ‚«
+							//ä¸‰ç‚¹ãŒæ–œã‚ã®ä¸€ç›´ç·šä¸Šã§ãªã„ã¨ã
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x))
 							{
-								Shapes_Vertex[NowShapes][Count] = Comparison3[0];//Šp‚Ì’¸“_”Ô†‚ğ•Û‘¶
-								Count++;//•Ó‚ªŒq‚ª‚Á‚Ä‚È‚¢‚Æ‚«Šp‚ª‚Å‚«‚Ä‚é
+								Shapes_Vertex[NowShapes][Count] = Comparison3[0];//è§’ã®é ‚ç‚¹ç•ªå·ã‚’ä¿å­˜
+								Count++;//è¾ºãŒç¹‹ãŒã£ã¦ãªã„ã¨ãè§’ãŒã§ãã¦ã‚‹
 							}
 						}
-						break;//ÅŒã‚Ì’¸“_‚Ìˆ—‚ğI‚¦‚½‚çˆ—”²‚¯‚é
+						break;//æœ€å¾Œã®é ‚ç‚¹ã®å‡¦ç†ã‚’çµ‚ãˆãŸã‚‰å‡¦ç†æŠœã‘ã‚‹
 					}
 				}
-				//‰šŠpŒ`”»’è
+				//å‡¹è§’å½¢åˆ¤å®š
 				bool BadShapes = false;
 				if (Count == 3 || Count == 4)
 				{
-					DirectX::XMFLOAT2 FastVector;//æ‚ÌƒxƒNƒgƒ‹
-					DirectX::XMFLOAT2 SecondVector;//Œã‚ÌƒxƒNƒgƒ‹
-					DirectX::XMFLOAT2 NormalizeFastVector;//³‹K‰»Œã‚ÌæƒxƒNƒgƒ‹
-					DirectX::XMFLOAT2 NormalizeSecondVector;//³‹K‰»Œã‚ÌŒã‚ÌƒxƒNƒgƒ‹
+					DirectX::XMFLOAT2 FastVector;//å…ˆã®ãƒ™ã‚¯ãƒˆãƒ«
+					DirectX::XMFLOAT2 SecondVector;//å¾Œã®ãƒ™ã‚¯ãƒˆãƒ«
+					DirectX::XMFLOAT2 NormalizeFastVector;//æ­£è¦åŒ–å¾Œã®å…ˆãƒ™ã‚¯ãƒˆãƒ«
+					DirectX::XMFLOAT2 NormalizeSecondVector;//æ­£è¦åŒ–å¾Œã®å¾Œã®ãƒ™ã‚¯ãƒˆãƒ«
 					float AngleSave[25];
 					int AngleCount = 0;
-					float Error = 0.01;//Œë·
+					float Error = 0.01;//èª¤å·®
 					int Save = 0;
 					Fill(AngleSave, -1);
 
 					for (int l = 2; l < MAX_VERTEX; l++)
 					{
 						int m = 0;
-						DirectX::XMFLOAT2 RotationFastVector;//³‹K‰»‚µ‚½æƒxƒNƒgƒ‹‚É‰ñ“]s—ñ‚ğŠ|‚¯‚½ƒxƒNƒgƒ‹
-						if (Comparison3[l] != -1)//ÅŒã‚Ì“_‚Ü‚Å
+						DirectX::XMFLOAT2 RotationFastVector;//æ­£è¦åŒ–ã—ãŸå…ˆãƒ™ã‚¯ãƒˆãƒ«ã«å›è»¢è¡Œåˆ—ã‚’æ›ã‘ãŸãƒ™ã‚¯ãƒˆãƒ«
+						if (Comparison3[l] != -1)//æœ€å¾Œã®ç‚¹ã¾ã§
 						{
-							//ŠeƒxƒNƒgƒ‹‚ÌŒvZiæ“¾j
+							//å„ãƒ™ã‚¯ãƒˆãƒ«ã®è¨ˆç®—ï¼ˆå–å¾—ï¼‰
 							FastVector.x = m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
 							FastVector.y = m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
 
 							SecondVector.x = m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
 							SecondVector.y = m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
 
-							//‹‚ß‚½ƒxƒNƒgƒ‹‚ğ³‹K‰»
+							//æ±‚ã‚ãŸãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–
 							NormalizeFastVector.x = FastVector.x / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
 							NormalizeFastVector.y = FastVector.y / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
 
@@ -1944,14 +1996,14 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 						else
 						{
-							//ŠeƒxƒNƒgƒ‹‚ÌŒvZiæ“¾j
+							//å„ãƒ™ã‚¯ãƒˆãƒ«ã®è¨ˆç®—ï¼ˆå–å¾—ï¼‰
 							FastVector.x = m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
 							FastVector.y = m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
 
 							SecondVector.x = m_tVertex[Comparison3[l - 2]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x;
 							SecondVector.y = m_tVertex[Comparison3[l - 2]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y;
 
-							//‹‚ß‚½ƒxƒNƒgƒ‹‚ğ³‹K‰»
+							//æ±‚ã‚ãŸãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–
 							NormalizeFastVector.x = FastVector.x / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
 							NormalizeFastVector.y = FastVector.y / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
 
@@ -1985,14 +2037,14 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								if (fabsf(AngleSave[m] - AngleSave[m - 1]) >= 180.0f)BadShapes = true;
 							}
 
-							//ŠeƒxƒNƒgƒ‹‚ÌŒvZiæ“¾j
+							//å„ãƒ™ã‚¯ãƒˆãƒ«ã®è¨ˆç®—ï¼ˆå–å¾—ï¼‰
 							FastVector.x = m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x;
 							FastVector.y = m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y;
 
 							SecondVector.x = m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x;
 							SecondVector.y = m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y;
 
-							//‹‚ß‚½ƒxƒNƒgƒ‹‚ğ³‹K‰»
+							//æ±‚ã‚ãŸãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–
 							NormalizeFastVector.x = FastVector.x / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
 							NormalizeFastVector.y = FastVector.y / sqrtf(powf(FastVector.x, 2) + powf(FastVector.y, 2));
 
@@ -2029,8 +2081,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 					}
 				}
-				if (Count > 4)BadShapes = true;//}Œ`‚Æ‚İ‚È‚³‚È‚¢(9ŠpŒ`ˆÈã‚Ì‰šŠpŒ`‚ª‘¶İ‚µ‚È‚¢‚½‚ß)BadShapes‚ğtrue‚É‚·‚é
-				if (BadShapes)//ƒ_ƒ‚È}Œ`‚ğ•Û‘¶‚µ‚È‚¢iÁ‹‚·‚é)
+				if (Count > 4)BadShapes = true;//å›³å½¢ã¨ã¿ãªã•ãªã„(9è§’å½¢ä»¥ä¸Šã®å‡¹è§’å½¢ãŒå­˜åœ¨ã—ãªã„ãŸã‚)BadShapesã‚’trueã«ã™ã‚‹
+				if (BadShapes)//ãƒ€ãƒ¡ãªå›³å½¢ã‚’ä¿å­˜ã—ãªã„ï¼ˆæ¶ˆå»ã™ã‚‹)
 				{
 					Fill(Shapes_Vertex[NowShapes], -1);
 					Fill(Comparison_Shapes_Vertex_Save[NowShapes], -1);
@@ -2040,16 +2092,16 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				if (!BadShapes)
 				{
 					Shapes_Count[NowShapes] = Count;
-					float InVertex = 0;//’†‚Ì’¸“_
-					float OutVertex = 0;//•Óã‚Ì’¸“_
+					float InVertex = 0;//ä¸­ã®é ‚ç‚¹
+					float OutVertex = 0;//è¾ºä¸Šã®é ‚ç‚¹
 					int l = 0;
-					//’¸“_‚ÌŒÂ”’²‚×
+					//é ‚ç‚¹ã®å€‹æ•°èª¿ã¹
 					for (; l < MAX_VERTEX; l++)
 					{
 						if (Comparison2[l] == -1)break;
-						OutVertex++;//•Óã‚Ì’¸“_‚Ì”
+						OutVertex++;//è¾ºä¸Šã®é ‚ç‚¹ã®æ•°
 					}
-					//}Œ`“à“_”»’èi“¯ˆêüã‚Í”²‚«j
+					//å›³å½¢å†…ç‚¹åˆ¤å®šï¼ˆåŒä¸€ç·šä¸Šã¯æŠœãï¼‰
 
 					for (int m = Comparison2[0]; m > Comparison2[l - 1]; m--)
 					{
@@ -2058,22 +2110,22 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						{
 							if (m == Comparison2[n])
 							{
-								Out = true;//•Óã‚Ì’¸“_‚È‚ç
+								Out = true;//è¾ºä¸Šã®é ‚ç‚¹ãªã‚‰
 								break;
 							}
 						}
-						if (!Out)//•Óã‚Ì’¸“_‚¶‚á‚È‚¢‚È‚ç
+						if (!Out)//è¾ºä¸Šã®é ‚ç‚¹ã˜ã‚ƒãªã„ãªã‚‰
 						{
 							bool UpVertex = false;
 							bool DownVertex = false;
 							bool LeftVertex = false;
 							bool RightVertex = false;
-							//”äŠr’¸“_‚ğˆê”Ô¶‚©‚ç‚É‚·‚é
+							//æ¯”è¼ƒé ‚ç‚¹ã‚’ä¸€ç•ªå·¦ã‹ã‚‰ã«ã™ã‚‹
 							for (int n = (m / 5) * 5; n < m; n++)
 							{
 								if (m_tVertex[n].Use)
 								{
-									for (int o = 0; o < MAX_VERTEX; o++)//}Œ`‚Ég—p‚µ‚Ä‚¢‚é’¸“_‚Ì‚İ
+									for (int o = 0; o < MAX_VERTEX; o++)//å›³å½¢ã«ä½¿ç”¨ã—ã¦ã„ã‚‹é ‚ç‚¹ã®ã¿
 									{
 										if (n == Comparison2[o])
 										{
@@ -2082,12 +2134,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									}		
 								}
 							}
-							//”äŠr’¸“_‚ğˆê”Ô‰E‚©‚ç‚É‚·‚é
+							//æ¯”è¼ƒé ‚ç‚¹ã‚’ä¸€ç•ªå³ã‹ã‚‰ã«ã™ã‚‹
 							for (int n = (m / 5) * 5 + 4; n > m; n--)
 							{
 								if (m_tVertex[n].Use)
 								{
-									for (int o = 0; o < MAX_VERTEX; o++)//}Œ`‚Ég—p‚µ‚Ä‚¢‚é’¸“_‚Ì‚İ
+									for (int o = 0; o < MAX_VERTEX; o++)//å›³å½¢ã«ä½¿ç”¨ã—ã¦ã„ã‚‹é ‚ç‚¹ã®ã¿
 									{
 										if (n == Comparison2[o])
 										{
@@ -2096,12 +2148,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									}
 								}
 							}
-							//”äŠr’¸“_‚ğˆê”Ôã‚©‚ç‚É‚·‚é
+							//æ¯”è¼ƒé ‚ç‚¹ã‚’ä¸€ç•ªä¸Šã‹ã‚‰ã«ã™ã‚‹
 							for (int n = m % 5; n < m; n += 5)
 							{
 								if (m_tVertex[n].Use)
 								{
-									for (int o = 0; o < MAX_VERTEX; o++)//}Œ`‚Ég—p‚µ‚Ä‚¢‚é’¸“_‚Ì‚İ
+									for (int o = 0; o < MAX_VERTEX; o++)//å›³å½¢ã«ä½¿ç”¨ã—ã¦ã„ã‚‹é ‚ç‚¹ã®ã¿
 									{
 										if (n == Comparison2[o])
 										{
@@ -2110,12 +2162,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									}
 								}
 							}
-							//”äŠr’¸“_‚ğˆê”Ô‰º‚©‚ç‚É‚·‚é
+							//æ¯”è¼ƒé ‚ç‚¹ã‚’ä¸€ç•ªä¸‹ã‹ã‚‰ã«ã™ã‚‹
 							for (int n = m % 5 + 5 * 4; n > m; n -= 5)
 							{
 								if (m_tVertex[n].Use)
 								{
-									for (int o = 0; o < MAX_VERTEX; o++)//}Œ`‚Ég—p‚µ‚Ä‚¢‚é’¸“_‚Ì‚İ
+									for (int o = 0; o < MAX_VERTEX; o++)//å›³å½¢ã«ä½¿ç”¨ã—ã¦ã„ã‚‹é ‚ç‚¹ã®ã¿
 									{
 										if (n == Comparison2[o])
 										{
@@ -2124,25 +2176,25 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									}
 								}
 							}
-							if (UpVertex && DownVertex && LeftVertex && RightVertex)InVertex++;//‘S•ûŒü‚Ég‚Á‚Ä‚¢‚é’¸“_‚ª‚ ‚ê‚ÎˆÍ‚Ü‚ê‚Ä‚¢‚é‚Ì‚Å“à‘¤‚Ì’¸“_
+							if (UpVertex && DownVertex && LeftVertex && RightVertex)InVertex++;//å…¨æ–¹å‘ã«ä½¿ã£ã¦ã„ã‚‹é ‚ç‚¹ãŒã‚ã‚Œã°å›²ã¾ã‚Œã¦ã„ã‚‹ã®ã§å†…å´ã®é ‚ç‚¹
 						}
 					}
-					Shapes_Size[NowShapes] = InVertex + OutVertex / 2.0f - 1.0f;//ƒsƒbƒN‚Ì’è—‚©‚ç–ÊÏ‚ğ“±‚­
-					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//}Œ`‚Ì’¸“_‚ÆŠp”‚ğ“n‚·
+					Shapes_Size[NowShapes] = InVertex + OutVertex / 2.0f - 1.0f;//ãƒ”ãƒƒã‚¯ã®å®šç†ã‹ã‚‰é¢ç©ã‚’å°ã
+					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//å›³å½¢ã®é ‚ç‚¹ã¨è§’æ•°ã‚’æ¸¡ã™
 
 					//std::thread Th_Ally_Load(LoadAllyTextureThread);
 					//Th_Ally_Load.join();
 
-					Ally_Count++;//¢Š«”‘‚â‚·
-					//¢Š«ƒƒOƒZƒbƒg
+					Ally_Count++;//å¬å–šæ•°å¢—ã‚„ã™
+					//å¬å–šãƒ­ã‚°ã‚»ãƒƒãƒˆ
 					//SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 100.0f - 5.0f * NowSummonLog, 10.0f);
 					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
 					SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
-					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//‰æ”‚©‚çˆø‚­ (0‚©1)
+					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//ç”»æ•°ã‹ã‚‰å¼•ã (0ã‹1)
 					SummonLog[NowSummonLog].Alpha = 0.0f;
 					SummonLog[NowSummonLog].MoveType = 1;
-					NowSummonLog++;//¢Š«ƒƒO‚ğ‘‚â‚·
-					//if (Shapes_Count[NowShapes] == 3)//OŠpŒ`‚È‚ç
+					NowSummonLog++;//å¬å–šãƒ­ã‚°ã‚’å¢—ã‚„ã™
+					//if (Shapes_Count[NowShapes] == 3)//ä¸‰è§’å½¢ãªã‚‰
 					//{
 					//	DirectX::XMFLOAT2 pos[3];
 					//	for (int m = 0; m < 3; m++)
@@ -2165,9 +2217,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					//	Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
 					//}
 
-					if (Shapes_Count[NowShapes] == 3)//OŠpŒ`‚È‚ç
+					if (Shapes_Count[NowShapes] == 3)//ä¸‰è§’å½¢ãªã‚‰
 					{
-						//OŠpŒ`‚ÌŠOS‚ÌÀ•W‚ğ‹‚ß‚é
+						//ä¸‰è§’å½¢ã®å¤–å¿ƒã®åº§æ¨™ã‚’æ±‚ã‚ã‚‹
 						DirectX::XMFLOAT2 pos[3];
 						for (int m = 0; m < 3; m++)
 						{
@@ -2179,6 +2231,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						//Shapes_Pos[NowShapes].y = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].x - pos[2].x) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].x - pos[0].x) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].x - pos[1].x)) / (2.0f * ((pos[1].x - pos[2].x) * (pos[0].y - pos[1].y) - (pos[0].x - pos[1].x) * (pos[1].y - pos[2].y)));
 						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
 						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
+						g_pShapesEffects_Pos[NowShapes][0].x = Effect_Shapes_Pos[NowShapes].x;
+						g_pShapesEffects_Pos[NowShapes][0].y = Effect_Shapes_Pos[NowShapes].y;
+						g_pShapesEffects_Pos[NowShapes][0].z = 0.0f;
 						bool typeflag = false;
 						float CornerAngle = -1.0f;
 						int CornerNumber = -1;
@@ -2207,7 +2262,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						Shapes_Pos[NowShapes].y = Py / 2.0f;
 						Vx = m_tVertex[VertexSub[0]].Pos.x - m_tVertex[CornerNumber].Pos.x + m_tVertex[VertexSub[1]].Pos.x - m_tVertex[CornerNumber].Pos.x;
 						Vy = m_tVertex[VertexSub[0]].Pos.y - m_tVertex[CornerNumber].Pos.y + m_tVertex[VertexSub[1]].Pos.y - m_tVertex[CornerNumber].Pos.y;
-						//‰¡Œü‚«‚Ì’¼Šp“ñ“™•ÓOŠpŒ`‚È‚ç type 0
+						//æ¨ªå‘ãã®ç›´è§’äºŒç­‰è¾ºä¸‰è§’å½¢ãªã‚‰ type 0
 						if ((Vx > 0.0f && Vy > 0.0f) || (Vx > 0.0f && Vy < 0.0f)|| (Vx < 0.0f && Vy < 0.0f) || (Vx < 0.0f && Vy > 0.0f))
 						{
 							if (Vx > 0.0f && Vy > 0.0f)Shapes_type_Angle[NowShapes][1] = 0;
@@ -2216,7 +2271,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (Vx < 0.0f && Vy > 0.0f)Shapes_type_Angle[NowShapes][1] = 3;
 							Shapes_type_Angle[NowShapes][0] = 0;
 						}
-						//ãŒü‚«‚Ì’¼Šp“ñ“™•ÓOŠpŒ`‚È‚ç type 1
+						//ä¸Šå‘ãã®ç›´è§’äºŒç­‰è¾ºä¸‰è§’å½¢ãªã‚‰ type 1
 						if ((Vx == 0.0f && Vy > 0.0f)|| (Vx > 0.0f && Vy == 0.0f)|| (Vx == 0.0f && Vy < 0.0f) || (Vx < 0.0f && Vy == 0.0f))
 						{
 							if (Vx == 0.0f && Vy > 0.0f)Shapes_type_Angle[NowShapes][1] = 2;
@@ -2226,7 +2281,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							Shapes_type_Angle[NowShapes][0] = 1;
 						}	
 					}
-					else//lŠpŒ`‚È‚ç
+					else//å››è§’å½¢ãªã‚‰
 					{
 						DirectX::XMFLOAT2 pos[4];
 						for (int m = 0; m < 4; m++)
@@ -2236,10 +2291,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 						Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
 						Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
-						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
-						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
+						Effect_Shapes_Pos[NowShapes].x = Shapes_Pos[NowShapes].x;
+						Effect_Shapes_Pos[NowShapes].y = Shapes_Pos[NowShapes].y;
+						g_pShapesEffects_Pos[NowShapes][0].x = Effect_Shapes_Pos[NowShapes].x;
+						g_pShapesEffects_Pos[NowShapes][0].y = Effect_Shapes_Pos[NowShapes].y;
+						g_pShapesEffects_Pos[NowShapes][0].z = 0.0f;
 
-						float Length[4][2];//l•Ó‚Ì’·‚³‚ğ‹‚ß‚é
+						float Length[4][2];//å››è¾ºã®é•·ã•ã‚’æ±‚ã‚ã‚‹
 						for (int m = 0; m < 3; m++)
 						{
 							if (pos[m].x == pos[m + 1].x)
@@ -2254,7 +2312,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									Length[m][0] = fabsf(pos[m].x - pos[m + 1].x);
 									Length[m][1] = 0;
 								}
-								else//’¼Šp‚¶‚á‚È‚¢‚Æ‚«
+								else//ç›´è§’ã˜ã‚ƒãªã„ã¨ã
 								{
 									Length[m][0] = sqrtf(powf(pos[m].x - pos[m + 1].x, 2) + powf(pos[m].y - pos[m + 1].y, 2));
 								}
@@ -2272,26 +2330,26 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								Length[3][0] = fabsf(pos[3].x - pos[0].x);
 								Length[3][1] = 0;
 							}
-							else //’¼Šp‚¶‚á‚È‚¢‚Æ‚«
+							else //ç›´è§’ã˜ã‚ƒãªã„ã¨ã
 							{
 								Length[3][0] = sqrtf(powf(pos[3].x - pos[0].x, 2) + powf(pos[3].y - pos[0].y, 2));
 							}
 						}
-						//³•ûŒ`‚©’·•ûŒ`‚Ü‚½‚Í‚Ğ‚µŒ`‚Ì
+						//æ­£æ–¹å½¢ã‹é•·æ–¹å½¢ã¾ãŸã¯ã²ã—å½¢ã®æ™‚
 						if (Shapes_Angle_Save[NowShapes][0][0] == 90.0f && Shapes_Angle_Save[NowShapes][1][0] == 90.0f && Shapes_Angle_Save[NowShapes][2][0] == 90.0f && Shapes_Angle_Save[NowShapes][3][0] == 90.0f)
 						{
 
-							//Še•Ó‚Ì’·‚³‚É‚æ‚Á‚Ä}Œ`‚ÌŒ`‚ğ‹æ•Ê‚·‚é
-							if (Length[0][0] == Length[1][0] && Length[2][0] == Length[3][0] && Length[1][0] == Length[2][0])//³•ûŒ`or‚Ğ‚µŒ`
+							//å„è¾ºã®é•·ã•ã«ã‚ˆã£ã¦å›³å½¢ã®å½¢ã‚’åŒºåˆ¥ã™ã‚‹
+							if (Length[0][0] == Length[1][0] && Length[2][0] == Length[3][0] && Length[1][0] == Length[2][0])//æ­£æ–¹å½¢orã²ã—å½¢
 							{
-								if ((int)Length[0][0] % 15 == 0)//ã‰º‚Ì’¸“_‚ÌŠÔŠu‚Æ“¯‚¶‚È‚ç³•ûŒ`
+								if ((int)Length[0][0] % 15 == 0)//ä¸Šä¸‹ã®é ‚ç‚¹ã®é–“éš”ã¨åŒã˜ãªã‚‰æ­£æ–¹å½¢
 								{
-									Shapes_type_Angle[NowShapes][0] = 2;//³•ûŒ`
+									Shapes_type_Angle[NowShapes][0] = 2;//æ­£æ–¹å½¢
 									Shapes_type_Angle[NowShapes][1] = 0;
 								}
 								else
 								{
-									Shapes_type_Angle[NowShapes][0] = 3;//‚Ğ‚µŒ`
+									Shapes_type_Angle[NowShapes][0] = 3;//ã²ã—å½¢
 									Shapes_type_Angle[NowShapes][1] = 0;
 								}
 							}
@@ -2300,7 +2358,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 								if (pos[0].x == pos[1].x || pos[0].y == pos[1].y)
 								{
-									Shapes_type_Angle[NowShapes][0] = 4;//’·•ûŒ`
+									Shapes_type_Angle[NowShapes][0] = 4;//é•·æ–¹å½¢
 									Shapes_type_Angle[NowShapes][1] = 0;
 									if (Length[0][1] == 0)
 									{
@@ -2315,18 +2373,18 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								}
 								else
 								{
-									//Î‚ß‚Ì’·•ûŒ`
+									//æ–œã‚ã®é•·æ–¹å½¢
 									DirectX::XMFLOAT2 dir;
 									dir.x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
 									dir.y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
-									if ((pos[0].x - dir.x > 0.0f && pos[0].y - dir.y > 0.0f) || (pos[0].x - dir.x < 0.0f && pos[0].y - dir.y < 0.0f))//¶‚©‚ç‰E
+									if ((pos[0].x - dir.x > 0.0f && pos[0].y - dir.y > 0.0f) || (pos[0].x - dir.x < 0.0f && pos[0].y - dir.y < 0.0f))//å·¦ã‹ã‚‰å³
 									{
-										Shapes_type_Angle[NowShapes][0] = 5;//Î‚ß‚Ì’·•ûŒ`
+										Shapes_type_Angle[NowShapes][0] = 5;//æ–œã‚ã®é•·æ–¹å½¢
 										Shapes_type_Angle[NowShapes][1] = -1;
 									}
 									else
 									{
-										Shapes_type_Angle[NowShapes][0] = 5;//Î‚ß‚Ì’·•ûŒ`
+										Shapes_type_Angle[NowShapes][0] = 5;//æ–œã‚ã®é•·æ–¹å½¢
 										Shapes_type_Angle[NowShapes][1] = 1;
 									}
 									if (Length[0][0] == 0)
@@ -2344,18 +2402,18 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 						else
 						{
-							//ƒJƒbƒ^[Œ^‚Æ‘äŒ`‚Ì‚Æ‚«
+							//ã‚«ãƒƒã‚¿ãƒ¼å‹ã¨å°å½¢ã®ã¨ã
 							if (Length[0][0] != Length[2][0] || Length[1][0] != Length[3][0])
 							{
-								//ˆê‚Â‚Å‚à’¼Šp‚ª‚ ‚ê‚ÎƒJƒbƒ^[Œ^
+								//ä¸€ã¤ã§ã‚‚ç›´è§’ãŒã‚ã‚Œã°ã‚«ãƒƒã‚¿ãƒ¼å‹
 								if (Shapes_Angle_Save[NowShapes][0][0] == 90.0f || Shapes_Angle_Save[NowShapes][1][0] == 90.0f || Shapes_Angle_Save[NowShapes][2][0] == 90.0f || Shapes_Angle_Save[NowShapes][3][0] == 90.0f)
 								{
-									//}Œ`‚Ì’†“_‚ğ‹‚ß‚é
+									//å›³å½¢ã®ä¸­ç‚¹ã‚’æ±‚ã‚ã‚‹
 									DirectX::XMFLOAT2 dir;
 									dir.x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
 									dir.y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
 									int AngleNumber = 0;
-									//‰sŠp‚Ì’¸“_‚ğ‹‚ß‚é//•Ó‚Ì”ä‚ğ‹‚ß‚é
+									//é‹­è§’ã®é ‚ç‚¹ã‚’æ±‚ã‚ã‚‹//è¾ºã®æ¯”ã‚’æ±‚ã‚ã‚‹
 									for (int m = 0; m < 4; m++)
 									{
 										if ((int)Length[m][0] % 15 == 0)Length[m][0] = Length[m][0] / 15.0f;
@@ -2366,7 +2424,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 											AngleNumber = m;
 										}
 									}
-									//Še•Ó‚Ì’·‚³‚ğ‹‚ß‚é(‘Î•Ó‚Ì”ä‚ª“™‚µ‚­‚È‚¢‚à‚Ì‚ª‚»‚Ì}Œ`‚Ì•Ó‚Ì”ä‚É‚È‚é)
+									//å„è¾ºã®é•·ã•ã‚’æ±‚ã‚ã‚‹(å¯¾è¾ºã®æ¯”ãŒç­‰ã—ããªã„ã‚‚ã®ãŒãã®å›³å½¢ã®è¾ºã®æ¯”ã«ãªã‚‹)
 									if (Length[0][0] == Length[2][0])
 									{
 										Shapes_Length[NowShapes][0] = Length[1][0];
@@ -2381,12 +2439,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) > fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//ƒJƒbƒ^[Œ^(¶“Ê)
+											Shapes_type_Angle[NowShapes][0] = 9;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å·¦å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 2;
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//ƒJƒbƒ^[Œ^(‰E“Ê)
+											Shapes_type_Angle[NowShapes][0] = 10;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å³å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 3;
 										}
 									}
@@ -2394,12 +2452,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) < fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//ƒJƒbƒ^[Œ^(¶“Ê)
+											Shapes_type_Angle[NowShapes][0] = 9;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å·¦å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 3;
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//ƒJƒbƒ^[Œ^(‰E“Ê)
+											Shapes_type_Angle[NowShapes][0] = 10;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å³å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 0;
 										}
 									}
@@ -2407,12 +2465,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) > fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//ƒJƒbƒ^[Œ^(¶“Ê)
+											Shapes_type_Angle[NowShapes][0] = 9;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å·¦å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 0;
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//ƒJƒbƒ^[Œ^(‰E“Ê)
+											Shapes_type_Angle[NowShapes][0] = 10;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å³å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 1;
 										}	
 									}
@@ -2420,19 +2478,19 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) < fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//ƒJƒbƒ^[Œ^(¶“Ê)
+											Shapes_type_Angle[NowShapes][0] = 9;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å·¦å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 1;
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//ƒJƒbƒ^[Œ^(‰E“Ê)
+											Shapes_type_Angle[NowShapes][0] = 10;//ã‚«ãƒƒã‚¿ãƒ¼å‹(å³å‡¸)
 											Shapes_type_Angle[NowShapes][1] = 2;
 										}	
 									}
 								}
-								else //‘äŒ`
+								else //å°å½¢
 								{
-									Shapes_type_Angle[NowShapes][0] = 6;//‘äŒ`
+									Shapes_type_Angle[NowShapes][0] = 6;//å°å½¢
 									float Num[2];
 									Num[0] = Length[0][0];
 									Num[1] = 0;
@@ -2471,37 +2529,37 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									if (dirpos.x < 0.0f && dirpos.y > 0.0f)Shapes_type_Angle[NowShapes][1] = 7;
 									if (Shapes_type_Angle[NowShapes][1] < 4)
 									{
-										Shapes_Length[NowShapes][0] = Length[(int)Num[1]][0]/ 15.0f;//ã’ê‚Ì’·‚³•Û‘¶
-										Shapes_Length[NowShapes][1] = Num[0] / 15.0f;//‰º’ê‚Ì’·‚³•Û‘¶
+										Shapes_Length[NowShapes][0] = Length[(int)Num[1]][0]/ 15.0f;//ä¸Šåº•ã®é•·ã•ä¿å­˜
+										Shapes_Length[NowShapes][1] = Num[0] / 15.0f;//ä¸‹åº•ã®é•·ã•ä¿å­˜
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[(int)Num[1]][0] / sqrtf(450.0f);//ã’ê‚Ì’·‚³•Û‘¶
-										Shapes_Length[NowShapes][1] = Num[0] / sqrtf(450.0f);//‰º’ê‚Ì’·‚³•Û‘¶
+										Shapes_Length[NowShapes][0] = Length[(int)Num[1]][0] / sqrtf(450.0f);//ä¸Šåº•ã®é•·ã•ä¿å­˜
+										Shapes_Length[NowShapes][1] = Num[0] / sqrtf(450.0f);//ä¸‹åº•ã®é•·ã•ä¿å­˜
 									}
 								}
 							}
-							else//•½sl•ÓŒ`
+							else//å¹³è¡Œå››è¾ºå½¢
 							{		
 								DirectX::XMFLOAT2 dir;
 								dir.x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
 								dir.y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
 								float Num[2];
 								int SaveNumber = 0;
-								//•½sl•ÓŒ`‚Ì’†S‚©‚ç‚Ì‹——£‚ªˆê”Ô‰“‚¢’¸“_‚ğ’²‚×‚é
+								//å¹³è¡Œå››è¾ºå½¢ã®ä¸­å¿ƒã‹ã‚‰ã®è·é›¢ãŒä¸€ç•ªé ã„é ‚ç‚¹ã‚’èª¿ã¹ã‚‹
 								Num[0] = sqrtf(powf((pos[0].x - dir.x), 2) + powf((pos[0].y - dir.y), 2));
 								Num[1] = sqrtf(powf((pos[1].x - dir.x), 2) + powf((pos[1].y - dir.y), 2));
 								if (Num[0] > Num[1])SaveNumber = 0;
 								else SaveNumber = 1;
-								if ((pos[0].y == pos[1].y || pos[0].y == pos[3].y ) && (pos[2].y == pos[1].y || pos[2].y == pos[3].y))//Šp“x‚O‚Ì•½sl•ÓŒ`
+								if ((pos[0].y == pos[1].y || pos[0].y == pos[3].y ) && (pos[2].y == pos[1].y || pos[2].y == pos[3].y))//è§’åº¦ï¼ã®å¹³è¡Œå››è¾ºå½¢
 								{
-									//‰º‚ÌğŒ‚ğ–‚½‚¹‚Î¶‰º‚©‚ç‰Eã‚Ì•½sl•ÓŒ`
+									//ä¸‹ã®æ¡ä»¶ã‚’æº€ãŸã›ã°å·¦ä¸‹ã‹ã‚‰å³ä¸Šã®å¹³è¡Œå››è¾ºå½¢
 									if ((pos[SaveNumber].x - dir.x > 0.0f && pos[SaveNumber].y - dir.y > 0.0f) || (pos[SaveNumber].x - dir.x < 0.0f && pos[SaveNumber].y - dir.y < 0.0f))
 									{
 										Shapes_type_Angle[NowShapes][0] = 8;
 										Shapes_type_Angle[NowShapes][1] = 0;
 									}
-									else//‰E‰º‚©‚ç¶ã‚Ì•½sl•ÓŒ`
+									else//å³ä¸‹ã‹ã‚‰å·¦ä¸Šã®å¹³è¡Œå››è¾ºå½¢
 									{
 										Shapes_type_Angle[NowShapes][0] = 7;
 										Shapes_type_Angle[NowShapes][1] = 0;
@@ -2517,9 +2575,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 										Shapes_Length[NowShapes][1] = Length[0][0] / sqrtf(450.0f);
 									}
 								}
-								else //Šp“x‚X‚O‚Ì•½sl•ÓŒ`
+								else //è§’åº¦ï¼™ï¼ã®å¹³è¡Œå››è¾ºå½¢
 								{
-									//x,y‹¤‚Éƒvƒ‰ƒX‚ª1‚Â‚Å‚à‚ ‚é‚È‚ç¶‰º‚©‚ç‰Eã‚Ì•½sl•ÓŒ`
+									//x,yå…±ã«ãƒ—ãƒ©ã‚¹ãŒ1ã¤ã§ã‚‚ã‚ã‚‹ãªã‚‰å·¦ä¸‹ã‹ã‚‰å³ä¸Šã®å¹³è¡Œå››è¾ºå½¢
 									if ((pos[SaveNumber].x - dir.x > 0.0f && pos[SaveNumber].y - dir.y > 0.0f) || (pos[SaveNumber].x - dir.x < 0.0f && pos[SaveNumber].y - dir.y < 0.0f))
 									{
 										Shapes_type_Angle[NowShapes][0] = 7;
@@ -2545,7 +2603,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						}
 					}
 
-					//‰¹‚ğÄ¶
+					//éŸ³ã‚’å†ç”Ÿ
 					g_FieldSe->Stop();
 					XAUDIO2_BUFFER buffer;
 					buffer =g_Fieldsound->GetBuffer(false);
@@ -2556,8 +2614,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 					for (int m = 0; Comparison2[m] != -1; m++)
 					{
-						//•Û‘¶‚µ‚½Še’¸“_‚ÌƒX[ƒp[ƒXƒ^[‚ğg—p‚É•Ï‚¦‚é
-						//‚Ì‚¿‚Ìˆ—‚ÅƒX[ƒp[ƒXƒ^[‚ªtrue‚Å‚È‚¢‚È‚çSuperStarUse‚ª‚È‚ñ‚Å‚ ‚ë‚¤‚Æ‚Í‚¶‚©‚ê‚é
+						//ä¿å­˜ã—ãŸå„é ‚ç‚¹ã®ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¹ã‚¿ãƒ¼ã‚’ä½¿ç”¨ã«å¤‰ãˆã‚‹
+						//ã®ã¡ã®å‡¦ç†ã§ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¹ã‚¿ãƒ¼ãŒtrueã§ãªã„ãªã‚‰SuperStarUseãŒãªã‚“ã§ã‚ã‚ã†ã¨ã¯ã˜ã‹ã‚Œã‚‹
 						if (m_tVertex[Comparison2[m]].SuperStar)
 						{
 							m_tVertex[Comparison2[m]].SuperStarUse = true;
@@ -2577,14 +2635,14 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (!GetFeverMode())
 							{
 								nFeverPoint += 1.0f;
-								m_pBattle->SaveAllyData(Shapes_Count[NowShapes],true);//}Œ`‚Ì’¸“_‚ÆŠp”‚ğ“n‚·
-								Ally_Count++;//¢Š«”‘‚â‚·
+								m_pBattle->SaveAllyData(Shapes_Count[NowShapes],true);//å›³å½¢ã®é ‚ç‚¹ã¨è§’æ•°ã‚’æ¸¡ã™
+								Ally_Count++;//å¬å–šæ•°å¢—ã‚„ã™
 								SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
 								SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
-								SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//‰æ”‚©‚çˆø‚­ (0‚©1)
+								SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//ç”»æ•°ã‹ã‚‰å¼•ã (0ã‹1)
 								SummonLog[NowSummonLog].Alpha = 0.0f;
 								SummonLog[NowSummonLog].MoveType = 1;
-								NowSummonLog++;//¢Š«ƒƒO‚ğ‘‚â‚·
+								NowSummonLog++;//å¬å–šãƒ­ã‚°ã‚’å¢—ã‚„ã™
 							}
 						}
 						m_tVertex[Comparison2[m]].Angle[1] = 181.0f;
@@ -2595,30 +2653,30 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
 					
-					NowShapes++;//•Û‘¶êŠ‚ğŸ‚ÌêŠ‚É‚·‚é
+					NowShapes++;//ä¿å­˜å ´æ‰€ã‚’æ¬¡ã®å ´æ‰€ã«ã™ã‚‹
 				}
 				
 			}
-			ShapesSaveFalg = true;//d•¡‚µ‚½}Œ`‚Ü‚½‚Í”F‚ß‚È‚¢}Œ`‚Í•Û‘¶‚Í‚µ‚È‚¢‚ª•Û‘¶‚µ‚½‚Æ‚µ‚Ä‚İ‚È‚µtrue‚É‚·‚é
-			ShapesFlag = false;//‰Šú‰»
+			ShapesSaveFalg = true;//é‡è¤‡ã—ãŸå›³å½¢ã¾ãŸã¯èªã‚ãªã„å›³å½¢ã¯ä¿å­˜ã¯ã—ãªã„ãŒä¿å­˜ã—ãŸã¨ã—ã¦ã¿ãªã—trueã«ã™ã‚‹
+			ShapesFlag = false;//åˆæœŸåŒ–
 			break;
 		}
 		else
 		{
 			if (Comparison[k] == -1)
 			{
-				Comparison[k] = VertexNumber.Number;//}Œ`‚Ì’¸“_•Û‘¶‚É’Tõ‚Ì’¸“_‚ğ•Û‘¶‚·‚é
-				NowVertex = k;//‰¼’¸“_•Û‘¶”z—ñ‚Ì‰½”Ô–Ú‚ÉŠi”[‚µ‚½‚Ì‚©‚ğ•Û‘¶
+				Comparison[k] = VertexNumber.Number;//å›³å½¢ã®é ‚ç‚¹ä¿å­˜ã«æ¢ç´¢æ™‚ã®é ‚ç‚¹ã‚’ä¿å­˜ã™ã‚‹
+				NowVertex = k;//ä»®é ‚ç‚¹ä¿å­˜é…åˆ—ã®ä½•ç•ªç›®ã«æ ¼ç´ã—ãŸã®ã‹ã‚’ä¿å­˜
 				break;
 			}
 		}
 	}
-	//}Œ`‚Æ‚µ‚Ä•Û‘¶‚µ‚½‚ç‚³‚ç‚É’Tõ‚µ‚Ä‚Í‚¢‚¯‚È‚¢
+	//å›³å½¢ã¨ã—ã¦ä¿å­˜ã—ãŸã‚‰ã•ã‚‰ã«æ¢ç´¢ã—ã¦ã¯ã„ã‘ãªã„
 	if (!ShapesSaveFalg)
 	{
 		for (int k = 0; k < 8; k++)
 		{
-			//‚‹‚O‚Ì‚Æ‚«‚Í‚ª‚¢‚é
+			//ï½‹ï¼ï¼ã®ã¨ãã¯ãŒã„ã‚‹
 			
 			if (NowVertex == 0)
 			{
@@ -2629,23 +2687,23 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				if (VertexNumber.Connect[k] != -1 && VertexNumber.Connect[k] != Comparison[NowVertex - 1])ShapesCheck(m_tVertex[VertexNumber.Connect[k]]);
 			}
 		}
-		Comparison[NowVertex] = -1;//Œq‚ª‚Á‚Ä‚¢‚é’¸“_‚ª–³‚¯‚ê‚Îs‚«~‚Ü‚è‚È‚Ì‚Åˆê‚Â‘O‚Ì’¸“_‚É–ß‚é
+		Comparison[NowVertex] = -1;//ç¹‹ãŒã£ã¦ã„ã‚‹é ‚ç‚¹ãŒç„¡ã‘ã‚Œã°è¡Œãæ­¢ã¾ã‚Šãªã®ã§ä¸€ã¤å‰ã®é ‚ç‚¹ã«æˆ»ã‚‹
 	}
 }
 
-////=====•`‰æ‚ÌÀ•W‚Æ‘å‚«‚³‚ğƒZƒbƒg‚·‚éŠÖ”=====//
+////=====æç”»æ™‚ã®åº§æ¨™ã¨å¤§ãã•ã‚’ã‚»ãƒƒãƒˆã™ã‚‹é–¢æ•°=====//
 void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InAngle, Sprite* InSprite)
 {
-	//ˆÚ“®s—ñ(Translation)
+	//ç§»å‹•è¡Œåˆ—(Translation)
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(InPos.x,InPos.y,InPos.z);
-	//‰ñ“]s—ñ
+	//å›è»¢è¡Œåˆ—
 	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(InAngle.x));
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(InAngle.y));
 	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(InAngle.z));
-	//Šg‘åk¬s—ñ
+	//æ‹¡å¤§ç¸®å°è¡Œåˆ—
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(InSize.x, InSize.y, InSize.z);
 
-	DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T;//‚»‚ê‚¼‚ê‚Ìs—ñ‚ğŠ|‚¯‡‚í‚¹‚ÄŠi”[
+	DirectX::XMMATRIX mat = S * Rx * Ry * Rz * T;//ãã‚Œãã‚Œã®è¡Œåˆ—ã‚’æ›ã‘åˆã‚ã›ã¦æ ¼ç´
 
 	DirectX::XMFLOAT4X4 wvp[3];
 	DirectX::XMMATRIX world;
@@ -2660,22 +2718,22 @@ void CFieldVertex::DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize
 	InSprite->SetProjection(wvp[2]);
 }
 
-////’¸“_(¯)‚Ì“®‚«‚Æ•`‰æ‚ğ‚·‚éŠÖ”=====// 
+////é ‚ç‚¹(æ˜Ÿ)ã®å‹•ãã¨æç”»ã‚’ã™ã‚‹é–¢æ•°=====// 
 void CFieldVertex::DrawStarModel(int color, int Vertex)
 {
-	//-----•`‰æŠÖ˜A‚Ìˆ—-----//
+	//-----æç”»é–¢é€£ã®å‡¦ç†-----//
 	{
-		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);//À•Wİ’è
-		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle[0]), TORAD(m_tVertex[Vertex].Angle[1]), TORAD(m_tVertex[Vertex].Angle[2]));//Šp“xİ’è
-		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);//‘å‚«‚³İ’è
-		m_pStar_Model[color]->SetViewMatrix(GetView());//viewî•ñ‚ğƒZƒbƒg
-		m_pStar_Model[color]->SetProjectionMatrix(GetProj());//projî•ñ‚ğƒZƒbƒg
-		m_pStar_Model[color]->Draw();//•`‰æ
+		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);//åº§æ¨™è¨­å®š
+		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle[0]), TORAD(m_tVertex[Vertex].Angle[1]), TORAD(m_tVertex[Vertex].Angle[2]));//è§’åº¦è¨­å®š
+		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);//å¤§ãã•è¨­å®š
+		m_pStar_Model[color]->SetViewMatrix(GetView());//viewæƒ…å ±ã‚’ã‚»ãƒƒãƒˆ
+		m_pStar_Model[color]->SetProjectionMatrix(GetProj());//projæƒ…å ±ã‚’ã‚»ãƒƒãƒˆ
+		m_pStar_Model[color]->Draw();//æç”»
 	}
 		
-	//-----’¸“_(¯)‚Ì“®‚«ˆ—-----//
+	//-----é ‚ç‚¹(æ˜Ÿ)ã®å‹•ãå‡¦ç†-----//
 	{
-		if (m_tVertex[Vertex].SuperStar)//ƒXƒeƒ‰‚Íí‚É‰ñ“]
+		if (m_tVertex[Vertex].SuperStar)//ã‚¹ãƒ†ãƒ©ã¯å¸¸ã«å›è»¢
 		{
 			m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f) * 0.75f;
 		}
@@ -2683,12 +2741,12 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 		{
 			if (!(m_tVertex[Vertex].Angle[1] == 180.0f))
 			{
-				m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f);//‚Pü‚Å~‚ß‚é
+				m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f);//ï¼‘å‘¨ã§æ­¢ã‚ã‚‹
 			}
 		}
 		if (m_tVertex[Vertex].Angle[1] > 360.0f)
 		{
-			m_tVertex[Vertex].Angle[1] = 0.0f;//’l‚Ì•â³
+			m_tVertex[Vertex].Angle[1] = 0.0f;//å€¤ã®è£œæ­£
 		}
 		//if (GetFeverMode())
 		//{

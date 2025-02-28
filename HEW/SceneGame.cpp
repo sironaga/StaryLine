@@ -13,6 +13,8 @@
 
 ID3D11SamplerState* g_pGameSPSampler;
 
+#define DRAW_EFFECT_TIME (2.0f * 60.0f)
+
 // 行き止まりが発生しない時のサイクル
 enum SceneGameTime
 {
@@ -44,6 +46,8 @@ float FadeTime;
 bool FadeTimeFlag;
 int DrawCount;
 bool bLine;
+bool DrawEffectFlag;
+float DrawEffectTime;
 
 ResultCheck g_Resltcheck;
 ResultGameInfo g_ResultData;
@@ -95,6 +99,8 @@ CSceneGame::CSceneGame(StageType StageNum)
 	bLine = false;
 	m_bPhase = true;
 	m_bFever = false;
+	DrawEffectFlag = false;
+	DrawEffectTime = 0.0f;
 
 	TimeStart = false;
 	g_tTime.GameTime = 0.0f;
@@ -236,7 +242,7 @@ void CSceneGame::Update()
 			}
 
 
-			if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+			if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + DRAW_EFFECT_TIME <= g_tTime.GamePhaseTime && !TimeStart))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 			{
 				g_tTime.GamePhaseTime++;
 			}
@@ -264,7 +270,7 @@ void CSceneGame::Update()
 			if (!m_GameDirection->GetDraw())
 			{
 				// 召喚開始の時間になったらフィーバーかチェック
-				if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+				if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + DRAW_EFFECT_TIME == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 				{
 					float t;
 					t = m_pFieldVertex->GetFeverPoint();
@@ -281,10 +287,11 @@ void CSceneGame::Update()
 						m_pSourseFeverBGM->Start();
 						m_bPhase = true;
 						m_bFever = true;
-						g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f;
+						g_tTime.GameSTimeFeverAjust = 10.0f * 60.0f + DRAW_EFFECT_TIME;
 						m_pFieldVertex->InitFieldVertex();	// 次の作図に必用な初期化処理	
 						m_pFieldVertex->SetFeverPoint();
 						m_pPlayer->SetMoveStop();
+						bLine = false;
 					}
 
 				}
@@ -300,7 +307,7 @@ void CSceneGame::Update()
 				// 図形を作る時間
 				// 経過時間が作図開始の時間から召喚開始の時間になるまで
 				if (((float)SHAPE_DRAW_START * 60.0f <= g_tTime.GamePhaseTime) &&								// 経過時間が作図開始の時間(本来の値 + 前回のサイクルが終了した時間)以上 かつ
-					(g_tTime.GamePhaseTime < (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
+					(g_tTime.GamePhaseTime < (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME))	// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間+フィーバー時間)未満
 				{
 					// プレイヤーと作図処理は図形を作っている間更新する
 
@@ -314,28 +321,31 @@ void CSceneGame::Update()
 				}
 
 				// 召喚開始の時間になったら
-				if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+				bool SwitchFlag = false;
+				if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + DRAW_EFFECT_TIME == g_tTime.GamePhaseTime)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 				{
-					m_pBattle->CreateAlly();	// キャラクターのデータを生成する
+					SwitchFlag = true;
+ 					m_pBattle->CreateAlly();	// キャラクターのデータを生成する
 				}
 
+			
 				// フィーバーの召喚開始時間になったら
-				if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust == g_tTime.GamePhaseTime) && m_bFever)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+				if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME == g_tTime.GamePhaseTime) && !SwitchFlag)// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 				{
-					m_pBattle->CreateAlly();	// キャラクターのデータを生成する
+				    m_pBattle->CreateAlly();	// キャラクターのデータを生成する
 				}
 
 				// 描画時間終了時間または描画時間+フィーバーの終了時間
-				if (g_tTime.GamePhaseTime == (float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
+				if (g_tTime.GamePhaseTime == (float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 				{
 					m_pBattle->SetDrawingStart(false);
 					m_pBattle->SetDrawingEnd(true);
 					m_pBattle->CharacterUpdate(true);
-					if (!bLine)
-					{
-						bLine = true;
-						m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
-					}
+					//if (!bLine)
+					//{
+					//	bLine = true;
+					//	m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+					//}
 					/*タイマー終了のSE*/
 				}
 				m_pBattle->Update();
@@ -390,16 +400,39 @@ void CSceneGame::Draw()
 		//m_pBattle->LinieDraw();
 	}
 	//キャラクターを召喚する時間
-	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + DRAW_EFFECT_TIME <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
 		if(!m_bFever)TimeStart = false;
 	}
 
+	//キャラクターを召喚するエフェクトの時間
+	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust <= g_tTime.GamePhaseTime && g_tTime.GamePhaseTime <= (float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + DRAW_EFFECT_TIME))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
+	{
+		if (!bLine)
+		{
+			
+ 			//m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+			bLine = true;
+		}
+		m_pFieldVertex->ShapesEffectDraw();
+	}
+	// フィーバーの召喚エフェクト時間
+	if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust <= g_tTime.GamePhaseTime &&
+		(g_tTime.GamePhaseTime < ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME)))// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	{
+		if (!bLine)
+		{
+			
+			//m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
+			bLine = true;
+		}
+		m_pFieldVertex->ShapesEffectDraw();
+	}
 	//m_pBattle->Draw();	// バトル全体の描画
 	
 
 	// 一つのサイクルが終わった時
-	if (g_tTime.GamePhaseTime == (float)SHAPE_DRAW_RESTART * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
+	if (g_tTime.GamePhaseTime == (float)SHAPE_DRAW_RESTART * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
 		m_pBattle->SetDrawingStart(true);
 		m_pBattle->SetDrawingEnd(false);
@@ -418,6 +451,7 @@ void CSceneGame::Draw()
 		m_pPlayer->SetPlayerStop();			// プレイヤーの状態をSTOPに変える
 
 		m_bPhase = true;
+		bLine = false;
 
 		/*再描画開始のSE*/
 	}
@@ -437,6 +471,8 @@ void CSceneGame::Draw()
 	}
 	
 	m_pFieldVertex->FeverDraw();
+
+
 }
 
 void SetFeverStellaTime(float time)
