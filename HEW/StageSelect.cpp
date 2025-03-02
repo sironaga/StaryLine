@@ -776,7 +776,7 @@ void CStageSelect::UpdateStory()
 
 		m_StoryTxtParam[0].color.w += 0.05f;
 		if (m_StoryTxtParam[0].color.w >= 1.0f)m_StoryTxtParam[0].color.w = 1.0f;
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(),XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
+		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 0.0f;
 			m_StoryParam[(int)StoryTex::LinieHands].color.w = 0.0f;
@@ -789,7 +789,7 @@ void CStageSelect::UpdateStory()
 			m_StoryTxtParam[1].color.w = 0.0f;
 			m_StoryTxtParam[2].color.w = 0.0f;
 		}
-		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
+		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
 		{
 			SetNext(SCENE_TITLE);
 		}
@@ -842,7 +842,7 @@ void CStageSelect::UpdateStory()
 
 
 		DegCnt+= 0.5f;
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
+		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage++;
 			time = 0.0f;
@@ -854,7 +854,7 @@ void CStageSelect::UpdateStory()
 			cosVal = 0.0f;
 			EasTime = 0.0f;
 		}
-		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
+		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_StoryTxtParam[0].color.w = 0.0f;
 			m_StoryTxtParam[1].color.w = 0.0f;
@@ -901,7 +901,7 @@ void CStageSelect::UpdateStory()
 		}
 
 	
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
+		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage++;
 			time = 0.0f;
@@ -910,7 +910,7 @@ void CStageSelect::UpdateStory()
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = SCREEN_HEIGHT;
 			m_StoryParam[(int)StoryTex::ReruxLinie].color.w = 0.0f;
 		}
-		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
+		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage--;
 			time = 0.0f;
@@ -944,12 +944,12 @@ void CStageSelect::UpdateStory()
 		else m_StoryTxtParam[3].color.w -= 0.05f;
 		if (m_StoryTxtParam[4].color.w >= 1.0f)m_StoryTxtParam[4].color.w = 1.0f;
 		else m_StoryTxtParam[4].color.w += 0.05f;
-		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
+		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage++;
 			time = 0.0f;
 		}
-		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
+		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage--;
 			time = 0.0f;

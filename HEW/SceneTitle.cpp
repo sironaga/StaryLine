@@ -238,7 +238,7 @@ CSceneTitle::~CSceneTitle()
 
 void CSceneTitle::Update()
 {
-	if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && g_eTitleAnim != Select)
+	if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(m_pOption->GetTypeAB(m_pOption->GetControllerSetting(), XINPUT_GAMEPAD_A))) && g_eTitleAnim != Select)
 	{
 		m_AnimParam[(int)TitleAnim::Linie].pos.x = CENTER_POS_X - 210.0f;
 		m_AnimParam[(int)TitleAnim::Logo].pos.x = CENTER_POS_X + 500.0f;
@@ -260,7 +260,7 @@ void CSceneTitle::Update()
 
 	g_pTitleBG->Update();
 	TitleAnimation();
-	TitleInput();
+	if(g_eTitleAnim == E_TITLE_ANIME::Select)TitleInput();
 	OptionApply();
 
 }
