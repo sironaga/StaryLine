@@ -243,6 +243,7 @@ CFieldVertex::CFieldVertex()
 	Fill(Shapes_Length, -1.0f);
 	Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
 	Fill(g_pShapesEffects_Pos, -1.0f);
+	Fill(g_pShapesEffects_Pos_Add, 0.0f);
 
 	// 頂点２５個座標情報初期化
 	{
@@ -660,6 +661,13 @@ void CFieldVertex::ShapesEffectDraw()
 				{
 					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
 					{
+						float X = -110;
+						float Y = 0;
+						for (int i = 0; i < Effect_NowShapes; i++)
+						{
+							g_pShapesEffects_Pos_Add[i][0] = (g_pShapesEffects_Pos[i][0].x - X) / (60.0f * 2.0f);
+							g_pShapesEffects_Pos_Add[i][1] = (g_pShapesEffects_Pos[i][0].y - Y) / (60.0f * 2.0f);
+						}
 						g_pShapesEffects[i]->SetSize({ 10.0f,10.0f, 0.0f });
 						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
 						g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
@@ -676,6 +684,17 @@ void CFieldVertex::ShapesEffectDraw()
 				{
 					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
 					{
+						switch (j)
+						{
+						case 0:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+							break;
+						case 1:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,0.5f });
+							break;
+						case 2:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,0.25f });
+							break;
+						default:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+							break;
+						}
 						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
 						g_pShapesEffects[i]->Update();
 						g_pShapesEffects[i]->Draw();
@@ -685,6 +704,26 @@ void CFieldVertex::ShapesEffectDraw()
 		}
 		
 	}
+
+	//過去の座標を保存する
+	for (int i = 0; i < Effect_NowShapes; i++)
+	{
+		for (int j = 2; j > 0; j--)
+		{
+			g_pShapesEffects_Pos[i][j].x = g_pShapesEffects_Pos[i][j - 1].x;
+			g_pShapesEffects_Pos[i][j].y = g_pShapesEffects_Pos[i][j - 1].y;
+			if (g_pShapesEffects_Pos[i][j - 1].z != -1.0f)g_pShapesEffects_Pos[i][j].z = 0.0f;
+		}
+	}
+
+	//新しい座標に更新する
+	for (int i = 0; i < Effect_NowShapes; i++)
+	{
+		g_pShapesEffects_Pos[i][0].x -= g_pShapesEffects_Pos_Add[i][0];
+		g_pShapesEffects_Pos[i][0].y -= g_pShapesEffects_Pos_Add[i][1];
+	}
+
+	
 }
 
 ////=====FieldVertexの描画処理の関数=====//
@@ -1582,6 +1621,7 @@ void CFieldVertex::InitFieldVertex()
 		Fill(Shapes_Length, -1.0f);
 		Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
 		Fill(g_pShapesEffects_Pos, -1.0f);
+		Fill(g_pShapesEffects_Pos_Add, 0.0f);
 	
 		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
 		OrderVertexCount = 1;//たどった頂点の数初期化
