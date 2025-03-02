@@ -62,7 +62,7 @@ public:
 private:
 
 	// ログの構造体 //
-	typedef struct Log 
+	typedef struct Log
 	{
 		DirectX::XMFLOAT3 Pos;
 		int type;//0→三角形 1→四角形
@@ -72,7 +72,7 @@ private:
 	};
 
 	// 星(頂点)の構造体 //
-	typedef struct FieldVertex 
+	typedef struct FieldVertex
 	{
 		DirectX::XMFLOAT3 Pos;//星(頂点)の座標
 		bool Use;//星(頂点)が使われているか
@@ -84,7 +84,7 @@ private:
 	};
 
 	// 交点の構造体 //
-	typedef struct CenterVertex 
+	typedef struct CenterVertex
 	{
 		DirectX::XMFLOAT3 Pos;//交点の座標
 		bool Use;//使用しているか
@@ -93,11 +93,11 @@ private:
 private:
 
 	void ShapesCheck(FieldVertex VertexNumber);//多角形判定再帰処理
-	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize ,DirectX::XMFLOAT3 InAngle, Sprite* InSprite);
+	void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InAngle, Sprite* InSprite);
 	void DrawStarModel(int color, int Vertex);//色と頂点番号を使って描画
 
 private:
-	
+
 	Log SummonLog[MAX_LOG];//召喚ログの情報保存
 	FieldVertex m_tVertex[MAX_VERTEX];//星(頂点)情報保存
 	CenterVertex m_tCenter_Vertex[MAX_CENTER_VERTEX];//交点の情報保存
@@ -135,7 +135,7 @@ private:
 	int Ally_Count;//召喚の数
 
 	int NowLine;//今何個目の線か
-	
+
 	DirectX::XMFLOAT3 PlayerPos;//プレイヤーの位置保存
 	bool RoadStop;//プレイヤーの行ける方向
 
@@ -152,6 +152,7 @@ private:
 	//float
 
 	DirectX::XMFLOAT3 g_pShapesEffects_Pos[MAX_ALLY][3];//図形から召喚のエフェクトの座標
+	float g_pShapesEffects_Pos_Add[MAX_ALLY][2];//図形から召喚のエフェクトの座標の移動量
 
 	CBattle* m_pBattle;//バトルクラスのポインター
 	CPlayer* m_pPlayer;//プレイヤークラスのポインター
