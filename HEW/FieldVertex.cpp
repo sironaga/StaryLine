@@ -464,6 +464,11 @@ CFieldVertex::~CFieldVertex()
 	delete g_Fieldsound;
 	g_FieldSe = nullptr;
 
+	SAFE_DELETE(g_pShapesEffects_Sprite);
+	for (int i = 0; i < MAX_ALLY; i++)
+	{
+		g_pShapesEffects[i] = nullptr;
+	}
 	SAFE_DELETE(g_pFeverEffects_Sprite);
 	for (int i = 0; i < 32; i++)
 	{
@@ -1692,12 +1697,13 @@ void CFieldVertex::InitTextureModel()
 		m_pSprite_Fever_Gage[1] = new Sprite();
 		m_pSprite_Fever_Gage[2] = new Sprite();
 		m_pSprite_Fever_Gage[3] = new Sprite();
+		m_pSprite_Fever_Player = new Sprite();
 		m_pSprite_Summon_Log = new Sprite();
 		m_pSprite_Ally_Count[0] = new Sprite();
 		m_pSprite_Ally_Count[1] = new Sprite();
 		m_pSprite_Ally_Count[2] = new Sprite();
 		m_pSprite_Ally_Count[3] = new Sprite();
-		m_pSprite_Fever_Player = new Sprite();
+		m_pSprite_Shapes = new Sprite();
 		for (int i = 0; i < 10; i++)
 		{
 			m_pSprite_Ally_Number[i] = new Sprite();
@@ -1710,12 +1716,17 @@ void CFieldVertex::InitTextureModel()
 		m_pTex_Fever_Gage[1] = new Texture();
 		m_pTex_Fever_Gage[2] = new Texture();
 		m_pTex_Fever_Gage[3] = new Texture();
+		m_pTex_Fever_Player = new Texture();
 		m_pTex_Summon_Log[0] = new Texture();
 		m_pTex_Summon_Log[1] = new Texture();
 		m_pTex_Ally_Count[0] = new Texture();
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
+		for (int i = 0; i < 30; i++)
+		{
+			m_pTex_Shapes[i] = new Texture();
+		}
 		for (int i = 0; i < 10; i++)
 		{
 			m_pTex_Ally_Number[i] = new Texture();
@@ -1727,9 +1738,14 @@ void CFieldVertex::InitTextureModel()
 
 		m_pStarLine = new StarLine();
 
+		g_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
 		g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
 		g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
 
+		for (int i = 0; i < MAX_ALLY; i++)
+		{
+			g_pShapesEffects[i] = new CEffectManager_sp(g_pShapesEffects_Sprite);
+		}
 		for (int i = 0; i < 32; i++)
 		{
 			g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
@@ -1843,6 +1859,57 @@ void CFieldVertex::InitTextureModel()
 			if (FAILED(hrBoard)) {
 				MessageBox(NULL, "Summon_Count_Board 画像", "Error", MB_OK);
 			}
+		}
+	}
+
+	HRESULT hrShapes;
+	for (int i = 0; i < 30; i++)
+	{
+		switch (i)
+		{
+		case 0:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Tr00.png")); break;//三角形
+		case 1:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Tr01.png")); break;//▲
+
+		case 2:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq00.png")); break;//■正方形
+
+		case 3:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq24.png")); break;//1:3台形
+		case 4:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq25.png")); break;//2:4
+		case 5:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq11.png")); break;//1:2
+		case 6:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq13.png")); break;//1:3
+		case 7:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq16.png")); break;//1:4
+		case 8:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq07.png")); break;//2:3
+		case 9:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq09.png")); break;//3:4
+
+		case 10:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq01.png")); break;//1:1平行四辺形右下から左下
+		case 11:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq03.png")); break;//1:2
+		case 12:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq05.png")); break;//1:3
+		case 13:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq26.png")); break;//3:1
+		case 14:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq28.png")); break;//2:1
+
+		case 15:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq02.png")); break;//1:1平行四辺形左下から右下
+		case 16:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq04.png")); break;//1:2
+		case 17:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq06.png")); break;//1:3
+		case 18:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq27.png")); break;//3:1
+		case 19:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq29.png")); break;//2:1
+
+		case 20:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq19.png")); break;//1:2左上が尖っている
+		case 21:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq21.png")); break;//2:3
+		case 22:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq23.png")); break;//3:4
+		case 23:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq32.png")); break;//1:3 
+		case 24:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq34.png")); break;//1:4
+
+		case 25:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq18.png")); break;//1:2右上が尖っている
+		case 26:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq20.png")); break;//2:3
+		case 27:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq22.png")); break;//3:4
+		case 28:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq31.png")); break;//1:3 
+		case 29:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq33.png")); break;//1:4
+		default:
+			break;
+		}
+
+		if (FAILED(hrShapes))
+		{
+			MessageBox(NULL, "Shapes 画像", "Error", MB_OK);
 		}
 	}
 }
