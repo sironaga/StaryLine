@@ -13,6 +13,7 @@
 #include "EffectManager_sp.h"
 
 #define SELECT_MAX_STAR 4
+#define STORY_MAX_TXT 5
 
 enum E_SELECT_STAGETYPE
 {
@@ -143,8 +144,6 @@ private:
 
 	int m_nPhase;
 	int m_nPage;
-	SpriteEx* m_pStory[9];
-	ObjectParam m_StoryParam[9];
 	enum class StoryTex
 	{
 		Cinema = 0,
@@ -159,6 +158,10 @@ private:
 
 		Max
 	};
+	SpriteEx* m_pStory[(int)StoryTex::Max];
+	ObjectParam m_StoryParam[(int)StoryTex::Max];
+	SpriteEx* m_pStoryTxt[STORY_MAX_TXT];
+	ObjectParam m_StoryTxtParam[STORY_MAX_TXT];
 private:
 	void InitValue();
 	void LoadFile();

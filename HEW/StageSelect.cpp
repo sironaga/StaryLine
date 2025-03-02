@@ -65,7 +65,6 @@ enum class SelectPhase
 	Max
 };
 
-
 CStageSelect::CStageSelect()
 	: f_Rotation(0)
 	, f_Rad(0)
@@ -108,109 +107,76 @@ CStageSelect::CStageSelect()
 
 CStageSelect::~CStageSelect()
 {
+	// 音の終了
 	if (m_pSourseStageSelectBGM)
 	{
 		m_pSourseStageSelectBGM->Stop();
 		m_pSourseStageSelectBGM = nullptr;
+		SAFE_DELETE(m_BGMSound);
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		m_pSourseStageSelectSE[i] = nullptr;
+		SAFE_DELETE(m_pSESound[i]);
+	}
+
+	// モデルの終了
+	// キャラ
+	for (int i = 0; i < StageKind::StageKindMax; i++)
+	{
+		SAFE_DELETE(m_pModel[i]);
 	}
 	SAFE_DELETE(m_pStageLinie);
 	SAFE_DELETE(m_pStageQracker);
 	SAFE_DELETE(m_pStageNugar);
 	SAFE_DELETE(m_pStageBoldow);
 	SAFE_DELETE(m_pStageKannele);
+	// ワールド
 	SAFE_DELETE(m_pWorldModel);
+
+	// スプライトの終了
+	// ランク
 	SAFE_DELETE(m_pRank_C);
 	SAFE_DELETE(m_pRank_B);
 	SAFE_DELETE(m_pRank_A);
 	SAFE_DELETE(m_pRank_S);
-	if (m_BGMSound)
+	// ワールド選択
+	for (int i = 0; i < 3; i++)
 	{
-		delete m_BGMSound;
-		m_BGMSound = nullptr;
+		// ワールドの番号
+		SAFE_DELETE(m_pWorld[i]);
 	}
-	for (int i = 0; i < 5; i++)
+	SAFE_DELETE(m_pGrassLand);	// ワールド草原の画像
+	SAFE_DELETE(m_pDesert);		// ワールド砂漠の画像
+	SAFE_DELETE(m_pSnowField);	// ワールド雪山の画像
+	// ステージ選択
+	for (int i = 0; i < 3; i++)
 	{
-		SAFE_DELETE(m_pSESound[i]);
-		m_pSourseStageSelectSE[i] = nullptr;
+		// ステージの番号
+		SAFE_DELETE(m_pGrassLandStage[i]);
+		SAFE_DELETE(m_pDesertStage[i]);
+		SAFE_DELETE(m_pSnowFieldStage[i]);
 	}
-	for (int nLoop = 0; nLoop < 2; nLoop++)
+	// UI
+	SAFE_DELETE(m_pRight_Select);
+	SAFE_DELETE(m_pRight_Select_Lock);
+	SAFE_DELETE(m_pLeft_Select);
+	SAFE_DELETE(m_pLeft_Select_Lock);
+	SAFE_DELETE(m_pStageSelected);
+	SAFE_DELETE(m_pStageSelect_Underbar);
+	SAFE_DELETE(m_pWorldSelect_Backboard);
+	// ストーリー
+	for (int i = 0; i < (int)StoryTex::Max; i++)
 	{
-		if (m_pGrassLandStage[nLoop])
-		{
-			delete m_pGrassLandStage[nLoop];
-			m_pGrassLandStage[nLoop] = nullptr;
-		}
-		if (m_pDesertStage[nLoop])
-		{
-			delete m_pDesertStage[nLoop];
-			m_pDesertStage[nLoop] = nullptr;
-		}
-		if (m_pSnowFieldStage[nLoop])
-		{
-			delete m_pSnowFieldStage[nLoop];
-			m_pSnowFieldStage[nLoop] = nullptr;
-			if (m_pWorld[nLoop])
-			{
-				delete m_pWorld[nLoop];
-				m_pWorld[nLoop] = nullptr;
-			}
-		}
-		if (m_pStageSelect_Underbar)
-		{
-			delete m_pStageSelect_Underbar;
-			m_pStageSelect_Underbar = nullptr;
-		}
-		if (m_pWorldSelect_Backboard)
-		{
-			delete m_pWorldSelect_Backboard;
-			m_pWorldSelect_Backboard = nullptr;
-		}
-		if (m_pGrassLand)
-		{
-			delete m_pGrassLand;
-			m_pGrassLand = nullptr;
-		}
-		if (m_pDesert)
-		{
-			delete m_pDesert;
-			m_pDesert = nullptr;
-		}
-		if (m_pSnowField)
-		{
-			delete m_pSnowField;
-			m_pSnowField = nullptr;
-		}
-		if (m_pRight_Select)
-		{
-			delete m_pRight_Select;
-			m_pRight_Select = nullptr;
-		}
-		if (m_pLeft_Select)
-		{
-			delete m_pLeft_Select;
-			m_pLeft_Select = nullptr;
-		}
-		if (m_pRight_Select_Lock)
-		{
-			delete m_pRight_Select_Lock;
-			m_pRight_Select_Lock = nullptr;
-		}
-		if (m_pLeft_Select_Lock)
-		{
-			delete m_pLeft_Select_Lock;
-			m_pLeft_Select_Lock = nullptr;
-		}
-
-		for (int i = 0; i < StageKindMax; i++)
-		{
-			SAFE_DELETE(m_pModel[i]);
-		}
-
-		SAFE_DELETE(m_pBackGround);
+		SAFE_DELETE(m_pStory[i]);
 	}
 
-	SAFE_DELETE(m_pDecition);
+	for (int i = 0; i < STORY_MAX_TXT; i++)
+	{
+		SAFE_DELETE(m_pStoryTxt[i]);
+	}
 
+	// エフェクトの終了
 	for (int i = 0; i < (int)Effect::Max; i++)
 	{
 		SAFE_DELETE(m_pEffect[i]);
@@ -219,7 +185,10 @@ CStageSelect::~CStageSelect()
 	{
 		m_pStarEfc[i] = nullptr;
 	}
+	SAFE_DELETE(m_pDecition);	// 選択時のエフェクト
 
+	// 多機能の終了
+	SAFE_DELETE(m_pBackGround);
 }
 
 void CStageSelect::Update()
@@ -619,6 +588,16 @@ void CStageSelect::InitValue()
 
 	if (CSceneTitle::IsFirstPlay())m_nPhase = (int)SelectPhase::Story;
 	else m_nPhase = (int)SelectPhase::Select;
+
+	for (int i = 0; i < STORY_MAX_TXT; i++)
+	{
+		m_StoryTxtParam[i].pos = { CENTER_POS_X,CENTER_POS_Y,0.0f };
+		m_StoryTxtParam[i].size = { 1920.0f,-1080.0f,1.0f };
+		m_StoryTxtParam[i].rotate = { 0.0f,0.0f,0.0f };
+		m_StoryTxtParam[i].color = { 1.0f,1.0f,1.0f,0.0f };
+		m_StoryTxtParam[i].uvPos = { 0.0f,0.0f };
+		m_StoryTxtParam[i].uvSize = { 1.0f,1.0f };
+	}
 }
 
 void CStageSelect::LoadFile()
@@ -695,7 +674,11 @@ void CStageSelect::LoadFile()
 	m_pStory[(int)StoryTex::Bosses] = new SpriteEx(TEX_PASS("Story/Beginning/01_1B.png"));
 	m_pStory[(int)StoryTex::ReruxLinie] = new SpriteEx(TEX_PASS("Story/Beginning/01_2.png"));
 
-
+	m_pStoryTxt[0] = new SpriteEx(TEX_PASS("Story/Beginning/Text01.png"));
+	m_pStoryTxt[1] = new SpriteEx(TEX_PASS("Story/Beginning/Text02.png"));
+	m_pStoryTxt[2] = new SpriteEx(TEX_PASS("Story/Beginning/Text03.png"));
+	m_pStoryTxt[3] = new SpriteEx(TEX_PASS("Story/Beginning/Text04.png"));
+	m_pStoryTxt[4] = new SpriteEx(TEX_PASS("Story/Beginning/Text05.png"));
 }
 
 void CStageSelect::SetVP()
@@ -790,6 +773,9 @@ void CStageSelect::UpdateStory()
 		m_StoryParam[(int)StoryTex::FirstLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
 		m_StoryParam[(int)StoryTex::FirstLinie].color.w = 1.0f;
 		m_StoryParam[(int)StoryTex::SecondLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
+
+		m_StoryTxtParam[0].color.w += 0.05f;
+		if (m_StoryTxtParam[0].color.w >= 1.0f)m_StoryTxtParam[0].color.w = 1.0f;
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(),XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 		{
 			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 0.0f;
@@ -799,6 +785,9 @@ void CStageSelect::UpdateStory()
 			m_nPage++;
 			time = 0.0f;
 			time2 = 0.0f;
+			m_StoryTxtParam[0].color.w = 1.0f;
+			m_StoryTxtParam[1].color.w = 0.0f;
+			m_StoryTxtParam[2].color.w = 0.0f;
 		}
 		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
 		{
@@ -812,9 +801,17 @@ void CStageSelect::UpdateStory()
 		m_StoryParam[(int)StoryTex::Grail].pos.y = CENTER_POS_Y + cosVal * 50.0f;
 		m_StoryParam[(int)StoryTex::BackStar].pos.y = CENTER_POS_Y - cosVal * 50.0f;
 
+		m_StoryTxtParam[0].color.w -= 0.05f;
+		if (m_StoryTxtParam[0].color.w <= 0.0f)m_StoryTxtParam[0].color.w = 0.0f;
+
 
 		if (time <= 1.5f)
 		{
+			m_StoryTxtParam[1].color.w += 0.05f;
+			if (m_StoryTxtParam[1].color.w >= 1.0f)
+			{
+				m_StoryTxtParam[1].color.w = 1.0f;
+			}
 			m_StoryParam[(int)StoryTex::FirstLinie].size.x -= SCREEN_WIDTH / 400.0f;
 			m_StoryParam[(int)StoryTex::FirstLinie].size.y += SCREEN_HEIGHT / 400.0f;		
 			m_StoryParam[(int)StoryTex::SecondLinie].size.x -= SCREEN_WIDTH / 400.0f;
@@ -824,6 +821,16 @@ void CStageSelect::UpdateStory()
 		}
 		else
 		{
+			if (m_StoryTxtParam[2].color.w >= 1.0f)
+			{
+				m_StoryTxtParam[2].color.w = 1.0f;
+			}
+			else
+			{
+				if (m_StoryTxtParam[1].color.w <= 0.0f)m_StoryTxtParam[1].color.w = 0.0f;
+				else m_StoryTxtParam[1].color.w -= 0.05f;
+				m_StoryTxtParam[2].color.w += 0.05f;
+			}
 			time2 += 1.0f / 60.0f;
 
 			m_StoryParam[(int)StoryTex::SecondLinie].color.w = (time2) / 1.0f - 0.5f;
@@ -849,6 +856,9 @@ void CStageSelect::UpdateStory()
 		}
 		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
 		{
+			m_StoryTxtParam[0].color.w = 0.0f;
+			m_StoryTxtParam[1].color.w = 0.0f;
+			m_StoryTxtParam[2].color.w = 0.0f;
 			m_StoryParam[(int)StoryTex::SecondLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
 			m_StoryParam[(int)StoryTex::FirstLinie].size = { SCREEN_WIDTH * 1.2f,-SCREEN_HEIGHT * 1.2f,0.0f };
 			m_StoryParam[(int)StoryTex::SecondLinie].pos.y = CENTER_POS_Y + 180.0f;
@@ -869,6 +879,13 @@ void CStageSelect::UpdateStory()
 
 		if (m_StoryParam[(int)StoryTex::SecondLinie].color.w <= 0.0f && EasTime <= 1.0f)
 		{
+			m_StoryTxtParam[1].color.w -= 0.05f;
+			if (m_StoryTxtParam[1].color.w <= 0.0f)m_StoryTxtParam[1].color.w = 0.0f;
+			m_StoryTxtParam[2].color.w -= 0.05f;
+			if (m_StoryTxtParam[2].color.w <= 0.0f)m_StoryTxtParam[2].color.w = 0.0f;
+
+			if (m_StoryTxtParam[3].color.w >= 1.0f)m_StoryTxtParam[3].color.w = 1.0f;
+			else m_StoryTxtParam[3].color.w += 0.05f;
 			EasTime += 1.0f / 60.0f;
 			EasVal = Easing39(EasTime, 0.5f, 0.9f);
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = 0.0f + EasVal * CENTER_POS_Y;
@@ -883,6 +900,7 @@ void CStageSelect::UpdateStory()
 			m_StoryParam[(int)StoryTex::Grail].pos.y = GrailPosY + cosVal;
 		}
 
+	
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage++;
@@ -890,6 +908,7 @@ void CStageSelect::UpdateStory()
 			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::LinieHands].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = SCREEN_HEIGHT;
+			m_StoryParam[(int)StoryTex::ReruxLinie].color.w = 0.0f;
 		}
 		else if(IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B) == XINPUT_GAMEPAD_B) || IsKeyTrigger(VK_SPACE))
 		{
@@ -910,11 +929,21 @@ void CStageSelect::UpdateStory()
 			m_StoryParam[(int)StoryTex::Grail].color.w = 0.0f;
 			m_StoryParam[(int)StoryTex::BackStar].color.w = 0.0f;
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = SCREEN_HEIGHT;
-
+			m_StoryTxtParam[1].color.w = 0.0f;
+			m_StoryTxtParam[2].color.w = 0.0f;
+			m_StoryTxtParam[3].color.w = 0.0f;
 		}
 		break;
 	case 3:
 		time += 1.0f / 60.0f;
+		m_StoryParam[(int)StoryTex::ReruxLinie].color.w += 0.05f;
+
+		if (m_StoryTxtParam[2].color.w <= 0.0f)m_StoryTxtParam[2].color.w = 0.0f;
+		else m_StoryTxtParam[2].color.w -= 0.05f;
+		if (m_StoryTxtParam[3].color.w <= 0.0f)m_StoryTxtParam[3].color.w = 0.0f;
+		else m_StoryTxtParam[3].color.w -= 0.05f;
+		if (m_StoryTxtParam[4].color.w >= 1.0f)m_StoryTxtParam[4].color.w = 1.0f;
+		else m_StoryTxtParam[4].color.w += 0.05f;
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A) == XINPUT_GAMEPAD_A) || IsKeyTrigger(VK_SPACE))
 		{
 			m_nPage++;
@@ -928,10 +957,12 @@ void CStageSelect::UpdateStory()
 		break;
 	case 4:
 		time += 1.0f / 60.0f;
+
 		for (int i = 0; i < (int)StoryTex::Max; i++)
 		{
 			m_StoryParam[i].color.w = (1.0f - time) / 2.0f;
 		}
+		if (m_StoryTxtParam[4].color.w >= 0.0f)m_StoryTxtParam[4].color.w = (1.0f - time) / 2.0f;
 		if (time >= 2.0f)m_nPhase = (int)SelectPhase::Select;
 		break;
 	default:
@@ -1609,6 +1640,7 @@ void CStageSelect::DrawStory()
 		m_pStory[(int)StoryTex::Grail]->SetView(Get2DView());
 		m_pStory[(int)StoryTex::Grail]->SetProjection(Get2DProj());
 		m_pStory[(int)StoryTex::Grail]->Disp();
+
 		Sprite::ReSetSprite();
 		break;
 	case 2:
@@ -1672,6 +1704,65 @@ void CStageSelect::DrawStory()
 		break;
 	case 3:
 	case 4:
+		if (m_StoryParam[(int)StoryTex::ReruxLinie].color.w != 1.0f && m_nPage  == 3)
+		{
+			m_pStory[(int)StoryTex::Back]->SetPositon(m_StoryParam[(int)StoryTex::Back].pos);
+			m_pStory[(int)StoryTex::Back]->SetSize(m_StoryParam[(int)StoryTex::Back].size);
+			m_pStory[(int)StoryTex::Back]->SetRotate(m_StoryParam[(int)StoryTex::Back].rotate);
+			m_pStory[(int)StoryTex::Back]->Setcolor(m_StoryParam[(int)StoryTex::Back].color);
+			m_pStory[(int)StoryTex::Back]->SetTexture();
+			m_pStory[(int)StoryTex::Back]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::Back]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::Back]->Disp();
+			m_pStory[(int)StoryTex::Bosses]->SetPositon(m_StoryParam[(int)StoryTex::Bosses].pos);
+			m_pStory[(int)StoryTex::Bosses]->SetSize(m_StoryParam[(int)StoryTex::Bosses].size);
+			m_pStory[(int)StoryTex::Bosses]->SetRotate(m_StoryParam[(int)StoryTex::Bosses].rotate);
+			m_pStory[(int)StoryTex::Bosses]->Setcolor(m_StoryParam[(int)StoryTex::Bosses].color);
+			m_pStory[(int)StoryTex::Bosses]->SetTexture();
+			m_pStory[(int)StoryTex::Bosses]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::Bosses]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::Bosses]->Disp();
+			m_pStory[(int)StoryTex::SecondLinie]->SetPositon(m_StoryParam[(int)StoryTex::SecondLinie].pos);
+			m_pStory[(int)StoryTex::SecondLinie]->SetSize(m_StoryParam[(int)StoryTex::SecondLinie].size);
+			m_pStory[(int)StoryTex::SecondLinie]->SetRotate(m_StoryParam[(int)StoryTex::SecondLinie].rotate);
+			m_pStory[(int)StoryTex::SecondLinie]->Setcolor(m_StoryParam[(int)StoryTex::SecondLinie].color);
+			m_pStory[(int)StoryTex::SecondLinie]->SetTexture();
+			m_pStory[(int)StoryTex::SecondLinie]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::SecondLinie]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::SecondLinie]->Disp();
+			m_pStory[(int)StoryTex::Cinema]->SetPositon(m_StoryParam[(int)StoryTex::Cinema].pos);
+			m_pStory[(int)StoryTex::Cinema]->SetSize(m_StoryParam[(int)StoryTex::Cinema].size);
+			m_pStory[(int)StoryTex::Cinema]->SetRotate(m_StoryParam[(int)StoryTex::Cinema].rotate);
+			m_pStory[(int)StoryTex::Cinema]->Setcolor(m_StoryParam[(int)StoryTex::Cinema].color);
+			m_pStory[(int)StoryTex::Cinema]->SetTexture();
+			m_pStory[(int)StoryTex::Cinema]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::Cinema]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::Cinema]->Disp();
+			m_pStory[(int)StoryTex::BackStar]->SetPositon(m_StoryParam[(int)StoryTex::BackStar].pos);
+			m_pStory[(int)StoryTex::BackStar]->SetSize(m_StoryParam[(int)StoryTex::BackStar].size);
+			m_pStory[(int)StoryTex::BackStar]->SetRotate(m_StoryParam[(int)StoryTex::BackStar].rotate);
+			m_pStory[(int)StoryTex::BackStar]->Setcolor(m_StoryParam[(int)StoryTex::BackStar].color);
+			m_pStory[(int)StoryTex::BackStar]->SetTexture();
+			m_pStory[(int)StoryTex::BackStar]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::BackStar]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::BackStar]->Disp();
+			m_pStory[(int)StoryTex::LinieHands]->SetPositon(m_StoryParam[(int)StoryTex::LinieHands].pos);
+			m_pStory[(int)StoryTex::LinieHands]->SetSize(m_StoryParam[(int)StoryTex::LinieHands].size);
+			m_pStory[(int)StoryTex::LinieHands]->SetRotate(m_StoryParam[(int)StoryTex::LinieHands].rotate);
+			m_pStory[(int)StoryTex::LinieHands]->Setcolor(m_StoryParam[(int)StoryTex::LinieHands].color);
+			m_pStory[(int)StoryTex::LinieHands]->SetTexture();
+			m_pStory[(int)StoryTex::LinieHands]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::LinieHands]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::LinieHands]->Disp();
+			m_pStory[(int)StoryTex::Grail]->SetPositon(m_StoryParam[(int)StoryTex::Grail].pos);
+			m_pStory[(int)StoryTex::Grail]->SetSize(m_StoryParam[(int)StoryTex::Grail].size);
+			m_pStory[(int)StoryTex::Grail]->SetRotate(m_StoryParam[(int)StoryTex::Grail].rotate);
+			m_pStory[(int)StoryTex::Grail]->Setcolor(m_StoryParam[(int)StoryTex::Grail].color);
+			m_pStory[(int)StoryTex::Grail]->SetTexture();
+			m_pStory[(int)StoryTex::Grail]->SetView(Get2DView());
+			m_pStory[(int)StoryTex::Grail]->SetProjection(Get2DProj());
+			m_pStory[(int)StoryTex::Grail]->Disp();
+		}
 		m_pStory[(int)StoryTex::ReruxLinie]->SetPositon(m_StoryParam[(int)StoryTex::ReruxLinie].pos);
 		m_pStory[(int)StoryTex::ReruxLinie]->SetSize(m_StoryParam[(int)StoryTex::ReruxLinie].size);
 		m_pStory[(int)StoryTex::ReruxLinie]->SetRotate(m_StoryParam[(int)StoryTex::ReruxLinie].rotate);
@@ -1688,10 +1779,24 @@ void CStageSelect::DrawStory()
 		m_pStory[(int)StoryTex::Cinema]->SetView(Get2DView());
 		m_pStory[(int)StoryTex::Cinema]->SetProjection(Get2DProj());
 		m_pStory[(int)StoryTex::Cinema]->Disp();
+;
+
 		Sprite::ReSetSprite();
 		break;
 	}
 
+	for (int i = 0; i < STORY_MAX_TXT; i++)
+	{
+		if (m_StoryTxtParam[i].color.w <= 0.0f)continue;
+		m_pStoryTxt[i]->SetPositon(m_StoryTxtParam[i].pos);
+		m_pStoryTxt[i]->SetSize(m_StoryTxtParam[i].size);
+		m_pStoryTxt[i]->SetRotate(m_StoryTxtParam[i].rotate);
+		m_pStoryTxt[i]->Setcolor(m_StoryTxtParam[i].color);
+		m_pStoryTxt[i]->SetTexture();
+		m_pStoryTxt[i]->SetView(Get2DView());
+		m_pStoryTxt[i]->SetProjection(Get2DProj());
+		m_pStoryTxt[i]->Disp();
+	}
 }
 
 void CStageSelect::DrawSelect()

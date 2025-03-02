@@ -253,6 +253,7 @@ void CSceneTitle::Update()
 		m_AnimParam[(int)TitleAnim::Logo].pos.y = CENTER_POS_Y - 200.0f;
 		m_AnimParam[(int)TitleAnim::Logo].size.x = 780.0f;
 		m_AnimParam[(int)TitleAnim::Logo].size.y = -580.0f;
+		m_AnimParam[(int)TitleAnim::UnderBar].pos.y = CENTER_POS_Y + 500.0f;
 		g_eTitleAnim = Select;
 
 		return;
