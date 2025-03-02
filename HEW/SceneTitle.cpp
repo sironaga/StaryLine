@@ -92,7 +92,6 @@ CSceneTitle::CSceneTitle(COption* pOption)
 
 	m_pAnimSprite[(int)TitleAnim::Hat] = new SpriteEx("Assets/Texture/Title/Linie_Hat.png");
 	m_pAnimSprite[(int)TitleAnim::Logo] = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
-	m_pAnimSprite[(int)TitleAnim::LinieBack] = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
 	m_pAnimSprite[(int)TitleAnim::Linie] = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 	m_pAnimSprite[(int)TitleAnim::UnderBar] = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
 
@@ -123,12 +122,6 @@ CSceneTitle::CSceneTitle(COption* pOption)
 	m_AnimParam[(int)TitleAnim::Logo].rotate = {0.0f,0.0f,0.0f};
 	m_AnimParam[(int)TitleAnim::Logo].uvPos = {0.0f,0.0f};
 	m_AnimParam[(int)TitleAnim::Logo].uvSize = {1.0f,1.0f};
-
-	m_AnimParam[(int)TitleAnim::LinieBack].pos = { -800.0f,CENTER_POS_X,0.0f};
-	m_AnimParam[(int)TitleAnim::LinieBack].size = { SCREEN_WIDTH, -SCREEN_HEIGHT,0.0f};
-	m_AnimParam[(int)TitleAnim::LinieBack].rotate = {0.0f,0.0f,0.0f};
-	m_AnimParam[(int)TitleAnim::LinieBack].uvPos = {0.0f,0.0f};
-	m_AnimParam[(int)TitleAnim::LinieBack].uvSize = {1.0f,1.0f};
 
 	m_AnimParam[(int)TitleAnim::Linie].pos = { -800.0f ,CENTER_POS_Y + 75.0f,0.0f};
 	m_AnimParam[(int)TitleAnim::Linie].size = { SCREEN_WIDTH, -SCREEN_HEIGHT,0.0f};
@@ -248,7 +241,6 @@ void CSceneTitle::Update()
 	if ((IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE)) && g_eTitleAnim != Select)
 	{
 		m_AnimParam[(int)TitleAnim::Linie].pos.x = CENTER_POS_X - 210.0f;
-		m_AnimParam[(int)TitleAnim::LinieBack].pos.x = CENTER_POS_X;
 		m_AnimParam[(int)TitleAnim::Logo].pos.x = CENTER_POS_X + 500.0f;
 		m_AnimParam[(int)TitleAnim::Logo].pos.y = CENTER_POS_Y - 200.0f;
 		m_AnimParam[(int)TitleAnim::Logo].size.x = 780.0f;
@@ -306,16 +298,6 @@ void CSceneTitle::Draw()
 
 
 
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetPositon(m_AnimParam[(int)TitleAnim::LinieBack].pos);
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetSize(m_AnimParam[(int)TitleAnim::LinieBack].size);
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetRotate(m_AnimParam[(int)TitleAnim::LinieBack].rotate);
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetUvPos(m_AnimParam[(int)TitleAnim::LinieBack].uvPos);
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetUvSize(m_AnimParam[(int)TitleAnim::LinieBack].uvSize);
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetView(Get2DView());
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetProjection(Get2DProj());
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->SetTexture();
-	m_pAnimSprite[(int)TitleAnim::LinieBack]->Disp();
-	
 	m_pAnimSprite[(int)TitleAnim::Linie]->SetPositon(m_AnimParam[(int)TitleAnim::Linie].pos);
 	m_pAnimSprite[(int)TitleAnim::Linie]->SetSize(m_AnimParam[(int)TitleAnim::Linie].size);
 	m_pAnimSprite[(int)TitleAnim::Linie]->SetRotate(m_AnimParam[(int)TitleAnim::Linie].rotate);
@@ -504,7 +486,6 @@ void CSceneTitle::SetResolusion(float wide, float height,bool fullscreen)
 	}
 	m_pAnimSprite[(int)TitleAnim::Hat] = new SpriteEx("Assets/Texture/Title/Linie_Hat.png");
 	m_pAnimSprite[(int)TitleAnim::Logo] = new SpriteEx("Assets/Texture/Title/Title_Logo.png");
-	m_pAnimSprite[(int)TitleAnim::LinieBack] = new SpriteEx("Assets/Texture/Title/Title_Chara_Back.png");
 	m_pAnimSprite[(int)TitleAnim::Linie] = new SpriteEx("Assets/Texture/Title/Title_Chara.png");
 	m_pAnimSprite[(int)TitleAnim::UnderBar] = new SpriteEx("Assets/Texture/Title/Title_Underbar.png");
 	for (int i = 0; i < MAX_STAR; i++)
@@ -642,7 +623,6 @@ void CSceneTitle::TitleAnimation()
 		break;
 	case LogoMoveEnd:
 		m_AnimParam[(int)TitleAnim::Linie].pos.x = 0.0f + Easing39(m_fAnimTime, 0.5f, 0.9f) * CENTER_POS_X - 210.0f;
-		m_AnimParam[(int)TitleAnim::LinieBack].pos.x = 0.0f + Easing39(m_fAnimTime, 0.5f, 0.9f) * CENTER_POS_X;
 		if (m_fAnimTime >= 0.8f)
 		{
 			m_fAnimTime = 0.0f;
