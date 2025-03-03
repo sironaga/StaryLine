@@ -422,5 +422,8 @@
     <Text Include="コードクリーンアップメモ.txt">
       <Filter>リソース ファイル</Filter>
     </Text>
+    <Text Include="StarryLineProgrammer.txt">
+      <Filter>リソース ファイル</Filter>
+    </Text>
   </ItemGroup>
 </Project>
