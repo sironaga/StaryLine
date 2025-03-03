@@ -110,6 +110,8 @@ public:
 	const DirectX::XMFLOAT3 GetPlayerPos() { return m_tBrushPos; }
 	// –Ú“I’n‚Ìæ“¾
 	const int GetPlayerDestination() { return m_eDestination; }
+	// Œ»İ‚Ì’¸“_”Ô†‚Ìæ“¾
+	const int GetNowVertex() { return m_nNowVertex; }
 	// •`‰æ’†‚©æ“¾
 	const bool GetCanMove() { return m_bDrawing; }
 
