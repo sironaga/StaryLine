@@ -1600,6 +1600,7 @@ void CFieldVertex::InitFieldVertex()
 		Fever_Stop_Player_time = 0.0f;
 		Mode_Player_Move = 0;
 		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f };
+		GoalVertex = m_pPlayer->GetNowVertex();
 		StartVertex = GoalVertex;//始点を今の地点に初期化
 		NowShapes = 0;//格納した図形の数初期化
 		Effect_NowShapes = 0;
