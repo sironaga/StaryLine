@@ -844,6 +844,8 @@ void CStageSelect::UpdateStory()
 		DegCnt+= 0.5f;
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyTrigger(VK_SPACE))
 		{
+			m_StoryTxtParam[0].color.w = 0.0f;
+			m_StoryTxtParam[1].color.w = 0.0f;
 			m_nPage++;
 			time = 0.0f;
 			m_StoryParam[(int)StoryTex::Grail].color.w = 1.0f;
@@ -905,6 +907,8 @@ void CStageSelect::UpdateStory()
 		{
 			m_nPage++;
 			time = 0.0f;
+			m_StoryTxtParam[0].color.w = 0.0f;
+			m_StoryTxtParam[1].color.w = 0.0f;
 			m_StoryParam[(int)StoryTex::SecondLinie].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::LinieHands].color.w = 1.0f;
 			m_StoryParam[(int)StoryTex::Bosses].pos.y = SCREEN_HEIGHT;
@@ -946,6 +950,10 @@ void CStageSelect::UpdateStory()
 		else m_StoryTxtParam[4].color.w += 0.05f;
 		if (IsKeyTrigger(VK_RETURN) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)) || IsKeyTrigger(VK_SPACE))
 		{
+			m_StoryTxtParam[0].color.w = 0.0f;
+			m_StoryTxtParam[1].color.w = 0.0f;
+			m_StoryTxtParam[2].color.w = 0.0f;
+			m_StoryTxtParam[3].color.w = 0.0f;
 			m_nPage++;
 			time = 0.0f;
 		}
