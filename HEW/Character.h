@@ -12,7 +12,7 @@
 #include "Main.h"
 
 #define MAX_ALLY  (200)	//味方情報の最大数
-#define LINIEWINTIME (6.8f)
+#define LINIEWINTIME (3.4f)
 //#define MAX_ENEMY (200)	//敵の最大数
 //#define NORMAL_SIZE (10)//キャラクターの基本サイズ
 enum class MODEL_DEFAULTSIZE

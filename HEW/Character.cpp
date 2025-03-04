@@ -570,6 +570,7 @@ void ModelUpDate(void)
 			{
 				if (g_pBossModel[i][j]->IsAnimePlay(0))
 				{
+					
 					g_pBossModel[i][j]->Step(0.01f);
 				}
 				else
@@ -592,7 +593,7 @@ void WinModelUpdate(bool IsStep)
 	{
 		if (IsStep)
 		{
-			g_pLinieModel[(int)LinieAnimation::Win]->Step(0.01f);
+			g_pLinieModel[(int)LinieAnimation::Win]->Step(0.02f);
 		}
 	}
 	else
@@ -2064,7 +2065,7 @@ void CLeader::Draw(int StageNum)
 				}
 			}
 		}
-		if (m_bDamage)
+		if (m_bDamage || m_fDamageTimer < 1.5f)
 		{
 			m_nModelNo = (int)BossAnimation::Damage;
 		}
@@ -2189,6 +2190,7 @@ void CLeader::Draw(int StageNum)
 		}
 		break;
 	}
+	
 	m_bDamage = false;
 	m_bSummon = false;
 	//m_bWin = false;
