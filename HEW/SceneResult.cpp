@@ -608,7 +608,7 @@ void CSceneResult::KeyProsess(void)
 	if (nSelect == 0)
 	{
 		// StageSelect
-		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) && !bEnter)
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) || IsKeyTrigger(VK_SPACE) && !bEnter)
 		{
 			bEnter = true;
 			nPush[nSelect] = 1;
@@ -622,7 +622,7 @@ void CSceneResult::KeyProsess(void)
 		if (ResultGameData.bWin)
 		{
 			// Next
-			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) && !bEnter)
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN) || IsKeyTrigger(VK_SPACE) && !bEnter)
 			{
 				bEnter = true;
 				StageLevel.StageSubNumber++;
@@ -652,7 +652,7 @@ void CSceneResult::KeyProsess(void)
 		else
 		{
 			// Retry
-			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN ) && !bEnter)
+			if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN ) || IsKeyTrigger(VK_SPACE) && !bEnter )
 			{
 				bEnter = true;
 				SetNext(SCENE_GAME, StageLevel);
