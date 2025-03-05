@@ -414,7 +414,10 @@ void CSceneGame::Draw()
  			//m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
 			bLine = true;
 		}
-		m_pFieldVertex->ShapesEffectDraw();
+		if (GetCameraKind() == NOMAL_CAMERA)
+		{
+			m_pFieldVertex->ShapesEffectDraw();
+		}
 	}
 	// フィーバーの召喚エフェクト時間
 	if ((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust <= g_tTime.GamePhaseTime &&
@@ -426,7 +429,10 @@ void CSceneGame::Draw()
 			//m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
 			bLine = true;
 		}
-		m_pFieldVertex->ShapesEffectDraw();
+		if (GetCameraKind() == NOMAL_CAMERA)
+		{
+			m_pFieldVertex->ShapesEffectDraw();
+		}
 	}
 	//m_pBattle->Draw();	// バトル全体の描画
 	
