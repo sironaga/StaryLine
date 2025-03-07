@@ -12,9 +12,9 @@ CWriteName::CWriteName()
 	m_pWrite->Init(GetSwapChain());
 
 	// フォントデータを改変
-	data.fontSize = 60;
+	data.fontSize = 80;
 	data.fontWeight = DWRITE_FONT_WEIGHT_ULTRA_BLACK;
-	data.Color = D2D1::ColorF(D2D1::ColorF::LightYellow);
+	data.Color = D2D1::ColorF(D2D1::ColorF::Blue);
 	data.font = m_pWrite->GetFontName(1);
 	data.shadowColor = D2D1::ColorF(D2D1::ColorF::White);
 	data.shadowOffset = D2D1::Point2F(5.0f, -5.0f);
@@ -45,10 +45,15 @@ void CWriteName::Update()
 
 void CWriteName::Draw()
 {
-	m_pWrite->DrawString(m_Name, SCREEN_CENTER, D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NONE);
+	m_pWrite->DrawString(m_Name, DirectX::XMFLOAT2( SCREEN_CENTER.x - 270.0f,SCREEN_CENTER.y + 100.0f ), D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NONE);
 }
 
 std::string CWriteName::GetPlayerName()
 {
 	return m_Name;
+}
+
+void CWriteName::SetPlayerName(std::string name)
+{
+	m_Name = name;
 }

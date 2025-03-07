@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "WriteName.h"
+#include "SpriteEx.h"
 
 class CSceneRanking : public CScene
 {
@@ -14,4 +15,5 @@ private:
 	int m_nPhase;
 	CWriteName* m_pWrite;
 	bool m_bEnd;
+	SpriteEx* m_pBackTex;
 };
