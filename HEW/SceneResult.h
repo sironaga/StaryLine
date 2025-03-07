@@ -9,7 +9,7 @@
 #include "Conection_Sys.h"
 #include "StageSelect.h"
 
-#define SAVER_IP ("14.133.0.16")
+#define SAVER_IP ("10.128.70.110")
 
 enum Rank
 {
