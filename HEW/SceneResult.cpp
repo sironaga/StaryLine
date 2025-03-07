@@ -20,7 +20,6 @@ bool CSceneResult::bClearState[MAX_STAGE];
 Rank CSceneResult::StageRank[MAX_STAGE];
 // ---
 
-
 // --- èâä˙âª
 CSceneResult::CSceneResult()
 	:nSelect(0), nAnimationFrame(0), nPush{}, bAnimation(false), bEnter(false), fUvPos{}, Group{ 1920.0f,660.0f }, bLoopAnime(false), nLoopAnimeCount(0),
