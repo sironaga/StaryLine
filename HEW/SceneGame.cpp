@@ -91,8 +91,8 @@ CSceneGame::CSceneGame(StageType StageNum)
 	SetFileAddress(m_pBattle);
 
 	InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
-	m_pBattle->CreateLeader();
 	m_pBattle->m_nStageNum = StageNum;
+	m_pBattle->CreateLeader();
 
 	// タイマー初期化
  	g_tTime = {};
