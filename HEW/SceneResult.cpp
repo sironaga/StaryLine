@@ -56,15 +56,21 @@ CSceneResult::CSceneResult()
 
 	int nSum;
 	nSum = StageLevel.StageSubNumber % 3;
-	if (nSum == 2)
+	if (ResultGameData.bWin)
 	{
-		bWorldClear = true;
+		if (nSum == 2)
+		{
+			bWorldClear = true;
+		}
+		else
+		{
+			bWorldClear = false;
+		}
 	}
 	else
 	{
 		bWorldClear = false;
 	}
-
 	if (ResultGameData.bWin)
 	{
 		bClearState[StageLevel.StageSubNumber] = true; 
