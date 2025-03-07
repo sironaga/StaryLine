@@ -124,14 +124,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//®”Œ^‚©‚ç•¶š—ñ‚Ö•ÏŠ·
 			if (nowTime - countStartTime >= 1000)
 			{
-				char mes[256];
-				//sprintf¨•¶š—ñ‚É‘Î‚µ‚Äprintf‚Å‘‚«‚Ş
-				sprintf(mes, "DRAW_FPS:%d UPDATE_FPS:%d", fpsCount,UpdatefpsCount);
-				//FPS‚Ì•\¦
-				SetWindowText(hWnd, mes);
-				UpdatefpsCount = 0;
-				fpsCount = 0;
-				countStartTime = nowTime;
+				//char mes[256];
+				////sprintf¨•¶š—ñ‚É‘Î‚µ‚Äprintf‚Å‘‚«‚Ş
+				//sprintf(mes, "DRAW_FPS:%d UPDATE_FPS:%d", fpsCount,UpdatefpsCount);
+				////FPS‚Ì•\¦
+				//SetWindowText(hWnd, mes);
+				//UpdatefpsCount = 0;
+				//fpsCount = 0;
+				//countStartTime = nowTime;
 			}
 #endif
 			
