@@ -10,6 +10,7 @@ public:
 	void Update();
 	void Draw();
 	static std::string GetPlayerName();
+	void SetPlayerName(std::string name);
 private:
 	DirectWriteCustomFont* m_pWrite;
 	FontData data;

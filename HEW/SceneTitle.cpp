@@ -760,7 +760,11 @@ void CSceneTitle::TitleInput()
 
 	if (!m_bSelected && !m_pOption->GetOption())
 	{
-		if (CheckRankingCommand())SetNext(SCENE_RANKING);
+		//if (CheckRankingCommand())SetNext(SCENE_RANKING);
+		if (WithGetKeyTriger(XINPUT_GAMEPAD_START,VK_TAB))
+		{
+			SetNext(SCENE_RANKING);
+		}
 		switch (g_Title_type)
 		{
 		case(GAMESTART):
@@ -868,6 +872,7 @@ void CSceneTitle::TitleInput()
 					SetNext(STAGE_SELECT);
 					m_bChange = true;
 				}
+
 				break;
 			case GAMEOPTION:
 				break;
