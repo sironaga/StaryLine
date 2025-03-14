@@ -56,7 +56,7 @@ void CTransition::DrawFade(float alpha)
 		StartPosY_B = InEasing(time, -SCREEN_HEIGHT, SCREEN_HEIGHT * 2.0f, 1.0f);
 	}
 
-	SetRender2D;
+	SetRender2D();
 	Sprite::ReSetSprite();
 	m_pTransitionA->SetProjection(Get2DProj());
 	m_pTransitionA->SetView(Get2DView());
@@ -68,7 +68,7 @@ void CTransition::DrawFade(float alpha)
 	m_pTransitionA->SetUvSize(1.0f, 1.0f);
 	m_pTransitionA->Disp();
 
-	SetRender2D;
+	SetRender2D();
 	Sprite::ReSetSprite();
 	m_pTransitionB->SetProjection(Get2DProj());
 	m_pTransitionB->SetView(Get2DView());
