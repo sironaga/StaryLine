@@ -9,9 +9,11 @@
 #include "Pause.h"
 #include <future>
 #include <thread>
+#include <functional>
 #include "Option.h"
 
 ID3D11SamplerState* g_pGameSPSampler;
+bool debugChara = false;
 
 #define DRAW_EFFECT_TIME (2.0f * 60.0f)
 
@@ -390,15 +392,20 @@ void CSceneGame::Draw()
 	{
 		m_pFieldVertex->Draw();
 		m_pPlayer->Draw();
-		std::thread Th_BattleDraw(&CBattle::Draw, m_pBattle);
-		Th_BattleDraw.join();
+		if (m_pBattle)
+		{
+			std::thread Th_BattleDraw([this]() { this->m_pBattle->Draw(); });
+			Th_BattleDraw.join();
+		}
 	}
 	else if (GetCameraKind() == EVENT_CAMERA)
 	{
-		std::thread Th_BattleLinieDraw(&CBattle::LinieDraw, m_pBattle);
-		Th_BattleLinieDraw.join();
-		//m_pBattle->LinieDraw();
+		m_pBattle->LinieDraw();
 	}
+
+	if (IsKeyTrigger('T'))debugChara = true;
+
+
 	//キャラクターを召喚する時間
 	if (((float)SHAPE_SUMMON_START * 60.0f - g_tTime.GameSTimePheseAjust + DRAW_EFFECT_TIME <= g_tTime.GamePhaseTime))	// 経過時間が召喚開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)
 	{
@@ -475,10 +482,6 @@ void CSceneGame::Draw()
 		m_pSourseGameBGM->Start();
 		m_bFever = false;
 	}
-	
-	m_pFieldVertex->FeverDraw();
-
-
 }
 
 void SetFeverStellaTime(float time)

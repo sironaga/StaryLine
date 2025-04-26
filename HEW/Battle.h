@@ -2,6 +2,7 @@
 #include "Character.h"
 #include "SoundList.h"
 #include <vector>
+#include <mutex>
 
 //パターンの最大数
 #define MAX_PATTERN (5)
@@ -88,6 +89,9 @@ public:
 	//ステージナンバー
 	StageType m_nStageNum;
 private:
+	
+	std::mutex mtx;
+
 	//描画開始判定
 	bool m_bDrawingStart;
 	//描画終了判定

@@ -493,6 +493,8 @@ void CBattle::LinieDraw(void)
 //•`‰æˆ—
 void CBattle::Draw(void)
 {
+	std::lock_guard<std::mutex> lock(mtx);
+
 	//Z²‡‚É•`‰æ
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
