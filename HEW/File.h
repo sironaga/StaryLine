@@ -1,5 +1,5 @@
 #pragma once
-#include "Character.h"
+#include "CharacterInclude.h"
 #include "Battle.h"
 #include "SceneResult.h"
 //First(ˆê”ÔÅ‰‚ÉŒÄ‚Ño‚·‚Æ‚«true),WaveSwitch(Wave‚ªØ‚è‘Ö‚í‚é‚Æ‚«‚Étrue),

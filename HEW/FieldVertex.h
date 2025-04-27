@@ -3,7 +3,7 @@
 #pragma once
 #define _DIRECTX_
 #include "DirectX.h"
-#include "Character.h"
+#include "CharacterInclude.h"
 #include "Battle.h"
 #include <d3d11.h>
 #include "Field.h"

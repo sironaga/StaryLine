@@ -61,6 +61,12 @@
     <Filter Include="ソース ファイル\GameSystem\Mode">
       <UniqueIdentifier>{98849ed4-9171-400f-8d84-2e8b55a04dd9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\GameSystem\Mode\Character">
+      <UniqueIdentifier>{07495400-6640-45b1-b910-22696631c9e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameSystem\Mode\Character">
+      <UniqueIdentifier>{ff1d1b24-b97e-4885-bfa9-8ee940c4e529}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_geometory.cpp">
@@ -130,9 +136,6 @@
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="Battle.cpp">
-      <Filter>ソース ファイル\GameSystem\Mode</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
       <Filter>ソース ファイル\GameSystem\Mode</Filter>
     </ClCompile>
     <ClCompile Include="FieldVertex.cpp">
@@ -237,6 +240,24 @@
     <ClCompile Include="WriteName.cpp">
       <Filter>ソース ファイル\Systems\Communication_Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Fighter.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterManager.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="HpUI.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Ally.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Leader.cpp">
+      <Filter>ソース ファイル\GameSystem\Mode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -297,9 +318,6 @@
       <Filter>ヘッダー ファイル\Systems\DirectX\Default</Filter>
     </ClInclude>
     <ClInclude Include="Battle.h">
-      <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
       <Filter>ヘッダー ファイル\GameSystem\Mode</Filter>
     </ClInclude>
     <ClInclude Include="FieldVertex.h">
@@ -406,6 +424,27 @@
     </ClInclude>
     <ClInclude Include="WriteName.h">
       <Filter>ヘッダー ファイル\Systems\Communication_Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterManager.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Fighter.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="HpUI.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Ally.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Leader.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterInclude.h">
+      <Filter>ヘッダー ファイル\GameSystem\Mode\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

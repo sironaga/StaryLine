@@ -92,7 +92,8 @@ CSceneGame::CSceneGame(StageType StageNum)
 	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
 	SetFileAddress(m_pBattle);
 
-	InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
+	CCharacterManager::CreateInstance();
+	CCharacterManager::GetInstance()->InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
 	m_pBattle->m_nStageNum = StageNum;
 	m_pBattle->CreateLeader();
 
@@ -158,7 +159,7 @@ CSceneGame::~CSceneGame()
 	}
 	SAFE_DELETE(g_FeverSound);
 
-	UnInitCharacterTexture();
+	CCharacterManager::GetInstance()->UnInitCharacterTexture();
 }
 
 void CSceneGame::Update()
@@ -224,7 +225,7 @@ void CSceneGame::Update()
 
 			m_pFieldVertex->LogUpdate();
 
-			ModelUpDate();
+			CCharacterManager::GetInstance()->ModelUpDate();
 
 			m_pField->Update();		// フィールドは常に更新する
 			InitInput();
@@ -363,7 +364,7 @@ void CSceneGame::Update()
 		{
 			if (!m_bEnd)
 			{
-				WinModelUpdate(true);
+				CCharacterManager::GetInstance()->WinModelUpdate(true);
 				
 				m_pBattle->LinieRotation({ 0.0f,-90.0f, 0.0f });
 				m_pBattle->CharacterUpdate(true);	// 生成されたキャラクターのアニメーションを行う
@@ -562,7 +563,7 @@ void CSceneGame::InitResolusion(float wide, float height, bool fullscreen)
 	m_pFade = new CTransition();
 	m_pFade->SetFade(1.0f, true);
 	m_pPlayer->Reload();
-	ReLoadCharacterTexture(m_pBattle->m_nStageNum);
+	CCharacterManager::GetInstance()->ReLoadCharacterTexture(m_pBattle->m_nStageNum);
 	m_pBattle->ReLoadTexture();
 	m_pBattle->Update();
 
