@@ -241,7 +241,7 @@ void CBattle::Update(void)
 {
 	//音の設定
 	m_pSound->SetMasterVolume();
-	SetCharacterMasterVolume();
+	CCharacterManager::GetInstance()->SetCharacterMasterVolume();
 	
 	//戦闘時間軸処理
 	TimeLapse();
@@ -260,7 +260,7 @@ void CBattle::Update(void)
 		//味方を生成順に処理
 		for (int i = 0; i < m_nAllyCount; i++)
 		{
-			if (m_pAlly[i]->GetStatus() == St_Create)
+			if (m_pAlly[i]->GetStatus() == Status::Create)
 			{
 				if (m_pAllyLeader)
 				{
@@ -271,7 +271,7 @@ void CBattle::Update(void)
 			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
 			{
 				//自分のステータスがBattleだったら
-				if (m_pAlly[i]->GetStatus() == St_Battle)
+				if (m_pAlly[i]->GetStatus() == Status::Battle)
 				{
 					//索敵処理
 					Search(i, Ally);
@@ -285,7 +285,7 @@ void CBattle::Update(void)
 						for (int l = 0; l < m_nEnemyCount; l++)
 						{
 							//相手のステータスがBattleだったら
-							if (m_pEnemy[l]->GetStatus() == St_Battle)
+							if (m_pEnemy[l]->GetStatus() == Status::Battle)
 							{
 								//攻撃当たり判定に入ってるかどうか
 								if (m_pAlly[i]->AtkCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
@@ -314,7 +314,7 @@ void CBattle::Update(void)
 						if (m_pEnemyLeader)
 						{
 							//相手のリーダーのステータスがBattleだったら
-							if (m_pEnemyLeader->GetStatus() == St_Battle)
+							if (m_pEnemyLeader->GetStatus() == Status::Battle)
 							{
 								//攻撃の当たり判定に入っているか
 								if (m_pAlly[i]->AtkCollisionCheck(m_pEnemyLeader->GetSize(), m_pEnemyLeader->GetPos()))
@@ -342,7 +342,7 @@ void CBattle::Update(void)
 			if (m_pEnemy[i]->GetPos().z > Z - 1.0f && m_pEnemy[i]->GetPos().z < Z + 1.0f)
 			{
 				//自分のステータスがバトルだったら
-				if (m_pEnemy[i]->GetStatus() == St_Battle)
+				if (m_pEnemy[i]->GetStatus() == Status::Battle)
 				{
 					//索敵処理
 					Search(i, Enemy);
@@ -355,7 +355,7 @@ void CBattle::Update(void)
 						for (int l = 0; l < m_nAllyCount; l++)
 						{
 							//相手のステータスがバトルだったら
-							if (m_pAlly[l]->GetStatus() == St_Battle)
+							if (m_pAlly[l]->GetStatus() == Status::Battle)
 							{
 								//攻撃当たり判定に入ってるかどうか
 								if (m_pEnemy[i]->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))
@@ -386,7 +386,7 @@ void CBattle::Update(void)
 						if (m_pAllyLeader)
 						{
 							//相手のリーダーのステータスがBattleだったら
-							if (m_pAllyLeader->GetStatus() == St_Battle)
+							if (m_pAllyLeader->GetStatus() == Status::Battle)
 							{
 								//攻撃当たり判定に入ってるかどうか
 								if (m_pEnemy[i]->AtkCollisionCheck(m_pAllyLeader->GetSize(), m_pAllyLeader->GetPos()))
@@ -778,7 +778,7 @@ void CBattle::Search(int i, Entity Entity)
 		for (int l = 0; l < m_nEnemyCount; l++)
 		{
 			//相手のステータスがBattleかどうか
-			if (m_pEnemy[l]->GetStatus() == St_Battle)
+			if (m_pEnemy[l]->GetStatus() == Status::Battle)
 			{
 				//索敵当たり判定内に敵がいるかどうか
 				if (m_pAlly[i]->SearchCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
@@ -813,7 +813,7 @@ void CBattle::Search(int i, Entity Entity)
 		for (int l = 0; l < m_nAllyCount; l++)
 		{
 			//相手のステータスがBattleかどうか
-			if (m_pAlly[l]->GetStatus() == St_Battle)
+			if (m_pAlly[l]->GetStatus() == Status::Battle)
 			{
 				//索敵当たり判定内に味方がいるかどうか
 				if (m_pEnemy[i]->SearchCollisionCheck(m_pAlly[l]->GetSize(),m_pAlly[l]->GetPos()))
@@ -1412,14 +1412,14 @@ void CBattle::Alive(void)
 	for (int l = 0; l < m_nAllyCount; l++)
 	{
 		//味方のステータスがBattleかどうか
-		if (m_pAlly[l]->GetStatus() == St_Battle)
+		if (m_pAlly[l]->GetStatus() == Status::Battle)
 		{
 			//味方の体力が残っているかどうか
 			if (m_pAlly[l]->GetHp() <= 0.0f)
 			{
 				m_pAlly[l]->m_bIsDeath = true;
 				//ステータスを死亡状態にする
-				m_pAlly[l]->SetStatus(St_Death);
+				m_pAlly[l]->SetStatus(Status::Death);
 				//m_pAlly[l]->PlayDeathEffect();
 			}
 		}
@@ -1428,13 +1428,13 @@ void CBattle::Alive(void)
 	for (int l = 0; l < m_nEnemyCount; l++)
 	{
 		//敵のステータスがBattleかどうか
-		if (m_pEnemy[l]->GetStatus() == St_Battle)
+		if (m_pEnemy[l]->GetStatus() == Status::Battle)
 		{
 			//敵の体力が残っているかどうか
 			if (m_pEnemy[l]->GetHp() <= 0.0f)
 			{
 				//ステータスを死亡状態にする
-				m_pEnemy[l]->SetStatus(St_Death);
+				m_pEnemy[l]->SetStatus(Status::Death);
 				//m_pEnemy[l]->PlayDeathEffect();
 			}
 		}
@@ -1443,13 +1443,13 @@ void CBattle::Alive(void)
 	if (m_pEnemyLeader)
 	{
 		//敵のステータスがBattleかどうか
-		if (m_pEnemyLeader->GetStatus() == St_Battle)
+		if (m_pEnemyLeader->GetStatus() == Status::Battle)
 		{
 			//敵の体力が残っているかどうか
 			if (m_pEnemyLeader->GetHp() <= 0.0f || WinEndCommand())
 			{
 				//ステータスを死亡状態にする
-				m_pEnemyLeader->SetStatus(St_Death);
+				m_pEnemyLeader->SetStatus(Status::Death);
 			}
 		}
 	}
@@ -1457,13 +1457,13 @@ void CBattle::Alive(void)
 	if (m_pAllyLeader)
 	{
 		//味方のリーダーのステータスがBattleかどうか
-		if (m_pAllyLeader->GetStatus() == St_Battle)
+		if (m_pAllyLeader->GetStatus() == Status::Battle)
 		{
 			//味方のリーダーの体力が残っているかどうか
 			if (m_pAllyLeader->GetHp() <= 0.0f || LoseEndCommand())
 			{
 				//ステータスを死亡状態にする
-				m_pAllyLeader->SetStatus(St_Death);
+				m_pAllyLeader->SetStatus(Status::Death);
 			}
 		}
 	}
@@ -1476,7 +1476,7 @@ void CBattle::Delete(void)
 	for (int i = 0; i < m_nAllyCount; i++)
 	{
 		//ステータスがDeleteかどうか
-		if (m_pAlly[i]->GetStatus() == St_Delete)
+		if (m_pAlly[i]->GetStatus() == Status::Delete)
 		{
 			m_pAlly.erase(m_pAlly.begin() + i);
 			//今いる生存数を減らす
@@ -1489,7 +1489,7 @@ void CBattle::Delete(void)
 	for (int i = 0; i < m_nEnemyCount; i++)
 	{
 		//ステータスがDeleteかどうか
-		if (m_pEnemy[i]->GetStatus() == St_Delete)		
+		if (m_pEnemy[i]->GetStatus() == Status::Delete)
 		{
 			//解放処理
 			m_pEnemy.erase(m_pEnemy.begin() + i);
@@ -1503,7 +1503,7 @@ void CBattle::Delete(void)
 	if (m_pEnemyLeader)
 	{
 		//ステータスがDeleteかどうか
-		if (m_pEnemyLeader->GetStatus() == St_Delete)
+		if (m_pEnemyLeader->GetStatus() == Status::Delete)
 		{
 			//解放処理
 			m_fRinieMaxHp = m_pAllyLeader->GetMaxHp();
@@ -1517,7 +1517,7 @@ void CBattle::Delete(void)
 	if (m_pAllyLeader)
 	{
 		//ステータスがDeleteかどうか
-		if (m_pAllyLeader->GetStatus() == St_Delete)
+		if (m_pAllyLeader->GetStatus() == Status::Delete)
 		{
 			//解放処理
 

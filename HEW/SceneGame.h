@@ -7,7 +7,7 @@
 
 #pragma once
 #include"Main.h"
-#include "Character.h"
+#include "CharacterInclude.h"
 #include "StageSelect.h"
 #include "Field.h"
 #include "SoundList.h"

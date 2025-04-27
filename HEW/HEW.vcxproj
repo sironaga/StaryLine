@@ -19,12 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ally.cpp" />
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="Battle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="CameraEvent.cpp" />
-    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="CharacterManager.cpp" />
     <ClCompile Include="Conection_Sys.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DebugRoom.cpp" />
@@ -33,14 +34,18 @@
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EffectManager_sp.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FadeBlack.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldVertex.cpp" />
+    <ClCompile Include="Fighter.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Geometory.cpp" />
+    <ClCompile Include="HpUI.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputEx.cpp" />
+    <ClCompile Include="Leader.cpp" />
     <ClCompile Include="LibEffekseer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
@@ -79,12 +84,14 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ally.h" />
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="Battle.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CameraEvent.h" />
-    <ClInclude Include="Character.h" />
+    <ClInclude Include="CharacterInclude.h" />
+    <ClInclude Include="CharacterManager.h" />
     <ClInclude Include="Conection_Sys.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="DebugRoom.h" />
@@ -95,14 +102,18 @@
     <ClInclude Include="Easing.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectManager_sp.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FadeBlack.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldVertex.h" />
+    <ClInclude Include="Fighter.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Geometory.h" />
+    <ClInclude Include="HpUI.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputEx.h" />
+    <ClInclude Include="Leader.h" />
     <ClInclude Include="LibEffekseer.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MeshBuffer.h" />
