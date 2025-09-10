@@ -185,7 +185,7 @@ CFieldVertex::CFieldVertex()
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 32; i++)
 		{
 			m_pTex_Shapes[i] = new Texture();
 		}
@@ -402,7 +402,7 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 	HRESULT hrShapes;
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 32; i++)
 	{
 		switch (i)
 		{
@@ -442,6 +442,9 @@ CFieldVertex::CFieldVertex()
 		case 27:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq22.png")); break;//3:4
 		case 28:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq31.png")); break;//1:3 
 		case 29:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq33.png")); break;//1:4
+
+		case 30:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq37.png")); break;//new図形
+		case 31:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq38.png")); break;//new図形
 		default:
 			break;
 		}
@@ -491,7 +494,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_Ally_Count[1]);
 	SAFE_DELETE(m_pTex_Ally_Count[2]);
 	SAFE_DELETE(m_pTex_Ally_Count[3]);
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 32; i++)
 	{
 		SAFE_DELETE(m_pTex_Shapes[i]);
 	}
@@ -570,7 +573,7 @@ void CFieldVertex::Update()
 	Vertexp = m_tVertex;
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
-		//プレイヤーと頂点の場所が同じで、かつ、最終地点が今の地点でないかつ壊れている頂点でないとき
+		//プレイヤーと頂点の場所が同じで、かつ、最終地点が今の地点でないとき
 		if (PlayerPos.x == Vertexp->Pos.x && PlayerPos.y == Vertexp->Pos.y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
 		{
 			OrderVertex[OrderVertexCount] = Vertexp->Number;//着いた頂点の番号を保存
@@ -1270,7 +1273,50 @@ void CFieldVertex::ShapesDraw()
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				}
 				break;
-
+			case 11://new図形左
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[30]);
+				}
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				}
+				break;
+			case 12://new図形右
+				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[31]);
+				}
+				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
+				{
+					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+				}
+				break;
+			case 13:
+				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 225.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
+				break;
+			case 14:
+				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 225.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[26]);
+				break;
+			case 15:
+				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 135.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
+				break;
+			case 16:
+				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
+				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 135.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[21]);
+				break;
 			default:
 				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
@@ -1724,7 +1770,7 @@ void CFieldVertex::InitTextureModel()
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 31; i++)
 		{
 			m_pTex_Shapes[i] = new Texture();
 		}
@@ -1864,7 +1910,7 @@ void CFieldVertex::InitTextureModel()
 	}
 
 	HRESULT hrShapes;
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 32; i++)
 	{
 		switch (i)
 		{
@@ -1904,6 +1950,9 @@ void CFieldVertex::InitTextureModel()
 		case 27:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq22.png")); break;//3:4
 		case 28:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq31.png")); break;//1:3 
 		case 29:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq33.png")); break;//1:4
+
+		case 30:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq37.png")); break;//new
+		case 31:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq38.png")); break;//new
 		default:
 			break;
 		}
@@ -2523,17 +2572,25 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									dir.x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
 									dir.y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
 									int AngleNumber = 0;
+									bool Diagonal = false;
+									int DiagonalCount = 0;
 									//鋭角の頂点を求める//辺の比を求める
 									for (int m = 0; m < 4; m++)
 									{
 										if ((int)Length[m][0] % 15 == 0)Length[m][0] = Length[m][0] / 15.0f;
-										else Length[m][0] = Length[m][0] / sqrtf(450.0f);
+										else
+										{
+											DiagonalCount++;
+											Length[m][0] = Length[m][0] / sqrtf(450.0f);
+										}
 								
 										if(Shapes_Angle_Save[NowShapes][m][0] < 90.0f)
 										{
 											AngleNumber = m;
 										}
 									}
+									//3回15で割れなければ斜めの図形である
+									if (DiagonalCount == 3)Diagonal = true;
 									//各辺の長さを求める(対辺の比が等しくないものがその図形の辺の比になる)
 									if (Length[0][0] == Length[2][0])
 									{
@@ -2549,52 +2606,256 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) > fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-											Shapes_type_Angle[NowShapes][1] = 2;
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
+												Shapes_type_Angle[NowShapes][1] = 2;
+											}
+											else
+											{
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
+													Shapes_type_Angle[NowShapes][1] = 2;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 2;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 2;
+													}
+												}
+											}
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-											Shapes_type_Angle[NowShapes][1] = 3;
+
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
+												Shapes_type_Angle[NowShapes][1] = 3;
+											}
+											else
+											{	
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
+													Shapes_type_Angle[NowShapes][1] = 3;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 3;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 3;
+													}
+												}
+											}
 										}
 									}
 									if (pos[AngleNumber].x - dir.x > 0.0f && pos[AngleNumber].y - dir.y < 0.0f)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) < fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-											Shapes_type_Angle[NowShapes][1] = 3;
+
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
+												Shapes_type_Angle[NowShapes][1] = 3;
+											}
+											else
+											{												
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
+													Shapes_type_Angle[NowShapes][1] = 3;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 3;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 3;
+													}
+												}
+											}
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-											Shapes_type_Angle[NowShapes][1] = 0;
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
+												Shapes_type_Angle[NowShapes][1] = 0;
+											}
+											else
+											{												
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
+													Shapes_type_Angle[NowShapes][1] = 0;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 0;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 0;
+													}
+												}
+											}
 										}
 									}
 									if (pos[AngleNumber].x - dir.x < 0.0f && pos[AngleNumber].y - dir.y < 0.0f)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) > fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-											Shapes_type_Angle[NowShapes][1] = 0;
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
+												Shapes_type_Angle[NowShapes][1] = 0;
+											}
+											else
+											{
+												
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
+													Shapes_type_Angle[NowShapes][1] = 0;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 0;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 0;
+													}
+												}
+											}
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-											Shapes_type_Angle[NowShapes][1] = 1;
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
+												Shapes_type_Angle[NowShapes][1] = 1;
+											}
+											else
+											{											
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
+													Shapes_type_Angle[NowShapes][1] = 1;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 1;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 1;
+													}
+												}
+											}
 										}	
 									}
 									if (pos[AngleNumber].x - dir.x < 0.0f && pos[AngleNumber].y - dir.y > 0.0f)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) < fabsf(pos[AngleNumber].y - dir.y))
 										{
-											Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-											Shapes_type_Angle[NowShapes][1] = 1;
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
+												Shapes_type_Angle[NowShapes][1] = 1;
+											}
+											else
+											{
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
+													Shapes_type_Angle[NowShapes][1] = 1;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 1;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
+														Shapes_type_Angle[NowShapes][1] = 1;
+													}
+												}
+											}
 										}
 										else
 										{
-											Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-											Shapes_type_Angle[NowShapes][1] = 2;
+											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											{
+												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
+												Shapes_type_Angle[NowShapes][1] = 2;
+											}
+											else
+											{
+												
+												if (!Diagonal)//斜めの図形でないなら
+												{
+													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
+													Shapes_type_Angle[NowShapes][1] = 2;
+												}
+												else
+												{
+													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
+													if (SumLength == 6)
+													{
+														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 2;
+													}
+													else
+													{
+														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
+														Shapes_type_Angle[NowShapes][1] = 2;
+													}
+												}
+											}
 										}	
 									}
 								}
@@ -2786,8 +3047,6 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 	{
 		for (int k = 0; k < 8; k++)
 		{
-			//ｋ＝０のときはがいる
-			
 			if (NowVertex == 0)
 			{
 				if (VertexNumber.Connect[k] != -1)ShapesCheck(m_tVertex[VertexNumber.Connect[k]]);
