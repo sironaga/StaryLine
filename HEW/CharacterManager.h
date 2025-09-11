@@ -18,6 +18,7 @@
 #include "Main.h"
 #include "ShaderList.h"
 #include "Geometory.h"
+#include <memory>
 
 //味方の最大数
 #define MAX_ALLY (200)
@@ -166,14 +167,11 @@ void DrawSetting(DirectX::XMFLOAT3 InPos, DirectX::XMFLOAT3 InSize, Sprite* Spri
 class CCharacterManager
 {
 public:
-	//インスタンスの作成
-	static void CreateInstance();
-
 	//インスタンスの取得
 	static CCharacterManager* GetInstance();
 private:
 	//インスタンスのポインタ
-	static CCharacterManager* m_pInstance;
+	static std::unique_ptr<CCharacterManager> m_pInstance;
 public:
 	//テクスチャ読み込み
 	void InitCharacterTexture(StageType StageType);

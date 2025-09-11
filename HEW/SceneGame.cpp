@@ -92,7 +92,6 @@ CSceneGame::CSceneGame(StageType StageNum)
 	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
 	SetFileAddress(m_pBattle);
 
-	CCharacterManager::CreateInstance();
 	CCharacterManager::GetInstance()->InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
 	m_pBattle->m_nStageNum = StageNum;
 	m_pBattle->CreateLeader();

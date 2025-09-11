@@ -19,34 +19,22 @@
 #include "Pause.h"
 
 //キャラクターのマネージャークラスのインスタンスの初期化
-CCharacterManager* CCharacterManager::m_pInstance = nullptr;
+std::unique_ptr<CCharacterManager> CCharacterManager::m_pInstance = nullptr;
 
-/*
-* @brief インスタンスの作成
-*/
-void CCharacterManager::CreateInstance()
-{
-	//インスタンスが存在しない場合
-	if (m_pInstance == nullptr)
-	{
-		//インスタンスのポインタを作成
-		m_pInstance = new CCharacterManager();
-	}
-}
 
 /*
 * @brief インスタンスの取得
 */
 CCharacterManager* CCharacterManager::GetInstance()
 {
-	//インスタンスが存在する場合
-	if (m_pInstance)
-	{
-		//インスタンスのポインタを返す
-		return m_pInstance;
-	}
 	//インスタンスが存在しない場合
-	return nullptr;
+	if (m_pInstance == nullptr)
+	{
+		//インスタンスのポインタを作成
+		m_pInstance = std::make_unique<CCharacterManager>();
+	}
+	// インスタンスを返す
+	return m_pInstance.get();
 }
 
 //事前読み込み用関数
