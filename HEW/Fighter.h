@@ -12,6 +12,12 @@
 #include "CharacterManager.h"
 #include "HpUI.h"
 
+// 兵士のタイプ
+enum class FighterType
+{
+	Enemy,//敵
+	Ally,//味方
+};
 
 //兵士基底クラス
 class CFighter
@@ -111,6 +117,9 @@ protected:
 
 	//サイズ
 	DirectX::XMFLOAT3 m_tSize;
+
+	//兵士のタイプ
+	FighterType m_eFighterType;
 
 	//角数
 	int m_nCornerCount;
@@ -262,6 +271,9 @@ public:
 
 	//サイズのGet
 	inline DirectX::XMFLOAT3 GetSize(void) { return m_tSize; }
+
+	//兵士のタイプのGet
+	inline FighterType GetFighterType(void) { return m_eFighterType; }
 
 	//属性のGet
 	inline int GetCornerCount(void) { return m_nCornerCount; }

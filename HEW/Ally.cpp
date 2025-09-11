@@ -17,6 +17,9 @@
 CAlly::CAlly(int InCornerCount, bool IsStellaBuff)
 	:CFighter(InCornerCount, IsStellaBuff)
 {
+	// 兵士タイプの設定
+	m_eFighterType = FighterType::Ally;
+
 	//サイズの初期化
 	m_tSize.x = (float)MODEL_DEFAULTSIZE::Ally;
 	m_tSize.y = (float)MODEL_DEFAULTSIZE::Ally;

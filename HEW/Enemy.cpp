@@ -19,6 +19,9 @@
 CEnemy::CEnemy(int InCornerCount)
 	:CFighter(InCornerCount)
 {
+	// 兵士タイプの設定
+	m_eFighterType = FighterType::Enemy;
+
 	//サイズの初期化
 	m_tSize.x = (float)MODEL_DEFAULTSIZE::Enemy;
 	m_tSize.y = (float)MODEL_DEFAULTSIZE::Enemy;

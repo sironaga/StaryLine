@@ -110,18 +110,18 @@ struct MovePower
 	float z;
 };
 
-//移動方向計算関数
+// 移動方向計算関数
 MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos);
+// 距離計算関数
+float Distance(DirectX::XMFLOAT3 t1, DirectX::XMFLOAT3 t2);
 
-//コンストラクタ
+// コンストラクタ
 CBattle::CBattle()
-	: m_pAlly{}
+	: m_pFighter{}
 	, m_nAllyCount(0)
 	, m_nAllyDateCount(0)
 	, m_nAllyTypes{ 0,0 }
-	, m_pEnemy{}
 	, m_nEnemyCount(0)
-	//, m_nEnemyDateCount{ 0,0,0,0,0 }
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
 	, m_nCreateEnemyNum(0)
@@ -144,19 +144,6 @@ CBattle::CBattle()
 	//数字テクスチャの読み込み
 	HRESULT hr;
 
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_0.png"), &m_pLogTex[0]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_1.png"), &m_pLogTex[1]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_2.png"), &m_pLogTex[2]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_3.png"), &m_pLogTex[3]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_4.png"), &m_pLogTex[4]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_5.png"), &m_pLogTex[5]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_6.png"), &m_pLogTex[6]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_7.png"), &m_pLogTex[7]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_8.png"), &m_pLogTex[8]);
-	//hr = LoadTextureFromFile(GetDevice(), TEX_PASS("Numbers/number_9.png"), &m_pLogTex[9]);
-	//if (FAILED(hr)) {
-	//	MessageBox(NULL, "Numbers 画像", "Error", MB_OK);
-	//}
 	Vertex vtx[] = {
 		{{-WIDE_RATIO( 100.0f,GetNowWide()), -HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {0.0f, 0.0f}},
 		{{-WIDE_RATIO( 100.0f,GetNowWide()),  HEIGHT_RATIO( 100.0f,GetNowHeight()), 0.0f}, {0.0f, 1.0f}},
@@ -171,21 +158,13 @@ CBattle::CBattle()
 		m_tAllyData[i].nCornerCount = -1;
 		m_tAllyData[i].bStellaBuff = false;
 	}
-	//敵データの初期化
-	//for (int l = 0; l < MAX_PATTERN; l++)
-	//{
-	//	for (int i = 0; i < MAX_ENEMY; i++)
-	//	{
-	//		m_tEnemyData[l][i].nCornerCount = -1;
-	//	}
-	//}
 	//音の初期化
 	m_pSound = new CSoundList(SE_DEATH);
 	m_pSound->SetMasterVolume();
 	m_pDeathSE = m_pSound->GetSound(false);
 }
 
-//デストラクタ
+// デストラクタ
 CBattle::~CBattle()
 {
 	//数字テクスチャの解放
@@ -197,25 +176,16 @@ CBattle::~CBattle()
 	{
 		if (m_pLogTex[i])m_pLogTex[i]->Release();
 	}
+	//兵士ポインタの解放
+	for (int i = 0; i < m_pFighter.size(); i++)
+	{
+		if (m_pFighter[i])
+		{
+			delete m_pFighter[i];
+			m_pFighter[i] = nullptr;
+		}
+	}
 
-	//味方ポインタの解放
-	for (int i = 0; i < m_pAlly.size(); i++)
-	{
-		if (m_pAlly[i])
-		{
-			delete m_pAlly[i];
-			m_pAlly[i] = nullptr;
-		}
-	}
-	//敵ポインタの解放
-	for (int i = 0; i < m_pEnemy.size(); i++)
-	{
-		if (m_pEnemy[i])
-		{
-			delete m_pEnemy[i];
-			m_pEnemy[i] = nullptr;
-		}
-	}
 	//味方リーダーポインタの解放
 	if (m_pAllyLeader)
 	{
@@ -237,6 +207,7 @@ CBattle::~CBattle()
 	}
 }
 
+// 更新処理
 void CBattle::Update(void)
 {
 	//音の設定
@@ -257,155 +228,103 @@ void CBattle::Update(void)
 	//Z軸順に描画
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
-		//味方を生成順に処理
-		for (int i = 0; i < m_nAllyCount; i++)
+		for (auto& fighter : m_pFighter)
 		{
-			if (m_pAlly[i]->GetStatus() == Status::Create)
+			// 固有処理
+			switch (fighter->GetFighterType())
 			{
-				if (m_pAllyLeader)
+			case FighterType::Enemy:
+				break;
+			case FighterType::Ally:
+				if (fighter->GetStatus() == Status::Create)
 				{
-					m_pAllyLeader->SetSummonFlag(true);
+					if (m_pAllyLeader)
+					{
+						m_pAllyLeader->SetSummonFlag(true);
+					}
 				}
+				break;
 			}
-			//Z軸順に描画
-			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
-			{
-				//自分のステータスがBattleだったら
-				if (m_pAlly[i]->GetStatus() == Status::Battle)
-				{
-					//索敵処理
-					Search(i, Ally);
-					//攻撃しているかの判断を初期化
-					m_pAlly[i]->m_bIsAttack = false;
 
-					//攻撃をしていなかったら
-					if (!m_pAlly[i]->m_bIsAttack)
+			// 共通処理
+			//Z軸順に処理
+			if (fighter->GetPos().z > Z - 1.0f && fighter->GetPos().z < Z + 1.0f)
+			{
+				//索敵処理
+				Search(fighter);
+				//攻撃しているかの判断を初期化
+				fighter->m_bIsAttack = false;
+
+				//攻撃をしていなかったら
+				if (!fighter->m_bIsAttack)
+				{
+					// 標的対象を取得
+					auto targetList = GetFighterTypeList((int)fighter->GetFighterType() ? FighterType::Enemy : FighterType::Ally);
+
+					if (!targetList.empty())
 					{
 						//相手を生成順に処理
-						for (int l = 0; l < m_nEnemyCount; l++)
+						for (int l = 0; l < targetList.size(); l++)
 						{
 							//相手のステータスがBattleだったら
-							if (m_pEnemy[l]->GetStatus() == Status::Battle)
+							if (targetList[l]->GetStatus() == Status::Battle)
 							{
 								//攻撃当たり判定に入ってるかどうか
-								if (m_pAlly[i]->AtkCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
+								if (fighter->AtkCollisionCheck(targetList[l]->GetSize(), targetList[l]->GetPos()))
 								{
 									//攻撃しているかの判断をtrueにする
-									m_pAlly[i]->m_bIsAttack = true;
-									if (m_pAlly[i]->GetCornerCount() == m_pEnemy[l]->GetCornerCount())
+									fighter->m_bIsAttack = true;
+									if (fighter->GetCornerCount() == targetList[l]->GetCornerCount())
 									{
-										m_pAlly[i]->m_bTypeAttack = true;
+										fighter->m_bTypeAttack = true;
 									}
 									else
 									{
-										m_pAlly[i]->m_bTypeAttack = false;
+										fighter->m_bTypeAttack = false;
 									}
 									//攻撃処理
-									Battle(i, l, Enemy);
+									Battle(fighter, targetList[l]);
 									break;
 								}
 							}
 						}
 					}
-					//攻撃をしていなかったら
-					if (!m_pAlly[i]->m_bIsAttack)
-					{
-						//相手のリーダーが生成されているか
-						if (m_pEnemyLeader)
-						{
-							//相手のリーダーのステータスがBattleだったら
-							if (m_pEnemyLeader->GetStatus() == Status::Battle)
-							{
-								//攻撃の当たり判定に入っているか
-								if (m_pAlly[i]->AtkCollisionCheck(m_pEnemyLeader->GetSize(), m_pEnemyLeader->GetPos()))
-								{
-									//攻撃しているかの判断をtrueにする
-									m_pAlly[i]->m_bIsAttack = true;
-									m_pAlly[i]->m_bTypeAttack = true;
-
-									//攻撃処理
-									Battle(i, -1, EnemyLeader);
-								}
-							}
-						}
-					}
-					//移動処理
-					//if (!m_pAlly[i]->m_bIsAttack)
-					Move(i, Ally);
 				}
-			}
-		}
-		//敵を生成順に処理
-		for (int i = 0; i < m_nEnemyCount; i++)
-		{
-			//Z軸順に処理
-			if (m_pEnemy[i]->GetPos().z > Z - 1.0f && m_pEnemy[i]->GetPos().z < Z + 1.0f)
-			{
-				//自分のステータスがバトルだったら
-				if (m_pEnemy[i]->GetStatus() == Status::Battle)
+				//攻撃をしていなかったら
+				if (!fighter->m_bIsAttack)
 				{
-					//索敵処理
-					Search(i, Enemy);
-					//攻撃しているかの判断を初期化
-					m_pEnemy[i]->m_bIsAttack = false;
-					//攻撃をしていなかったら
-					if (!m_pEnemy[i]->m_bIsAttack)
+					CLeader* targetLeader = nullptr;
+					switch (fighter->GetFighterType())
 					{
-						//相手を生成順に処理
-						for (int l = 0; l < m_nAllyCount; l++)
+					case FighterType::Enemy:
+						targetLeader = m_pAllyLeader;
+						break;
+					case FighterType::Ally:
+						targetLeader = m_pEnemyLeader;
+						break;
+					}
+
+					//相手のリーダーが生成されているか
+					if (targetLeader)
+					{
+						//相手のリーダーのステータスがBattleだったら
+						if (targetLeader->GetStatus() == Status::Battle)
 						{
-							//相手のステータスがバトルだったら
-							if (m_pAlly[l]->GetStatus() == Status::Battle)
+							//攻撃の当たり判定に入っているか
+							if (fighter->AtkCollisionCheck(targetLeader->GetSize(), targetLeader->GetPos()))
 							{
-								//攻撃当たり判定に入ってるかどうか
-								if (m_pEnemy[i]->AtkCollisionCheck(m_pAlly[l]->GetSize(), m_pAlly[l]->GetPos()))
-								{
-									//攻撃しているかの判断をtrueにする
-									m_pEnemy[i]->m_bIsAttack = true;
-									if (m_pEnemy[i]->GetCornerCount() == m_pAlly[l]->GetCornerCount())
-									{
-										m_pEnemy[i]->m_bTypeAttack = true;
-									}
-									else
-									{
-										m_pEnemy[i]->m_bTypeAttack = false;
-									}
+								//攻撃しているかの判断をtrueにする
+								fighter->m_bIsAttack = true;
+								fighter->m_bTypeAttack = true;
 
-									//攻撃処理
-									Battle(i, l, Ally);
-
-									break;
-								}
+								//攻撃処理
+								Battle(fighter, targetLeader);
 							}
 						}
 					}
-					//攻撃をしていなかったら
-					if (!m_pEnemy[i]->m_bIsAttack)
-					{
-						//相手のリーダーが生成されているか
-						if (m_pAllyLeader)
-						{
-							//相手のリーダーのステータスがBattleだったら
-							if (m_pAllyLeader->GetStatus() == Status::Battle)
-							{
-								//攻撃当たり判定に入ってるかどうか
-								if (m_pEnemy[i]->AtkCollisionCheck(m_pAllyLeader->GetSize(), m_pAllyLeader->GetPos()))
-								{
-									//攻撃しているかの判定をtrueにする
-									m_pEnemy[i]->m_bIsAttack = true;
-									m_pEnemy[i]->m_bTypeAttack = false;
-
-									//攻撃処理
-									Battle(i, -1, AllyLeader);
-								}
-							}
-						}
-					}
-
-					//移動処理
-					if (!m_pEnemy[i]->m_bIsAttack)
-					Move(i, Enemy);
 				}
+				//移動処理
+				Move(fighter);
 			}
 		}
 	}
@@ -444,21 +363,14 @@ void CBattle::Update(void)
 	}
 }
 
-//キャラクターの更新処理
+// キャラクターの更新処理
 void CBattle::CharacterUpdate(bool AnimationFlag)
 {
-	//味方の更新処理(アニメーション)
-	for (int i = 0; i < m_nAllyCount; i++)
+	//兵士の更新処理(アニメーション)
+	for (auto& fighter : m_pFighter)
 	{
-		if (!m_pAlly[i])continue;
-		m_pAlly[i]->Update();
-	}
-
-	//敵の更新処理(アニメーション)
-	for (int i = 0; i < m_nEnemyCount; i++)
-	{
-		if (!m_pEnemy[i])continue;
-		m_pEnemy[i]->Update();
+		if (!fighter)continue;
+		fighter->Update();
 	}
 
 	//敵のリーダーの更新処理(アニメーション)
@@ -481,7 +393,7 @@ void CBattle::CharacterUpdate(bool AnimationFlag)
 	}
 }
 
-//Linieの描画
+// Linieの描画
 void CBattle::LinieDraw(void)
 {
 	if (m_pAllyLeader)
@@ -490,7 +402,7 @@ void CBattle::LinieDraw(void)
 	}
 }
 
-//描画処理
+// 描画処理
 void CBattle::Draw(void)
 {
 	std::lock_guard<std::mutex> lock(mtx);
@@ -498,30 +410,16 @@ void CBattle::Draw(void)
 	//Z軸順に描画
 	for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
 	{
-
-		//味方の描画
-		for (int i = 0; i < m_nAllyCount; i++)
+		//兵士の描画
+		for (auto& fighter : m_pFighter)
 		{
 			//生成されているか
-			if (!m_pAlly[i])continue;
+			if (!fighter)continue;
 			//Z軸の範囲判定
-			if (m_pAlly[i]->GetPos().z > Z - 1.0f && m_pAlly[i]->GetPos().z < Z + 1.0f)
+			if (fighter->GetPos().z > Z - 1.0f && fighter->GetPos().z < Z + 1.0f)
 			{
 				//描画処理
-				m_pAlly[i]->Draw();
-			}
-		}
-
-		//敵の描画
-		for (int i = 0; i < m_nEnemyCount; i++)
-		{
-			//生成されているか
-			if (!m_pEnemy[i])continue;
-			//Z軸の範囲判定
-			if (m_pEnemy[i]->GetPos().z > Z - 1.0f && m_pEnemy[i]->GetPos().z < Z + 1.0f)
-			{
-				//描画処理
-				m_pEnemy[i]->Draw();
+				fighter->Draw();
 			}
 		}
 
@@ -555,36 +453,32 @@ void CBattle::Draw(void)
 	{
 		m_pEnemyLeader->HpDraw();
 	}
-	//CreateEnemyLogDraw();
-	//CreateAllyLogDraw();
 	CreateEnemyLog();
 	CreateAllyLog();
 }
 
+// 戦闘終了の取得
 bool CBattle::GetEnd()
 {
 	return m_bEnd;
 }
 
+// テクスチャの再読み込み
 void CBattle::ReLoadTexture(void)
 {
-	//味方ポインタの解放
-	for (int i = 0; i < m_pAlly.size(); i++)
+	//兵士ポインタの解放
+	for (int i = 0; i < m_pFighter.size(); i++)
 	{
-		m_pAlly[i]->SetReLoadFlag();
+		if (m_pFighter[i])m_pFighter[i]->SetReLoadFlag();
 	}
-	//敵ポインタの解放
-	for (int i = 0; i < m_pEnemy.size(); i++)
-	{
-		m_pEnemy[i]->SetReLoadFlag();
-	}
+
 	//味方リーダーポインタの解放
 	if(m_pAllyLeader)m_pAllyLeader->SetReLoadFlag();
 	//敵リーダーポインタの解放
 	if (m_pEnemyLeader)m_pEnemyLeader->SetReLoadFlag();
 }
 
-//味方の情報保存処理
+// 味方の情報保存処理
 void CBattle::SaveAllyData(int InCornerCount,bool IsStella)
 {
 	//角数情報の格納
@@ -597,16 +491,7 @@ void CBattle::SaveAllyData(int InCornerCount,bool IsStella)
 	m_nAllyDateCount++;
 }
 
-//敵の情報保存処理
-//void CBattle::SaveEnemyData(int InCornerCount,int InPattern)
-//{
-//	//角数情報の保存
-//	m_tEnemyData[InPattern][m_nEnemyDateCount[InPattern]].nCornerCount = InCornerCount;
-//	//保存数を加算
-//	m_nEnemyDateCount[InPattern]++;
-//}
-
-//戦闘時間軸処理
+// 戦闘時間軸処理
 void CBattle::TimeLapse(void)
 {
 	if (m_nBattleTime == Time(m_nSpawnTime))
@@ -670,7 +555,7 @@ void CBattle::TimeLapse(void)
 	}
 }
 
-//味方の生成処理
+// 味方の生成処理
 void CBattle::CreateAlly(void)
 {
 	if (m_pAllyLeader)
@@ -681,8 +566,7 @@ void CBattle::CreateAlly(void)
 	while (m_nAllyDateCount)
 	{
 		//生成する
-		m_pAlly.push_back(new CAlly(m_tAllyData[0].nCornerCount,m_tAllyData[0].bStellaBuff));
-		//m_pAlly[m_nAllyCount] = new CAlly(m_tAllyData[0].nCornerCount);
+		m_pFighter.push_back(new CAlly(m_tAllyData[0].nCornerCount, m_tAllyData[0].bStellaBuff));
 		
 		//生成数を加算
 		m_nAllyCount++;
@@ -706,7 +590,7 @@ void CBattle::CreateAlly(void)
 	}
 }
 
-//敵の生成処理
+// 敵の生成処理
 void CBattle::CreateEnemy(void)
 {
 	//生成予定数分処理する
@@ -753,8 +637,7 @@ void CBattle::CreateEnemy(void)
 		else EnemyCornerCount = 4;
 
 		//生成する
-		//m_pEnemy[m_nEnemyCount] = new CEnemy(EnemyCornerCount);
-		m_pEnemy.push_back(new CEnemy(EnemyCornerCount));
+		m_pFighter.push_back(new CEnemy(EnemyCornerCount));
 
 		//生成数を加算
 		m_nEnemyCount++;
@@ -763,682 +646,358 @@ void CBattle::CreateEnemy(void)
 	}
 }
 
-//索敵処理
-void CBattle::Search(int i, Entity Entity)
+// 索敵処理
+void CBattle::Search(CFighter* Searcher)
 {
-	//エンティティ番号で処理を分ける
-	switch (Entity)
-	{
-	/*味方の判定*/
-	case CBattle::Ally:
-		//標的番号の初期化
-		m_pAlly[i]->m_nTargetNumber = -1;
+	//標的番号の初期化
+	Searcher->m_nTargetNumber = -1;
 
-		//相手を生成順に処理
-		for (int l = 0; l < m_nEnemyCount; l++)
+	// 標的対象を取得
+	auto targetList = GetFighterTypeList((int)Searcher->GetFighterType() ? FighterType::Enemy : FighterType::Ally);
+
+	if (targetList.empty()) return;
+
+	float minDistance = -1.0f;
+
+	DirectX::XMFLOAT3 SelfPos = Searcher->GetPos();
+
+	//相手を生成順に処理
+	for (int l = 0; l < targetList.size(); l++)
+	{
+		//相手のステータスがBattleかどうか
+		if (targetList[l]->GetStatus() == Status::Battle)
 		{
-			//相手のステータスがBattleかどうか
-			if (m_pEnemy[l]->GetStatus() == Status::Battle)
+			DirectX::XMFLOAT3 TargetPos = targetList[l]->GetPos();
+
+			//索敵当たり判定内に敵がいるかどうか
+			if (Searcher->SearchCollisionCheck(targetList[l]->GetSize(), TargetPos))
 			{
-				//索敵当たり判定内に敵がいるかどうか
-				if (m_pAlly[i]->SearchCollisionCheck(m_pEnemy[l]->GetSize(), m_pEnemy[l]->GetPos()))
+				//標的番号がすでに保存済みかどうか
+				if (Searcher->m_nTargetNumber != -1)
 				{
-					//標的番号がすでに保存済みかどうか
-					if (m_pAlly[i]->m_nTargetNumber != -1)
-					{
-						/*((敵のX位置 - 味方のX位置)+(敵のY位置 - 味方のY位置)) < ((標的のX位置 - 味方のX位置)+(標的のY位置 - 味方のY位置))*/
-						if (((m_pEnemy[l]->GetPos().x - m_pAlly[i]->GetPos().x) + (m_pEnemy[l]->GetPos().z - m_pAlly[i]->GetPos().z))
-							<
-							((m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().x - m_pAlly[i]->GetPos().x) + (m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos().z - m_pAlly[i]->GetPos().z)))
-						{
-							//標的番号を指定
-							m_pAlly[i]->m_nTargetNumber = l;
-						}
-					}
-					//保存していなかった場合は
-					else
+					// 自身との距離を計算
+					float distance = fabsf(Distance(SelfPos, TargetPos));
+
+					// 最小距離と比較して小さかった場合
+					if (minDistance > distance)
 					{
 						//標的番号を指定
-						m_pAlly[i]->m_nTargetNumber = l;
+						Searcher->m_nTargetNumber = l;
+
+						// 最小距離を登録
+						minDistance = distance;
 					}
 				}
-			}
-		}
-		break;
-		/*敵の判定*/
-	case CBattle::Enemy:
-		//標的番号の初期化
-		m_pEnemy[i]->m_nTargetNumber = -1;
-		//相手を生成順に処理
-		for (int l = 0; l < m_nAllyCount; l++)
-		{
-			//相手のステータスがBattleかどうか
-			if (m_pAlly[l]->GetStatus() == Status::Battle)
-			{
-				//索敵当たり判定内に味方がいるかどうか
-				if (m_pEnemy[i]->SearchCollisionCheck(m_pAlly[l]->GetSize(),m_pAlly[l]->GetPos()))
+				//保存していなかった場合は
+				else
 				{
-					//標的番号がすでに保存済みかどうか
-					if (m_pEnemy[i]->m_nTargetNumber != -1)
-					{
-						/*(( 敵のX位置 - 味方のX位置)+(敵のY位置 - 味方のY位置)) < ((敵のX位置 - 標的のX位置)+(敵のY位置 - 標的のY位置))*/
-						if (((m_pEnemy[i]->GetPos().x - m_pAlly[l]->GetPos().x) + (m_pEnemy[i]->GetPos().z - m_pAlly[l]->GetPos().z))
-							<
-							((m_pEnemy[i]->GetPos().x - m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().x) + (m_pEnemy[i]->GetPos().z - m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos().z)))
-						{
-							//標的番号に指定
-							m_pEnemy[i]->m_nTargetNumber = l;
-						}
-					}
-					//保存していなかった場合は
-					else
-					{
-						//標的番号に指定
-						m_pEnemy[i]->m_nTargetNumber = l;
-					}
+					//標的番号を指定
+					Searcher->m_nTargetNumber = l;
+
+					// 最小距離を登録
+					// 自身との距離を計算
+					minDistance = fabsf(Distance(SelfPos, TargetPos));
 				}
 			}
 		}
-		break;
 	}
 }
 
-//移動処理
-void CBattle::Move(int i, Entity Entity)
+
+// 移動処理
+void CBattle::Move(CFighter* Mover)
 {
-	//エンティティ番号別に処理
-	switch (Entity)
+	Mover->SetMoveFlag(false);
+
+	//移動フラグが立っていたら目的地指定の処理を飛ばす
+	if (!Mover->GetMoveFlag())
 	{
-		/*味方の判定*/
-	case CBattle::Ally:
-		m_pAlly[i]->SetMoveFlag(false);
-
-		//移動フラグが立っていたら目的地指定の処理を飛ばす
-		if (!m_pAlly[i]->GetMoveFlag())
+		//キャラクター同士が重なっていた場合の移動処理をしているかどうか
+		if (OverlapMove(Mover))
 		{
-			//キャラクター同士が重なっていた場合の移動処理をしているかどうか
-			if (OverlapMove(i, Ally))
+			//標的番号を設定済みだった場合
+			if (Mover->m_nTargetNumber != -1)
 			{
-				//標的番号を設定済みだった場合
-				if (m_pAlly[i]->m_nTargetNumber != -1)
+				// 標的対象を取得
+				auto targetList = GetFighterTypeList((int)Mover->GetFighterType() ? FighterType::Enemy : FighterType::Ally);
+
+				if (targetList.empty()) return;
+
+
+				Mover->SetTargetPos(targetList[Mover->m_nTargetNumber]->GetPos());
+
+				//標的番号が現在生存数よりも数字が大きくないかどうか
+				if (Mover->m_nTargetNumber < m_nEnemyCount)
 				{
-					m_pAlly[i]->SetTargetPos(m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos());
+					DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
+					DirectX::XMFLOAT3 TargetPos = targetList[Mover->m_nTargetNumber]->GetPos();
 
-					//標的番号が現在生存数よりも数字が大きくないかどうか
-					if (m_pAlly[i]->m_nTargetNumber < m_nEnemyCount)
+					//敵の位置にMOVESPEEDの大きさで進む
+					if (SelfPos.x > TargetPos.x - 10.0f)
 					{
-						DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-						DirectX::XMFLOAT3 EnemyPos = m_pEnemy[m_pAlly[i]->m_nTargetNumber]->GetPos();
-
-						//敵の位置にMOVESPEEDの大きさで進む
-						if (iAllyPos.x > EnemyPos.x - 10.0f)
+						Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
+						Mover->AddPosZ(MoveCalculation(SelfPos, TargetPos).z);
+					}
+					else
+					{
+						if (Mover->GetPos().z != Mover->GetFirstPos().z)
 						{
-							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
-							m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
+							Mover->AddPosX(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).x);
+							Mover->AddPosZ(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).z);
 						}
 						else
 						{
-							if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
-							{
-								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyPos.x,EnemyPos.y, m_pAlly[i]->GetFirstPos().z }).x);
-								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyPos.x,EnemyPos.y, m_pAlly[i]->GetFirstPos().z }).z);
-							}
-							else
-							{
-								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyPos).x);
-								m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyPos).z);
-							}
-						}
-					}
-					//数字が大きかった場合
-					else
-					{
-						//相手のリーダーが生成されているか
-						if (m_pEnemyLeader)
-						{
-							DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-							DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
-							//自分の位置が敵の一定のラインまで来たら
-							if (m_pAlly[i]->GetPos().x > ENEMYBOSSCORE_POSX - 10)
-							{
-
-								//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-								m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
-							}
-							//そこより手前だったら
-							else
-							{
-								if (m_pAlly[i]->m_bFirstBattlePosSetting)
-								{
-									if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
-									{
-										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);			
-										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
-									}
-									else
-									{
-										m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-										m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
-									}
-								}
-								else
-								{
-									m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
-								}
-							}
+							Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
+							Mover->AddPosZ(MoveCalculation(SelfPos, TargetPos).z);
 						}
 					}
 				}
-				//標的番号を設定していなかった場合
+				//数字が大きかった場合
 				else
 				{
-					//相手のリーダーが生成されているか
-					if (m_pEnemyLeader)
+					//自分のタイプを取得
+					int SelfType = (int)Mover->GetFighterType();
+
+					//リーダーが生成されているか
+					CLeader* targetLeader = SelfType ? m_pEnemyLeader : m_pAllyLeader;
+
+					if (targetLeader)
 					{
-						m_pAlly[i]->SetTargetPos(m_pEnemyLeader->GetPos());
-
-						DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-						DirectX::XMFLOAT3 EnemyLeaderPos = m_pEnemyLeader->GetPos();
-
+						DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
+						DirectX::XMFLOAT3 TargetPos = targetLeader->GetPos();
 						//自分の位置が敵の一定のラインまで来たら
-						if (m_pAlly[i]->GetPos().x > ENEMYBOSSCORE_POSX - 10)
+						if (SelfType ? Mover->GetPos().x < ALLYCORE_POSX + 10 : Mover->GetPos().x > ENEMYBOSSCORE_POSX - 10)
 						{
-
 							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-							m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+							Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
+							Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).z);
 						}
 						//そこより手前だったら
 						else
 						{
-							if (m_pAlly[i]->m_bFirstBattlePosSetting)
+							if (Mover->m_bFirstBattlePosSetting)
 							{
-								if (m_pAlly[i]->GetPos().z != m_pAlly[i]->GetFirstPos().z)
+								if (Mover->GetPos().z != Mover->GetFirstPos().z)
 								{
-									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).x);
-									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, { EnemyLeaderPos.x,EnemyLeaderPos.y, m_pAlly[i]->GetFirstPos().z }).z);
+									Mover->AddPosX(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).x);
+									Mover->AddPosZ(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).z);
 								}
 								else
 								{
-									m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, EnemyLeaderPos).x);
-									m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, EnemyLeaderPos).z);
+									Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
+									Mover->AddPosZ(MoveCalculation(SelfPos, TargetPos).z);
 								}
 							}
 							else
 							{
-								m_pAlly[i]->AddPosX(MOVESPEED(MOVEPOWER));
+								Mover->AddPosX(MOVESPEED(MOVEPOWER));
 							}
-
 						}
 					}
 				}
 			}
-		}
-		else//目的地へ移動
-		{
-			DirectX::XMFLOAT3 iEnemyPos = m_pAlly[i]->GetPos();
-			DirectX::XMFLOAT3 DestinationPos = m_pAlly[i]->GetDestinationPos();
-
-			m_pAlly[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
-			m_pAlly[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
-			//目的地の+-1.0fの範囲内に入ったら移動フラグをfalseにする
-			if (DestinationPos.x + 1.0f < m_pAlly[i]->GetPos().x && DestinationPos.x - 1.0f > m_pAlly[i]->GetPos().x)
+			//標的番号を設定していなかった場合
+			else
 			{
-				if (DestinationPos.y + 5.0f < m_pAlly[i]->GetPos().y && DestinationPos.y - 5.0f > m_pAlly[i]->GetPos().y)
+				//自分のタイプを取得
+				int SelfType = (int)Mover->GetFighterType();
+
+				//リーダーが生成されているか
+				CLeader* targetLeader = SelfType ? m_pEnemyLeader : m_pAllyLeader;
+
+				//相手のリーダーが生成されているか
+				if (targetLeader)
 				{
-					if (DestinationPos.z + 5.0f < m_pAlly[i]->GetPos().z && DestinationPos.z - 5.0f > m_pAlly[i]->GetPos().z)
+					Mover->SetTargetPos(targetLeader->GetPos());
+
+					DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
+					DirectX::XMFLOAT3 TargetPos = targetLeader->GetPos();
+
+					//自分の位置が敵の一定のラインまで来たら
+					if (SelfType ? Mover->GetPos().x < ALLYCORE_POSX + 10 : Mover->GetPos().x > ENEMYBOSSCORE_POSX - 10)
 					{
-						m_pAlly[i]->SetMoveFlag(false);
+
+						//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
+						Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
+						Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).z);
 					}
-				}
-			}
-		}
-		break;
-		/*敵の判定*/
-	case CBattle::Enemy:
-
-		m_pEnemy[i]->SetMoveFlag(false);
-
-		//移動フラグが立っていたら目的地指定の処理を飛ばす
-		if (!m_pEnemy[i]->GetMoveFlag())
-		{
-			//キャラクター同士が重なっていた場合の移動処理をしているかどうか
-			if (OverlapMove(i, Enemy))
-			{
-				//標的番号を設定済みだった場合
-				if (m_pEnemy[i]->m_nTargetNumber != -1)
-				{
-					m_pEnemy[i]->SetTargetPos(m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos());
-
-					//標的番号が現在生存数よりも数字が大きくないかどうか
-					if (m_pEnemy[i]->m_nTargetNumber < m_nAllyCount)
-					{
-						DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-						DirectX::XMFLOAT3 AllyPos = m_pAlly[m_pEnemy[i]->m_nTargetNumber]->GetPos();
-
-						//標的の位置にMOVESPEEDの大きさで進む
-						//m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
-						//m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
-						
-						//敵の位置にMOVESPEEDの大きさで進む
-						if (iEnemyPos.x > AllyPos.x - 10)
-						{
-							m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
-							m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
-						}
-						else
-						{
-							if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
-							{
-								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, { AllyPos.x,AllyPos.y,m_pEnemy[i]->GetFirstPos().z }).x);
-								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, { AllyPos.x,AllyPos.y,m_pEnemy[i]->GetFirstPos().z }).z);
-							}
-							else
-							{
-								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyPos).x);
-								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyPos).z);
-							}
-						}
-
-					}
-					//数字が大きかった場合
+					//そこより手前だったら
 					else
 					{
-						//相手のリーダーが生成されているか
-						if (m_pAllyLeader)
+						if (Mover->m_bFirstBattlePosSetting)
 						{
-							DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-							DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
-
-							//自分の位置が敵の一定のラインまで来たら
-							if (m_pEnemy[i]->GetPos().x < ALLYCORE_POSX + 10)
+							if (Mover->GetPos().z != Mover->GetFirstPos().z)
 							{
-
-								//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-								m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
-								m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
+								Mover->AddPosX(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).x);
+								Mover->AddPosZ(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).z);
 							}
-							//そこより手前だったら
 							else
 							{
-								if (m_pEnemy[i]->m_bFirstBattlePosSetting)
-								{
-									if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
-									{
-										m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).x);
-										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).z);
-									}
-									else
-									{
-										m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
-										m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
-									}
-								}
-								else
-								{
-									m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
-								}
+								Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
+								Mover->AddPosZ(MoveCalculation(SelfPos, TargetPos).z);
 							}
 						}
-					}
-				}
-				//標的番号を設定していなかった場合
-				else
-				{
-					//相手のリーダーが生成されているか
-					if (m_pAllyLeader)
-					{
-						m_pEnemy[i]->SetTargetPos(m_pAllyLeader->GetPos());
-
-						DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-						DirectX::XMFLOAT3 AllyLeaderPos = m_pAllyLeader->GetPos();
-
-						//自分の位置が敵の一定のラインまで来たら
-						if (m_pEnemy[i]->GetPos().x < ALLYCORE_POSX + 10)
-						{
-
-							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-							m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
-							m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
-						}
-						//そこより手前だったら
 						else
 						{
-							if (m_pEnemy[i]->m_bFirstBattlePosSetting)
-							{
-								if (m_pEnemy[i]->GetPos().z != m_pEnemy[i]->GetFirstPos().z)
-								{
-									m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).x);
-									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, { AllyLeaderPos.x,AllyLeaderPos.y,m_pEnemy[i]->GetFirstPos().z }).z);
-								}
-								else
-								{
-									m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, AllyLeaderPos).x);
-									m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, AllyLeaderPos).z);
-								}
-							}
-							else
-							{
-								m_pEnemy[i]->AddPosX(-MOVESPEED(MOVEPOWER));
-							}
+							Mover->AddPosX(MOVESPEED(MOVEPOWER));
 						}
+
 					}
 				}
 			}
 		}
-		else//目的地へ移動
+	}
+	else//目的地へ移動
+	{
+		DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
+		DirectX::XMFLOAT3 DestinationPos = Mover->GetDestinationPos();
+
+		Mover->AddPosX(MoveCalculation(SelfPos, DestinationPos).x);
+		Mover->AddPosZ(MoveCalculation(SelfPos, DestinationPos).z);
+		//目的地の+-1.0fの範囲内に入ったら移動フラグをfalseにする
+		if (DestinationPos.x + 1.0f < Mover->GetPos().x && DestinationPos.x - 1.0f > Mover->GetPos().x)
 		{
-			DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-			DirectX::XMFLOAT3 DestinationPos = m_pEnemy[i]->GetDestinationPos();
-
-			m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
-			m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
-
-			//目的地の+-1.0fの範囲内に入ったら移動フラグをfalseにする
-			if (DestinationPos.x + 1.0f < m_pEnemy[i]->GetPos().x && DestinationPos.x - 1.0f > m_pEnemy[i]->GetPos().x)
+			if (DestinationPos.y + 5.0f < Mover->GetPos().y && DestinationPos.y - 5.0f > Mover->GetPos().y)
 			{
-				if (DestinationPos.y + 5.0f < m_pEnemy[i]->GetPos().y && DestinationPos.y - 5.0f > m_pEnemy[i]->GetPos().y)
+				if (DestinationPos.z + 5.0f < Mover->GetPos().z && DestinationPos.z - 5.0f > Mover->GetPos().z)
 				{
-					if (DestinationPos.z + 5.0f < m_pEnemy[i]->GetPos().z && DestinationPos.z - 5.0f > m_pEnemy[i]->GetPos().z)
-					{
-						m_pEnemy[i]->SetMoveFlag(false);
-					}
+					Mover->SetMoveFlag(false);
 				}
 			}
 		}
-		break;
 	}
 }
 
-//重なっていた場合の補正移動処理
-bool CBattle::OverlapMove(int i, Entity Entity)
+// 重なっていた場合の補正移動処理
+bool CBattle::OverlapMove(CFighter* Mover)
 {
 	//移動先の座標保存変数
 	DirectX::XMFLOAT3 m_tMovePos;
 	float comparison;
 
-	////Z軸順に確認
-	//for (float Z = 20.0f; Z > -30.0f; Z -= 1.0f)
-	//{
-		//エンティティ番号別に処理
-	switch (Entity)
+	auto compatriotList = GetFighterTypeList(Mover->GetFighterType());
+
+	//生成順に判定
+	for (int l = 0; l < compatriotList.size(); l++)
 	{
-		/*味方の処理*/
-	case CBattle::Ally:
-		//生成順に判定
-		for (int l = 0; l < m_nAllyCount; l++)
+		//存在しているか確認
+		if (!compatriotList[l])continue;
+		//自分と同じ番号の場合は処理しない
+		if (&compatriotList[l] == &Mover)continue;
+
+		DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
+		DirectX::XMFLOAT3 AllyPos = compatriotList[l]->GetPos();
+		DirectX::XMFLOAT3 AllySize = compatriotList[l]->GetSize();
+
+		//自分の位置から圧倒的に離れているものは判定しない
+		if (SelfPos.x + 1.0f < AllyPos.x || SelfPos.x - 1.0f > AllyPos.x)continue;
+		if (SelfPos.z + 1.0f < AllyPos.z || SelfPos.z - 1.0f > AllyPos.z)continue;
+
+		//中心位置から自分の位置が相手の位置より近いは処理しない
+		float Z1 = SelfPos.z;
+		float Z2 = AllyPos.z;
+
+		if (Z1 < 0)Z1 *= -1.0f;
+		if (Z2 < 0)Z2 *= -1.0f;
+
+		if (Z1 >= Z2)continue;
+
+		//重なっているか確認
+		if (Mover->OverlapCheck(AllyPos, AllySize))
 		{
-			//存在しているか確認
-			if (!m_pAlly[l])continue;
-			//自分と同じ番号の場合は処理しない
-			if (l == i)continue;
+			//目的地先の座標格納
+			DirectX::XMFLOAT3 DestinationPos;
+			DestinationPos.x = SelfPos.x + ((SelfPos.x - AllyPos.x));
+			DestinationPos.y = SelfPos.y;
+			DestinationPos.z = SelfPos.z + ((SelfPos.z - AllyPos.z));
 
-			DirectX::XMFLOAT3 iAllyPos = m_pAlly[i]->GetPos();
-			DirectX::XMFLOAT3 AllyPos = m_pAlly[l]->GetPos();
-			DirectX::XMFLOAT3 AllySize = m_pAlly[l]->GetSize();
+			//補正移動先を目的地に移動
+			Mover->SetDestinationPos(DestinationPos);
+			//移動フラグを立てる
+			Mover->SetMoveFlag(true);
 
-			////Z軸の範囲判定
-			//if (AllyPos.z > Z - 1.0f && AllyPos.z < Z + 1.0f)
-			//{
-				//自分の位置から圧倒的に離れているものは判定しない
-			if (iAllyPos.x + 1.0f < AllyPos.x || iAllyPos.x - 1.0f > AllyPos.x)continue;
-			if (iAllyPos.z + 1.0f < AllyPos.z || iAllyPos.z - 1.0f > AllyPos.z)continue;
-
-			//中心位置から自分の位置が相手の位置より近いは処理しない
-			float Z1 = iAllyPos.z;
-			float Z2 = AllyPos.z;
-
-			if (Z1 < 0)Z1 *= -1.0f;
-			if (Z2 < 0)Z2 *= -1.0f;
-
-			if (Z1 >= Z2)continue;
-
-			//重なっているか確認
-			if (m_pAlly[i]->OverlapCheck(AllyPos, AllySize))
-			{
-				//目的地先の座標格納
-				DirectX::XMFLOAT3 DestinationPos;
-				DestinationPos.x = iAllyPos.x + ((iAllyPos.x - AllyPos.x));
-				DestinationPos.y = iAllyPos.y;
-				DestinationPos.z = iAllyPos.z + ((iAllyPos.z - AllyPos.z));
-
-				//m_pAlly[i]->AddPosX(MoveCalculation(iAllyPos, DestinationPos).x);
-				//m_pAlly[i]->AddPosZ(MoveCalculation(iAllyPos, DestinationPos).z);
-
-				//補正移動先を目的地に移動
-				m_pAlly[i]->SetDestinationPos(DestinationPos);
-				//移動フラグを立てる
-				m_pAlly[i]->SetMoveFlag(true);
-
-				return false;
-			}
-			//}
+			return false;
 		}
-		break;
-		/*敵の処理*/
-	case CBattle::Enemy:
-		//前から順番に重なっている奴がいないか確認
-		for (int l = 0; l < m_nEnemyCount; l++)
-		{
-			//存在しているか確認
-			if (!m_pEnemy[l])continue;
-			//自分と同じ番号の場合は処理しない
-			if (l == i)continue;
-
-			DirectX::XMFLOAT3 iEnemyPos = m_pEnemy[i]->GetPos();
-			DirectX::XMFLOAT3 EnemyPos = m_pEnemy[l]->GetPos();
-			DirectX::XMFLOAT3 EnemySize = m_pEnemy[l]->GetSize();
-
-			////Z軸の範囲判定
-			//if (EnemyPos.z > Z - 1.0f && EnemyPos.z < Z + 1.0f)
-			//{
-				//自分の位置から圧倒的に離れているものは判定しない
-			if (iEnemyPos.x + 1.0f < EnemyPos.x || iEnemyPos.x - 1.0f > EnemyPos.x)continue;
-			if (iEnemyPos.z + 1.0f < EnemyPos.z || iEnemyPos.z - 1.0f > EnemyPos.z)continue;
-
-			//中心位置から自分の位置が相手の位置より近いは処理しない
-			float Z1 = iEnemyPos.z;
-			float Z2 = EnemyPos.z;
-
-			if (Z1 < 0)Z1 *= -1.0f;
-			if (Z2 < 0)Z2 *= -1.0f;
-
-			if (Z1 >= Z2)continue;
-
-			//重なっているか確認
-			if (m_pEnemy[i]->OverlapCheck(EnemyPos, EnemySize))
-			{
-				//目的地先の座標格納
-				DirectX::XMFLOAT3 DestinationPos;
-				DestinationPos.x = iEnemyPos.x + ((iEnemyPos.x - EnemyPos.x));
-				DestinationPos.y = iEnemyPos.y;
-				DestinationPos.z = iEnemyPos.z + ((iEnemyPos.z - EnemyPos.z));
-
-				//m_pEnemy[i]->AddPosX(MoveCalculation(iEnemyPos, DestinationPos).x);
-				//m_pEnemy[i]->AddPosZ(MoveCalculation(iEnemyPos, DestinationPos).z);
-
-				//補正移動先を目的地に移動
-				m_pEnemy[i]->SetDestinationPos(DestinationPos);
-				//移動フラグを立てる
-				m_pEnemy[i]->SetMoveFlag(true);
-
-				return false;
-			}
-			//}
-		}
-		break;
-		//}
 	}
-
 	//移動をしたかどうかを返す
 	return true;
 }
 
-//範囲内補正処理
+// 範囲内補正処理
 void CBattle::ScopeMove()
-{
-	//生成された順に前にするために後ろのやつから補正していく
-	for (int i = 0; i < m_nAllyCount; i++)
+{	
+	// 兵士
+	for (auto fighter : m_pFighter)
 	{
 		//存在しているか確認
-		if (!m_pAlly[i])continue;
-
-		float posz = m_pAlly[i]->GetPos().z;
-
-		//奥行きが範囲外		
-		if (posz > BATTLE_Z)
-		{
-			m_pAlly[i]->SetPosZ(BATTLE_Z);
-		}
-		//手前が範囲外
-		if (posz < -BATTLE_Z)
-		{
-			m_pAlly[i]->SetPosZ(-BATTLE_Z);
-		}
-	}
-
-	for (int i = 0; i < m_nEnemyCount; i++)
-	{
-		//存在しているか確認
-		if (!m_pEnemy[i])continue;
-
-		float posz = m_pEnemy[i]->GetPos().z;
-
+		if (!fighter)continue;
+		float posz = fighter->GetPos().z;
 		//奥行きが範囲外
 		if (posz > BATTLE_Z)
 		{
-			m_pEnemy[i]->SetPosZ(BATTLE_Z);
+			fighter->SetPosZ(BATTLE_Z);
 		}
 		//手前が範囲外
 		if (posz < -BATTLE_Z)
 		{
-			m_pEnemy[i]->SetPosZ(-BATTLE_Z);
+			fighter->SetPosZ(-BATTLE_Z);
 		}
 	}
 }
 
-//戦闘処理
-void CBattle::Battle(int i, int l, Entity Entity)
+// 攻撃処理
+template<class T>
+void CBattle::Battle(CFighter* Attacker, T* Defender)
 {
-	//エンティティ番号別に処理
-	switch (Entity)
+	if (typeid(T) != typeid(CFighter) && typeid(T) != typeid(CLeader))return;
+
+	//味方のリーダーが生成されているか
+	if (Defender)
 	{
-	//味方のリーダーが攻撃される
-	case AllyLeader:
-		//味方のリーダーが生成されているか
-		if (m_pAllyLeader)
-		{
-			//攻撃チャージがたまっているかどうか
-			if (m_pEnemy[i]->GetAtkCharge() >= m_pEnemy[i]->GetCoolTime())
-			{
-				
-				//相手の体力を減らす
-				m_pAllyLeader->Damage(m_pEnemy[i]);
-				//攻撃したのでチャージをリセットする
-				m_pEnemy[i]->ChargeReset();
-			}
-			//攻撃チャージが溜まっていなかったら
-			else
-			{
-				//チャージする
-				m_pEnemy[i]->AddAtkCharge();
-			}
-		}
-		break;
-		//敵のボスが攻撃される
-	case CBattle::EnemyLeader:
-		if (m_pEnemyLeader)
-		{
-			//攻撃チャージがたまっているかどうか
-			if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())
-			{
-				if (!m_pAllyLeader->GetWinFlag())
-				{
-					//相手の体力を減らす
-					m_pEnemyLeader->Damage(m_pAlly[i]);
-					//攻撃したのでチャージをリセットする
-					m_pAlly[i]->ChargeReset();
-				}
-			}
-			//攻撃チャージが溜まっていなかったら
-			else
-			{
-				//チャージする
-				m_pAlly[i]->AddAtkCharge();
-			}
-		}
-		break;
-		//味方が攻撃される
-	case CBattle::Ally:
 		//攻撃チャージがたまっているかどうか
-		if (m_pEnemy[i]->GetAtkCharge() >= m_pEnemy[i]->GetCoolTime())
+		if (Attacker->GetAtkCharge() >= Attacker->GetCoolTime())
 		{
 			//相手の体力を減らす
-			m_pAlly[l]->Damage(m_pEnemy[i]);
+			Defender->Damage(Attacker);
 			//攻撃したのでチャージをリセットする
-			m_pEnemy[i]->ChargeReset();
+			Attacker->ChargeReset();
 		}
 		//攻撃チャージが溜まっていなかったら
 		else
 		{
 			//チャージする
-			m_pEnemy[i]->AddAtkCharge();
+			Attacker->AddAtkCharge();
 		}
-		break;
-		//敵の攻撃
-	case CBattle::Enemy:
-		//攻撃チャージがたまっているかどうか
-		if (m_pAlly[i]->GetAtkCharge() >= m_pAlly[i]->GetCoolTime())
-		{
-			//相手の体力を減らす
-			m_pEnemy[l]->Damage(m_pAlly[i]);
-			//攻撃したのでチャージをリセットする
-			m_pAlly[i]->ChargeReset();
-		}
-		//攻撃チャージが溜まっていなかったら
-		else
-		{
-			//チャージする
-			m_pAlly[i]->AddAtkCharge();
-		}
-		break;
 	}
 }
 
+// 生存判定
 void CBattle::Alive(void)
 {
-	//味方判定
-	for (int l = 0; l < m_nAllyCount; l++)
+	// 兵士の判定
+	for (auto fighter : m_pFighter)
 	{
-		//味方のステータスがBattleかどうか
-		if (m_pAlly[l]->GetStatus() == Status::Battle)
-		{
-			//味方の体力が残っているかどうか
-			if (m_pAlly[l]->GetHp() <= 0.0f)
-			{
-				m_pAlly[l]->m_bIsDeath = true;
-				//ステータスを死亡状態にする
-				m_pAlly[l]->SetStatus(Status::Death);
-				//m_pAlly[l]->PlayDeathEffect();
-			}
-		}
-	}
-	//敵の判定
-	for (int l = 0; l < m_nEnemyCount; l++)
-	{
+		//存在しているか確認
+		if (!fighter)continue;
 		//敵のステータスがBattleかどうか
-		if (m_pEnemy[l]->GetStatus() == Status::Battle)
+		if (fighter->GetStatus() == Status::Battle)
 		{
 			//敵の体力が残っているかどうか
-			if (m_pEnemy[l]->GetHp() <= 0.0f)
+			if (fighter->GetHp() <= 0.0f)
 			{
+				switch (fighter->GetFighterType())
+				{
+				case FighterType::Ally:
+					fighter->m_bIsDeath = true;
+					break;
+				}
+
 				//ステータスを死亡状態にする
-				m_pEnemy[l]->SetStatus(Status::Death);
-				//m_pEnemy[l]->PlayDeathEffect();
+				fighter->SetStatus(Status::Death);
 			}
 		}
 	}
+	
 	//敵のリーダーの判定
 	if (m_pEnemyLeader)
 	{
@@ -1469,36 +1028,26 @@ void CBattle::Alive(void)
 	}
 }
 
-//削除処理
+// 削除処理
 void CBattle::Delete(void)
-{
-	//味方の生存判定
-	for (int i = 0; i < m_nAllyCount; i++)
+{	
+	// 兵士の生存判定
+	for (int i = 0; i < m_pFighter.size(); i++)
 	{
+		//存在しているか確認
+		if (!m_pFighter[i])continue;
 		//ステータスがDeleteかどうか
-		if (m_pAlly[i]->GetStatus() == Status::Delete)
-		{
-			m_pAlly.erase(m_pAlly.begin() + i);
-			//今いる生存数を減らす
-			m_nAllyCount--;
-			//前詰めされたのでもう一度同じ場所を処理する
-			i--;
-		}
-	}
-	//敵の生存判定
-	for (int i = 0; i < m_nEnemyCount; i++)
-	{
-		//ステータスがDeleteかどうか
-		if (m_pEnemy[i]->GetStatus() == Status::Delete)
+		if (m_pFighter[i]->GetStatus() == Status::Delete)
 		{
 			//解放処理
-			m_pEnemy.erase(m_pEnemy.begin() + i);
-			//今いる生存数を減らす
-			m_nEnemyCount--;
+			delete m_pFighter[i];
+			m_pFighter[i] = nullptr;
+			m_pFighter.erase(m_pFighter.begin() + i);
 			//前詰めされたのでもう一度同じ場所を処理する
 			i--;
 		}
 	}
+
 	//敵ボスの生存判定
 	if (m_pEnemyLeader)
 	{
@@ -1531,71 +1080,66 @@ void CBattle::Delete(void)
 	}
 }
 
-//初期位置セッティング
+// 初期位置セッティング
 void CBattle::FirstPosSetting()
 {
 	//X座標補正用変数
 	int PosX = 0;
+
+	auto AllyList = GetFighterTypeList(FighterType::Ally);
+
 	//味方を生成順に処理
-	for (int i = 0; i < m_nAllyCount; i++)
+	for (int i = 0; i < AllyList.size(); i++)
 	{
 		//生成されていなかったら処理をしない
-		if (!m_pAlly[i])continue;
+		if (!AllyList[i])continue;
 		//初期位置設定をすでにしているかどうかを確認
-		if (!m_pAlly[i]->m_bFirstBattlePosSetting)
+		if (!AllyList[i]->m_bFirstBattlePosSetting)
 		{
 			//初期X位置を設定
-			m_pAlly[i]->SetPosX(ALLYCREATE_POSX - PosX);
+			AllyList[i]->SetPosX(ALLYCREATE_POSX - PosX);
 			//初期Y位置を設定
-			m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
-			//if (m_pAlly[i]->GetCornerCount() == 3)
-			//{
-			//	m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y / 2);
-			//}
-			//else if (m_pAlly[i]->GetCornerCount() == 4)
-			//{
-			//	m_pAlly[i]->SetPosY(0.0f + m_pAlly[i]->GetSize().y * 1.3f);
-			//}
+			AllyList[i]->SetPosY(0.0f + AllyList[i]->GetSize().y / 2);
 			//Z座標をパターン別に設定
 			switch (m_nFirstPosPattern)
 			{
 			case 0:
 				//初期Z位置を設定
-				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_1);
+				AllyList[i]->SetPosZ(ALLYCREATE_POSZ_1);
 				//初期位置設定を設定済みにする
-				m_pAlly[i]->m_bFirstBattlePosSetting = true;
+				AllyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 1;
 				break;
 			case 1:
 				//初期Z位置を設定
-				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_2);
+				AllyList[i]->SetPosZ(ALLYCREATE_POSZ_2);
 				//初期位置設定を設定済みにする
-				m_pAlly[i]->m_bFirstBattlePosSetting = true;
+				AllyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 2;
 				break;
 			case 2:
 				//初期Z位置を設定
-				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_3);
+				AllyList[i]->SetPosZ(ALLYCREATE_POSZ_3);
 				//初期位置設定を設定済みにする
-				m_pAlly[i]->m_bFirstBattlePosSetting = true;
+				AllyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 3;
 				break;
 			case 3:
 				//初期Z位置を設定
-				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_4);
+				AllyList[i]->SetPosZ(ALLYCREATE_POSZ_4);
 				//初期位置設定を設定済みにする
-				m_pAlly[i]->m_bFirstBattlePosSetting = true;
+				AllyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 4;
 				break;
 			case 4:
 				//初期Z位置を設定
-				m_pAlly[i]->SetPosZ(ALLYCREATE_POSZ_5);
+				AllyList[i]->SetPosZ(ALLYCREATE_POSZ_5);
 				//初期位置設定を設定済みにする
-				m_pAlly[i]->m_bFirstBattlePosSetting = true;
+				AllyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを最初に戻す
 				m_nFirstPosPattern = 0;
 				//X座標補正用変数を加算する
@@ -1603,47 +1147,45 @@ void CBattle::FirstPosSetting()
 				break;
 			}
 
-			m_pAlly[i]->SetFirstPos(m_pAlly[i]->GetPos());
+			AllyList[i]->SetFirstPos(AllyList[i]->GetPos());
 		}
 	}
 
 	//X座標補正用変数を初期化
 	PosX = 0;
 
+	// 敵のリストを取得
+	auto EnemyList = GetFighterTypeList(FighterType::Enemy);
+
 	//敵を生成順に処理
-	for (int i = 0; i < m_nEnemyCount; i++)
+	for (int i = 0; i < EnemyList.size(); i++)
 	{
 		//生成していなかったら処理しない
-		if (!m_pEnemy[i])continue;
+		if (!EnemyList[i])continue;
 		//初期位置設定をすでにしているかどうかを確認
-		if (!m_pEnemy[i]->m_bFirstBattlePosSetting)
+		if (!EnemyList[i]->m_bFirstBattlePosSetting)
 		{
 			//初期X位置を設定
 			switch (m_nStageNum.StageMainNumber)
 			{
 			case 0:
-				m_pEnemy[i]->SetPosX((float)ENEMYCREATE_POSX::Stage1 + PosX);
+				EnemyList[i]->SetPosX((float)ENEMYCREATE_POSX::Stage1 + PosX);
 				break;
 			case 1:
-				m_pEnemy[i]->SetPosX((float)ENEMYCREATE_POSX::Stage2 + PosX);
+				EnemyList[i]->SetPosX((float)ENEMYCREATE_POSX::Stage2 + PosX);
 				break;
 			case 2:
-				m_pEnemy[i]->SetPosX((float)ENEMYCREATE_POSX::Stage3 + PosX);
+				EnemyList[i]->SetPosX((float)ENEMYCREATE_POSX::Stage3 + PosX);
 				break;
 			}
 
-
-			////初期Y位置を設定
-			//m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
-			//初期Y位置を設定
-
-			if (m_pEnemy[i]->GetCornerCount() == 3)
+			if (EnemyList[i]->GetCornerCount() == 3)
 			{
-				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y / 2);
+				EnemyList[i]->SetPosY(0.0f + EnemyList[i]->GetSize().y / 2);
 			}
-			else if (m_pEnemy[i]->GetCornerCount() == 4)
+			else if (EnemyList[i]->GetCornerCount() == 4)
 			{
-				m_pEnemy[i]->SetPosY(0.0f + m_pEnemy[i]->GetSize().y * 1.3);
+				EnemyList[i]->SetPosY(0.0f + EnemyList[i]->GetSize().y * 1.3);
 			}
 
 			//Z座標をパターン別に設定
@@ -1651,53 +1193,74 @@ void CBattle::FirstPosSetting()
 			{
 			case 0:
 				//初期Z位置を設定
-				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_1);
+				EnemyList[i]->SetPosZ(ENEMYCREATE_POSZ_1);
 				//初期位置設定を設定済みにする
-				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
+				EnemyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 1;
 				break;
 			case 1:
 				//初期Z位置を設定
-				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_2);
+				EnemyList[i]->SetPosZ(ENEMYCREATE_POSZ_2);
 				//初期位置設定を設定済みにする
-				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
+				EnemyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 2;
 				break;
 			case 2:
 				//初期Z位置を設定
-				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_3);
+				EnemyList[i]->SetPosZ(ENEMYCREATE_POSZ_3);
 				//初期位置設定を設定済みにする
-				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
+				EnemyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 3;
 				break;
 			case 3:
 				//初期Z位置を設定
-				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_4);
+				EnemyList[i]->SetPosZ(ENEMYCREATE_POSZ_4);
 				//初期位置設定を設定済みにする
-				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
+				EnemyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを一つずらす
 				m_nFirstPosPattern = 4;
 				break;
 			case 4:
 				//初期Z位置を設定
-				m_pEnemy[i]->SetPosZ(ENEMYCREATE_POSZ_5);
+				EnemyList[i]->SetPosZ(ENEMYCREATE_POSZ_5);
 				//初期位置設定を設定済みにする
-				m_pEnemy[i]->m_bFirstBattlePosSetting = true;
+				EnemyList[i]->m_bFirstBattlePosSetting = true;
 				//パターンを最初に戻す
 				m_nFirstPosPattern = 0;
 				//X座標補正用変数を加算する
 				PosX += 5.0f;
 				break;
 			}
-			m_pEnemy[i]->SetFirstPos(m_pEnemy[i]->GetPos());
+			EnemyList[i]->SetFirstPos(EnemyList[i]->GetPos());
 		}
 	}
 }
 
-//リーダーの生成処理
+// タイプ別のリストを取得
+std::vector<CFighter*> CBattle::GetFighterTypeList(FighterType Type)
+{
+	std::vector<CFighter*> TypeList;	//タイプ別リスト
+
+	for (auto& fighter : m_pFighter)
+	{
+		//生成されていなかったら処理をしない
+		if (!fighter)continue;
+		//タイプが一致していたら
+		if (fighter->GetFighterType() == Type)
+		{
+			//リストに追加
+			TypeList.push_back(fighter);
+		}
+	}
+
+	return TypeList;
+	
+}
+
+// リーダーの生成処理
 void CBattle::CreateLeader(void)
 {
 	//味方のリーダーがnullptrだったら
@@ -1759,7 +1322,7 @@ void CBattle::CreateLeader(void)
 
 /*＝＝＝＝＝バトル用＝＝＝＝＝*/
 
-//味方を角数別にカウントしたものの描画処理
+// 味方を角数別にカウントしたものの描画処理
 void CBattle::CreateAllyLogDraw(void)
 {
 	float fPosX[3] = {-1800.0f,-1700.0f,-1600.0f};
@@ -1838,7 +1401,7 @@ void CBattle::CreateAllyLogDraw(void)
 		}
 	}
 }
-//敵を種類別にカウントしたものの描画処理
+// 敵を種類別にカウントしたものの描画処理
 void CBattle::CreateEnemyLogDraw(void)
 {
 	float fPosX[3] = {1600.0f,1700.0f,1800.0f};
@@ -1914,6 +1477,144 @@ void CBattle::CreateEnemyLogDraw(void)
 		}
 	}
 }
+
+// 味方を角数別にカウント
+void CBattle::CreateAllyLog(void)
+{
+	auto AllyList = GetFighterTypeList(FighterType::Ally);
+
+	//三角形のカウント格納用変数の初期化
+	m_nAllyTypes[0] = 0;
+	//四角形のカウント格納用変数の初期化
+	m_nAllyTypes[1] = 0;
+	//味方を生成順に処理
+	for (int i = 0; i < AllyList.size(); i++)
+	{
+		//角数別に処理
+		switch (AllyList[i]->GetCornerCount())
+		{
+		case 3:
+			m_nAllyTypes[0]++;
+			break;
+		case 4:
+			m_nAllyTypes[1]++;
+			break;
+		}
+	}
+}
+// 敵を種類別にカウント
+void CBattle::CreateEnemyLog(void)
+{
+	auto EnemyList = GetFighterTypeList(FighterType::Enemy);
+
+	//三角形のカウント格納用変数の初期化
+	m_nEnemyTypes[0] = 0;
+	//四角形のカウント格納用変数の初期化
+	m_nEnemyTypes[1] = 0;
+	//敵を生成順に処理
+	for (int i = 0; i < EnemyList.size(); i++)
+	{
+		//角数別に処理
+		switch (EnemyList[i]->GetCornerCount())
+		{
+		case 3:
+			m_nEnemyTypes[0]++;
+			break;
+		case 4:
+			m_nEnemyTypes[1]++;
+			break;
+		}
+	}
+}
+
+/*＝＝＝＝＝図形判定用＝＝＝＝＝*/
+
+void CBattle::SaveAllyLog(void)
+{
+	m_nAllyTypes[0] = 0;
+	m_nAllyTypes[1] = 0;
+	for (int i = 0; i < m_nAllyDateCount; i++)
+	{
+		switch (m_tAllyData[i].nCornerCount)
+		{
+		case 3:
+			m_nAllyTypes[0]++;
+			break;
+		case 4:
+			m_nAllyTypes[1]++;
+			break;
+		}
+	}
+}
+
+void CBattle::SaveAllyLogDraw(void)
+{
+	float fPosX[3] = { 1600.0f,1700.0f,1800.0f };
+	float fPosY = 0.0f;
+
+	SaveAllyLog();
+
+	for (int i = 0; i < 2; i++)
+	{
+		int nDigits = 0;	//桁数
+		int nNumbers[3];
+
+
+		if (m_nAllyTypes[i] < 10)
+		{
+			nDigits = 1;
+			nNumbers[0] = m_nAllyTypes[i];
+		}
+		if (m_nAllyTypes[i] > 9 && m_nAllyTypes[i] < 100)
+		{
+			nDigits = 2;
+			nNumbers[1] = m_nAllyTypes[i] % 10;
+			nNumbers[0] = (m_nAllyTypes[i] / 10) % 10;
+		}
+		if (m_nAllyTypes[i] > 99 && m_nAllyTypes[i] < 1000)
+		{
+			nDigits = 3;
+			nNumbers[2] = m_nAllyTypes[i] % 10;
+			nNumbers[1] = (m_nAllyTypes[i] / 10) % 10;
+			nNumbers[0] = m_nAllyTypes[i] / 100;
+		}
+
+		switch (i)
+		{
+		case 0:
+			fPosY = -900;
+			break;
+		case 1:
+			fPosY = -700;
+			break;
+		}
+
+		for (int l = 0; l < nDigits; l++)
+		{
+			SetRender2D();
+
+			//スプライトの座標の設定
+			SetSpritePos(WIDE_RATIO(fPosX[l], GetNowWide()), HEIGHT_RATIO(fPosY, GetNowHeight()));
+
+			//大きさの設定
+			SetSpriteScale(1.0f, 1.0f);
+
+			//背景色の設定
+			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
+			SetSpriteTexture(m_pLogTex[nNumbers[l]]);
+
+			// 描画
+			DrawSprite(m_pLogVtx, sizeof(Vertex));
+
+			// スプライト設定のリセット
+			ReSetSprite();
+		}
+	}
+}
+
+/*＝＝＝＝＝デバック用コマンド＝＝＝＝＝*/
 
 bool CBattle::WinEndCommand(void)
 {
@@ -2037,146 +1738,15 @@ bool CBattle::LoseEndCommand(void)
 	return m_bLoseCommand[11];
 }
 
-
-//味方を角数別にカウント
-void CBattle::CreateAllyLog(void)
-{
-	//三角形のカウント格納用変数の初期化
-	m_nAllyTypes[0] = 0;
-	//四角形のカウント格納用変数の初期化
-	m_nAllyTypes[1] = 0;
-	//味方を生成順に処理
-	for (int i = 0; i < m_nAllyCount; i++)
-	{
-		//角数別に処理
-		switch (m_pAlly[i]->GetCornerCount())
-		{
-		case 3:
-			m_nAllyTypes[0]++;
-			break;
-		case 4:
-			m_nAllyTypes[1]++;
-			break;
-		}
-	}
-}
-//敵を種類別にカウント
-void CBattle::CreateEnemyLog(void)
-{
-	//三角形のカウント格納用変数の初期化
-	m_nEnemyTypes[0] = 0;
-	//四角形のカウント格納用変数の初期化
-	m_nEnemyTypes[1] = 0;
-	//敵を生成順に処理
-	for (int i = 0; i < m_nEnemyCount; i++)
-	{
-		//角数別に処理
-		switch (m_pEnemy[i]->GetCornerCount())
-		{
-		case 3:
-			m_nEnemyTypes[0]++;
-			break;
-		case 4:
-			m_nEnemyTypes[1]++;
-			break;
-		}
-	}
-}
-
-/*＝＝＝＝＝図形判定用＝＝＝＝＝*/
-
-void CBattle::SaveAllyLog(void)
-{
-	m_nAllyTypes[0] = 0;
-	m_nAllyTypes[1] = 0;
-	for (int i = 0; i < m_nAllyDateCount; i++)
-	{
-		switch (m_tAllyData[i].nCornerCount)
-		{
-		case 3:
-			m_nAllyTypes[0]++;
-			break;
-		case 4:
-			m_nAllyTypes[1]++;
-			break;
-		}
-	}
-}
-
-void CBattle::SaveAllyLogDraw(void)
-{
-	float fPosX[3] = { 1600.0f,1700.0f,1800.0f };
-	float fPosY = 0.0f;
-
-	SaveAllyLog();
-
-	for (int i = 0; i < 2; i++)
-	{
-		int nDigits = 0;	//桁数
-		int nNumbers[3];
-
-
-		if (m_nAllyTypes[i] < 10)
-		{
-			nDigits = 1;
-			nNumbers[0] = m_nAllyTypes[i];
-		}
-		if (m_nAllyTypes[i] > 9 && m_nAllyTypes[i] < 100)
-		{
-			nDigits = 2;
-			nNumbers[1] = m_nAllyTypes[i] % 10;
-			nNumbers[0] = (m_nAllyTypes[i] / 10) % 10;
-		}
-		if (m_nAllyTypes[i] > 99 && m_nAllyTypes[i] < 1000)
-		{
-			nDigits = 3;
-			nNumbers[2] = m_nAllyTypes[i] % 10;
-			nNumbers[1] = (m_nAllyTypes[i] / 10) % 10;
-			nNumbers[0] = m_nAllyTypes[i] / 100;
-		}
-
-		switch (i)
-		{
-		case 0:
-			fPosY = -900;
-			break;
-		case 1:
-			fPosY = -700;
-			break;
-		}
-
-		for (int l = 0; l < nDigits; l++)
-		{
-			SetRender2D();
-
-			//スプライトの座標の設定
-			SetSpritePos(WIDE_RATIO(fPosX[l], GetNowWide()), HEIGHT_RATIO(fPosY, GetNowHeight()));
-
-			//大きさの設定
-			SetSpriteScale(1.0f, 1.0f);
-
-			//背景色の設定
-			SetSpriteColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-			//その他、表示に必要なSpriteDrawer.hの各種関数を呼び出す
-			SetSpriteTexture(m_pLogTex[nNumbers[l]]);
-
-			// 描画
-			DrawSprite(m_pLogVtx, sizeof(Vertex));
-
-			// スプライト設定のリセット
-			ReSetSprite();
-		}
-	}
-}
-
 /*＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 
+//パターンのランダム選択
 void CBattle::RandomSelectPattern(void)
 {
  	m_nSelectPattern = rand() % m_nMaxPattern;
 }
 
+//音の再読み込み
 void CBattle::ReloadSound()
 {
 	if (m_pSound)
@@ -2222,8 +1792,11 @@ MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos)
 	Movepower.x = (MOVESPEED(MOVEPOWER) * NorX) / absXZ;
 	Movepower.z = (MOVESPEED(MOVEPOWER) * NorZ) / absXZ;
 
-	//float hehe = Movepower.x + Movepower.z;
-	//Movepower.z = MOVESPEED(MOVEPOWER) - Movepower.x;
-
 	return Movepower;
+}
+
+// 距離
+inline float Distance(DirectX::XMFLOAT3 t1, DirectX::XMFLOAT3 t2)
+{
+	return sqrtf((t1.x - t2.x) * (t1.x - t2.x) + (t1.y - t2.y) * (t1.y - t2.y) + (t1.z - t2.z) * (t1.z - t2.z));
 }

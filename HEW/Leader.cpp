@@ -48,12 +48,12 @@ CLeader::CLeader(float InSize, DirectX::XMFLOAT3 FirstPos, int InTextureNumber, 
 	case 1://ボス
 		for (int i = 0; i < (int)BossAnimation::MAX; i++)
 		{
-			m_pModel.push_back(CCharacterManager::GetInstance()->GetBossModel(i, 0));
+			m_pModel.push_back(CCharacterManager::GetInstance()->GetBossModel(0, i));
 
 			//サブモデルの生成フラグが立っていたら
 			if (m_bSubModelCreate)
 			{
-				m_pSubModel.push_back(CCharacterManager::GetInstance()->GetBossModel(i, 1));
+				m_pSubModel.push_back(CCharacterManager::GetInstance()->GetBossModel(1, i));
 			}
 			else
 			{
@@ -138,12 +138,12 @@ void CLeader::Update(bool IsStart, bool IsEnd)
 		case 1://ボス
 			for (int i = 0; i < (int)BossAnimation::MAX; i++)
 			{
-				m_pModel.push_back(CCharacterManager::GetInstance()->GetBossModel(i, 0));
+				m_pModel.push_back(CCharacterManager::GetInstance()->GetBossModel(0, i));
 
 				//サブモデルの生成フラグが立っていたら
 				if (m_bSubModelCreate)
 				{
-					m_pSubModel.push_back(CCharacterManager::GetInstance()->GetBossModel(i, 1));
+					m_pSubModel.push_back(CCharacterManager::GetInstance()->GetBossModel(1, i));
 				}
 				else
 				{

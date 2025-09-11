@@ -69,21 +69,27 @@ private:
 	//時間軸処理
 	void TimeLapse(void);
 	//索敵処理
-	void Search(int i,Entity Entity);
+	void Search(CFighter* Searcher);
 	//移動処理
-	void Move(int i, Entity Entity);
+	void Move(CFighter* Mover);
 	//重なってた場合の補正移動処理
-	bool OverlapMove(int i,Entity Entity);
+	bool OverlapMove(CFighter* Mover);
 	//範囲内補正
 	void ScopeMove();
 	//戦闘処理
-	void Battle(int i, int l , Entity Entity);
+	//void Battle(CFighter* Attacker, CFighter* Defender);
+	//void Battle(CFighter* Attacker, CLeader* Defender);
+	template<class T>
+	void Battle(CFighter* Attacker, T* Defender);
 	//生存判定
 	void Alive(void);
 	//削除処理と配列前詰め
 	void Delete(void);
 	//戦闘初期位置のセッティング
 	void FirstPosSetting();
+
+	// 兵士を種類別に取得
+	std::vector<CFighter*> GetFighterTypeList(FighterType Type);
 
 public:
 	//ステージナンバー
@@ -120,11 +126,21 @@ private:
 public:
 	//リーダーの生成
 	void CreateLeader(void);
+
+
+
+	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝兵士関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
+private:
+	//兵士クラスポインタ
+	std::vector<CFighter*> m_pFighter;
+
+
+
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	//味方クラスポインタ
 	//CAlly* m_pAlly[MAX_ALLY];
-	std::vector<CAlly*> m_pAlly;
+	//std::vector<CAlly*> m_pAlly;
 
 	//生成予定の味方情報
 	EntityData m_tAllyData[MAX_ALLY];
@@ -149,7 +165,7 @@ public:
 private:
 	//敵クラスポインタ
 	//CEnemy* m_pEnemy[MAX_ENEMY];
-	std::vector<CEnemy*> m_pEnemy;
+	//std::vector<CEnemy*> m_pEnemy;
 
 	//生成予定敵情報
 	//EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];
