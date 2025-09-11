@@ -1,3 +1,13 @@
+/*==============================================================
+*
+*  File：Battle.cpp
+*
+*  編集者：宇留野陸斗｜[作成][管理]
+**
+*  編集者：中嶋飛賀　｜[ 音 ]
+*
+================================================================*/
+
 #include "Battle.h"
 #include "SceneGame.h"
 #include "Main.h"
@@ -42,7 +52,6 @@ enum class ENEMYCREATE_POSX
 	Stage2 =  80,
 	Stage3 =  60,
 };
-
 
 //戦闘範囲X軸
 #define BATTLE_X (80)
@@ -118,10 +127,7 @@ float Distance(DirectX::XMFLOAT3 t1, DirectX::XMFLOAT3 t2);
 // コンストラクタ
 CBattle::CBattle()
 	: m_pFighter{}
-	, m_nAllyCount(0)
-	, m_nAllyDateCount(0)
 	, m_nAllyTypes{ 0,0 }
-	, m_nEnemyCount(0)
 	, m_nSelectPattern(0)
 	, m_nMaxPattern(0)
 	, m_nCreateEnemyNum(0)
@@ -152,12 +158,6 @@ CBattle::CBattle()
 	};
 	m_pLogVtx = CreateVertexBuffer(vtx, 4);
 
-	//味方データの初期化
-	for (int i = 0; i < MAX_ALLY; i++)
-	{
-		m_tAllyData[i].nCornerCount = -1;
-		m_tAllyData[i].bStellaBuff = false;
-	}
 	//音の初期化
 	m_pSound = new CSoundList(SE_DEATH);
 	m_pSound->SetMasterVolume();
@@ -481,14 +481,16 @@ void CBattle::ReLoadTexture(void)
 // 味方の情報保存処理
 void CBattle::SaveAllyData(int InCornerCount,bool IsStella)
 {
+	EntityData tAllyData;
+
 	//角数情報の格納
-	m_tAllyData[m_nAllyDateCount].nCornerCount = InCornerCount;
+	tAllyData.nCornerCount = InCornerCount;
 	
 	//ステラ情報
-	m_tAllyData[m_nAllyDateCount].bStellaBuff = IsStella;
+	tAllyData.bStellaBuff = IsStella;
 
-	//保存数を加算
-	m_nAllyDateCount++;
+	//データリストに保存
+	m_tAllyData.push_back(tAllyData);
 }
 
 // 戦闘時間軸処理
@@ -563,30 +565,15 @@ void CBattle::CreateAlly(void)
 		m_pAllyLeader->SetSummonFlag(true);
 	}
 	//保存済み数分処理する
-	while (m_nAllyDateCount)
+	while (!m_tAllyData.empty())
 	{
 		//生成する
 		m_pFighter.push_back(new CAlly(m_tAllyData[0].nCornerCount, m_tAllyData[0].bStellaBuff));
 		
-		//生成数を加算
-		m_nAllyCount++;
 		//召喚総数を加算
 		m_nSummonAllyCount++;
 		//生成に使用したため情報を消して後ろの情報を前詰めにする
-		for (int i = 0; i + 1 <= m_nAllyDateCount; i++)
-		{
-			if (i + 1 == m_nAllyDateCount)
-			{
-				m_tAllyData[i].nCornerCount = -1;
-				m_tAllyData[i].bStellaBuff = false;
-			}
-			else
-			{
-				m_tAllyData[i] = m_tAllyData[i + 1];
-			}
-		}
-		//保存済みの総数を減らす
-		m_nAllyDateCount--;
+		m_tAllyData.erase(m_tAllyData.begin());
 	}
 }
 
@@ -639,8 +626,6 @@ void CBattle::CreateEnemy(void)
 		//生成する
 		m_pFighter.push_back(new CEnemy(EnemyCornerCount));
 
-		//生成数を加算
-		m_nEnemyCount++;
 		//生成予定数を減らす
 		m_nCreateEnemyNum--;
 	}
@@ -707,6 +692,9 @@ void CBattle::Search(CFighter* Searcher)
 // 移動処理
 void CBattle::Move(CFighter* Mover)
 {
+	//リーダーを標的にしているかどうか
+	bool IsLeaderTargetFlag = true;
+
 	Mover->SetMoveFlag(false);
 
 	//移動フラグが立っていたら目的地指定の処理を飛ばす
@@ -718,6 +706,8 @@ void CBattle::Move(CFighter* Mover)
 			//標的番号を設定済みだった場合
 			if (Mover->m_nTargetNumber != -1)
 			{
+				IsLeaderTargetFlag = false;
+
 				// 標的対象を取得
 				auto targetList = GetFighterTypeList((int)Mover->GetFighterType() ? FighterType::Enemy : FighterType::Ally);
 
@@ -727,7 +717,7 @@ void CBattle::Move(CFighter* Mover)
 				Mover->SetTargetPos(targetList[Mover->m_nTargetNumber]->GetPos());
 
 				//標的番号が現在生存数よりも数字が大きくないかどうか
-				if (Mover->m_nTargetNumber < m_nEnemyCount)
+				if (Mover->m_nTargetNumber < targetList.size())
 				{
 					DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
 					DirectX::XMFLOAT3 TargetPos = targetList[Mover->m_nTargetNumber]->GetPos();
@@ -755,49 +745,12 @@ void CBattle::Move(CFighter* Mover)
 				//数字が大きかった場合
 				else
 				{
-					//自分のタイプを取得
-					int SelfType = (int)Mover->GetFighterType();
-
-					//リーダーが生成されているか
-					CLeader* targetLeader = SelfType ? m_pEnemyLeader : m_pAllyLeader;
-
-					if (targetLeader)
-					{
-						DirectX::XMFLOAT3 SelfPos = Mover->GetPos();
-						DirectX::XMFLOAT3 TargetPos = targetLeader->GetPos();
-						//自分の位置が敵の一定のラインまで来たら
-						if (SelfType ? Mover->GetPos().x < ALLYCORE_POSX + 10 : Mover->GetPos().x > ENEMYBOSSCORE_POSX - 10)
-						{
-							//標的がいないので相手のリーダーに向かってMOVESPEEDの大きさで進む
-							Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
-							Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).z);
-						}
-						//そこより手前だったら
-						else
-						{
-							if (Mover->m_bFirstBattlePosSetting)
-							{
-								if (Mover->GetPos().z != Mover->GetFirstPos().z)
-								{
-									Mover->AddPosX(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).x);
-									Mover->AddPosZ(MoveCalculation(SelfPos, { TargetPos.x,TargetPos.y, Mover->GetFirstPos().z }).z);
-								}
-								else
-								{
-									Mover->AddPosX(MoveCalculation(SelfPos, TargetPos).x);
-									Mover->AddPosZ(MoveCalculation(SelfPos, TargetPos).z);
-								}
-							}
-							else
-							{
-								Mover->AddPosX(MOVESPEED(MOVEPOWER));
-							}
-						}
-					}
+					IsLeaderTargetFlag = true;
 				}
 			}
+
 			//標的番号を設定していなかった場合
-			else
+			if(IsLeaderTargetFlag)
 			{
 				//自分のタイプを取得
 				int SelfType = (int)Mover->GetFighterType();
@@ -1533,7 +1486,7 @@ void CBattle::SaveAllyLog(void)
 {
 	m_nAllyTypes[0] = 0;
 	m_nAllyTypes[1] = 0;
-	for (int i = 0; i < m_nAllyDateCount; i++)
+	for (int i = 0; i < m_tAllyData.size(); i++)
 	{
 		switch (m_tAllyData[i].nCornerCount)
 		{
@@ -1796,7 +1749,7 @@ MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos)
 }
 
 // 距離
-inline float Distance(DirectX::XMFLOAT3 t1, DirectX::XMFLOAT3 t2)
+float Distance(DirectX::XMFLOAT3 t1, DirectX::XMFLOAT3 t2)
 {
 	return sqrtf((t1.x - t2.x) * (t1.x - t2.x) + (t1.y - t2.y) * (t1.y - t2.y) + (t1.z - t2.z) * (t1.z - t2.z));
 }

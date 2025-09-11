@@ -1,8 +1,19 @@
+/*==============================================================
+*
+*  File：Battle.h
+*
+*  編集者：宇留野陸斗｜[作成][管理]
+**
+*  編集者：中嶋飛賀　｜[ 音 ]
+*
+================================================================*/
+
 #pragma once
 #include "CharacterInclude.h"
 #include "SoundList.h"
 #include <vector>
 #include <mutex>
+#include <memory>
 
 //パターンの最大数
 #define MAX_PATTERN (5)
@@ -10,15 +21,6 @@
 class CBattle
 {
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝総合処理＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
-private:
-	//エンティティ番号
-	enum Entity
-	{
-		AllyLeader,
-		EnemyLeader,
-		Ally,
-		Enemy,
-	};
 private:
 	struct EntityData
 	{
@@ -45,9 +47,13 @@ public:
 	bool GetEnd();
 	//テクスチャの再読み込み
 	void ReLoadTexture(void);
+
+
 	/*＝＝＝＝＝リザルトに渡す情報＝＝＝＝＝*/
+
 	float m_fRinieMaxHp;
 	float m_fRinieLastHp;
+
 	//プレイヤーの体力の残り割合のGet
 	int GetPlayerHpProportion(void) { return (m_fRinieLastHp / m_fRinieMaxHp) * 100; }
 	//勝敗のGet
@@ -65,6 +71,7 @@ public:
 	void SetWinAnimation(bool IsWin) { m_pAllyLeader->SetWinFlag(IsWin); }
 	//Linieの回転
 	void LinieRotation(DirectX::XMFLOAT3 InRotate) { m_pAllyLeader->SetRotate(InRotate); };
+
 private:
 	//時間軸処理
 	void TimeLapse(void);
@@ -77,8 +84,6 @@ private:
 	//範囲内補正
 	void ScopeMove();
 	//戦闘処理
-	//void Battle(CFighter* Attacker, CFighter* Defender);
-	//void Battle(CFighter* Attacker, CLeader* Defender);
 	template<class T>
 	void Battle(CFighter* Attacker, T* Defender);
 	//生存判定
@@ -95,7 +100,7 @@ public:
 	//ステージナンバー
 	StageType m_nStageNum;
 private:
-	
+
 	std::mutex mtx;
 
 	//描画開始判定
@@ -127,32 +132,18 @@ public:
 	//リーダーの生成
 	void CreateLeader(void);
 
-
-
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝兵士関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	//兵士クラスポインタ
 	std::vector<CFighter*> m_pFighter;
 
-
-
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝味方関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
-	//味方クラスポインタ
-	//CAlly* m_pAlly[MAX_ALLY];
-	//std::vector<CAlly*> m_pAlly;
-
 	//生成予定の味方情報
-	EntityData m_tAllyData[MAX_ALLY];
-	//生成した味方のカウント
-	int m_nAllyCount;
-	//保存した味方の情報数
-	int m_nAllyDateCount;
+	std::vector <EntityData> m_tAllyData;
 	//現在生成している味方の種類別カウント変数
 	int m_nAllyTypes[2];
 public:
-	//味方カウントのGet
-	int GetAllyCount(void) { return m_nAllyCount; }	
 	//味方の種類別カウントのGet
 	int GetAllyTypeCount(int Num) { return m_nAllyTypes[Num]; }
 	//味方要素保存
@@ -163,29 +154,13 @@ public:
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝＝ 敵関係 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
-	//敵クラスポインタ
-	//CEnemy* m_pEnemy[MAX_ENEMY];
-	//std::vector<CEnemy*> m_pEnemy;
-
-	//生成予定敵情報
-	//EntityData m_tEnemyData[MAX_PATTERN][MAX_ENEMY];
-
-	//生成した敵のカウント
-	int m_nEnemyCount;
-	//保存した敵の情報数
-	//int m_nEnemyDateCount[MAX_PATTERN];
-
 	//現在生成している敵の種類別カウント変数
 	int m_nEnemyTypes[2];
 	//生成してほしい数
 	int m_nCreateEnemyNum;
 public:
-	//敵カウントのGet
-	int GetEnemyCount(void) { return m_nEnemyCount; }
 	//敵の種類別カウントのGet
 	int GetEnemyTypeCount(int Num) { return m_nEnemyTypes[Num]; }
-	//敵要素保存
-	//void SaveEnemyData(int InCornerCount, int InPattern);		
 private:
 	//敵作成
 	void CreateEnemy(void);
@@ -204,7 +179,6 @@ private:
 	void CreateEnemyLog(void);
 	//敵生成ログの描画
 	void CreateEnemyLogDraw(void);
-
 
 	bool m_bWinCommand[12];
 	float m_fWinCommandResetTimer;
