@@ -27,13 +27,13 @@ private:
 protected:
 	//ステータス別の更新処理
 	//生成モードの更新処理
-	virtual void CreateUpdate(void) = 0;
+	virtual void CreateUpdate(void);
 
 	//戦闘モードの更新処理
-	virtual void BattleUpdate(void) = 0;
+	virtual void BattleUpdate(void);
 
 	//死亡モードの更新処理
-	virtual void DeathUpdate(void) = 0;
+	virtual void DeathUpdate(void);
 
 
 public:
@@ -44,10 +44,10 @@ public:
 	virtual ~CFighter();					
 
 	//更新処理
-	virtual void Update(void) = 0;
+	virtual void Update(void);
 
 	//描画処理
-	virtual void Draw(void) = 0;
+	virtual void Draw(void);
 
 	//攻撃当たり判定
 	bool AtkCollisionCheck(DirectX::XMFLOAT3 InSize, DirectX::XMFLOAT3 InPos);
@@ -66,7 +66,7 @@ protected:
 	void DamageLogDraw(int nCornerCount, bool Type);
 
 	//ステータス決め
-	virtual void SettingStatus(void) = 0;	
+	virtual void SettingStatus(void);	
 
 public:
 	// 標的の選別番号

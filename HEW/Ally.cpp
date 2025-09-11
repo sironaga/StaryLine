@@ -35,7 +35,7 @@ CAlly::CAlly(int InCornerCount, bool IsStellaBuff)
 		//モデル
 		for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
 		{
-			m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel(i, (int)Ally::Ally3);
+			m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel((int)Ally::Ally3, i);
 		}
 		//攻撃エフェクトのポインタ同期
 		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(CCharacterManager::GetInstance()->GetCharacterEffect((int)CharactersEffect::SwordAtk));
@@ -44,7 +44,7 @@ CAlly::CAlly(int InCornerCount, bool IsStellaBuff)
 		//モデル
 		for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
 		{
-			m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel(i, (int)Ally::Ally4);
+			m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel((int)Ally::Ally4, i);
 		}
 		//攻撃エフェクトのポインタ同期
 		m_pEffect[(int)FighterEffect::Attack] = new CEffectManager_sp(CCharacterManager::GetInstance()->GetCharacterEffect((int)CharactersEffect::BowAtk));
@@ -77,23 +77,6 @@ CAlly::~CAlly()
 //味方クラスの更新処理
 void CAlly::Update(void)
 {
-	//オーラエフェクト
-	if (m_pEffect[(int)FighterEffect::Aura])
-	{
-		//オーラエフェクトの位置を設定
-		m_pEffect[(int)FighterEffect::Aura]->SetPos({ m_tPos.x,m_tPos.y,m_tPos.z });
-		//オーラエフェクトが再生されていなかったら再生する
-		if (!m_pEffect[(int)FighterEffect::Aura]->IsPlay())
-		{
-			//オーラエフェクトの回転を設定
-			m_pEffect[(int)FighterEffect::Aura]->SetRotate({ 0.0f,0.0f,0.0f });
-			//オーラエフェクトのサイズを設定
-			m_pEffect[(int)FighterEffect::Aura]->SetSize({ 15.0f,10.0f,10.0f });
-			//オーラエフェクトの再生
-			m_pEffect[(int)FighterEffect::Aura]->Play(true);
-		}
-	}
-
 	//モデルの再読み込みフラグが立っていたら読み込む
 	if (m_bReLoadFlag)
 	{
@@ -116,7 +99,7 @@ void CAlly::Update(void)
 			//モデル
 			for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
 			{
-				m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel(i, (int)Ally::Ally3);
+				m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel((int)Ally::Ally3, i);
 			}
 
 			//攻撃エフェクトのポインタ同期
@@ -126,7 +109,7 @@ void CAlly::Update(void)
 			//モデル
 			for (int i = 0; i < (int)CharacterAnimation::MAX; i++)
 			{
-				m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel(i, (int)Ally::Ally4);
+				m_pModel[i] = CCharacterManager::GetInstance()->GetAllyModel((int)Ally::Ally4, i);
 			}
 
 			//攻撃エフェクトのポインタ同期
@@ -150,71 +133,32 @@ void CAlly::Update(void)
 		//モデルの再読み込みフラグをfalse
 		m_bReLoadFlag = false;
 	}
-	// 状況に応じて処理を分ける
-	switch (m_tStatus)
-	{
-		//生成更新
-	case Status::Create:CreateUpdate();		break;
-		//戦闘更新
-	case Status::Battle:BattleUpdate();		break;
-		//死亡更新
-	case Status::Death:	DeathUpdate();		break;
-	}
 
-	//エフェクトの更新
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
+	//オーラエフェクト
+	if (m_pEffect[(int)FighterEffect::Aura])
 	{
-		if (m_pEffect[i])
+		//オーラエフェクトの位置を設定
+		m_pEffect[(int)FighterEffect::Aura]->SetPos({ m_tPos.x,m_tPos.y,m_tPos.z });
+		//オーラエフェクトが再生されていなかったら再生する
+		if (!m_pEffect[(int)FighterEffect::Aura]->IsPlay())
 		{
-			//エフェクトの更新
-			m_pEffect[i]->Update();
+			//オーラエフェクトの回転を設定
+			m_pEffect[(int)FighterEffect::Aura]->SetRotate({ 0.0f,0.0f,0.0f });
+			//オーラエフェクトのサイズを設定
+			m_pEffect[(int)FighterEffect::Aura]->SetSize({ 15.0f,10.0f,10.0f });
+			//オーラエフェクトの再生
+			m_pEffect[(int)FighterEffect::Aura]->Play(true);
 		}
 	}
+
+	// 基底クラスの更新処理(共通処理)
+	CFighter::Update();
 }
 
 void CAlly::Draw(void)
 {
-	//ダメージログの描画
-	if (m_bDamageLogDraw[0])
-	{
-		//ダメージログの描画フラグが立っていたら
-		if (m_bDamageLogDraw[1])
-		{
-			//ダメージログのY軸の位置を設定
-			m_fDamageLogMoveY = 0.0f;
-			//ダメージログの移動フラグをfalse
-			m_bDamageLogDraw[1] = false;
-		}
-		//ダメージログの描画
-		DamageLogDraw(m_nCornerCount, m_bDamageLogDraw[2]);
-		//ダメージログのY軸が5.0f未満だったら
-		if (m_fDamageLogMoveY < 5.0f)
-		{
-			//ダメージログのY軸の位置を更新
-			m_fDamageLogMoveY += 5.0f / 120.0f;
-		}
-		//ダメージログのY軸が5.0以上だったら
-		else
-		{
-			//ダメージログの描画フラグをfalse
-			m_bDamageLogDraw[0] = false;
-			m_bDamageLogDraw[1] = false;
-			m_bDamageLogDraw[2] = false;
-		}
-	}
-
-	//体力ゲージの描画
-	m_pHpGage->Draw(m_nCornerCount);
-
-	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-		{
-			//エフェクトの描画
-			m_pEffect[i]->Draw(true);
-		}
-	}
+	// 基底クラスの描画処理(共通処理)
+	CFighter::Draw();
 
 	//死亡フラグが立っていたら
 	if (m_bIsDeath)
@@ -314,11 +258,12 @@ void CAlly::Draw(void)
 
 	}
 }
-//生成更新処理
+
+/*
+* @brief 生成更新処理
+*/
 void CAlly::CreateUpdate(void)
 {
-	//生成アニメーション
-
 	//生成エフェクト
 	if (!m_pEffect[(int)FighterEffect::Create]->IsPlay() && !IsCreateEffectPlay && m_bFirstBattlePosSetting)
 	{
@@ -334,13 +279,14 @@ void CAlly::CreateUpdate(void)
 		CCharacterManager::GetInstance()->GetSourceSummon(0)->Start();
 		IsCreateEffectPlay = true;
 	}
-	//生成アニメーションが終わったら
-	if (!m_pEffect[(int)FighterEffect::Create]->IsPlay() && IsCreateEffectPlay && m_bFirstBattlePosSetting)
-	{
-		SetStatus(Status::Battle);
-	}
+
+	// 基底クラスの生成更新処理(共通処理)
+	CFighter::CreateUpdate();
 }
-//戦闘更新処理
+
+/*
+* @brief 戦闘更新処理
+*/
 void CAlly::BattleUpdate(void)
 {
 	//攻撃していたら
@@ -394,34 +340,9 @@ void CAlly::BattleUpdate(void)
 			}
 		}
 	}
-	//エフェクトのRe再生処理
-	if (IsAttackEffectPlay)
-	{
-		if (!m_pEffect[(int)FighterEffect::Attack]->IsPlay())
-		{
-			//攻撃エフェクトの再生フラグをfalse
-			IsAttackEffectPlay = false;
-		}
-	}
-	//攻撃音の再生時間
-	if (m_bTimeSoundStart)
-	{
-		//攻撃音の再生時間の加算
-		m_fTimeSound++;
-	}
-	//攻撃音の再生時間が30を超えたら
-	if (m_fTimeSound > 30)
-	{
-		//攻撃音の再生を止める
-		m_pSourceNormalAttack->Stop();
-		//攻撃音の再生フラグをfalse
-		m_bTimeSoundStart = false;
-		//攻撃音の再生時間を初期化
-		m_fTimeSound = 0;
-	}
 
-	//HPUIの更新処理
-	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
+	// 基底クラスの戦闘更新処理(共通処理)
+	CFighter::BattleUpdate();
 }
 //死亡更新処理
 void CAlly::DeathUpdate(void)
@@ -429,93 +350,6 @@ void CAlly::DeathUpdate(void)
 	//死亡アニメーション
 	m_bIsDeath = true;
 
-	//死亡エフェクトの再生時間
-	if (!m_pEffect[(int)FighterEffect::Death]->IsPlay() && !IsDeathEffectPlay)
-	{
-		//死亡エフェクトの位置を設定
-		m_pEffect[(int)FighterEffect::Death]->SetPos(m_tPos);
-		//死亡エフェクトの回転を設定
-		m_pEffect[(int)FighterEffect::Death]->SetRotate({ 0.0f,0.0f,0.0f });
-		//死亡エフェクトのサイズを設定
-		m_pEffect[(int)FighterEffect::Death]->SetSize({ 20.0f,20.0f,20.0f });
-		//死亡エフェクトの再生
-		m_pEffect[(int)FighterEffect::Death]->Play();
-		//死亡エフェクトの再生フラグを立てる
-		IsDeathEffectPlay = true;
-	}
-
-
-	//死亡アニメーションが終わったら
-	if (!m_pEffect[(int)FighterEffect::Death]->IsPlay() && IsDeathEffectPlay)
-	{
-		//ステータスを削除に変更
-		SetStatus(Status::Delete);
-	}
-}
-
-/*
-* @brief ステータスの初期設定
-*/
-void CAlly::SettingStatus(void)
-{
-	//角数別にカウント
-	switch (m_nCornerCount)
-	{
-	default:
-		//体力
-		m_fHp = 2500.0f;
-		//攻撃力
-		m_fAtk = 150.0f;
-		//攻撃アニメーションの時間
-		m_fAtkAnimationMaxTime = 0.0f;
-		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
-		m_fAtkChargeMax = 10.0f + m_fAtkAnimationMaxTime;
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
-		//キャラクターの中心からの縦の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);
-		break;
-		/*三角形*/
-	case (int)Corner::Triangle:
-		//体力
-		m_fHp = 2500.0f;
-		//攻撃力
-		m_fAtk = 150.0f;
-		//攻撃アニメーションの時間
-		m_fAtkAnimationMaxTime = 0.0f;
-		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
-		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
-		//キャラクターの中心からの縦の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);
-		break;
-		/*四角形*/
-	case (int)Corner::Square:
-		//体力
-		m_fHp = 2500.0f;
-		//攻撃力
-		m_fAtk = 150.0f;
-		//攻撃アニメーションの時間
-		m_fAtkAnimationMaxTime = 0.0f;
-		//攻撃チャージの最大値をアニメーションの時間を加算した値にする
-		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
-		//キャラクターの中心からの縦の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);
-		break;
-	}
+	// 基底クラスの死亡更新処理(共通処理)
+	CFighter::DeathUpdate();
 }

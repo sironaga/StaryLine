@@ -37,8 +37,4 @@ private:
 
 	//死亡モードの更新処理
 	void DeathUpdate(void)  override;
-
-	//ステータスの設定
-	void SettingStatus(void) override;
-
 };

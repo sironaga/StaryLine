@@ -113,27 +113,9 @@ void CEnemy::Update(void)
 		//モデルの再読み込みフラグをfalse
 		m_bReLoadFlag = false;
 	}
-	//HpUIの更新
-	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
 
-	// 状況に応じて処理を分ける
-	switch (m_tStatus)
-	{
-		//生成アニメーション
-	case Status::Create:	CreateUpdate();		break;
-		//戦闘アニメーション
-	case Status::Battle:	BattleUpdate();		break;
-		//死亡アニメーション
-	case Status::Death:	DeathUpdate();		break;
-	}
-
-	//エフェクトの更新
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-			//エフェクトの更新
-			m_pEffect[i]->Update();
-	}
+	// 基底クラスの更新処理(共通処理)
+	CFighter::Update();
 }
 
 /*
@@ -141,36 +123,8 @@ void CEnemy::Update(void)
 */
 void CEnemy::Draw(void)
 {
-	//ダメージログの描画
-	if (m_bDamageLogDraw[0])
-	{
-		if (m_bDamageLogDraw[1])
-		{
-			//ダメージログの移動
-			m_fDamageLogMoveY = 0.0f;
-			//ダメージログの移動フラグをfalse
-			m_bDamageLogDraw[1] = false;
-		}
-		//ダメージログの描画
-		DamageLogDraw(m_nCornerCount, m_bDamageLogDraw[2]);
-		//ダメージログのY軸が5.0f未満だったら
-		if (m_fDamageLogMoveY < 5.0f)
-		{
-			//ダメージログのY軸の位置を更新
-			m_fDamageLogMoveY += 5.0f / 120.0f;
-		}
-		//ダメージログのY軸が5.0以上だったら
-		else
-		{
-			//ダメージログの描画フラグをfalse
-			m_bDamageLogDraw[0] = false;
-			m_bDamageLogDraw[1] = false;
-			m_bDamageLogDraw[2] = false;
-		}
-	}
-
-	//体力ゲージの描画
-	m_pHpGage->Draw(m_nCornerCount);
+	// 基底クラスの描画処理(共通処理)
+	CFighter::Draw();
 
 	//キャラクターの描画
 	SetRender3D();
@@ -218,19 +172,11 @@ void CEnemy::Draw(void)
 			m_pModel[0]->Draw(i);
 		}
 	}
-
-	//エフェクトの描画
-	for (int i = 0; i < (int)FighterEffect::MAX; i++)
-	{
-		if (m_pEffect[i])
-		{
-			//エフェクトの描画
-			m_pEffect[i]->Draw(true);
-		}
-	}
-
 }
 
+/*
+* @brief 生成更新処理
+*/
 void CEnemy::CreateUpdate(void)
 {
 	//生成エフェクト
@@ -254,12 +200,9 @@ void CEnemy::CreateUpdate(void)
 		//エフェクトの再生フラグを立てる
 		IsCreateEffectPlay = true;
 	}
-	//生成アニメーションが終わったら
-	if (!m_pEffect[(int)FighterEffect::Create]->IsPlay() && IsCreateEffectPlay && m_bFirstBattlePosSetting)
-	{
-		//ステータスを戦闘に変更
-		SetStatus(Status::Battle);
-	}
+
+	// 基底クラスの生成更新処理(共通処理)
+	CFighter::CreateUpdate();
 }
 
 /*
@@ -324,34 +267,8 @@ void CEnemy::BattleUpdate(void)
 		}
 	}
 
-	//エフェクトのRe再生処理
-	if (IsAttackEffectPlay)
-	{
-		if (!m_pEffect[(int)FighterEffect::Attack]->IsPlay())
-		{
-			//攻撃エフェクトの再生フラグをfalse
-			IsAttackEffectPlay = false;
-		}
-	}
-	//攻撃音の再生時間
-	if (m_bTimeSoundStart)
-	{
-		//攻撃音の再生時間の加算
-		m_fTimeSound++;
-	}
-	//攻撃音の再生時間が30を超えたら
-	if (m_fTimeSound > 30)
-	{
-		//攻撃音の再生を止める
-		m_pSourceNormalAttack->Stop();
-		//攻撃音の再生フラグをfalse
-		m_bTimeSoundStart = false;
-		//攻撃音の再生時間を初期化
-		m_fTimeSound = 0;
-	}
-
-	//HPUIの更新処理
-	m_pHpGage->Update(m_fHp, { m_tPos.x,m_tPos.y,m_tPos.z }, m_tSize.y);
+	// 基底クラスの戦闘更新処理(共通処理)
+	CFighter::BattleUpdate();
 }
 
 /*
@@ -359,89 +276,6 @@ void CEnemy::BattleUpdate(void)
 */
 void CEnemy::DeathUpdate(void)
 {
-	//死亡エフェクト
-	if (!m_pEffect[(int)FighterEffect::Death]->IsPlay() && !IsDeathEffectPlay)
-	{
-		//死亡エフェクトの位置を設定
-		m_pEffect[(int)FighterEffect::Death]->SetPos(m_tPos);
-		//死亡エフェクトの回転を設定
-		m_pEffect[(int)FighterEffect::Death]->SetRotate({ 0.0f,0.0f,0.0f });
-		//死亡エフェクトのサイズを設定
-		m_pEffect[(int)FighterEffect::Death]->SetSize({ 20.0f,20.0f,20.0f });
-		//死亡エフェクトの再生
-		m_pEffect[(int)FighterEffect::Death]->Play();
-		//死亡エフェクトの再生フラグを立てる
-		IsDeathEffectPlay = true;
-	}
-
-	//死亡アニメーションが終わったら
-	if (!m_pEffect[(int)FighterEffect::Death]->IsPlay() && IsDeathEffectPlay)
-	{
-		//ステータスを削除に変更
-		SetStatus(Status::Delete);
-	}
-}
-
-/*
-* @brief ステータスの初期設定
-*/
-void CEnemy::SettingStatus(void)
-{
-	switch (m_nCornerCount)
-	{
-	default:
-		//体力
-		m_fHp = 2500.0f;
-		//攻撃力
-		m_fAtk = 150.0f;
-		//攻撃アニメーションの最大時間
-		m_fAtkAnimationMaxTime = 0.0f;
-		//攻撃チャージの最大値
-		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
-		//キャラクターの中心からの縦の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);
-		break;
-	case (int)Corner::Triangle:
-		//体力
-		m_fHp = 2500.0f;
-		//攻撃力
-		m_fAtk = 150.0f;
-		//攻撃アニメーションの最大時間
-		m_fAtkAnimationMaxTime = 0.0f;
-		//攻撃チャージの最大値
-		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);
-		break;
-	case (int)Corner::Square:
-		//体力
-		m_fHp = 2500.0f;
-		//攻撃力
-		m_fAtk = 150.0f;
-		//攻撃アニメーションの最大時間
-		m_fAtkAnimationMaxTime = 0.0f;
-		//攻撃チャージの最大値
-		m_fAtkChargeMax = 30.0f + m_fAtkAnimationMaxTime;
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Width = MAX_CHARACTER_ATK_COLLISION_WIDTH(1);
-		//キャラクターの中心からの横の攻撃当たり判定
-		m_tAtkCollision.Height = MAX_CHARACTER_ATK_COLLISION_HEIGHT(1);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Width = MAX_CHARACTER_SEARCH_COLLISION_WIDTH(10);
-		//キャラクターの中心からの横の索敵当たり判定
-		m_tSearchCollision.Height = MAX_CHARACTER_SEARCH_COLLISION_HEIGHT(10);
-		break;
-	}
+	// 基底クラスの死亡更新処理(共通処理)
+	CFighter::DeathUpdate();
 }
