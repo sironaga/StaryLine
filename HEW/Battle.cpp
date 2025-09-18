@@ -125,11 +125,9 @@ MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos);
 float Distance(DirectX::XMFLOAT3 t1, DirectX::XMFLOAT3 t2);
 
 // コンストラクタ
-CBattle::CBattle()
+CBattle::CBattle(StageType In_StageType)
 	: m_pFighter{}
 	, m_nAllyTypes{ 0,0 }
-	, m_nSelectPattern(0)
-	, m_nMaxPattern(0)
 	, m_nCreateEnemyNum(0)
 	, m_pAllyLeader(nullptr)
 	, m_pEnemyLeader(nullptr)
@@ -137,13 +135,11 @@ CBattle::CBattle()
 	, m_nBattleTime(0)
 	, m_bFirstFight(false)
 	, m_nFirstPosPattern(0)
-	, m_nStageNum{ 0,0 }
+	, m_nStageNum(In_StageType)
 	, m_bEnd(false)
 	, m_bWin(false)
 	, m_nSpawnTime(0)
 	, m_nSummonAllyCount(0)
-	, m_bDrawingStart(false)
-	, m_bDrawingEnd(false)
 	, m_bWinCommand{false}
 	, m_bLoseCommand{false}
 {
@@ -162,6 +158,9 @@ CBattle::CBattle()
 	m_pSound = new CSoundList(SE_DEATH);
 	m_pSound->SetMasterVolume();
 	m_pDeathSE = m_pSound->GetSound(false);
+
+	// リーダーの生成
+	CreateLeader();
 }
 
 // デストラクタ
@@ -382,7 +381,7 @@ void CBattle::CharacterUpdate(bool AnimationFlag)
 	//味方リーダーの更新処理(アニメーション)
 	if (m_pAllyLeader)
 	{
-		m_pAllyLeader->Update(m_bDrawingStart,m_bDrawingEnd);
+		m_pAllyLeader->Update();
 	}
 	if (AnimationFlag)
 	{
@@ -499,7 +498,6 @@ void CBattle::TimeLapse(void)
 	if (m_nBattleTime == Time(m_nSpawnTime))
 	{
 		//敵の生成数を指定
-		//m_nCreateEnemyNum = 4;
 		switch (m_nStageNum.StageMainNumber)
 		{
 		case (int)E_SELECT_STAGETYPE::GRASSLAND:
@@ -1692,12 +1690,6 @@ bool CBattle::LoseEndCommand(void)
 }
 
 /*＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
-
-//パターンのランダム選択
-void CBattle::RandomSelectPattern(void)
-{
- 	m_nSelectPattern = rand() % m_nMaxPattern;
-}
 
 //音の再読み込み
 void CBattle::ReloadSound()

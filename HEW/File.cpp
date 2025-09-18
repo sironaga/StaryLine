@@ -16,7 +16,6 @@ std::vector<std::string> split(const std::string text, const char delimiter);
 //=====グローバル変数=====
 using namespace std;
 streamoff g_NowLine = 0;//現在のファイルの場所
-CBattle *g_pFileBattle;
 //初期化
 bool InitLoadData(bool WaveSwitch, int* pPattern, int* pEnemyNum)
 {
@@ -94,14 +93,12 @@ void InitSave()
 	int CornerCount = 0;
 
 	InitLoadData(true, &MaxPattern,  &MaxEnemy );
- 	g_pFileBattle->SetMaxPattern(MaxPattern);
 	for (int j = 0; j < MaxPattern; j++)
 	{
 		InitLoadData(false, &MaxPattern,  &MaxEnemy);
 		for (int l = 0; l < MaxEnemy; l++)
 		{
 			EnemyLoadData(&CornerCount, &size);
-			//g_pFileBattle->SaveEnemyData(CornerCount, j);//最後は敵のサイズ(float型)
 		}
 	}
 }
@@ -109,10 +106,6 @@ void InitSave()
 void UnInitEnemyLoadData()
 {
 	g_NowLine = 0;
-}
-void SetFileAddress(CBattle* InAddress)
-{
-	g_pFileBattle = InAddress;
 }
 std::vector<std::string> split(const std::string text, const char delimiter) {
 	vector<string> columns;

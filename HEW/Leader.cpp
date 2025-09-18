@@ -120,7 +120,7 @@ CLeader::~CLeader()
 * @param IsStart 戦闘開始フラグ
 * @param IsEnd 戦闘終了フラグ
 */
-void CLeader::Update(bool IsStart, bool IsEnd)
+void CLeader::Update()
 {
 	//モデルの再読み込みフラグが立っていたら
 	if (m_bReLoadFlag)
@@ -165,7 +165,7 @@ void CLeader::Update(bool IsStart, bool IsEnd)
 	switch (m_tStatus)
 	{
 	case Status::Create:CreateUpdate(); break;
-	case Status::Battle:BattleUpdate(IsStart, IsEnd); break;
+	case Status::Battle:BattleUpdate(); break;
 	case Status::Death:DeathUpdate(); break;
 	}
 }
@@ -570,7 +570,7 @@ void CLeader::CreateUpdate(void)
 * @param IsStart 戦闘開始フラグ
 * @param IsEnd 戦闘終了フラグ
 */
-void CLeader::BattleUpdate(bool IsStart, bool IsEnd)
+void CLeader::BattleUpdate()
 {
 	//ダメージタイマーの更新
 	m_fDamageTimer += 1.0f / fFPS;
