@@ -143,7 +143,11 @@ void CPause::Update()
 	//ポーズ中かつcloseが呼び出されていない場合
 	if (m_bPause && !m_bClose)
 	{
-
+		for (int i = 0; i < 3; i++)
+		{
+			m_pSoundPause[i]->SetMasterVolume();
+			m_pSoundPauseSE[i]->SetVolume(m_pOption->GetSEVoluem());
+		}
 		// 毎フレーム判定 
 		if (m_ftime > 0.0f) {
 			m_ftime -= 1.0f / 60.0f;
@@ -427,11 +431,7 @@ void CPause::Update()
 		{
 		case SEC_OPTION:
 			m_pOption->Update();
-			for (int i = 0; i < 3; i++)
-			{
-				m_pSoundPause[i]->SetMasterVolume();
-				m_pSoundPauseSE[i]->SetVolume(m_pOption->GetSEVoluem());
-			}
+			
 			if (!m_pOption->GetOption())
 			{
 				if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B), VK_ESCAPE))
