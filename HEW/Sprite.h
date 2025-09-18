@@ -27,7 +27,7 @@ public:
 	static void SetUVPos(DirectX::XMFLOAT2 pos);
 	static void SetUVScale(DirectX::XMFLOAT2 scale);
 	static void SetColor(DirectX::XMFLOAT4 color);
-	static void SetParam(SpriteParam* param);
+	static void SetParam(SpriteParam param);
 	static void SetTexture(Texture* tex);
 	void SetVertex(Vertex* InData,int nSize);
 	static void SetWorld(DirectX::XMFLOAT4X4 world);

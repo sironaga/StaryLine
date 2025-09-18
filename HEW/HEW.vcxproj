@@ -65,6 +65,7 @@
     <ClCompile Include="SceneRanking.cpp" />
     <ClCompile Include="SceneResult.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
+    <ClCompile Include="SceneTutorial.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -77,6 +78,7 @@
     <ClCompile Include="StartDirection.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="ToTutorial.cpp" />
     <ClCompile Include="Transition.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="WriteName.cpp" />
@@ -131,6 +133,7 @@
     <ClInclude Include="SceneRanking.h" />
     <ClInclude Include="SceneResult.h" />
     <ClInclude Include="SceneTitle.h" />
+    <ClInclude Include="SceneTutorial.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sound.h" />
@@ -142,6 +145,7 @@
     <ClInclude Include="StarLine.h" />
     <ClInclude Include="StartDirection.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="ToTutorial.h" />
     <ClInclude Include="Transition.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="WriteName.h" />
