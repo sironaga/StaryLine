@@ -32,7 +32,7 @@ private:
 
 public:
 	//コンストラクタ
-	CBattle();
+	CBattle(StageType In_StageType);
 	//デストラクタ
 	~CBattle();	
 	//更新処理
@@ -62,11 +62,6 @@ public:
 	int GetSummonAllyCount(void) { return m_nSummonAllyCount; }
 	//勝利アニメーションが終了したかのGet
 	bool GetWinAnimation() { return m_pAllyLeader->GetWinTImer() >= LINIEWINTIME; }
-
-	//描画開始判定のSet
-	void SetDrawingStart(bool IsStart) { m_bDrawingStart = IsStart; }
-	//描画終了判定のSet
-	void SetDrawingEnd(bool IsEnd) { m_bDrawingEnd = IsEnd; }
 	//勝利アニメーションのSet
 	void SetWinAnimation(bool IsWin) { m_pAllyLeader->SetWinFlag(IsWin); }
 	//Linieの回転
@@ -103,11 +98,6 @@ private:
 
 	std::mutex mtx;
 
-	//描画開始判定
-	bool m_bDrawingStart;
-	//描画終了判定
-	bool m_bDrawingEnd;
-
 	//戦闘時間
 	int m_nBattleTime;
 	//敵のひとつ前の出現時間
@@ -128,7 +118,7 @@ private:
 	CLeader* m_pAllyLeader;
 	//敵ボスのクラスポインタ
 	CLeader* m_pEnemyLeader;
-public:
+private:
 	//リーダーの生成
 	void CreateLeader(void);
 
@@ -195,22 +185,6 @@ public:
 	//味方保存ログの描画
 	void SaveAllyLogDraw(void);
 
-	/*＝＝＝＝＝＝＝＝＝＝＝＝＝Pattern関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
-private:
-	//選択されたパターン
-	int m_nSelectPattern;
-	//最大パターン数
-	int m_nMaxPattern;
-
-public:
-	//選択されたパターンのGet
-	int GetSelectPattern(void) { return m_nSelectPattern; }
-	//用意された範囲でパターンを選ぶ
-	void RandomSelectPattern(void);
-	//最大パターン数のSet
-	void SetMaxPattern(int InMaxPattern) { m_nMaxPattern = InMaxPattern; }
-	//最大パターン数のGet
-	int GetMaxPattern(void) { return m_nMaxPattern; }
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝音関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
 	public:
 		void ReloadSound();

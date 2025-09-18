@@ -79,10 +79,12 @@ CSceneGame::CSceneGame(StageType StageNum)
 	SetCameraRotate(DirectX::XMFLOAT3(0.0f, 0.0f, -90.0f));
 	SetFovY(DirectX::XMConvertToRadians(60.0f));
 
+	CCharacterManager::GetInstance()->InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
+
 	m_pBackGround = new CBackGround();
 	m_pFieldVertex = new CFieldVertex();
 	m_pPlayer = new CPlayer();
-	m_pBattle = new CBattle();
+	m_pBattle = new CBattle(StageNum);
 	m_pField = new Field(StageNum);
 	m_pStarLine = new StarLine();
 
@@ -90,11 +92,7 @@ CSceneGame::CSceneGame(StageType StageNum)
 	m_pFieldVertex->SetPlayerAddress(m_pPlayer);
 	m_pPlayer->SetFieldVertexAddress(m_pFieldVertex);
 	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
-	SetFileAddress(m_pBattle);
 
-	CCharacterManager::GetInstance()->InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
-	m_pBattle->m_nStageNum = StageNum;
-	m_pBattle->CreateLeader();
 
 	// タイマー初期化
  	g_tTime = {};
@@ -109,10 +107,9 @@ CSceneGame::CSceneGame(StageType StageNum)
 	g_tTime.GamePhaseTime = -1.0f;
 
 	DrawCount = 0;
-
+	
 	InitSave();
 
-	m_pBattle->RandomSelectPattern();
 	//音の再生
 	if (m_pSourseGameBGM)SetVolumeBGM(m_pSourseGameBGM);
 	m_pSourseGameBGM->Start();
@@ -181,8 +178,6 @@ void CSceneGame::Update()
 			if (FadeTimeFlag)
 			{
 				FadeTime++;
-				m_pBattle->SetDrawingStart(true);
-				m_pBattle->SetDrawingEnd(false);
 			}
 			if (FadeTime > 4.0f * 60.0f)
 			{
@@ -340,15 +335,7 @@ void CSceneGame::Update()
 				// 描画時間終了時間または描画時間+フィーバーの終了時間
 				if (g_tTime.GamePhaseTime == (float)COOLTIME_START * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME)			// 経過時間がクールタイム開始の時間((本来の値  - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)未満
 				{
-					m_pBattle->SetDrawingStart(false);
-					m_pBattle->SetDrawingEnd(true);
 					m_pBattle->CharacterUpdate(true);
-					//if (!bLine)
-					//{
-					//	bLine = true;
-					//	m_pFieldVertex->SetNowLine(); //一番最後の線を表示しないようにする
-					//}
-					/*タイマー終了のSE*/
 				}
 				m_pBattle->Update();
 			}
@@ -447,8 +434,6 @@ void CSceneGame::Draw()
 	// 一つのサイクルが終わった時
 	if (g_tTime.GamePhaseTime == (float)SHAPE_DRAW_RESTART * 60.0f - g_tTime.GameSTimePheseAjust + g_tTime.GameSTimeFeverAjust + g_tTime.GameSTimeFeverStellaAjust + DRAW_EFFECT_TIME)// 経過時間が召喚開始の時間((本来の値 - 移動に詰んだ時の補正値) + 前回のサイクルが終了した時間)の時
 	{
-		m_pBattle->SetDrawingStart(true);
-		m_pBattle->SetDrawingEnd(false);
 		m_pBattle->CharacterUpdate(true);
 		// 次のサイクルに向けて各処理を行う
 		// 時間の初期化処理

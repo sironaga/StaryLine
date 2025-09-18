@@ -8,7 +8,6 @@ bool InitLoadData (bool WaveSwitch, int *pPattern , int* pEnemyNum );
 //pEnemy(ç\ë¢ëÃ)
 bool EnemyLoadData(int* InCornerCount, int* pSize);
 
-void SetFileAddress(CBattle* InAddress);
 void InitSave();
 void UnInitEnemyLoadData();
 void InStageData ();

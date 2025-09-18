@@ -23,7 +23,7 @@ public:
 	~CLeader();
 
 	//更新処理
-	void Update(bool IsStart = false, bool IsEnd = false);
+	void Update();
 
 	//描画処理
 	void Draw(int StageNum = 0);
@@ -37,7 +37,7 @@ private:
 	//生成モードの更新処理
 	void CreateUpdate(void);
 	//戦闘モードの更新処理
-	void BattleUpdate(bool IsStart = false, bool IsEnd = false);
+	void BattleUpdate();
 	//死亡モードの更新処理
 	void DeathUpdate(void);
 
