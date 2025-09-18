@@ -156,7 +156,7 @@ void CPause::Update()
 			{
 				m_ftime = 0.0f;
 				t = 0.1f;
-			}　
+			}
 		}
 		//ポーズ画面の開く処理
 		for (int i = 0; i < 9; i++)
