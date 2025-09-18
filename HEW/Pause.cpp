@@ -383,7 +383,7 @@ void CPause::Update()
 		}
 
 		//Œˆ’èƒ{ƒ^ƒ“
-		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A), VK_RETURN))
+		if (WithGetKeyTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A),VK_SPACE))
 		{
 			//se
 			m_pSoundPauseSE[1]->Stop();
