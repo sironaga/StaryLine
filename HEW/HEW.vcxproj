@@ -122,6 +122,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelEx.h" />
     <ClInclude Include="NumberUI.h" />
+    <ClInclude Include="Oparation.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Pause.h" />

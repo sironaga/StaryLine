@@ -11,6 +11,7 @@
 #include "BackGround.h"
 #include "SoundList.h"
 #include "EffectManager_sp.h"
+#include "ToTutorial.h"
 
 #define SELECT_MAX_STAR 4
 #define STORY_MAX_TXT 5
@@ -110,6 +111,7 @@ private:
 	ObjectParam m_ModelSubParam[StageKindMax];
 	ObjectParam m_tTransitionParam[2];
 	CBackGround* m_pBackGround;
+	CToTutorial* m_pToTutorial;
 
 	WORD m_Direction;
 
@@ -138,6 +140,7 @@ private:
 	bool m_bCantMove_Left;
 	bool m_bCantMove_Right;
 	bool m_bTransition;
+	bool m_bTutorial;
 	float m_fTime;
 	bool m_bClearCommand[5];
 	float m_fClearCommandResetTimer;

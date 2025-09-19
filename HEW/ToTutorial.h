@@ -7,8 +7,16 @@ enum class TutorialTextures
 	Back,
 	YesButton,
 	NoButton,
+	Select,
 
 	Max
+};
+
+enum class ScreenMove
+{
+	None,
+	ScreenUp,
+	ScreenDown,
 };
 
 class CToTutorial
@@ -18,9 +26,14 @@ public:
 	~CToTutorial();
 	void Update();
 	void Draw();
+	void SetMove(ScreenMove inMove);
+	ScreenMove GetMove();
+	bool TutorialInput();
 
 private:
 	Texture* m_pTexture[(int)TutorialTextures::Max];
 	SpriteParam m_tParam[(int)TutorialTextures::Max];
-
+	ScreenMove m_eMove;
+	float m_fTime;
+	int m_nSelect;
 };
