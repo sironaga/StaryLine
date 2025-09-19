@@ -26,6 +26,7 @@
 #include "StageSelect.h"
 #include "SceneGame.h"
 #include "SceneResult.h"
+#include "SceneTutorial.h"
 #include "SceneDebug.h"
 #include "SceneRanking.h"
 #include "StartDirection.h"
@@ -180,6 +181,7 @@ void Update()
 			break;
 		case SCENE_GAME:g_pScene = new CSceneGame(g_stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
+		case SCENE_TUTORIAL:g_pScene = new CSceneTutorial(); break;
 		case SCENE_RANKING:g_pScene = new CSceneRanking(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}

@@ -95,6 +95,8 @@ CStageSelect::CStageSelect()
 	, m_nPage(0)
 	, m_pStory{}
 	, m_StoryParam{}
+	, m_pToTutorial(nullptr)
+	, m_bTutorial(false)
 {
 	InitValue();
 	LoadFile();
@@ -103,6 +105,7 @@ CStageSelect::CStageSelect()
 	InitConposite();
 	ClearCheck();
 	SetCameraKind(NOMAL_CAMERA);
+	CSceneTitle::SetPlayed();
 }
 
 CStageSelect::~CStageSelect()
@@ -208,7 +211,7 @@ void CStageSelect::Update()
 		break;
 	}
 	
-	//m_bMoving = false;
+	m_pToTutorial->Update();
 }
 
 void CStageSelect::Draw()
@@ -224,6 +227,8 @@ void CStageSelect::Draw()
 	default:
 		break;
 	}
+
+	m_pToTutorial->Draw();
 }
 
 void CStageSelect::LinieDraw()
@@ -735,6 +740,7 @@ void CStageSelect::InitConposite()
 		m_pStarEfc[i] = new CEffectManager_sp(m_pEffect[(int)Effect::Star]);
 	}
 	m_pBackGround = new CBackGround();
+	m_pToTutorial = new CToTutorial();
 }
 
 void CStageSelect::LoadSound()
@@ -971,7 +977,13 @@ void CStageSelect::UpdateStory()
 			m_StoryParam[i].color.w = (1.0f - time) / 2.0f;
 		}
 		if (m_StoryTxtParam[4].color.w >= 0.0f)m_StoryTxtParam[4].color.w = (1.0f - time) / 2.0f;
-		if (time >= 2.0f)m_nPhase = (int)SelectPhase::Select;
+		if (time >= 2.0f)
+		{
+
+			m_pToTutorial->SetMove(ScreenMove::ScreenDown);
+			m_nPhase = (int)SelectPhase::Select;
+			m_bTutorial = true;
+		}
 		break;
 	default:
 		break;
@@ -1060,10 +1072,32 @@ void CStageSelect::UpdateSelect()
 		SetFovY(DirectX::XMConvertToRadians(30.0f));
 	}
 
-
+	if (m_bTutorial)
+	{
+		if (m_pToTutorial->GetMove() == ScreenMove::None)
+		{
+			if (m_pToTutorial->TutorialInput())
+			{
+				m_bTutorial = false;
+				m_pToTutorial->SetMove(ScreenMove::ScreenUp);
+				return;
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+	if (m_pToTutorial->GetMove() != ScreenMove::None) return;
 
 	if (!m_bEnd)
 	{
+		if (m_pToTutorial->IsPlayTutorial())
+		{
+			SetNext(SCENE_TUTORIAL);
+			m_bEnd = true;
+		}
+
 		if (!m_bMoving)
 		{
 			LinieRotationY = LINIE_ROTATE_FLONT;

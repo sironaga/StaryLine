@@ -1,5 +1,8 @@
 #include "Easing.h"
 #include "Defines.h"
+#include <algorithm>
+
+#undef min
 
 // --- EasingåvéZóp
 float InEasing(float Time, float StartValue, float ValueDifference, float Tween)
@@ -67,4 +70,20 @@ float Shaking(float Time, float StartValue, float ValueDifference, float Tween)
 	{
 		return StartValue +  -ValueDifference / (Time / shakeTime) / 1.0f;
 	}
+}
+
+float EaseOutCubic(float Time, float MaxTime)
+{
+	Time = Time / MaxTime;
+	Time = std::min(Time, MaxTime);
+
+	return 1.0f - powf(1 - Time, 3);
+}
+
+float EaseOutQuint(float Time, float MaxTime)
+{
+	Time = Time / MaxTime;
+	Time = std::min(Time, MaxTime);
+
+	return 1.0f - powf(1 - Time, 5);
 }

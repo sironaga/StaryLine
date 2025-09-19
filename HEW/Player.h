@@ -101,7 +101,7 @@ private:
 
 		Timer_Max
 	};
-	SpriteParam* m_pTimerParam[Timer_Max];
+	SpriteParam m_tTimerParam[Timer_Max];
 	Texture* m_pTimerTex[Timer_Max];
 
 public:

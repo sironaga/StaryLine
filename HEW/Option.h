@@ -216,7 +216,7 @@ private:
 
 
 	Texture* m_pTexture[KINDMAX_OPTION];	// テクスチャの読み込み
-	SpriteParam* m_pParam[KINDMAX_OPTION];	// テクスチャのパラメータ
+	SpriteParam m_tParam[KINDMAX_OPTION];	// テクスチャのパラメータ
 	
 
 	CNumberUI* m_pNumberUI;

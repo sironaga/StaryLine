@@ -47,7 +47,7 @@ CPlayer::CPlayer()
 	, m_nNowVertex(START_PLAYER), m_nDestination(START_PLAYER)
 	, m_ePlayerState(STOP), m_eDestination(DEFAULT)
 	, m_bCanMoveCheck(false), m_bDrawing(true)
-	, m_pTimerParam{}, m_pArrowParam{}
+	, m_tTimerParam{}, m_pArrowParam{}
 	, m_pTimerTex{}
 	, m_eArrowState{}
 	, m_tArrowCenterPos{}, m_tAjustPos{}
@@ -70,17 +70,17 @@ CPlayer::CPlayer()
 	}
 	for (int i = 0; i < Timer_Max; i++)
 	{
-		m_pTimerParam[i] = new SpriteParam();
-		m_pTimerParam[i]->size = { TIMER_OUTSIZE_X,TIMER_OUTSIZE_Y };
-		m_pTimerParam[i]->pos = { TIMER_BAR_OFFSET_X,TIMER_BAR_OFFSET_Y };
-		m_pTimerParam[i]->color = { 1.0f,1.0f,1.0f,1.0f };
-		m_pTimerParam[i]->uvPos = { 0.0f,0.0f };
-		m_pTimerParam[i]->uvSize = { 1.0f,1.0f };
-		m_pTimerParam[i]->world = Get2DWorld();
-		m_pTimerParam[i]->view = Get2DView();
-		m_pTimerParam[i]->proj = Get2DProj();
+		m_tTimerParam[i] = SpriteParam();
+		m_tTimerParam[i].size = { TIMER_OUTSIZE_X,TIMER_OUTSIZE_Y };
+		m_tTimerParam[i].pos = { TIMER_BAR_OFFSET_X,TIMER_BAR_OFFSET_Y };
+		m_tTimerParam[i].color = { 1.0f,1.0f,1.0f,1.0f };
+		m_tTimerParam[i].uvPos = { 0.0f,0.0f };
+		m_tTimerParam[i].uvSize = { 1.0f,1.0f };
+		m_tTimerParam[i].world = Get2DWorld();
+		m_tTimerParam[i].view = Get2DView();
+		m_tTimerParam[i].proj = Get2DProj();
 	}
-	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
+	m_tTimerParam[Timer_Gauge].size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
 
 	m_pArrowModel = new CModelEx(MODEL_PASS("Player/Board_Arrow.fbx"));
 	m_eArrowState = NONE_SELECT;
@@ -160,23 +160,23 @@ void CPlayer::Update()
 		static bool AlphaSwitch = false;
 		if (m_bDrawing || GetTime() == -1.0f)
 		{
-			if (m_pTimerParam[Timer_Gauge]->size.y <= TIMER_BARSIZE_Y * 0.3f)
+			if (m_tTimerParam[Timer_Gauge].size.y <= TIMER_BARSIZE_Y * 0.3f)
 			{
-				if (m_pTimerParam[Timer_Gauge]->color.w >= 1.0f)
+				if (m_tTimerParam[Timer_Gauge].color.w >= 1.0f)
 				{
 					AlphaSwitch = true;
 				}
-				else if (m_pTimerParam[Timer_Gauge]->color.w <= 0.3f)
+				else if (m_tTimerParam[Timer_Gauge].color.w <= 0.3f)
 				{
 					AlphaSwitch = false;
 				}
 
-				if (AlphaSwitch)m_pTimerParam[Timer_Gauge]->color.w -= 0.01f;
-				else m_pTimerParam[Timer_Gauge]->color.w += 0.01f;
+				if (AlphaSwitch)m_tTimerParam[Timer_Gauge].color.w -= 0.01f;
+				else m_tTimerParam[Timer_Gauge].color.w += 0.01f;
 			}
 			else
 			{
-				m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+				m_tTimerParam[Timer_Gauge].color.w = 1.0f;
 			}
 		}
 
@@ -238,7 +238,7 @@ void CPlayer::Draw()
 
 	for (int i = 0; i < 3; i++)
 	{
-		Sprite::SetParam(m_pTimerParam[i]);
+		Sprite::SetParam(m_tTimerParam[i]);
 		Sprite::SetTexture(m_pTimerTex[i]);
 		Sprite::Draw();
 		Sprite::ReSetSprite();
@@ -320,14 +320,14 @@ void CPlayer::Reset()
 {
 	m_bDrawing = false;	// 作図中を解除
 	m_tBrushPos = m_pFieldVtx->GetVertexPos(m_nNowVertex);
-	m_pTimerParam[Timer_Gauge]->size.y += TIMER_BARSIZE_Y / (RECOVER_TIME  * 60.0f);	// タイマーを上げ続ける
-	m_pTimerParam[Timer_Gauge]->color.w = 0.3f;
-	if (m_pTimerParam[Timer_Gauge]->size.y >= TIMER_BARSIZE_Y)
+	m_tTimerParam[Timer_Gauge].size.y += TIMER_BARSIZE_Y / (RECOVER_TIME  * 60.0f);	// タイマーを上げ続ける
+	m_tTimerParam[Timer_Gauge].color.w = 0.3f;
+	if (m_tTimerParam[Timer_Gauge].size.y >= TIMER_BARSIZE_Y)
 	{
-		m_pTimerParam[Timer_Gauge]->size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する
-		m_pTimerParam[Timer_Gauge]->color.w = 1.0f;
+		m_tTimerParam[Timer_Gauge].size.y = TIMER_BARSIZE_Y;	// 上がり切ったらその位置で固定する
+		m_tTimerParam[Timer_Gauge].color.w = 1.0f;
 	}
-	m_pTimerParam[Timer_Gauge]->pos.y = TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
+	m_tTimerParam[Timer_Gauge].pos.y = TIMER_BAR_OFFSET_Y + m_tTimerParam[Timer_Gauge].size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
 }
 
 void CPlayer::Reload()
@@ -344,7 +344,7 @@ void CPlayer::Reload()
 		m_pTimerTex[i] = new Texture();
 		m_pTimerTex[i]->Create(pass[i]);
 	}
-	m_pTimerParam[Timer_Gauge]->size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
+	m_tTimerParam[Timer_Gauge].size = { TIMER_BARSIZE_X,TIMER_BARSIZE_Y };
 
 	SAFE_DELETE(m_pArrowModel);
 	m_pArrowModel = new CModelEx(MODEL_PASS("Player/Board_Arrow.fbx"));
@@ -380,7 +380,7 @@ void CPlayer::TimerReCharge()
 		float posAjust = 10.0f * cosScale + TIMER_BAR_OFFSET_X;
 		for (int i = 0; i < 3; i++)
 		{
-			m_pTimerParam[i]->pos.x = posAjust;
+			m_tTimerParam[i].pos.x = posAjust;
 		}
 
 		if (count >= 10)
@@ -393,7 +393,7 @@ void CPlayer::TimerReCharge()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			m_pTimerParam[i]->pos.x = TIMER_BAR_OFFSET_X;
+			m_tTimerParam[i].pos.x = TIMER_BAR_OFFSET_X;
 		}
 
 	}
@@ -428,7 +428,7 @@ void CPlayer::UpdateStop()
 				m_eArrowState = CANNOT_SELECT;
 				m_bDrawing = false;				// 即座に作図終了
 				m_bCanMoveCheck = true;			// 移動可能かのチェック終了
-				m_pTimerParam[Timer_Gauge]->size.y  = 0.0f;				// タイマーを一番下まで落とす
+				m_tTimerParam[Timer_Gauge].size.y  = 0.0f;				// タイマーを一番下まで落とす
 				return;							// 関数を抜ける
 			}
 		}
@@ -650,15 +650,15 @@ void CPlayer::TimeProcess()
 	{
  		if (m_bDrawing && GetTimeStart())	// 作図中のとき
 		{
-			m_pTimerParam[Timer_Gauge]->size.y -= TIMER_BARSIZE_Y / (DRAW_TIME * 60.0f);	// 時間ごとにタイマーを下げる
-			if (m_pTimerParam[Timer_Gauge]->size.y <= 0.0f)
+			m_tTimerParam[Timer_Gauge].size.y -= TIMER_BARSIZE_Y / (DRAW_TIME * 60.0f);	// 時間ごとにタイマーを下げる
+			if (m_tTimerParam[Timer_Gauge].size.y <= 0.0f)
 			{
-				m_pTimerParam[Timer_Gauge]->size.y = 0.0f;	// 下がり切ったらその位置で固定する
+				m_tTimerParam[Timer_Gauge].size.y = 0.0f;	// 下がり切ったらその位置で固定する
 				m_bDrawing = false;				// 作図を終わる
 	
 			}
 		}
-		m_pTimerParam[Timer_Gauge]->pos.y = TIMER_BAR_OFFSET_Y + m_pTimerParam[Timer_Gauge]->size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
+		m_tTimerParam[Timer_Gauge].pos.y = TIMER_BAR_OFFSET_Y + m_tTimerParam[Timer_Gauge].size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
 	}
 }
 

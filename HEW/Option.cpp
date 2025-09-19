@@ -8,7 +8,7 @@ int COption::m_nValue[TAB_MAX];
 
 COption::COption()
 	: m_nSelect(SEC_SOUND), m_nSection(MASTER)
-	, m_pTexture{}, m_pParam{}
+	, m_pTexture{}, m_tParam{}
 	, m_nTempValue{}
 	, m_bOptionMode(false), m_bSetValue(false)
 	, m_pNumberUI()
@@ -22,8 +22,8 @@ COption::COption()
 	InitValue();
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
-		OldPos[i].X = m_pParam[i]->pos.x;
-		OldPos[i].Y = m_pParam[i]->pos.y;
+		OldPos[i].X = m_tParam[i].pos.x;
+		OldPos[i].Y = m_tParam[i].pos.y;
 	}
 }
 
@@ -32,7 +32,6 @@ COption::~COption()
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
 		SAFE_DELETE(m_pTexture[i]);
-		SAFE_DELETE(m_pParam[i]);
 	}
 	if (m_pNumberUI)
 	{
@@ -46,13 +45,13 @@ void COption::Update()
 	static float a = 0.0f;
 	m_Direction = GetControllerLStickTriggerForeDirection();
 
-	m_pParam[BACKSCROLL]->pos.x = -920.0f + 2.0f * a;
-	Sprite::SetParam(m_pParam[BACKSCROLL]);
+	m_tParam[BACKSCROLL].pos.x = -920.0f + 2.0f * a;
+	Sprite::SetParam(m_tParam[BACKSCROLL]);
 	Sprite::SetTexture(m_pTexture[BACKSCROLL]);
 	Sprite::Draw();
 
-	m_pParam[BACKSCROLL]->pos.x = 0 + 2.0f * a;
-	Sprite::SetParam(m_pParam[BACKSCROLL]);
+	m_tParam[BACKSCROLL].pos.x = 0 + 2.0f * a;
+	Sprite::SetParam(m_tParam[BACKSCROLL]);
 	Sprite::SetTexture(m_pTexture[BACKSCROLL]);
 	Sprite::Draw();
 	a++;
@@ -72,7 +71,7 @@ void COption::Update()
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = ( -415.0f * m_fMul)+MovePos.X;
+			m_tParam[SECTION_SELECT].pos.x = ( -415.0f * m_fMul)+MovePos.X;
 			break;
 		case SEC_SCREEN:
 			UpdateScreen();
@@ -86,7 +85,7 @@ void COption::Update()
 				m_nSection = SEC_INPUT;
 				m_nSelect = KEY_BOARD;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = 0.0f + MovePos.X;
+			m_tParam[SECTION_SELECT].pos.x = 0.0f + MovePos.X;
 			break;
 		case SEC_INPUT:
 			UpdateInput();
@@ -95,7 +94,7 @@ void COption::Update()
 				m_nSection = SEC_SCREEN;
 				m_nSelect = SCREEN_MODE;
 			}
-			m_pParam[SECTION_SELECT]->pos.x = (415.0f * m_fMul) + MovePos.X;
+			m_tParam[SECTION_SELECT].pos.x = (415.0f * m_fMul) + MovePos.X;
 			break;
 		default:break;
 		}
@@ -112,22 +111,22 @@ void COption::Update()
 void COption::Draw()
 {
 	SetRender2D();
-	Sprite::SetParam(m_pParam[BACKSCROLL]);
+	Sprite::SetParam(m_tParam[BACKSCROLL]);
 	Sprite::SetTexture(m_pTexture[BACKSCROLL]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[BACKBOARD]);
+	Sprite::SetParam(m_tParam[BACKBOARD]);
 	Sprite::SetTexture(m_pTexture[BACKBOARD]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SECTION_SELECT]);
+	Sprite::SetParam(m_tParam[SECTION_SELECT]);
 	Sprite::SetTexture(m_pTexture[SECTION_SELECT]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SECTION_LEFT]);
+	Sprite::SetParam(m_tParam[SECTION_LEFT]);
 	Sprite::SetTexture(m_pTexture[SECTION_LEFT]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SECTION_RIGHT]);
+	Sprite::SetParam(m_tParam[SECTION_RIGHT]);
 	Sprite::SetTexture(m_pTexture[SECTION_RIGHT]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[TAB_DEFAULT]);
+	Sprite::SetParam(m_tParam[TAB_DEFAULT]);
 	Sprite::SetTexture(m_pTexture[TAB_DEFAULT]);
 	Sprite::Draw();
 
@@ -143,7 +142,7 @@ void COption::Draw()
 
 
 
-	Sprite::SetParam(m_pParam[TAB_SELECT]);
+	Sprite::SetParam(m_tParam[TAB_SELECT]);
 	Sprite::SetTexture(m_pTexture[TAB_SELECT]);
 	Sprite::Draw();
 
@@ -160,8 +159,8 @@ void COption::SetAddPos(float x,float y)
 	MovePos = { x,y };
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
-		m_pParam[i]->pos.x += x;
-		m_pParam[i]->pos.y += y;
+		m_tParam[i].pos.x += x;
+		m_tParam[i].pos.y += y;
 	}
 }
 
@@ -170,14 +169,14 @@ void COption::SetMulSize(float mul)
 	m_fMul = 1 - mul;
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
-		OldPos[i].X = m_pParam[i]->pos.x;
-		OldPos[i].Y = m_pParam[i]->pos.y;
-		m_pParam[i]->size.x *= mul;
-		m_pParam[i]->size.y *= mul;
-		if (m_pParam[i]->pos.x < SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x - m_pParam[i]->pos.x * m_fMul;
-		else if(m_pParam[i]->pos.x > SCREEN_WIDTH)m_pParam[i]->pos.x = m_pParam[i]->pos.x + m_pParam[i]->pos.x * m_fMul;
-		if (m_pParam[i]->pos.y <SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y - m_pParam[i]->pos.y * m_fMul;
-		else if (m_pParam[i]->pos.y > SCREEN_HEIGHT)m_pParam[i]->pos.y = m_pParam[i]->pos.y + m_pParam[i]->pos.y * m_fMul;
+		OldPos[i].X = m_tParam[i].pos.x;
+		OldPos[i].Y = m_tParam[i].pos.y;
+		m_tParam[i].size.x *= mul;
+		m_tParam[i].size.y *= mul;
+		if (m_tParam[i].pos.x < SCREEN_WIDTH)m_tParam[i].pos.x = m_tParam[i].pos.x - m_tParam[i].pos.x * m_fMul;
+		else if(m_tParam[i].pos.x > SCREEN_WIDTH)m_tParam[i].pos.x = m_tParam[i].pos.x + m_tParam[i].pos.x * m_fMul;
+		if (m_tParam[i].pos.y <SCREEN_HEIGHT)m_tParam[i].pos.y = m_tParam[i].pos.y - m_tParam[i].pos.y * m_fMul;
+		else if (m_tParam[i].pos.y > SCREEN_HEIGHT)m_tParam[i].pos.y = m_tParam[i].pos.y + m_tParam[i].pos.y * m_fMul;
 	}
 	m_fMul = 1 - m_fMul;
 }
@@ -248,7 +247,6 @@ void COption::InitResolusion()
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
 		delete m_pTexture[i];
-		delete m_pParam[i];
 	}
 	LoadPass();
 	InitParam();
@@ -259,10 +257,10 @@ void COption::ResetSize()
 	if (m_fMul == 1.0f)return;
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
-		m_pParam[i]->size.x /= m_fMul;
-		m_pParam[i]->size.y /= m_fMul;
-		m_pParam[i]->pos.x = OldPos[i].X;
-		m_pParam[i]->pos.y = OldPos[i].Y;
+		m_tParam[i].size.x /= m_fMul;
+		m_tParam[i].size.y /= m_fMul;
+		m_tParam[i].pos.x = OldPos[i].X;
+		m_tParam[i].pos.y = OldPos[i].Y;
 	}
 	m_fMul = 1.0f;
 }
@@ -271,8 +269,8 @@ void COption::ResetPos()
 {
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
-		m_pParam[i]->pos.x -= MovePos.X;
-		m_pParam[i]->pos.y -= MovePos.Y;
+		m_tParam[i].pos.x -= MovePos.X;
+		m_tParam[i].pos.y -= MovePos.Y;
 	}
 	MovePos = { 0.0f,0.0f };
 }
@@ -282,8 +280,8 @@ void COption::LoadPass()
 	for (int i = 0; i < KINDMAX_OPTION; i++)
 	{
 		m_pTexture[i] = new Texture();
-		m_pParam[i] = new  SpriteParam();
-		m_pParam[i]->world = m_pParam[i]->operator()();
+		m_tParam[i] = SpriteParam();
+		m_tParam[i].world = m_tParam[i].operator()();
 	}
 	m_pTexture[BACKBOARD]->Create(TEX_PASS("Option/Option_Backboard.png"));
 	m_pTexture[BACKSCROLL]->Create(TEX_PASS("Option/Option_Backscroll.png"));
@@ -352,136 +350,136 @@ void COption::LoadPass()
 
 void COption::InitParam()
 {
-	m_pParam[BACKBOARD]->pos =			{ 0.0f,0.0f };
-	m_pParam[BACKBOARD]->size =			{ 1600.0f,1100.0f };
-	m_pParam[BACKSCROLL]->pos =			{ 0.0f,0.0f };
-	m_pParam[BACKSCROLL]->size =		{ 3840.0f,1100.0f };
-	m_pParam[DEFAULT]->pos =			{ -480.0f,-230.0f };
-	m_pParam[DEFAULT]->size =			{ 430.0f,70.0f };
-	m_pParam[DEFAULT_PUSH]->pos =		{ -480.0f,-230.0f };
-	m_pParam[DEFAULT_PUSH]->size =		{ 660.0f,100.0f };
-	m_pParam[DEFAULT_OK]->pos =			{ 400.0f,-150.0f };
-	m_pParam[DEFAULT_OK]->size =		{ 580.0f,80.0f };
-	m_pParam[DEFAULT_CANSEL]->pos = { -400.0f,-150.0f };
-	m_pParam[DEFAULT_CANSEL]->size = { 580.0f,80.0f };
-	m_pParam[DEFAULT_SELECTED]->pos = { -480.0f,-150.0f };
-	m_pParam[DEFAULT_SELECTED]->size = { 590.0f,90.0f };
-	m_pParam[DEFAULT_CONFIRMATION]->pos =	{ 0.0f,50.0f };
-	m_pParam[DEFAULT_CONFIRMATION]->size =	{ 1980.0f,1100.0f };
-	m_pParam[HELP_CONTROLLER_A]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_CONTROLLER_A]->size =	{ 1700.0f,105.0f };
-	m_pParam[HELP_KEYBOARD_A]->pos =		{ 0.0f,-345.0f };
-	m_pParam[HELP_KEYBOARD_A]->size =		{ 1700.0f,105.0 };
-	m_pParam[HELP_FPS_A]->pos =			{ 0.0f,-345.0f };
-	m_pParam[HELP_FPS_A]->size =			{ 1700.0f,105.0 };
-	m_pParam[HELP_RESOLUSION_A]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_RESOLUSION_A]->size =	{ 1700.0f,105.0 };
-	m_pParam[HELP_MASTERVOLUME_A]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_MASTERVOLUME_A]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_BGM_A]->pos =			{ 0.0f,-345.0f };
-	m_pParam[HELP_BGM_A]->size =			{ 1700.0f,105.0 };
-	m_pParam[HELP_SE_A]->pos =			{ 0.0f,-345.0f };
-	m_pParam[HELP_SE_A]->size =			{ 1700.0f,105.0 };
-	m_pParam[HELP_WINDOWMODE_A]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_WINDOWMODE_A]->size =	{ 1700.0f,105.0 };
-	m_pParam[HELP_DEFAULT_A]->pos =	{ 0.0f,-345.0f };
-	m_pParam[HELP_DEFAULT_A]->size =	{ 1700.0f,105.0 };
+	m_tParam[BACKBOARD].pos =			{ 0.0f,0.0f };
+	m_tParam[BACKBOARD].size =			{ 1600.0f,1100.0f };
+	m_tParam[BACKSCROLL].pos =			{ 0.0f,0.0f };
+	m_tParam[BACKSCROLL].size =		{ 3840.0f,1100.0f };
+	m_tParam[DEFAULT].pos =			{ -480.0f,-230.0f };
+	m_tParam[DEFAULT].size =			{ 430.0f,70.0f };
+	m_tParam[DEFAULT_PUSH].pos =		{ -480.0f,-230.0f };
+	m_tParam[DEFAULT_PUSH].size =		{ 660.0f,100.0f };
+	m_tParam[DEFAULT_OK].pos =			{ 400.0f,-150.0f };
+	m_tParam[DEFAULT_OK].size =		{ 580.0f,80.0f };
+	m_tParam[DEFAULT_CANSEL].pos = { -400.0f,-150.0f };
+	m_tParam[DEFAULT_CANSEL].size = { 580.0f,80.0f };
+	m_tParam[DEFAULT_SELECTED].pos = { -480.0f,-150.0f };
+	m_tParam[DEFAULT_SELECTED].size = { 590.0f,90.0f };
+	m_tParam[DEFAULT_CONFIRMATION].pos =	{ 0.0f,50.0f };
+	m_tParam[DEFAULT_CONFIRMATION].size =	{ 1980.0f,1100.0f };
+	m_tParam[HELP_CONTROLLER_A].pos =	{ 0.0f,-345.0f };
+	m_tParam[HELP_CONTROLLER_A].size =	{ 1700.0f,105.0f };
+	m_tParam[HELP_KEYBOARD_A].pos =		{ 0.0f,-345.0f };
+	m_tParam[HELP_KEYBOARD_A].size =		{ 1700.0f,105.0 };
+	m_tParam[HELP_FPS_A].pos =			{ 0.0f,-345.0f };
+	m_tParam[HELP_FPS_A].size =			{ 1700.0f,105.0 };
+	m_tParam[HELP_RESOLUSION_A].pos =	{ 0.0f,-345.0f };
+	m_tParam[HELP_RESOLUSION_A].size =	{ 1700.0f,105.0 };
+	m_tParam[HELP_MASTERVOLUME_A].pos =	{ 0.0f,-345.0f };
+	m_tParam[HELP_MASTERVOLUME_A].size = { 1700.0f,105.0 };
+	m_tParam[HELP_BGM_A].pos =			{ 0.0f,-345.0f };
+	m_tParam[HELP_BGM_A].size =			{ 1700.0f,105.0 };
+	m_tParam[HELP_SE_A].pos =			{ 0.0f,-345.0f };
+	m_tParam[HELP_SE_A].size =			{ 1700.0f,105.0 };
+	m_tParam[HELP_WINDOWMODE_A].pos =	{ 0.0f,-345.0f };
+	m_tParam[HELP_WINDOWMODE_A].size =	{ 1700.0f,105.0 };
+	m_tParam[HELP_DEFAULT_A].pos =	{ 0.0f,-345.0f };
+	m_tParam[HELP_DEFAULT_A].size =	{ 1700.0f,105.0 };
 
-	m_pParam[HELP_CONTROLLER_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_CONTROLLER_B]->size = { 1700.0f,105.0f };
-	m_pParam[HELP_KEYBOARD_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_KEYBOARD_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_FPS_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_FPS_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_RESOLUSION_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_RESOLUSION_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_MASTERVOLUME_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_MASTERVOLUME_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_BGM_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_BGM_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_SE_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_SE_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_WINDOWMODE_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_WINDOWMODE_B]->size = { 1700.0f,105.0 };
-	m_pParam[HELP_DEFAULT_B]->pos = { 0.0f,-345.0f };
-	m_pParam[HELP_DEFAULT_B]->size = { 1700.0f,105.0 };
+	m_tParam[HELP_CONTROLLER_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_CONTROLLER_B].size = { 1700.0f,105.0f };
+	m_tParam[HELP_KEYBOARD_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_KEYBOARD_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_FPS_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_FPS_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_RESOLUSION_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_RESOLUSION_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_MASTERVOLUME_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_MASTERVOLUME_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_BGM_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_BGM_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_SE_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_SE_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_WINDOWMODE_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_WINDOWMODE_B].size = { 1700.0f,105.0 };
+	m_tParam[HELP_DEFAULT_B].pos = { 0.0f,-345.0f };
+	m_tParam[HELP_DEFAULT_B].size = { 1700.0f,105.0 };
 
-	m_pParam[ICON_CONTROLLER_A]->pos =	{ 170.0f,-80.0f };
-	m_pParam[ICON_CONTROLLER_A]->size = { 1110.0f,410.0f };
-	m_pParam[ICON_CONTROLLER_B]->pos =	{ 170.0f,-80.0f };
-	m_pParam[ICON_CONTROLLER_B]->size = { 1110.0f,410.0f };
-	m_pParam[ICON_KEYBOARD_A]->pos =	{ 170.0f,-40.0f };
-	m_pParam[ICON_KEYBOARD_A]->size =	{ 1010.0f,310.0f };
-	m_pParam[ICON_KEYBOARD_B]->pos =	{ 170.0f,-40.0f };
-	m_pParam[ICON_KEYBOARD_B]->size =	{ 1010.0f,310.0f };
-	m_pParam[SELECT_LEFT]->pos =		{ -90.0f,300.0f };
-	m_pParam[SELECT_LEFT]->size =		{ 70.0f,70.0f };
-	m_pParam[SELECT_RIGHT]->pos =		{ 450.0f,0.0f };
-	m_pParam[SELECT_RIGHT]->size =		{ 70.0f,70.0f };
-	m_pParam[BAR_FRAME]->pos =			{ 300.0f,300.0f };
-	m_pParam[BAR_FRAME]->size =			{ 700.0f,40.0f };
-	m_pParam[BAR_GAGE]->pos =			{ 300.0f,300.0f };
-	m_pParam[BAR_GAGE]->size =			{ 700.0f,20.0f };
-	m_pParam[BAR_HANDLE]->pos =			{ 300.0f,300.0f };
-	m_pParam[BAR_HANDLE]->size =		{ 30.0f,30.0f };
-	m_pParam[OFF_NOT_SELECTED]->pos =	{ -90.0f,300.0f };
-	m_pParam[OFF_NOT_SELECTED]->size =	{ 70.0f,70.0f };
-	m_pParam[OFF_SELECTED]->pos =		{ -90.0f,300.0f };
-	m_pParam[OFF_SELECTED]->size =		{ 70.0f,70.0f };
-	m_pParam[ON_NOT_SELECTED]->pos =	{ -90.0f,0.0f };
-	m_pParam[ON_NOT_SELECTED]->size =	{ 70.0f,70.0f };
-	m_pParam[ON_SELECTED]->pos =		{ -90.0f,0.0f };
-	m_pParam[ON_SELECTED]->size =		{ 70.0f,70.0f };
-	m_pParam[RESOLUSION_800x600]->pos =		{ 50.0f,100.0f };
-	m_pParam[RESOLUSION_800x600]->size =	{ 340.0f,70.0f };
-	m_pParam[RESOLUSION_1280x720]->pos =	{ 50.0f,100.0f };
-	m_pParam[RESOLUSION_1280x720]->size =	{ 340.0f,70.0f };
-	m_pParam[RESOLUSION_1600x900]->pos =	{ 50.0f,100.0f };
-	m_pParam[RESOLUSION_1600x900]->size =	{ 340.0f,70.0f };
-	m_pParam[RESOLUSION_1920x1080]->pos =	{ 50.0f,100.0f };
-	m_pParam[RESOLUSION_1920x1080]->size =	{ 340.0f,70.0f };
-	m_pParam[RESOLUSION_ALL]->pos = { 400.0f,-5.0f };
-	m_pParam[RESOLUSION_ALL]->size = { 340.0f,280.0f };
-	m_pParam[RESOLUSION_SELECT]->pos =	{ 50.0f,70.0f };
-	m_pParam[RESOLUSION_SELECT]->size =	{ 340.0f,10.0f };
-	m_pParam[FULLSCREEN]->pos =			{ 120.0f, 290.0f };
-	m_pParam[FULLSCREEN]->size =		{ 200.0f,50.0f };
-	m_pParam[WINDOW]->pos =				{ 520.0f,290.0f };
-	m_pParam[WINDOW]->size =			{ 150.0f,50.0f };
-	m_pParam[FPS_30]->pos =				{ 100.0f,190.0f };
-	m_pParam[FPS_30]->size =			{ 100.0f,50.0f };
-	m_pParam[FPS_60]->pos =				{ 515.0f,190.0f };
-	m_pParam[FPS_60]->size =			{ 100.0f,50.0f };
-	m_pParam[INPUT_TIPE_A]->pos =		{ 120.0f,295.0f };
-	m_pParam[INPUT_TIPE_A]->size =		{ 140.0f,50.0f };
-	m_pParam[INPUT_TIPE_A2]->pos =		{ 120.0f,195.0f };
-	m_pParam[INPUT_TIPE_A2]->size =		{ 140.0f,50.0f };
-	m_pParam[INPUT_TIPE_B]->pos =		{ 540.0f,295.0f };
-	m_pParam[INPUT_TIPE_B]->size =		{ 140.0f,50.0f };
-	m_pParam[INPUT_TIPE_B2]->pos =		{ 540.0f,195.0f};
-	m_pParam[INPUT_TIPE_B2]->size =		{ 140.0f,50.0f };
-	m_pParam[SECTION_SELECT]->pos =		{ 380.0f,435.0f };
-	m_pParam[SECTION_SELECT]->size = { 550.0f,110.0f };
-	m_pParam[TAB_SELECT]->pos =			{ -485.0f,300.0f };
-	m_pParam[TAB_SELECT]->size =		{ 383.0f, 60.0f };
-	m_pParam[TAB_CONTROLLER]->pos =		{ -480.0f,200.0f };
-	m_pParam[TAB_CONTROLLER]->size =	{ 370.0f,60.0f };
-	m_pParam[TAB_KEYBOARD]->pos =		{ -480.0f,300.0f };
-	m_pParam[TAB_KEYBOARD]->size =		{ 310.0f,50.0f };
-	m_pParam[TAB_FPS]->pos =			{ -480.0f,200.0f };
-	m_pParam[TAB_FPS]->size =			{ 310.0f,50.0f };
-	m_pParam[TAB_RESOLUSION]->pos =		{ -480.0f,100.0f };
-	m_pParam[TAB_RESOLUSION]->size =	{ 310.0f,50.0f };
-	m_pParam[TAB_MASTERVOLUME]->pos =	{ -480.0f,300.0f };
-	m_pParam[TAB_MASTERVOLUME]->size =	{ 370.0f,60.0f };
-	m_pParam[TAB_BGM]->pos =			{ -480.0f,200.0f };
-	m_pParam[TAB_BGM]->size =			{ 310.0f,50.0f };
-	m_pParam[TAB_SE]->pos =				{ -480.0f,100.0f };
-	m_pParam[TAB_SE]->size =			{ 310.0f,50.0f };
-	m_pParam[TAB_WINDOWMODE]->pos =		{ -480.0f,300.0f };
-	m_pParam[TAB_WINDOWMODE]->size =	{ 370.0f,60.0f };
-	m_pParam[TAB_DEFAULT]->pos =    { -480.0f,-230.0f };
-	m_pParam[TAB_DEFAULT]->size =   { 350.0f,50.0f };
+	m_tParam[ICON_CONTROLLER_A].pos =	{ 170.0f,-80.0f };
+	m_tParam[ICON_CONTROLLER_A].size = { 1110.0f,410.0f };
+	m_tParam[ICON_CONTROLLER_B].pos =	{ 170.0f,-80.0f };
+	m_tParam[ICON_CONTROLLER_B].size = { 1110.0f,410.0f };
+	m_tParam[ICON_KEYBOARD_A].pos =	{ 170.0f,-40.0f };
+	m_tParam[ICON_KEYBOARD_A].size =	{ 1010.0f,310.0f };
+	m_tParam[ICON_KEYBOARD_B].pos =	{ 170.0f,-40.0f };
+	m_tParam[ICON_KEYBOARD_B].size =	{ 1010.0f,310.0f };
+	m_tParam[SELECT_LEFT].pos =		{ -90.0f,300.0f };
+	m_tParam[SELECT_LEFT].size =		{ 70.0f,70.0f };
+	m_tParam[SELECT_RIGHT].pos =		{ 450.0f,0.0f };
+	m_tParam[SELECT_RIGHT].size =		{ 70.0f,70.0f };
+	m_tParam[BAR_FRAME].pos =			{ 300.0f,300.0f };
+	m_tParam[BAR_FRAME].size =			{ 700.0f,40.0f };
+	m_tParam[BAR_GAGE].pos =			{ 300.0f,300.0f };
+	m_tParam[BAR_GAGE].size =			{ 700.0f,20.0f };
+	m_tParam[BAR_HANDLE].pos =			{ 300.0f,300.0f };
+	m_tParam[BAR_HANDLE].size =		{ 30.0f,30.0f };
+	m_tParam[OFF_NOT_SELECTED].pos =	{ -90.0f,300.0f };
+	m_tParam[OFF_NOT_SELECTED].size =	{ 70.0f,70.0f };
+	m_tParam[OFF_SELECTED].pos =		{ -90.0f,300.0f };
+	m_tParam[OFF_SELECTED].size =		{ 70.0f,70.0f };
+	m_tParam[ON_NOT_SELECTED].pos =	{ -90.0f,0.0f };
+	m_tParam[ON_NOT_SELECTED].size =	{ 70.0f,70.0f };
+	m_tParam[ON_SELECTED].pos =		{ -90.0f,0.0f };
+	m_tParam[ON_SELECTED].size =		{ 70.0f,70.0f };
+	m_tParam[RESOLUSION_800x600].pos =		{ 50.0f,100.0f };
+	m_tParam[RESOLUSION_800x600].size =	{ 340.0f,70.0f };
+	m_tParam[RESOLUSION_1280x720].pos =	{ 50.0f,100.0f };
+	m_tParam[RESOLUSION_1280x720].size =	{ 340.0f,70.0f };
+	m_tParam[RESOLUSION_1600x900].pos =	{ 50.0f,100.0f };
+	m_tParam[RESOLUSION_1600x900].size =	{ 340.0f,70.0f };
+	m_tParam[RESOLUSION_1920x1080].pos =	{ 50.0f,100.0f };
+	m_tParam[RESOLUSION_1920x1080].size =	{ 340.0f,70.0f };
+	m_tParam[RESOLUSION_ALL].pos = { 400.0f,-5.0f };
+	m_tParam[RESOLUSION_ALL].size = { 340.0f,280.0f };
+	m_tParam[RESOLUSION_SELECT].pos =	{ 50.0f,70.0f };
+	m_tParam[RESOLUSION_SELECT].size =	{ 340.0f,10.0f };
+	m_tParam[FULLSCREEN].pos =			{ 120.0f, 290.0f };
+	m_tParam[FULLSCREEN].size =		{ 200.0f,50.0f };
+	m_tParam[WINDOW].pos =				{ 520.0f,290.0f };
+	m_tParam[WINDOW].size =			{ 150.0f,50.0f };
+	m_tParam[FPS_30].pos =				{ 100.0f,190.0f };
+	m_tParam[FPS_30].size =			{ 100.0f,50.0f };
+	m_tParam[FPS_60].pos =				{ 515.0f,190.0f };
+	m_tParam[FPS_60].size =			{ 100.0f,50.0f };
+	m_tParam[INPUT_TIPE_A].pos =		{ 120.0f,295.0f };
+	m_tParam[INPUT_TIPE_A].size =		{ 140.0f,50.0f };
+	m_tParam[INPUT_TIPE_A2].pos =		{ 120.0f,195.0f };
+	m_tParam[INPUT_TIPE_A2].size =		{ 140.0f,50.0f };
+	m_tParam[INPUT_TIPE_B].pos =		{ 540.0f,295.0f };
+	m_tParam[INPUT_TIPE_B].size =		{ 140.0f,50.0f };
+	m_tParam[INPUT_TIPE_B2].pos =		{ 540.0f,195.0f};
+	m_tParam[INPUT_TIPE_B2].size =		{ 140.0f,50.0f };
+	m_tParam[SECTION_SELECT].pos =		{ 380.0f,435.0f };
+	m_tParam[SECTION_SELECT].size = { 550.0f,110.0f };
+	m_tParam[TAB_SELECT].pos =			{ -485.0f,300.0f };
+	m_tParam[TAB_SELECT].size =		{ 383.0f, 60.0f };
+	m_tParam[TAB_CONTROLLER].pos =		{ -480.0f,200.0f };
+	m_tParam[TAB_CONTROLLER].size =	{ 370.0f,60.0f };
+	m_tParam[TAB_KEYBOARD].pos =		{ -480.0f,300.0f };
+	m_tParam[TAB_KEYBOARD].size =		{ 310.0f,50.0f };
+	m_tParam[TAB_FPS].pos =			{ -480.0f,200.0f };
+	m_tParam[TAB_FPS].size =			{ 310.0f,50.0f };
+	m_tParam[TAB_RESOLUSION].pos =		{ -480.0f,100.0f };
+	m_tParam[TAB_RESOLUSION].size =	{ 310.0f,50.0f };
+	m_tParam[TAB_MASTERVOLUME].pos =	{ -480.0f,300.0f };
+	m_tParam[TAB_MASTERVOLUME].size =	{ 370.0f,60.0f };
+	m_tParam[TAB_BGM].pos =			{ -480.0f,200.0f };
+	m_tParam[TAB_BGM].size =			{ 310.0f,50.0f };
+	m_tParam[TAB_SE].pos =				{ -480.0f,100.0f };
+	m_tParam[TAB_SE].size =			{ 310.0f,50.0f };
+	m_tParam[TAB_WINDOWMODE].pos =		{ -480.0f,300.0f };
+	m_tParam[TAB_WINDOWMODE].size =	{ 370.0f,60.0f };
+	m_tParam[TAB_DEFAULT].pos =    { -480.0f,-230.0f };
+	m_tParam[TAB_DEFAULT].size =   { 350.0f,50.0f };
 }
 
 void COption::InitValue()
@@ -536,53 +534,53 @@ void COption::UpdateSound()
 	{
 	case MASTER:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)m_nSelect = BGM;
-		m_pParam[TAB_MASTERVOLUME]->size.x = 370.0f;
-		m_pParam[TAB_MASTERVOLUME]->size.y = 60.0f;
-		m_pParam[TAB_BGM]->size.x = 310.0f;
-		m_pParam[TAB_BGM]->size.y = 50.0f;
-		m_pParam[TAB_SE]->size.x = 310.0f;
-		m_pParam[TAB_SE]->size.y =  50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_MASTERVOLUME]->pos.y;
+		m_tParam[TAB_MASTERVOLUME].size.x = 370.0f;
+		m_tParam[TAB_MASTERVOLUME].size.y = 60.0f;
+		m_tParam[TAB_BGM].size.x = 310.0f;
+		m_tParam[TAB_BGM].size.y = 50.0f;
+		m_tParam[TAB_SE].size.x = 310.0f;
+		m_tParam[TAB_SE].size.y =  50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_MASTERVOLUME].pos.y;
 		break;
 	case BGM:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = MASTER;
 		else if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) ||IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = SE;
-		m_pParam[TAB_MASTERVOLUME]->size.x = 310.0f;
-		m_pParam[TAB_MASTERVOLUME]->size.y = 50.0f;
-		m_pParam[TAB_BGM]->size.x = 370.0f;
-		m_pParam[TAB_BGM]->size.y = 60.0f;
-		m_pParam[TAB_SE]->size.x = 310.0f;
-		m_pParam[TAB_SE]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_BGM]->pos.y;
+		m_tParam[TAB_MASTERVOLUME].size.x = 310.0f;
+		m_tParam[TAB_MASTERVOLUME].size.y = 50.0f;
+		m_tParam[TAB_BGM].size.x = 370.0f;
+		m_tParam[TAB_BGM].size.y = 60.0f;
+		m_tParam[TAB_SE].size.x = 310.0f;
+		m_tParam[TAB_SE].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_BGM].pos.y;
 		break;
 	case SE:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = BGM;
 		else if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = DEFAULTSOUND;
-		m_pParam[TAB_MASTERVOLUME]->size.x = 310.0f;
-		m_pParam[TAB_MASTERVOLUME]->size.y = 50.0f;
-		m_pParam[TAB_BGM]->size.x = 310.0f;
-		m_pParam[TAB_BGM]->size.y = 50.0f;
-		m_pParam[TAB_SE]->size.x = 370.0f;
-		m_pParam[TAB_SE]->size.y = 60.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_SE]->pos.y;
+		m_tParam[TAB_MASTERVOLUME].size.x = 310.0f;
+		m_tParam[TAB_MASTERVOLUME].size.y = 50.0f;
+		m_tParam[TAB_BGM].size.x = 310.0f;
+		m_tParam[TAB_BGM].size.y = 50.0f;
+		m_tParam[TAB_SE].size.x = 370.0f;
+		m_tParam[TAB_SE].size.y = 60.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_SE].pos.y;
 		break;
 	case DEFAULTSOUND:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = SE;
-		m_pParam[TAB_MASTERVOLUME]->size.x = 310.0f;
-		m_pParam[TAB_MASTERVOLUME]->size.y = 50.0f;
-		m_pParam[TAB_BGM]->size.x = 310.0f;
-		m_pParam[TAB_BGM]->size.y = 50.0f;
-		m_pParam[TAB_SE]->size.x = 310.0f;
-		m_pParam[TAB_SE]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 370.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 60.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_DEFAULT]->pos.y;
+		m_tParam[TAB_MASTERVOLUME].size.x = 310.0f;
+		m_tParam[TAB_MASTERVOLUME].size.y = 50.0f;
+		m_tParam[TAB_BGM].size.x = 310.0f;
+		m_tParam[TAB_BGM].size.y = 50.0f;
+		m_tParam[TAB_SE].size.x = 310.0f;
+		m_tParam[TAB_SE].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 370.0f;
+		m_tParam[TAB_DEFAULT].size.y = 60.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_DEFAULT].pos.y;
 		break;
 	default:break;
 	}
@@ -596,54 +594,54 @@ void COption::UpdateScreen()
 	{
 	case SCREEN_MODE:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = FRAME_RATE;
-		m_pParam[TAB_WINDOWMODE]->size.x = 370.0f;
-		m_pParam[TAB_WINDOWMODE]->size.y = 60.0f;
-		m_pParam[TAB_FPS]->size.x = 310.0f;
-		m_pParam[TAB_FPS]->size.y = 50.0f;
-		m_pParam[TAB_RESOLUSION]->size.x = 310.0f;
-		m_pParam[TAB_RESOLUSION]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_WINDOWMODE]->pos.y;
+		m_tParam[TAB_WINDOWMODE].size.x = 370.0f;
+		m_tParam[TAB_WINDOWMODE].size.y = 60.0f;
+		m_tParam[TAB_FPS].size.x = 310.0f;
+		m_tParam[TAB_FPS].size.y = 50.0f;
+		m_tParam[TAB_RESOLUSION].size.x = 310.0f;
+		m_tParam[TAB_RESOLUSION].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_WINDOWMODE].pos.y;
 		break;
 	case FRAME_RATE:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = SCREEN_MODE;
 		else if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = RESOLUSION;
-		m_pParam[TAB_WINDOWMODE]->size.x = 310.0f;
-		m_pParam[TAB_WINDOWMODE]->size.y = 50.0f;
-		m_pParam[TAB_FPS]->size.x = 370.0f;
-		m_pParam[TAB_FPS]->size.y = 60.0f;
-		m_pParam[TAB_RESOLUSION]->size.x = 310.0f;
-		m_pParam[TAB_RESOLUSION]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_WINDOWMODE]->pos.y;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_FPS]->pos.y;
+		m_tParam[TAB_WINDOWMODE].size.x = 310.0f;
+		m_tParam[TAB_WINDOWMODE].size.y = 50.0f;
+		m_tParam[TAB_FPS].size.x = 370.0f;
+		m_tParam[TAB_FPS].size.y = 60.0f;
+		m_tParam[TAB_RESOLUSION].size.x = 310.0f;
+		m_tParam[TAB_RESOLUSION].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_WINDOWMODE].pos.y;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_FPS].pos.y;
 		break;
 	case RESOLUSION:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = FRAME_RATE;
 		else if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = DEFAULTSCREEN;
-		m_pParam[TAB_WINDOWMODE]->size.x = 310.0f;
-		m_pParam[TAB_WINDOWMODE]->size.y = 50.0f;
-		m_pParam[TAB_FPS]->size.x = 310.0f;
-		m_pParam[TAB_FPS]->size.y = 50.0f;
-		m_pParam[TAB_RESOLUSION]->size.x = 370.0f;
-		m_pParam[TAB_RESOLUSION]->size.y = 60.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_RESOLUSION]->pos.y;
+		m_tParam[TAB_WINDOWMODE].size.x = 310.0f;
+		m_tParam[TAB_WINDOWMODE].size.y = 50.0f;
+		m_tParam[TAB_FPS].size.x = 310.0f;
+		m_tParam[TAB_FPS].size.y = 50.0f;
+		m_tParam[TAB_RESOLUSION].size.x = 370.0f;
+		m_tParam[TAB_RESOLUSION].size.y = 60.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_RESOLUSION].pos.y;
 		break;
 	case DEFAULTSCREEN:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = RESOLUSION;
-		m_pParam[TAB_WINDOWMODE]->size.x = 310.0f;
-		m_pParam[TAB_WINDOWMODE]->size.y = 50.0f;
-		m_pParam[TAB_FPS]->size.x = 310.0f;
-		m_pParam[TAB_FPS]->size.y = 50.0f;
-		m_pParam[TAB_RESOLUSION]->size.x = 310.0f;
-		m_pParam[TAB_RESOLUSION]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 370.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 60.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_DEFAULT]->pos.y;
+		m_tParam[TAB_WINDOWMODE].size.x = 310.0f;
+		m_tParam[TAB_WINDOWMODE].size.y = 50.0f;
+		m_tParam[TAB_FPS].size.x = 310.0f;
+		m_tParam[TAB_FPS].size.y = 50.0f;
+		m_tParam[TAB_RESOLUSION].size.x = 310.0f;
+		m_tParam[TAB_RESOLUSION].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 370.0f;
+		m_tParam[TAB_DEFAULT].size.y = 60.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_DEFAULT].pos.y;
 		break;
 	default:break;
 	}
@@ -655,34 +653,34 @@ void COption::UpdateInput()
 	{
 	case KEY_BOARD:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = CONTROLLER;
-		m_pParam[TAB_KEYBOARD]->size.x = 370.0f;
-		m_pParam[TAB_KEYBOARD]->size.y = 60.0f;
-		m_pParam[TAB_CONTROLLER]->size.x = 310.0f;
-		m_pParam[TAB_CONTROLLER]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_KEYBOARD]->pos.y;
+		m_tParam[TAB_KEYBOARD].size.x = 370.0f;
+		m_tParam[TAB_KEYBOARD].size.y = 60.0f;
+		m_tParam[TAB_CONTROLLER].size.x = 310.0f;
+		m_tParam[TAB_CONTROLLER].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_KEYBOARD].pos.y;
 		break;
 	case CONTROLLER:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = KEY_BOARD;
 		else if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') || m_Direction == XINPUT_GAMEPAD_DPAD_DOWN)	m_nSelect = DEFAULTINPUT;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_CONTROLLER]->pos.y;
-		m_pParam[TAB_KEYBOARD]->size.x = 310.0f;
-		m_pParam[TAB_KEYBOARD]->size.y = 50.0f;
-		m_pParam[TAB_CONTROLLER]->size.x = 370.0f;
-		m_pParam[TAB_CONTROLLER]->size.y = 60.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 310.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 50.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_CONTROLLER].pos.y;
+		m_tParam[TAB_KEYBOARD].size.x = 310.0f;
+		m_tParam[TAB_KEYBOARD].size.y = 50.0f;
+		m_tParam[TAB_CONTROLLER].size.x = 370.0f;
+		m_tParam[TAB_CONTROLLER].size.y = 60.0f;
+		m_tParam[TAB_DEFAULT].size.x = 310.0f;
+		m_tParam[TAB_DEFAULT].size.y = 50.0f;
 		break;
 	case DEFAULTINPUT:
 		if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W') || m_Direction == XINPUT_GAMEPAD_DPAD_UP)	m_nSelect = CONTROLLER;
-		m_pParam[TAB_KEYBOARD]->size.x = 310.0f;
-		m_pParam[TAB_KEYBOARD]->size.y = 50.0f;
-		m_pParam[TAB_CONTROLLER]->size.x = 310.0f;
-		m_pParam[TAB_CONTROLLER]->size.y = 50.0f;
-		m_pParam[TAB_DEFAULT]->size.x = 370.0f;
-		m_pParam[TAB_DEFAULT]->size.y = 60.0f;
-		m_pParam[TAB_SELECT]->pos.y = m_pParam[TAB_DEFAULT]->pos.y;
+		m_tParam[TAB_KEYBOARD].size.x = 310.0f;
+		m_tParam[TAB_KEYBOARD].size.y = 50.0f;
+		m_tParam[TAB_CONTROLLER].size.x = 310.0f;
+		m_tParam[TAB_CONTROLLER].size.y = 50.0f;
+		m_tParam[TAB_DEFAULT].size.x = 370.0f;
+		m_tParam[TAB_DEFAULT].size.y = 60.0f;
+		m_tParam[TAB_SELECT].pos.y = m_tParam[TAB_DEFAULT].pos.y;
 		break;
 	default:break;
 	}
@@ -696,28 +694,28 @@ void COption::SetValue(int kind)
 		switch (i)
 		{
 		case COption::MASTER:
-			m_pParam[TAB_MASTERVOLUME]->color.w = 0.5f;
+			m_tParam[TAB_MASTERVOLUME].color.w = 0.5f;
 			break;
 		case COption::BGM:
-			m_pParam[TAB_BGM]->color.w = 0.5f;
+			m_tParam[TAB_BGM].color.w = 0.5f;
 			break;
 		case COption::SE:
-			m_pParam[TAB_SE]->color.w = 0.5f;
+			m_tParam[TAB_SE].color.w = 0.5f;
 			break;
 		case COption::SCREEN_MODE:
-			m_pParam[TAB_WINDOWMODE]->color.w = 0.5f;
+			m_tParam[TAB_WINDOWMODE].color.w = 0.5f;
 			break;
 		case COption::RESOLUSION:
-			m_pParam[TAB_RESOLUSION]->color.w = 0.5f;
+			m_tParam[TAB_RESOLUSION].color.w = 0.5f;
 			break;
 		case COption::FRAME_RATE:
-			m_pParam[TAB_FPS]->color.w = 0.5f;
+			m_tParam[TAB_FPS].color.w = 0.5f;
 			break;
 		case COption::KEY_BOARD:
-			m_pParam[TAB_KEYBOARD]->color.w = 0.5f;
+			m_tParam[TAB_KEYBOARD].color.w = 0.5f;
 			break;
 		case COption::CONTROLLER:
-			m_pParam[TAB_CONTROLLER]->color.w = 0.5f;
+			m_tParam[TAB_CONTROLLER].color.w = 0.5f;
 			break;
 		case COption::TAB_MAX:
 			break;
@@ -774,11 +772,11 @@ void COption::SetValue(int kind)
 		AJUST_MINMAX(m_nTempValue[DEFAULTSOUND], 0, 1);
 		if (m_nTempValue[DEFAULTSOUND] == 0)
 		{
-			m_pParam[DEFAULT_SELECTED]->pos.x = m_pParam[DEFAULT_CANSEL]->pos.x;
+			m_tParam[DEFAULT_SELECTED].pos.x = m_tParam[DEFAULT_CANSEL].pos.x;
 		}
 		else
 		{
-			m_pParam[DEFAULT_SELECTED]->pos.x = m_pParam[DEFAULT_OK]->pos.x;
+			m_tParam[DEFAULT_SELECTED].pos.x = m_tParam[DEFAULT_OK].pos.x;
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_Y, VK_RETURN))
 			{
 				InitValue(SEC_SOUND);
@@ -792,11 +790,11 @@ void COption::SetValue(int kind)
 		AJUST_MINMAX(m_nTempValue[DEFAULTSCREEN], 0, 1);
 		if (m_nTempValue[DEFAULTSCREEN] == 0)
 		{
-			m_pParam[DEFAULT_SELECTED]->pos.x = m_pParam[DEFAULT_CANSEL]->pos.x;
+			m_tParam[DEFAULT_SELECTED].pos.x = m_tParam[DEFAULT_CANSEL].pos.x;
 		}
 		else
 		{
-			m_pParam[DEFAULT_SELECTED]->pos.x = m_pParam[DEFAULT_OK]->pos.x;
+			m_tParam[DEFAULT_SELECTED].pos.x = m_tParam[DEFAULT_OK].pos.x;
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_Y, VK_RETURN))
 			{
 				InitValue(SEC_SCREEN);
@@ -810,11 +808,11 @@ void COption::SetValue(int kind)
 		AJUST_MINMAX(m_nTempValue[DEFAULTINPUT], 0, 1);
 		if (m_nTempValue[DEFAULTINPUT] == 0)
 		{
-			m_pParam[DEFAULT_SELECTED]->pos.x = m_pParam[DEFAULT_CANSEL]->pos.x;
+			m_tParam[DEFAULT_SELECTED].pos.x = m_tParam[DEFAULT_CANSEL].pos.x;
 		}
 		else
 		{
-			m_pParam[DEFAULT_SELECTED]->pos.x = m_pParam[DEFAULT_OK]->pos.x;
+			m_tParam[DEFAULT_SELECTED].pos.x = m_tParam[DEFAULT_OK].pos.x;
 			if (WithGetKeyTriger(XINPUT_GAMEPAD_Y, VK_RETURN))
 			{
 				InitValue(SEC_INPUT);
@@ -831,30 +829,30 @@ void COption::SetValue(int kind)
 		m_nValue[kind] = m_nTempValue[kind];
 		m_bSetValue = false;
 
-		m_pParam[TAB_MASTERVOLUME]->color.w = 1.0f;
-		m_pParam[TAB_BGM]->color.w = 1.0f;
-		m_pParam[TAB_SE]->color.w = 1.0f;
-		m_pParam[TAB_WINDOWMODE]->color.w = 1.0f;
-		m_pParam[TAB_RESOLUSION]->color.w = 1.0f;
-		m_pParam[TAB_FPS]->color.w = 1.0f;
-		m_pParam[TAB_KEYBOARD]->color.w = 1.0f;
-		m_pParam[TAB_CONTROLLER]->color.w = 1.0f;
-		m_pParam[RESOLUSION_SELECT]->pos = { 50.0f,70.0f };
+		m_tParam[TAB_MASTERVOLUME].color.w = 1.0f;
+		m_tParam[TAB_BGM].color.w = 1.0f;
+		m_tParam[TAB_SE].color.w = 1.0f;
+		m_tParam[TAB_WINDOWMODE].color.w = 1.0f;
+		m_tParam[TAB_RESOLUSION].color.w = 1.0f;
+		m_tParam[TAB_FPS].color.w = 1.0f;
+		m_tParam[TAB_KEYBOARD].color.w = 1.0f;
+		m_tParam[TAB_CONTROLLER].color.w = 1.0f;
+		m_tParam[RESOLUSION_SELECT].pos = { 50.0f,70.0f };
 	}
 	if (WithGetKeyTriger(XINPUT_GAMEPAD_B, VK_ESCAPE))
 	{
 		m_nTempValue[kind] = m_nValue[kind];
 		m_bSetValue = false;
 
-		m_pParam[TAB_MASTERVOLUME]->color.w = 1.0f;
-		m_pParam[TAB_BGM]->color.w = 1.0f;
-		m_pParam[TAB_SE]->color.w = 1.0f;
-		m_pParam[TAB_WINDOWMODE]->color.w = 1.0f;
-		m_pParam[TAB_RESOLUSION]->color.w = 1.0f;
-		m_pParam[TAB_FPS]->color.w = 1.0f;
-		m_pParam[TAB_KEYBOARD]->color.w = 1.0f;
-		m_pParam[TAB_CONTROLLER]->color.w = 1.0f;
-		m_pParam[RESOLUSION_SELECT]->pos = { 50.0f,70.0f };
+		m_tParam[TAB_MASTERVOLUME].color.w = 1.0f;
+		m_tParam[TAB_BGM].color.w = 1.0f;
+		m_tParam[TAB_SE].color.w = 1.0f;
+		m_tParam[TAB_WINDOWMODE].color.w = 1.0f;
+		m_tParam[TAB_RESOLUSION].color.w = 1.0f;
+		m_tParam[TAB_FPS].color.w = 1.0f;
+		m_tParam[TAB_KEYBOARD].color.w = 1.0f;
+		m_tParam[TAB_CONTROLLER].color.w = 1.0f;
+		m_tParam[RESOLUSION_SELECT].pos = { 50.0f,70.0f };
 	}
 }
 
@@ -873,36 +871,36 @@ void COption::DrawSound()
 
 	if (m_bSetValue && m_nSelect != MASTER)
 	{
-		m_pParam[BAR_GAGE]->color.w = 0.5f;
-		m_pParam[BAR_FRAME]->color.w = 0.5f;
-		m_pParam[BAR_HANDLE]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[BAR_GAGE].color.w = 0.5f;
+		m_tParam[BAR_FRAME].color.w = 0.5f;
+		m_tParam[BAR_HANDLE].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 		alpha = 0.5f;
 	}
 	else
 	{
-		m_pParam[BAR_GAGE]->color.w = 1.0f;
-		m_pParam[BAR_FRAME]->color.w = 1.0f;
-		m_pParam[BAR_HANDLE]->color.w = 1.0f;
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[BAR_GAGE].color.w = 1.0f;
+		m_tParam[BAR_FRAME].color.w = 1.0f;
+		m_tParam[BAR_HANDLE].color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 		alpha = 1.0f;
 	}
 
 
-	Sprite::SetParam(m_pParam[TAB_MASTERVOLUME]);
+	Sprite::SetParam(m_tParam[TAB_MASTERVOLUME]);
 	Sprite::SetTexture(m_pTexture[TAB_MASTERVOLUME]);
 	Sprite::Draw();	
-	m_pParam[BAR_GAGE]->size.x = 60.0f * m_nTempValue[MASTER] * m_fMul;
-	m_pParam[BAR_GAGE]->pos = { (263.0f * m_fMul - (m_pParam[BAR_FRAME]->size.x/2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_GAGE]);
+	m_tParam[BAR_GAGE].size.x = 60.0f * m_nTempValue[MASTER] * m_fMul;
+	m_tParam[BAR_GAGE].pos = { (263.0f * m_fMul - (m_tParam[BAR_FRAME].size.x/2.0f) + m_tParam[BAR_GAGE].size.x / 2.0f) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { (150.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_FRAME]);
+	m_tParam[BAR_FRAME].pos = { (150.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { (((60.0f*m_nTempValue[MASTER] - 60.0f)-30.0f) * m_fMul) + MovePos.X ,(300.0f * m_fMul) + MovePos.Y};
-	Sprite::SetParam(m_pParam[BAR_HANDLE]);
+	m_tParam[BAR_HANDLE].pos = { (((60.0f*m_nTempValue[MASTER] - 60.0f)-30.0f) * m_fMul) + MovePos.X ,(300.0f * m_fMul) + MovePos.Y};
+	Sprite::SetParam(m_tParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
 	Sprite::ReSetSprite();
@@ -915,35 +913,35 @@ void COption::DrawSound()
 
 	if (m_bSetValue && m_nSelect != BGM)
 	{
-		m_pParam[BAR_GAGE]->color.w = 0.5f;
-		m_pParam[BAR_FRAME]->color.w = 0.5f;
-		m_pParam[BAR_HANDLE]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[BAR_GAGE].color.w = 0.5f;
+		m_tParam[BAR_FRAME].color.w = 0.5f;
+		m_tParam[BAR_HANDLE].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 		alpha = 0.5f;
 	}
 	else
 	{
-		m_pParam[BAR_GAGE]->color.w = 1.0f;
-		m_pParam[BAR_FRAME]->color.w = 1.0f;
-		m_pParam[BAR_HANDLE]->color.w = 1.0f;
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[BAR_GAGE].color.w = 1.0f;
+		m_tParam[BAR_FRAME].color.w = 1.0f;
+		m_tParam[BAR_HANDLE].color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 		alpha = 1.0f;
 	}
 
-	Sprite::SetParam(m_pParam[TAB_BGM]);
+	Sprite::SetParam(m_tParam[TAB_BGM]);
 	Sprite::SetTexture(m_pTexture[TAB_BGM]);
 	Sprite::Draw();
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[BGM] * 60.0f * m_fMul;
-	m_pParam[BAR_GAGE]->pos = { ((263.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_GAGE]);
+	m_tParam[BAR_GAGE].size.x = m_nTempValue[BGM] * 60.0f * m_fMul;
+	m_tParam[BAR_GAGE].pos = { ((263.0f * m_fMul - m_tParam[BAR_FRAME].size.x / 2.0f) + m_tParam[BAR_GAGE].size.x / 2.0f) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { (150.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_FRAME]);
+	m_tParam[BAR_FRAME].pos = { (150.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { (((m_nTempValue[BGM] * 60.0f - 60.0f)-30.0f) * m_fMul) + MovePos.X ,(200.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_HANDLE]);
+	m_tParam[BAR_HANDLE].pos = { (((m_nTempValue[BGM] * 60.0f - 60.0f)-30.0f) * m_fMul) + MovePos.X ,(200.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
 
@@ -956,39 +954,39 @@ void COption::DrawSound()
 
 	if (m_bSetValue && m_nSelect != SE)
 	{
-		m_pParam[BAR_GAGE]->color.w = 0.5f;
-		m_pParam[BAR_FRAME]->color.w = 0.5f;
-		m_pParam[BAR_HANDLE]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[BAR_GAGE].color.w = 0.5f;
+		m_tParam[BAR_FRAME].color.w = 0.5f;
+		m_tParam[BAR_HANDLE].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 		alpha = 0.5f;
 	}
 	else
 	{
-		m_pParam[BAR_GAGE]->color.w = 1.0f;
-		m_pParam[BAR_FRAME]->color.w = 1.0f;
-		m_pParam[BAR_HANDLE]->color.w = 1.0f;
+		m_tParam[BAR_GAGE].color.w = 1.0f;
+		m_tParam[BAR_FRAME].color.w = 1.0f;
+		m_tParam[BAR_HANDLE].color.w = 1.0f;
 		alpha = 1.0f;
 	}
 
 	if (m_bSetValue && m_nSelect == DEFAULTSOUND)
 	{
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 	}
 
-	Sprite::SetParam(m_pParam[TAB_SE]);
+	Sprite::SetParam(m_tParam[TAB_SE]);
 	Sprite::SetTexture(m_pTexture[TAB_SE]);
 	Sprite::Draw();
-	m_pParam[BAR_GAGE]->size.x = m_nTempValue[SE] * 60.0f * m_fMul;
-	m_pParam[BAR_GAGE]->pos = { ((263.0f * m_fMul - m_pParam[BAR_FRAME]->size.x / 2.0f) + m_pParam[BAR_GAGE]->size.x / 2.0f) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_GAGE]);
+	m_tParam[BAR_GAGE].size.x = m_nTempValue[SE] * 60.0f * m_fMul;
+	m_tParam[BAR_GAGE].pos = { ((263.0f * m_fMul - m_tParam[BAR_FRAME].size.x / 2.0f) + m_tParam[BAR_GAGE].size.x / 2.0f) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_GAGE]);
 	Sprite::SetTexture(m_pTexture[BAR_GAGE]);
 	Sprite::Draw();
-	m_pParam[BAR_FRAME]->pos = { (150.0f * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_FRAME]);
+	m_tParam[BAR_FRAME].pos = { (150.0f * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_FRAME]);
 	Sprite::SetTexture(m_pTexture[BAR_FRAME]);
 	Sprite::Draw();
-	m_pParam[BAR_HANDLE]->pos = { (((m_nTempValue[SE] * 60.0f - 60.0f)-30.0f) * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
-	Sprite::SetParam(m_pParam[BAR_HANDLE]);
+	m_tParam[BAR_HANDLE].pos = { (((m_nTempValue[SE] * 60.0f - 60.0f)-30.0f) * m_fMul) + MovePos.X,(100.0f * m_fMul) + MovePos.Y };
+	Sprite::SetParam(m_tParam[BAR_HANDLE]);
 	Sprite::SetTexture(m_pTexture[BAR_HANDLE]);
 	Sprite::Draw();
 
@@ -1005,13 +1003,13 @@ void COption::DrawSound()
 	case MASTER:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_MASTERVOLUME_A]);
+			Sprite::SetParam(m_tParam[HELP_MASTERVOLUME_A]);
 			Sprite::SetTexture(m_pTexture[HELP_MASTERVOLUME_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_MASTERVOLUME_B]);
+			Sprite::SetParam(m_tParam[HELP_MASTERVOLUME_B]);
 			Sprite::SetTexture(m_pTexture[HELP_MASTERVOLUME_B]);
 			Sprite::Draw();
 		}
@@ -1019,13 +1017,13 @@ void COption::DrawSound()
 	case BGM:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_BGM_A]);
+			Sprite::SetParam(m_tParam[HELP_BGM_A]);
 			Sprite::SetTexture(m_pTexture[HELP_BGM_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_BGM_B]);
+			Sprite::SetParam(m_tParam[HELP_BGM_B]);
 			Sprite::SetTexture(m_pTexture[HELP_BGM_B]);
 			Sprite::Draw();
 		}
@@ -1033,13 +1031,13 @@ void COption::DrawSound()
 	case SE:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_SE_A]);
+			Sprite::SetParam(m_tParam[HELP_SE_A]);
 			Sprite::SetTexture(m_pTexture[HELP_SE_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_SE_B]);
+			Sprite::SetParam(m_tParam[HELP_SE_B]);
 			Sprite::SetTexture(m_pTexture[HELP_SE_B]);
 			Sprite::Draw();
 		}
@@ -1047,13 +1045,13 @@ void COption::DrawSound()
 	case DEFAULTSOUND:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_DEFAULT_A]);
+			Sprite::SetParam(m_tParam[HELP_DEFAULT_A]);
 			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_DEFAULT_B]);
+			Sprite::SetParam(m_tParam[HELP_DEFAULT_B]);
 			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_B]);
 			Sprite::Draw();
 		}
@@ -1063,17 +1061,17 @@ void COption::DrawSound()
 
 	if (m_bSetValue && m_nSelect == DEFAULTSOUND)
 	{
-		m_pParam[TAB_SELECT]->pos.y = 1500.0f;
-		Sprite::SetParam(m_pParam[DEFAULT_CONFIRMATION]);
+		m_tParam[TAB_SELECT].pos.y = 1500.0f;
+		Sprite::SetParam(m_tParam[DEFAULT_CONFIRMATION]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_CONFIRMATION]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_OK]);
+		Sprite::SetParam(m_tParam[DEFAULT_OK]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_OK]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_CANSEL]);
+		Sprite::SetParam(m_tParam[DEFAULT_CANSEL]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_CANSEL]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_SELECTED]);
+		Sprite::SetParam(m_tParam[DEFAULT_SELECTED]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_SELECTED]);
 		Sprite::Draw();
 	}
@@ -1085,39 +1083,39 @@ void COption::DrawScreen()
 {
 	if (m_bSetValue && m_nSelect != SCREEN_MODE)
 	{
-		m_pParam[TAB_WINDOWMODE]->color.w = 0.3f;
-		m_pParam[OFF_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[FULLSCREEN]->color.w = 0.5f;
-		m_pParam[WINDOW]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[TAB_WINDOWMODE].color.w = 0.3f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[ON_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[FULLSCREEN].color.w = 0.5f;
+		m_tParam[WINDOW].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 	}
 	else
 	{
-		m_pParam[TAB_WINDOWMODE]->color.w = 1.0f;
-		m_pParam[OFF_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[FULLSCREEN]->color.w = 1.0f;
-		m_pParam[WINDOW]->color.w = 1.0f;
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[TAB_WINDOWMODE].color.w = 1.0f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[ON_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[FULLSCREEN].color.w = 1.0f;
+		m_tParam[WINDOW].color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 	}
-	Sprite::SetParam(m_pParam[TAB_WINDOWMODE]);
+	Sprite::SetParam(m_tParam[TAB_WINDOWMODE]);
 	Sprite::SetTexture(m_pTexture[TAB_WINDOWMODE]);
 	Sprite::Draw();
 
-	Sprite::SetParam(m_pParam[TAB_RESOLUSION]);
+	Sprite::SetParam(m_tParam[TAB_RESOLUSION]);
 	Sprite::SetTexture(m_pTexture[TAB_RESOLUSION]);
 	Sprite::Draw();
 
-	Sprite::SetParam(m_pParam[TAB_FPS]);
+	Sprite::SetParam(m_tParam[TAB_FPS]);
 	Sprite::SetTexture(m_pTexture[TAB_FPS]);
 	Sprite::Draw();
 
-	Sprite::SetParam(m_pParam[FULLSCREEN]);
+	Sprite::SetParam(m_tParam[FULLSCREEN]);
 	Sprite::SetTexture(m_pTexture[FULLSCREEN]);
 	Sprite::Draw();
 
-	Sprite::SetParam(m_pParam[WINDOW]);
+	Sprite::SetParam(m_tParam[WINDOW]);
 	Sprite::SetTexture(m_pTexture[WINDOW]);
 	Sprite::Draw();
 
@@ -1128,22 +1126,22 @@ void COption::DrawScreen()
 		switch (m_nTempValue[SCREEN_MODE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1: 
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1153,22 +1151,22 @@ void COption::DrawScreen()
 		switch (m_nTempValue[SCREEN_MODE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1180,27 +1178,27 @@ void COption::DrawScreen()
 
 	if (m_bSetValue && m_nSelect != FRAME_RATE)
 	{
-		m_pParam[OFF_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[TAB_FPS]->color.w = 0.5f;
-		m_pParam[FPS_30]->color.w = 0.5f;
-		m_pParam[FPS_60]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[ON_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[TAB_FPS].color.w = 0.5f;
+		m_tParam[FPS_30].color.w = 0.5f;
+		m_tParam[FPS_60].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 	}
 	else
 	{
-		m_pParam[OFF_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[TAB_FPS]->color.w = 1.0f;
-		m_pParam[FPS_30]->color.w = 1.0f;
-		m_pParam[FPS_60]->color.w = 1.0f;	
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[ON_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[TAB_FPS].color.w = 1.0f;
+		m_tParam[FPS_30].color.w = 1.0f;
+		m_tParam[FPS_60].color.w = 1.0f;	
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 	}
 	
-	Sprite::SetParam(m_pParam[FPS_30]);
+	Sprite::SetParam(m_tParam[FPS_30]);
 	Sprite::SetTexture(m_pTexture[FPS_30]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[FPS_60]);
+	Sprite::SetParam(m_tParam[FPS_60]);
 	Sprite::SetTexture(m_pTexture[FPS_60]);
 	Sprite::Draw();
 
@@ -1212,22 +1210,22 @@ void COption::DrawScreen()
 		switch (m_nTempValue[FRAME_RATE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1237,22 +1235,22 @@ void COption::DrawScreen()
 		switch (m_nTempValue[FRAME_RATE])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y};
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y};
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { ( - 90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1261,38 +1259,38 @@ void COption::DrawScreen()
 	default:
 		break;
 	}
-	Sprite::SetParam(m_pParam[FPS_60]);
+	Sprite::SetParam(m_tParam[FPS_60]);
 	Sprite::SetTexture(m_pTexture[FPS_60]);
 	Sprite::Draw();
 
 	if (m_bSetValue && m_nSelect != RESOLUSION)
 	{
-		m_pParam[RESOLUSION_800x600]->color.w = 0.5f;
-		m_pParam[RESOLUSION_1280x720]->color.w = 0.5f;
-		m_pParam[RESOLUSION_1600x900]->color.w = 0.5f;
-		m_pParam[RESOLUSION_1920x1080]->color.w = 0.5f;
-		m_pParam[RESOLUSION_SELECT]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[RESOLUSION_800x600].color.w = 0.5f;
+		m_tParam[RESOLUSION_1280x720].color.w = 0.5f;
+		m_tParam[RESOLUSION_1600x900].color.w = 0.5f;
+		m_tParam[RESOLUSION_1920x1080].color.w = 0.5f;
+		m_tParam[RESOLUSION_SELECT].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 	}
 	else
 	{
-		m_pParam[RESOLUSION_800x600]->color.w = 1.0f;
-		m_pParam[RESOLUSION_1280x720]->color.w = 1.0f;
-		m_pParam[RESOLUSION_1600x900]->color.w = 1.0f;
-		m_pParam[RESOLUSION_1920x1080]->color.w = 1.0f;
-		m_pParam[RESOLUSION_SELECT]->color.w = 1.0f;
+		m_tParam[RESOLUSION_800x600].color.w = 1.0f;
+		m_tParam[RESOLUSION_1280x720].color.w = 1.0f;
+		m_tParam[RESOLUSION_1600x900].color.w = 1.0f;
+		m_tParam[RESOLUSION_1920x1080].color.w = 1.0f;
+		m_tParam[RESOLUSION_SELECT].color.w = 1.0f;
 	}
 	/*if (m_bSetValue && m_nSelect == RESOLUSION)
 	{
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 	}*/
 	if (m_bSetValue && m_nSelect == RESOLUSION)
 	{
-		Sprite::SetParam(m_pParam[RESOLUSION_ALL]);
+		Sprite::SetParam(m_tParam[RESOLUSION_ALL]);
 		Sprite::SetTexture(m_pTexture[RESOLUSION_ALL]);
 		Sprite::Draw();
 	}
-	Sprite::SetParam(m_pParam[RESOLUSION_1920x1080]);
+	Sprite::SetParam(m_tParam[RESOLUSION_1920x1080]);
 	switch (m_nValue[RESOLUSION])
 	{
 	case 0:	Sprite::SetTexture(m_pTexture[RESOLUSION_800x600]);break;
@@ -1302,18 +1300,18 @@ void COption::DrawScreen()
 	default:break;
 	}
 	Sprite::Draw();
-	m_pParam[SELECT_LEFT]->pos.y = (100.0f *  m_fMul)+MovePos.Y;
-	m_pParam[SELECT_RIGHT]->pos.y =( 100.0f * m_fMul)+MovePos.Y;
-	Sprite::SetParam(m_pParam[SELECT_LEFT]);
+	m_tParam[SELECT_LEFT].pos.y = (100.0f *  m_fMul)+MovePos.Y;
+	m_tParam[SELECT_RIGHT].pos.y =( 100.0f * m_fMul)+MovePos.Y;
+	Sprite::SetParam(m_tParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SELECT_RIGHT]);
+	Sprite::SetParam(m_tParam[SELECT_RIGHT]);
 	Sprite::SetTexture(m_pTexture[SELECT_RIGHT]);
 	Sprite::Draw();
 
 	if (m_nValue[RESOLUSION] == m_nTempValue[RESOLUSION])
 	{
-		Sprite::SetParam(m_pParam[RESOLUSION_SELECT]);
+		Sprite::SetParam(m_tParam[RESOLUSION_SELECT]);
 		Sprite::SetTexture(m_pTexture[RESOLUSION_SELECT]);
 		Sprite::Draw();
 	}
@@ -1323,13 +1321,13 @@ void COption::DrawScreen()
 	case SCREEN_MODE:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_WINDOWMODE_A]);
+			Sprite::SetParam(m_tParam[HELP_WINDOWMODE_A]);
 			Sprite::SetTexture(m_pTexture[HELP_WINDOWMODE_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_WINDOWMODE_B]);
+			Sprite::SetParam(m_tParam[HELP_WINDOWMODE_B]);
 			Sprite::SetTexture(m_pTexture[HELP_WINDOWMODE_B]);
 			Sprite::Draw();
 		}
@@ -1337,13 +1335,13 @@ void COption::DrawScreen()
 	case RESOLUSION:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_RESOLUSION_A]);
+			Sprite::SetParam(m_tParam[HELP_RESOLUSION_A]);
 			Sprite::SetTexture(m_pTexture[HELP_RESOLUSION_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_RESOLUSION_B]);
+			Sprite::SetParam(m_tParam[HELP_RESOLUSION_B]);
 			Sprite::SetTexture(m_pTexture[HELP_RESOLUSION_B]);
 			Sprite::Draw();
 		}
@@ -1351,13 +1349,13 @@ void COption::DrawScreen()
 	case FRAME_RATE:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_FPS_A]);
+			Sprite::SetParam(m_tParam[HELP_FPS_A]);
 			Sprite::SetTexture(m_pTexture[HELP_FPS_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_FPS_B]);
+			Sprite::SetParam(m_tParam[HELP_FPS_B]);
 			Sprite::SetTexture(m_pTexture[HELP_FPS_B]);
 			Sprite::Draw();
 		}
@@ -1365,13 +1363,13 @@ void COption::DrawScreen()
 	case DEFAULTSCREEN:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_DEFAULT_A]);
+			Sprite::SetParam(m_tParam[HELP_DEFAULT_A]);
 			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_DEFAULT_B]);
+			Sprite::SetParam(m_tParam[HELP_DEFAULT_B]);
 			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_B]);
 			Sprite::Draw();
 		}
@@ -1380,17 +1378,17 @@ void COption::DrawScreen()
 	}
 	if (m_bSetValue && m_nSelect == DEFAULTSCREEN)
 	{
-		m_pParam[TAB_SELECT]->pos.y = 1500.0f;
-		Sprite::SetParam(m_pParam[DEFAULT_CONFIRMATION]);
+		m_tParam[TAB_SELECT].pos.y = 1500.0f;
+		Sprite::SetParam(m_tParam[DEFAULT_CONFIRMATION]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_CONFIRMATION]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_OK]);
+		Sprite::SetParam(m_tParam[DEFAULT_OK]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_OK]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_CANSEL]);
+		Sprite::SetParam(m_tParam[DEFAULT_CANSEL]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_CANSEL]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_SELECTED]);
+		Sprite::SetParam(m_tParam[DEFAULT_SELECTED]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_SELECTED]);
 		Sprite::Draw();
 	}
@@ -1399,32 +1397,32 @@ void COption::DrawScreen()
 		switch (m_nTempValue[RESOLUSION])
 		{
 		case 0:
-			Sprite::SetParam(m_pParam[RESOLUSION_SELECT]);
+			Sprite::SetParam(m_tParam[RESOLUSION_SELECT]);
 			Sprite::SetTexture(m_pTexture[RESOLUSION_SELECT]);
 			Sprite::Draw();
-			m_pParam[RESOLUSION_SELECT]->pos.x = m_pParam[RESOLUSION_ALL]->pos.x;
-			m_pParam[RESOLUSION_SELECT]->pos.y = -140.0f;
+			m_tParam[RESOLUSION_SELECT].pos.x = m_tParam[RESOLUSION_ALL].pos.x;
+			m_tParam[RESOLUSION_SELECT].pos.y = -140.0f;
 			break;
 		case 1:
-			Sprite::SetParam(m_pParam[RESOLUSION_SELECT]);
+			Sprite::SetParam(m_tParam[RESOLUSION_SELECT]);
 			Sprite::SetTexture(m_pTexture[RESOLUSION_SELECT]);
 			Sprite::Draw();
-			m_pParam[RESOLUSION_SELECT]->pos.x = m_pParam[RESOLUSION_ALL]->pos.x;
-			m_pParam[RESOLUSION_SELECT]->pos.y = -70.0f;
+			m_tParam[RESOLUSION_SELECT].pos.x = m_tParam[RESOLUSION_ALL].pos.x;
+			m_tParam[RESOLUSION_SELECT].pos.y = -70.0f;
 			break;
 		case 2:
-			Sprite::SetParam(m_pParam[RESOLUSION_SELECT]);
+			Sprite::SetParam(m_tParam[RESOLUSION_SELECT]);
 			Sprite::SetTexture(m_pTexture[RESOLUSION_SELECT]);
 			Sprite::Draw();
-			m_pParam[RESOLUSION_SELECT]->pos.x = m_pParam[RESOLUSION_ALL]->pos.x;
-			m_pParam[RESOLUSION_SELECT]->pos.y = -0.0f;
+			m_tParam[RESOLUSION_SELECT].pos.x = m_tParam[RESOLUSION_ALL].pos.x;
+			m_tParam[RESOLUSION_SELECT].pos.y = -0.0f;
 			break;
 		case 3:
-			Sprite::SetParam(m_pParam[RESOLUSION_SELECT]);
+			Sprite::SetParam(m_tParam[RESOLUSION_SELECT]);
 			Sprite::SetTexture(m_pTexture[RESOLUSION_SELECT]);
 			Sprite::Draw();
-			m_pParam[RESOLUSION_SELECT]->pos.x = m_pParam[RESOLUSION_ALL]->pos.x;
-			m_pParam[RESOLUSION_SELECT]->pos.y = 70.0f;
+			m_tParam[RESOLUSION_SELECT].pos.x = m_tParam[RESOLUSION_ALL].pos.x;
+			m_tParam[RESOLUSION_SELECT].pos.y = 70.0f;
 			break;
 		default:
 			break;
@@ -1435,26 +1433,26 @@ void COption::DrawScreen()
 
 void COption::DrawInput()
 {
-	Sprite::SetParam(m_pParam[TAB_KEYBOARD]);
+	Sprite::SetParam(m_tParam[TAB_KEYBOARD]);
 	Sprite::SetTexture(m_pTexture[TAB_KEYBOARD]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[TAB_CONTROLLER]);
+	Sprite::SetParam(m_tParam[TAB_CONTROLLER]);
 	Sprite::SetTexture(m_pTexture[TAB_CONTROLLER]);
 	Sprite::Draw();
-	/*m_pParam[SELECT_LEFT]->pos.y = (300.0f * m_fMul) + MovePos.Y;
-	m_pParam[SELECT_RIGHT]->pos.y = (300.0f * m_fMul) + MovePos.Y;*/
-	Sprite::SetParam(m_pParam[SELECT_LEFT]);
+	/*m_tParam[SELECT_LEFT].pos.y = (300.0f * m_fMul) + MovePos.Y;
+	m_tParam[SELECT_RIGHT].pos.y = (300.0f * m_fMul) + MovePos.Y;*/
+	Sprite::SetParam(m_tParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SELECT_RIGHT]);
+	Sprite::SetParam(m_tParam[SELECT_RIGHT]);
 	Sprite::SetTexture(m_pTexture[SELECT_RIGHT]);
 	Sprite::Draw();
-	/*m_pParam[SELECT_LEFT]->pos.y = (200.0f * m_fMul) + MovePos.Y;
-	m_pParam[SELECT_RIGHT]->pos.y = (200.0f * m_fMul) + MovePos.Y;*/
-	Sprite::SetParam(m_pParam[SELECT_LEFT]);
+	/*m_tParam[SELECT_LEFT].pos.y = (200.0f * m_fMul) + MovePos.Y;
+	m_tParam[SELECT_RIGHT].pos.y = (200.0f * m_fMul) + MovePos.Y;*/
+	Sprite::SetParam(m_tParam[SELECT_LEFT]);
 	Sprite::SetTexture(m_pTexture[SELECT_LEFT]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[SELECT_RIGHT]);
+	Sprite::SetParam(m_tParam[SELECT_RIGHT]);
 	Sprite::SetTexture(m_pTexture[SELECT_RIGHT]);
 	Sprite::Draw();
 
@@ -1465,22 +1463,22 @@ void COption::DrawInput()
 		switch (m_nTempValue[KEY_BOARD])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1490,22 +1488,22 @@ void COption::DrawInput()
 		switch (m_nTempValue[KEY_BOARD])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(300.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1517,32 +1515,32 @@ void COption::DrawInput()
 
 	if (m_bSetValue && m_nSelect != CONTROLLER)
 	{
-		m_pParam[OFF_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[INPUT_TIPE_A2]->color.w = 0.5f;
-		m_pParam[INPUT_TIPE_B2]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[ON_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[INPUT_TIPE_A2].color.w = 0.5f;
+		m_tParam[INPUT_TIPE_B2].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 	}
 	else
 	{
-		m_pParam[OFF_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[INPUT_TIPE_A2]->color.w = 1.0f;
-		m_pParam[INPUT_TIPE_B2]->color.w = 1.0f;
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[ON_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[INPUT_TIPE_A2].color.w = 1.0f;
+		m_tParam[INPUT_TIPE_B2].color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 	}
 	
 
-	Sprite::SetParam(m_pParam[INPUT_TIPE_A]);
+	Sprite::SetParam(m_tParam[INPUT_TIPE_A]);
 	Sprite::SetTexture(m_pTexture[INPUT_TIPE_A]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[INPUT_TIPE_B]);
+	Sprite::SetParam(m_tParam[INPUT_TIPE_B]);
 	Sprite::SetTexture(m_pTexture[INPUT_TIPE_B]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[INPUT_TIPE_A2]);
+	Sprite::SetParam(m_tParam[INPUT_TIPE_A2]);
 	Sprite::SetTexture(m_pTexture[INPUT_TIPE_A2]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[INPUT_TIPE_B2]);
+	Sprite::SetParam(m_tParam[INPUT_TIPE_B2]);
 	Sprite::SetTexture(m_pTexture[INPUT_TIPE_B2]);
 	Sprite::Draw();
 
@@ -1554,22 +1552,22 @@ void COption::DrawInput()
 		switch (m_nTempValue[CONTROLLER])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1579,22 +1577,22 @@ void COption::DrawInput()
 		switch (m_nTempValue[CONTROLLER])
 		{
 		case 0:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_SELECTED]);
 			Sprite::Draw();
 			break;
 		case 1:
-			m_pParam[OFF_NOT_SELECTED]->pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (-90.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[OFF_NOT_SELECTED]);
 			Sprite::Draw();
-			m_pParam[OFF_NOT_SELECTED]->pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
-			Sprite::SetParam(m_pParam[OFF_NOT_SELECTED]);
+			m_tParam[OFF_NOT_SELECTED].pos = { (350.0f * m_fMul) + MovePos.X,(200.0f * m_fMul) + MovePos.Y };
+			Sprite::SetParam(m_tParam[OFF_NOT_SELECTED]);
 			Sprite::SetTexture(m_pTexture[ON_SELECTED]);
 			Sprite::Draw();
 			break;
@@ -1606,36 +1604,36 @@ void COption::DrawInput()
 
 	if (m_bSetValue && m_nSelect != KEY_BOARD)
 	{
-		m_pParam[OFF_NOT_SELECTED]->color.w = 0.5f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 0.5;
-		m_pParam[INPUT_TIPE_A]->color.w = 0.5f;
-		m_pParam[INPUT_TIPE_B]->color.w = 0.5f;
-		m_pParam[TAB_DEFAULT]->color.w = 0.5f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 0.5f;
+		m_tParam[ON_NOT_SELECTED].color.w = 0.5;
+		m_tParam[INPUT_TIPE_A].color.w = 0.5f;
+		m_tParam[INPUT_TIPE_B].color.w = 0.5f;
+		m_tParam[TAB_DEFAULT].color.w = 0.5f;
 	}
 	else 
 	{
 
-		m_pParam[OFF_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[INPUT_TIPE_A]->color.w = 1.0f;
-		m_pParam[INPUT_TIPE_B]->color.w = 1.0f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[ON_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[INPUT_TIPE_A].color.w = 1.0f;
+		m_tParam[INPUT_TIPE_B].color.w = 1.0f;
 	}
 	if (m_bSetValue && m_nSelect == DEFAULTINPUT)
 	{
-		m_pParam[TAB_DEFAULT]->color.w = 1.0f;
+		m_tParam[TAB_DEFAULT].color.w = 1.0f;
 	}
 	else
 	{
 
-		m_pParam[OFF_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[ON_NOT_SELECTED]->color.w = 1.0f;
-		m_pParam[INPUT_TIPE_A]->color.w = 1.0f;
-		m_pParam[INPUT_TIPE_B]->color.w = 1.0f;
+		m_tParam[OFF_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[ON_NOT_SELECTED].color.w = 1.0f;
+		m_tParam[INPUT_TIPE_A].color.w = 1.0f;
+		m_tParam[INPUT_TIPE_B].color.w = 1.0f;
 	}
-	Sprite::SetParam(m_pParam[INPUT_TIPE_A]);
+	Sprite::SetParam(m_tParam[INPUT_TIPE_A]);
 	Sprite::SetTexture(m_pTexture[INPUT_TIPE_A]);
 	Sprite::Draw();
-	Sprite::SetParam(m_pParam[INPUT_TIPE_B]);
+	Sprite::SetParam(m_tParam[INPUT_TIPE_B]);
 	Sprite::SetTexture(m_pTexture[INPUT_TIPE_B]);
 	Sprite::Draw();
 	
@@ -1645,17 +1643,17 @@ void COption::DrawInput()
 		
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_KEYBOARD_A]);
+			Sprite::SetParam(m_tParam[HELP_KEYBOARD_A]);
 			Sprite::SetTexture(m_pTexture[HELP_KEYBOARD_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_KEYBOARD_B]);
+			Sprite::SetParam(m_tParam[HELP_KEYBOARD_B]);
 			Sprite::SetTexture(m_pTexture[HELP_KEYBOARD_B]);
 			Sprite::Draw();
 		}
-		Sprite::SetParam(m_pParam[ICON_KEYBOARD_A]);
+		Sprite::SetParam(m_tParam[ICON_KEYBOARD_A]);
 		switch (m_nTempValue[KEY_BOARD])
 		{
 		case 0:Sprite::SetTexture(m_pTexture[ICON_KEYBOARD_A]); break;
@@ -1668,17 +1666,17 @@ void COption::DrawInput()
 	case CONTROLLER:
 		if (m_nValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_CONTROLLER_A]);
+			Sprite::SetParam(m_tParam[HELP_CONTROLLER_A]);
 			Sprite::SetTexture(m_pTexture[HELP_CONTROLLER_A]);
 			Sprite::Draw();
 		}
 		if (m_nValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_CONTROLLER_B]);
+			Sprite::SetParam(m_tParam[HELP_CONTROLLER_B]);
 			Sprite::SetTexture(m_pTexture[HELP_CONTROLLER_B]);
 			Sprite::Draw();
 		}
-		Sprite::SetParam(m_pParam[ICON_CONTROLLER_A]);
+		Sprite::SetParam(m_tParam[ICON_CONTROLLER_A]);
 		switch (m_nTempValue[CONTROLLER])
 		{
 		case 0:Sprite::SetTexture(m_pTexture[ICON_CONTROLLER_A]); break;
@@ -1691,13 +1689,13 @@ void COption::DrawInput()
 	case DEFAULTINPUT:
 		if (m_nTempValue[CONTROLLER] == 0)
 		{
-			Sprite::SetParam(m_pParam[HELP_DEFAULT_A]);
+			Sprite::SetParam(m_tParam[HELP_DEFAULT_A]);
 			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_A]);
 			Sprite::Draw();
 		}
 		if (m_nTempValue[CONTROLLER] == 1)
 		{
-			Sprite::SetParam(m_pParam[HELP_DEFAULT_B]);
+			Sprite::SetParam(m_tParam[HELP_DEFAULT_B]);
 			Sprite::SetTexture(m_pTexture[HELP_DEFAULT_B]);
 			Sprite::Draw();
 		}
@@ -1707,17 +1705,17 @@ void COption::DrawInput()
 	}
 	if (m_bSetValue && m_nSelect == DEFAULTINPUT)
 	{
-		m_pParam[TAB_SELECT]->pos.y = 1500.0f;
-		Sprite::SetParam(m_pParam[DEFAULT_CONFIRMATION]);
+		m_tParam[TAB_SELECT].pos.y = 1500.0f;
+		Sprite::SetParam(m_tParam[DEFAULT_CONFIRMATION]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_CONFIRMATION]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_OK]);
+		Sprite::SetParam(m_tParam[DEFAULT_OK]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_OK]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_CANSEL]);
+		Sprite::SetParam(m_tParam[DEFAULT_CANSEL]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_CANSEL]);
 		Sprite::Draw();
-		Sprite::SetParam(m_pParam[DEFAULT_SELECTED]);
+		Sprite::SetParam(m_tParam[DEFAULT_SELECTED]);
 		Sprite::SetTexture(m_pTexture[DEFAULT_SELECTED]);
 		Sprite::Draw();
 	}
