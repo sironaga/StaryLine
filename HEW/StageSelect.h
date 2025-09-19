@@ -68,6 +68,7 @@ private:
 	SpriteEx* m_pLeft_Select;
 	SpriteEx* m_pLeft_Select_Lock;
 	SpriteEx* m_pStageSelected;
+	SpriteEx* m_pTutorialSelected;
 	SpriteEx* m_pStageSelect_Underbar;
 	SpriteEx* m_pWorldSelect_Backboard;
 	SpriteEx* m_pWorld[3];
@@ -76,6 +77,7 @@ private:
 	SpriteEx* m_pRank_B;
 	SpriteEx* m_pRank_A;
 	SpriteEx* m_pRank_S;
+	SpriteEx* m_pTutorialButton;
 	IXAudio2SourceVoice* m_pSourseStageSelectBGM;
 	CSoundList* m_BGMSound;
 	IXAudio2SourceVoice* m_pSourseStageSelectSE[5];
@@ -136,6 +138,7 @@ private:
 	bool MainStage;
 	bool m_bEnd;
 	bool m_bMoving;
+	bool m_bSelectedToTutorial;
 	bool m_bClear[MAX_STAGE];
 	bool m_bCantMove_Left;
 	bool m_bCantMove_Right;
