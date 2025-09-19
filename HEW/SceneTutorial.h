@@ -7,8 +7,8 @@ class CSceneTutorial : public CScene
 public:
 	CSceneTutorial();
 	~CSceneTutorial();
-
+	void Update()override;
+	void Draw()override;
 private:
-
-
+	bool m_bEnd;
 };

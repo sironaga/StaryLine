@@ -105,6 +105,7 @@ CStageSelect::CStageSelect()
 	InitConposite();
 	ClearCheck();
 	SetCameraKind(NOMAL_CAMERA);
+	CSceneTitle::SetPlayed();
 }
 
 CStageSelect::~CStageSelect()
@@ -1091,6 +1092,12 @@ void CStageSelect::UpdateSelect()
 
 	if (!m_bEnd)
 	{
+		if (m_pToTutorial->IsPlayTutorial())
+		{
+			SetNext(SCENE_TUTORIAL);
+			m_bEnd = true;
+		}
+
 		if (!m_bMoving)
 		{
 			LinieRotationY = LINIE_ROTATE_FLONT;

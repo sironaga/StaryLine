@@ -29,6 +29,7 @@ public:
 	void SetMove(ScreenMove inMove);
 	ScreenMove GetMove();
 	bool TutorialInput();
+	bool IsPlayTutorial();
 
 private:
 	Texture* m_pTexture[(int)TutorialTextures::Max];

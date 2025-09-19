@@ -117,3 +117,8 @@ bool CToTutorial::TutorialInput()
 
 	return false;
 }
+
+bool CToTutorial::IsPlayTutorial()
+{
+	return m_nSelect == 1;
+}
