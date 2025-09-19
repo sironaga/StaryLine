@@ -97,6 +97,9 @@ CStageSelect::CStageSelect()
 	, m_StoryParam{}
 	, m_pToTutorial(nullptr)
 	, m_bTutorial(false)
+	, m_bSelectedToTutorial(false)
+	, m_pTutorialButton(nullptr)
+	, m_pTutorialSelected(nullptr)
 {
 	InitValue();
 	LoadFile();
@@ -684,6 +687,9 @@ void CStageSelect::LoadFile()
 	m_pStoryTxt[2] = new SpriteEx(TEX_PASS("Story/Beginning/Text03.png"));
 	m_pStoryTxt[3] = new SpriteEx(TEX_PASS("Story/Beginning/Text04.png"));
 	m_pStoryTxt[4] = new SpriteEx(TEX_PASS("Story/Beginning/Text05.png"));
+
+	m_pTutorialButton = new SpriteEx(TEX_PASS("Tutorial/ToTutorialButton.png"));
+	m_pTutorialSelected = new SpriteEx(TEX_PASS("Tutorial/ToTutorialSelected.png"));
 }
 
 void CStageSelect::SetVP()
@@ -1072,6 +1078,7 @@ void CStageSelect::UpdateSelect()
 		SetFovY(DirectX::XMConvertToRadians(30.0f));
 	}
 
+	static bool isTrans = false;
 	if (m_bTutorial)
 	{
 		if (m_pToTutorial->GetMove() == ScreenMove::None)
@@ -1079,6 +1086,7 @@ void CStageSelect::UpdateSelect()
 			if (m_pToTutorial->TutorialInput())
 			{
 				m_bTutorial = false;
+				isTrans = true;
 				m_pToTutorial->SetMove(ScreenMove::ScreenUp);
 				return;
 			}
@@ -1092,9 +1100,10 @@ void CStageSelect::UpdateSelect()
 
 	if (!m_bEnd)
 	{
-		if (m_pToTutorial->IsPlayTutorial())
+		if (m_pToTutorial->IsPlayTutorial() && isTrans)
 		{
 			SetNext(SCENE_TUTORIAL);
+			isTrans = false;
 			m_bEnd = true;
 		}
 
@@ -1103,129 +1112,152 @@ void CStageSelect::UpdateSelect()
 			LinieRotationY = LINIE_ROTATE_FLONT;
 			if (MainStage)
 			{
-				switch (g_Select_type.StageMainNumber)
+				if (m_bSelectedToTutorial)
 				{
-				case(GRASSLAND):
-					posX[0] = 0.0f;
-					posX[1] = 400.0f;
-					posX[2] = 800.0f;
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[GRASSLAND_STAGE3])
+					if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A))))
 					{
-						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = DESERT;
-						m_bMoving = true;
-						m_rotate.z = GRASS_ROTATE_Z2;
-						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
-						bRight = true;
+						m_pToTutorial->SetMove(ScreenMove::ScreenDown);
+						m_bTutorial = true;
 					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE3])
+					else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
 					{
-						m_pSourseStageSelectSE[LOCK_SE]->Stop();
-						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
-						XAUDIO2_BUFFER buffer;
-						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
-						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
-						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
-						m_pSourseStageSelectSE[LOCK_SE]->Start();
-						m_bCantMove_Right = true;
+						StartFade();
+						SetNext(SCENE_TITLE, g_Select_type);
+						m_bEnd = true;
 					}
-					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && m_bClear[DESERT_STAGE3])
-					{
-						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = SNOWFIELD;
-						m_bMoving = true;
-						m_rotate.z = GRASS_ROTATE_Z;
-						posX[2] = -400.0f;
-						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
-						bRight = false;
-					}
-					else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && !m_bClear[DESERT_STAGE3])
-					{
-						m_pSourseStageSelectSE[LOCK_SE]->Stop();
-						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
-						XAUDIO2_BUFFER buffer;
-						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
-						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
-						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
-						m_pSourseStageSelectSE[LOCK_SE]->Start();
-						m_bCantMove_Left = true;
-					}
-					g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
-					break;
-				case(DESERT):
-					posX[0] = -400.0f;
-					posX[1] = 0.0f;
-					posX[2] = 400.0f;
-					//LinieRotationY = 180.0f;
-					if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[DESERT_STAGE3])
-					{
-						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = SNOWFIELD;
-						m_bMoving = true;
-						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
-						bRight = true;
-					}
-					else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE3])
-					{
-						m_pSourseStageSelectSE[LOCK_SE]->Stop();
-						m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
-						XAUDIO2_BUFFER buffer;
-						buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
-						m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
-						SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
-						m_pSourseStageSelectSE[LOCK_SE]->Start();
-						m_bCantMove_Right = true;
-					}
-					else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
-					{
-						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = GRASSLAND;
-						m_bMoving = true;
-						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
-						bRight = false;
-					}
-					g_Select_type.StageSubNumber = DESERT_STAGE1;
-					break;
-				case(SNOWFIELD):
-					posX[0] = -800.0f;
-					posX[1] = -400.0f;
-					posX[2] = 0.0f;
-					//LinieRotationY = 180.0f;
-					if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
-					{
-						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = DESERT;
-						m_bMoving = true;
-						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
-						bRight = false;
-					}
-					else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT)
-					{
-						g_OldSelect_type = g_Select_type;
-						g_Select_type.StageMainNumber = GRASSLAND;
-						m_bMoving = true;
-						posX[0] = 400.0f;
-						m_pStageLinie->PlayAnime(g_AnimNo[0], false);
-						bRight = true;
-					};
-					g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
-					break;
 				}
-				if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A))))
+				else
 				{
-					StartFade();
-					MainStage ^= true;
+					switch (g_Select_type.StageMainNumber)
+					{
+					case(GRASSLAND):
+						posX[0] = 0.0f;
+						posX[1] = 400.0f;
+						posX[2] = 800.0f;
+						if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[GRASSLAND_STAGE3])
+						{
+							g_OldSelect_type = g_Select_type;
+							g_Select_type.StageMainNumber = DESERT;
+							m_bMoving = true;
+							m_rotate.z = GRASS_ROTATE_Z2;
+							m_pStageLinie->PlayAnime(g_AnimNo[0], false);
+							bRight = true;
+						}
+						else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[GRASSLAND_STAGE3])
+						{
+							m_pSourseStageSelectSE[LOCK_SE]->Stop();
+							m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+							XAUDIO2_BUFFER buffer;
+							buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+							m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+							SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+							m_pSourseStageSelectSE[LOCK_SE]->Start();
+							m_bCantMove_Right = true;
+						}
+						else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && m_bClear[DESERT_STAGE3])
+						{
+							g_OldSelect_type = g_Select_type;
+							g_Select_type.StageMainNumber = SNOWFIELD;
+							m_bMoving = true;
+							m_rotate.z = GRASS_ROTATE_Z;
+							posX[2] = -400.0f;
+							m_pStageLinie->PlayAnime(g_AnimNo[0], false);
+							bRight = false;
+						}
+						else if ((IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT) && !m_bClear[DESERT_STAGE3])
+						{
+							m_pSourseStageSelectSE[LOCK_SE]->Stop();
+							m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+							XAUDIO2_BUFFER buffer;
+							buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+							m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+							SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+							m_pSourseStageSelectSE[LOCK_SE]->Start();
+							m_bCantMove_Left = true;
+						}
+						g_Select_type.StageSubNumber = GRASSLAND_STAGE1;
+						break;
+					case(DESERT):
+						posX[0] = -400.0f;
+						posX[1] = 0.0f;
+						posX[2] = 400.0f;
+						//LinieRotationY = 180.0f;
+						if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && m_bClear[DESERT_STAGE3])
+						{
+							g_OldSelect_type = g_Select_type;
+							g_Select_type.StageMainNumber = SNOWFIELD;
+							m_bMoving = true;
+							m_pStageLinie->PlayAnime(g_AnimNo[0], false);
+							bRight = true;
+						}
+						else if ((IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT) && !m_bClear[DESERT_STAGE3])
+						{
+							m_pSourseStageSelectSE[LOCK_SE]->Stop();
+							m_pSourseStageSelectSE[LOCK_SE]->FlushSourceBuffers();
+							XAUDIO2_BUFFER buffer;
+							buffer = m_pSESound[LOCK_SE]->GetBuffer(false);
+							m_pSourseStageSelectSE[LOCK_SE]->SubmitSourceBuffer(&buffer);
+							SetVolumeSE(m_pSourseStageSelectSE[LOCK_SE]);
+							m_pSourseStageSelectSE[LOCK_SE]->Start();
+							m_bCantMove_Right = true;
+						}
+						else if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
+						{
+							g_OldSelect_type = g_Select_type;
+							g_Select_type.StageMainNumber = GRASSLAND;
+							m_bMoving = true;
+							m_pStageLinie->PlayAnime(g_AnimNo[0], false);
+							bRight = false;
+						}
+						g_Select_type.StageSubNumber = DESERT_STAGE1;
+						break;
+					case(SNOWFIELD):
+						posX[0] = -800.0f;
+						posX[1] = -400.0f;
+						posX[2] = 0.0f;
+						//LinieRotationY = 180.0f;
+						if (IsKeyTrigger(VK_LEFT) || (IsKeyTrigger('A') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT)) || m_Direction == XINPUT_GAMEPAD_DPAD_LEFT)
+						{
+							g_OldSelect_type = g_Select_type;
+							g_Select_type.StageMainNumber = DESERT;
+							m_bMoving = true;
+							m_pStageLinie->PlayAnime(g_AnimNo[0], false);
+							bRight = false;
+						}
+						else if (IsKeyTrigger(VK_RIGHT) || (IsKeyTrigger('D') || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT) || WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT)) || m_Direction == XINPUT_GAMEPAD_DPAD_RIGHT)
+						{
+							g_OldSelect_type = g_Select_type;
+							g_Select_type.StageMainNumber = GRASSLAND;
+							m_bMoving = true;
+							posX[0] = 400.0f;
+							m_pStageLinie->PlayAnime(g_AnimNo[0], false);
+							bRight = true;
+						};
+						g_Select_type.StageSubNumber = SNOWFIELD_STAGE1;
+						break;
+					}
 
-					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
-					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
-					m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
+					if (IsKeyTrigger(VK_RETURN) || (IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A))))
+					{
+						StartFade();
+						MainStage ^= true;
 
+						m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
+						m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
+						m_ModelParam[g_Select_type.StageMainNumber].pos = { FIRST_POS,0.0f,-100.0f };
+
+					}
+					else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
+					{
+						StartFade();
+						SetNext(SCENE_TITLE, g_Select_type);
+						m_bEnd = true;
+					}
 				}
-				else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
+				if (IsKeyTrigger('W') || IsKeyTrigger(VK_UP) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP) ||
+					IsKeyTrigger('S') || IsKeyTrigger(VK_DOWN) || CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN))
 				{
-					StartFade();
-					SetNext(SCENE_TITLE, g_Select_type);
-					m_bEnd = true;
+					m_bSelectedToTutorial ^= true;
 				}
 			}
 			else
@@ -1861,11 +1893,10 @@ void CStageSelect::DrawSelect()
 	float Scale2 = 1.05f + cosAngle / 30.0f;
 	float ArrowSize2 = 230.0f * Scale2;
 	float ArrowSize3 = 102.0f * Scale2;
-
-	float Scale3 = 1.05f + cosAngle / 30.0f;
 	float ArrowSize4 = 230.0f * Scale2;
 	float ArrowSize5 = 115.0f * Scale2;
-
+	float ToTutorialButton = 300.0f * Scale2;
+	
 	m_pBackGround->Draw();
 	// f`æ
 
@@ -2273,15 +2304,38 @@ void CStageSelect::DrawSelect()
 			//m_pDecition->SetPositon(CENTER_POS_X + m_tDecitionPos[1].x, CENTER_POS_Y + m_tDecitionPos[1].y, 0.0f);
 			//m_pDecition->Disp();
 
-			Sprite::ReSetSprite();
-			m_pStageSelected->SetProjection(GetProj());
-			m_pStageSelected->SetView(GetView());
-			m_pStageSelected->SetTexture();
-			m_pStageSelected->SetPositon(posX[g_Select_type.StageMainNumber], 103.0f, 140.0f);
-			m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
-			m_pStageSelected->Disp();
+			if (m_bSelectedToTutorial)
+			{
+				SetRender2D();
+				Sprite::ReSetSprite();
+				m_pStageSelected->SetProjection(Get2DProj());
+				m_pStageSelected->SetView(Get2DView());
+				m_pStageSelected->SetTexture();
+				m_pStageSelected->SetPositon(1700.0f, 850.0f, 0.0f);
+				m_pStageSelected->SetSize(ToTutorialButton, ToTutorialButton, 100.0f);
+				m_pStageSelected->Disp();
+			}
+			else
+			{
+				SetRender2D();
+				Sprite::ReSetSprite();
+				m_pStageSelected->SetProjection(GetProj());
+				m_pStageSelected->SetView(GetView());
+				m_pStageSelected->SetTexture();
+				m_pStageSelected->SetPositon(posX[g_Select_type.StageMainNumber], 103.0f, 140.0f);
+				m_pStageSelected->SetSize(ArrowSize2, ArrowSize3, 100.0f);
+				m_pStageSelected->Disp();
+			}
 
 		}
+		SetRender2D();
+		Sprite::ReSetSprite();
+		m_pTutorialButton->SetProjection(Get2DProj());
+		m_pTutorialButton->SetView(Get2DView());
+		m_pTutorialButton->SetTexture();
+		m_pTutorialButton->SetPositon(1700.0f,850.0f,0.0f);
+		m_pTutorialButton->SetSize(300.0f, 300.0f, 100.0f);
+		m_pTutorialButton->Disp();
 	}
 	else
 	{
@@ -2967,15 +3021,14 @@ void CStageSelect::DrawSelect()
 				m_pLeft_Select->SetPositon(subposX[2] + -180.0f, UI_POS_Y, 145.0f);
 				m_pLeft_Select->SetSize(ArrowSize1, ArrowSize1, 100.0f);
 				m_pLeft_Select->Disp();
-
-				SetRender2D();
-				Sprite::ReSetSprite();
-				m_pStageSelected->SetProjection(GetProj());
-				m_pStageSelected->SetView(GetView());
-				m_pStageSelected->SetTexture();
-				m_pStageSelected->SetPositon(subposX[2], UI_POS_Y - 12.0f, 140.0f);
-				m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
-				m_pStageSelected->Disp();
+					SetRender2D();
+					Sprite::ReSetSprite();
+					m_pStageSelected->SetProjection(GetProj());
+					m_pStageSelected->SetView(GetView());
+					m_pStageSelected->SetTexture();
+					m_pStageSelected->SetPositon(subposX[2], UI_POS_Y - 12.0f, 140.0f);
+					m_pStageSelected->SetSize(ArrowSize4, ArrowSize5, 100.0f);
+					m_pStageSelected->Disp();
 			}
 
 			break;
