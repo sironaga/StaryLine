@@ -73,8 +73,8 @@ void CToTutorial::Update()
 	default:
 		break;
 	}
-	m_tParam[(int)TutorialTextures::YesButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x + ce_f2ButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y - ce_f2ButtonOffSet.y);
-	m_tParam[(int)TutorialTextures::NoButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x - ce_f2ButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y - ce_f2ButtonOffSet.y);
+	m_tParam[(int)TutorialTextures::YesButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x - ce_f2ButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y - ce_f2ButtonOffSet.y);
+	m_tParam[(int)TutorialTextures::NoButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x + ce_f2ButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y - ce_f2ButtonOffSet.y);
 	
 	if (m_nSelect == 0) m_tParam[(int)TutorialTextures::Select].pos = m_tParam[(int)TutorialTextures::NoButton].pos;
 	else m_tParam[(int)TutorialTextures::Select].pos = m_tParam[(int)TutorialTextures::YesButton].pos;
