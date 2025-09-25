@@ -12,7 +12,8 @@
 
 constexpr DirectX::XMFLOAT2 ce_f2DownPos = DirectX::XMFLOAT2(0.0f, 0.0f);
 constexpr DirectX::XMFLOAT2 ce_f2UpPos = DirectX::XMFLOAT2(0.0f, SCREEN_HEIGHT);
-constexpr DirectX::XMFLOAT2 ce_f2ButtonOffSet = DirectX::XMFLOAT2(300.0f, 200.0f);
+constexpr DirectX::XMFLOAT2 ce_f2YesButtonOffSet = DirectX::XMFLOAT2(0.0f, -300.0f);
+constexpr DirectX::XMFLOAT2 ce_f2NoButtonOffSet = DirectX::XMFLOAT2(0.0f, -400.0f);
 
 CToTutorial::CToTutorial()
 	: m_pTexture{}, m_tParam{}
@@ -38,10 +39,10 @@ CToTutorial::CToTutorial()
 		m_tParam[i].proj = Get2DProj();
 	}
 
-	m_tParam[(int)TutorialTextures::Back].size = DirectX::XMFLOAT2(SCREEN_WIDTH -320, SCREEN_HEIGHT - 180);
-	m_tParam[(int)TutorialTextures::YesButton].size = DirectX::XMFLOAT2(200.0f, 100.0f);
-	m_tParam[(int)TutorialTextures::NoButton].size = DirectX::XMFLOAT2(200.0f, 100.0f);
-	m_tParam[(int)TutorialTextures::Select].size = DirectX::XMFLOAT2(200.0f, 100.0f);
+	m_tParam[(int)TutorialTextures::Back].size = DirectX::XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
+	m_tParam[(int)TutorialTextures::YesButton].size = DirectX::XMFLOAT2(450.0f, 80.0f);
+	m_tParam[(int)TutorialTextures::NoButton].size = DirectX::XMFLOAT2(450.0f, 80.0f);
+	m_tParam[(int)TutorialTextures::Select].size = DirectX::XMFLOAT2(450.0f, 80.0f);
 }
 
 CToTutorial::~CToTutorial()
@@ -73,8 +74,8 @@ void CToTutorial::Update()
 	default:
 		break;
 	}
-	m_tParam[(int)TutorialTextures::YesButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x - ce_f2ButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y - ce_f2ButtonOffSet.y);
-	m_tParam[(int)TutorialTextures::NoButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x + ce_f2ButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y - ce_f2ButtonOffSet.y);
+	m_tParam[(int)TutorialTextures::YesButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x + ce_f2YesButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y + ce_f2YesButtonOffSet.y);
+	m_tParam[(int)TutorialTextures::NoButton].pos = DirectX::XMFLOAT2(m_tParam[(int)TutorialTextures::Back].pos.x + ce_f2NoButtonOffSet.x, m_tParam[(int)TutorialTextures::Back].pos.y + ce_f2NoButtonOffSet.y);
 	
 	if (m_nSelect == 0) m_tParam[(int)TutorialTextures::Select].pos = m_tParam[(int)TutorialTextures::NoButton].pos;
 	else m_tParam[(int)TutorialTextures::Select].pos = m_tParam[(int)TutorialTextures::YesButton].pos;
@@ -104,8 +105,8 @@ ScreenMove CToTutorial::GetMove()
 
 bool CToTutorial::TutorialInput()
 {
-	if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_RIGHT, VK_RIGHT) || IsKeyTrigger('D') ||
-		WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_LEFT, VK_LEFT) || IsKeyTrigger('A'))
+	if (WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_DOWN, VK_DOWN) || IsKeyTrigger('S') ||
+		WithGetKeyTriger(XINPUT_GAMEPAD_DPAD_UP, VK_UP) || IsKeyTrigger('W'))
 	{
 		m_nSelect ^= 1;
 	}

@@ -1895,7 +1895,8 @@ void CStageSelect::DrawSelect()
 	float ArrowSize3 = 102.0f * Scale2;
 	float ArrowSize4 = 230.0f * Scale2;
 	float ArrowSize5 = 115.0f * Scale2;
-	float ToTutorialButton = 300.0f * Scale2;
+	float ToTutorialButtonX = 500.0f * Scale2;
+	float ToTutorialButtonY = 200.0f * Scale2;
 	
 	m_pBackGround->Draw();
 	// f`æ
@@ -2304,6 +2305,14 @@ void CStageSelect::DrawSelect()
 			//m_pDecition->SetPositon(CENTER_POS_X + m_tDecitionPos[1].x, CENTER_POS_Y + m_tDecitionPos[1].y, 0.0f);
 			//m_pDecition->Disp();
 
+		SetRender2D();
+		Sprite::ReSetSprite();
+		m_pTutorialButton->SetProjection(Get2DProj());
+		m_pTutorialButton->SetView(Get2DView());
+		m_pTutorialButton->SetTexture();
+		m_pTutorialButton->SetPositon(1600.0f,850.0f,0.0f);
+		m_pTutorialButton->SetSize(500.0f, -200.0f, 100.0f);
+		m_pTutorialButton->Disp();
 			if (m_bSelectedToTutorial)
 			{
 				SetRender2D();
@@ -2311,8 +2320,8 @@ void CStageSelect::DrawSelect()
 				m_pStageSelected->SetProjection(Get2DProj());
 				m_pStageSelected->SetView(Get2DView());
 				m_pStageSelected->SetTexture();
-				m_pStageSelected->SetPositon(1700.0f, 850.0f, 0.0f);
-				m_pStageSelected->SetSize(ToTutorialButton, ToTutorialButton, 100.0f);
+				m_pStageSelected->SetPositon(1600.0f, 850.0f, 0.0f);
+				m_pStageSelected->SetSize(ToTutorialButtonX, ToTutorialButtonY, 100.0f);
 				m_pStageSelected->Disp();
 			}
 			else
@@ -2328,14 +2337,6 @@ void CStageSelect::DrawSelect()
 			}
 
 		}
-		SetRender2D();
-		Sprite::ReSetSprite();
-		m_pTutorialButton->SetProjection(Get2DProj());
-		m_pTutorialButton->SetView(Get2DView());
-		m_pTutorialButton->SetTexture();
-		m_pTutorialButton->SetPositon(1700.0f,850.0f,0.0f);
-		m_pTutorialButton->SetSize(300.0f, 300.0f, 100.0f);
-		m_pTutorialButton->Disp();
 	}
 	else
 	{

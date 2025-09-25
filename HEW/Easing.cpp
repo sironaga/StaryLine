@@ -75,7 +75,7 @@ float Shaking(float Time, float StartValue, float ValueDifference, float Tween)
 float EaseOutCubic(float Time, float MaxTime)
 {
 	Time = Time / MaxTime;
-	Time = std::min(Time, MaxTime);
+	Time = std::min(Time, 1.0f);
 
 	return 1.0f - powf(1 - Time, 3);
 }
@@ -83,7 +83,7 @@ float EaseOutCubic(float Time, float MaxTime)
 float EaseOutQuint(float Time, float MaxTime)
 {
 	Time = Time / MaxTime;
-	Time = std::min(Time, MaxTime);
+	Time = std::min(Time, 1.0f);
 
 	return 1.0f - powf(1 - Time, 5);
 }
