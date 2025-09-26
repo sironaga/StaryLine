@@ -95,7 +95,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	g_pOption = new COption();
 	// シーン作成 
-	g_pScene = new CSceneTitle(g_pOption);
+	g_pScene = new CSceneTutorial();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 	g_pScene->SetGameDirection(g_pDirection);
 	g_nEvent = NOMAL_CAMERA;
