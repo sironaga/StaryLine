@@ -1,56 +1,40 @@
 //FieldVertex.cpp
 //編集者：AT12A25 中島聖羅
 #include "FieldVertex.h"
-#include "DirectXTex/TextureLoad.h"
 #include "Player.h"
-#include <math.h>
 #include "SceneGame.h"
-#include "_StructList.h"
-#include "Defines.h"
-#include "Main.h"
-#include "SoundList.h"
-
-//図形のやつ
-//三角形を回転させる(辺が一番長いところの2頂点が外心の上下左右を同時に満たす所を取得するればいけそう)
-//四角形を回転させる(????)
-//特殊な三角形の判定(1種類)
-//特殊な四角形の判定(4種類)
-//ひし形と正方形扱い変える
-//正方形と長方形どうする
-
 
 //↓FieldVertexのまだやってない事↓
-//各変数名の修正
 //コンストラクタとupdateのクリーンアップ
-//ヘッダーのクリーンアップ
-//グローバル領域のクリーンアップ
 //全体のコメントアウト見直し
 
-#define MAX_SHAPES_DRAW_TIME (0.75f)
+//----- 図形 -----
+#define MAX_SHAPES_DRAW_TIME (0.75f)//図形の表示時間
 #define TRIANGLE_SIZE (90.0f) //三角形のサイズ
 #define SQUARE_SIZE (80.0f) //正方形のサイズ
 #define TRAPEZOID_SIZE (80.0f) //台形のサイズ
 #define PARALLELOGRAM_SIZE (80.0f) //平行四辺形のサイズ
 #define SPECIAL_SHAPE_SIZE (80.0f) //カッター型の図形のサイズ
 
+//----- 線・星 -----
+#define LINE_SIZE (0.1f) //線のサイズ
+#define VERTEX_SIZE (10.0f) //星(頂点)のサイズ
 #define VERTEX_POS_X (-30.0f) //星(頂点)の描画位置X
 #define VERTEX_POS_Y (95.0f) //星(頂点)の描画位置Y
 #define VERTEX_SPACE_X (15.0f) //星(頂点)間の間隔X
 #define VERTEX_SPACE_Y (15.0f) //星(頂点)間の間隔Y
 
-#define LINE_SIZE (0.1f) //線のサイズ
-#define STAR_SIZE (10.0f) //星(頂点)のサイズ
-
+//----- フィーバー -----
 #define FEVER_ADD_TIME (1.0f) //フィーバーのステラ取った時の追加時間
 #define FEVER_TIME (10.0f) //フィーバーの時間
 #define MAX_FEVER_POINT (30.0f) //フィーバーゲージの上限ポイント
 #define FEVER_GAGE_POS_X (-83.0f) //フィーバーゲージのX座標
 #define FEVER_GAGE_POS_Y (65.0f) //フィーバーゲージのY座標
-
 #define FEVER_PLAYER_DRAW_POS_X (0.0f)
-#define FEVER_PLAYER_DRAW_POS_Y (-87.0f) //下限-63.0f 中限-30.0f　上限-27.0f
+#define FEVER_PLAYER_DRAW_POS_Y (-87.0f) //下限 -63.0f  中間 -30.0f  上限 -27.0f
 #define FEVER_STOP_PLAYER_TIME (1.0f) //フィーバー中プレイヤーが止まっている時間
 
+//----- ログ -----
 #define SUMMON_LOG_SIZE_X (40.0f) //ログのXサイズ
 #define SUMMON_LOG_SIZE_Y (10.0f) //ログのYサイズ
 #define MAX_DRAW_LOG (15) //ログの描画数
@@ -60,60 +44,45 @@
 #define FADE_LOG_SPEED (0.5f) //ログの終始のスピード
 #define MAIN_LOG_SPEED (1.0f) //ログの中間のスピード
 
-#define BOARD_SIZE_X (20.0f)
-#define BOARD_SIZE_Y (20.0f)
-
+//----- UI -----
+#define BOARD_SIZE_X (20.0f) //キャラクターの数のUIのサイズ
+#define BOARD_SIZE_Y (20.0f) //キャラクターの数のUIのサイズ
 #define FEVER_DRAW_ANGLE_TIME (1.0f) //フィーバーの描画UIを何秒で1回転させるか
 #define FEVER_DRAW_ANGLE_COUNT (2.0f) //フィーバーの描画UIを何回転させるか
-
-Sprite::Vertex vtx_FieldLine[MAX_LINE][4]; //線の四頂点座標保存用
-IXAudio2SourceVoice* g_FieldSe; //FieldVertexのサウンド音量
-CSoundList* g_Fieldsound; //FieldVertexのサウンドポインター
-
-float Xx = 0.0f;
-float Yy = 0.0f;
-
-int SubDeleteCount = 0;
-float MoveFlagStartTime = 0.0f;
-float MoveFlagEndTime = 0.0f;
-bool MoveFlagStart = true;
-bool MoveFlagEnd = true;
-
-float Size = 0.0f;
 
 CFieldVertex::CFieldVertex()
 	: m_tVertex{}
 	, m_tCenter_Vertex{}
-	, SummonLog{}
-	, NowSummonLog(0)
-	, OrderVertex{}
-	, OrderVertexCount(0)
-	, StartVertex()
-	, GoalVertex()
-	, Effect_Shapes_Pos{}
-	, Effect_NowShapes(0)
-	, NowShapes(0)
-	, Shapes_Count{}
-	, Comparison_Shapes_Vertex_Save{}
-	, Shapes_Vertex_Save{}
-	, Comparison{}
-	, BreakVertex(-1)
-	, SuperStarCount(0)
-	, nFeverPoint(0)
-	, fFeverPoint(0.0f)
-	, Partition(MAX_FEVER_POINT)
-	, Fever_Draw_Angle{}
-	, Fever_Draw_Angle_Count (FEVER_DRAW_ANGLE_COUNT)
-	, Fever_Player_Draw_Pos{}
-	, g_pShapesEffects_Pos{}
-	, Fever_Stop_Player_time(0.0f)
-	, Mode_Player_Move(0)
-	, Ally_Count(0)
-	, NowLine(0)
-	, Shapes_Draw_Time (0.0f)
-	, Now_Shapes_Draw (0)
-	, PlayerPos{}
-	, RoadStop(false)
+	, m_tSummonLog{}
+	, m_NowSummonLog(0)
+	, m_OrderVertex{}
+	, m_OrderVertexCount(0)
+	, m_StartVertex()
+	, m_GoalVertex()
+	, m_Effect_Shapes_Pos{}
+	, m_Effect_NowShapes(0)
+	, m_NowShapes(0)
+	, m_Shapes_Count{}
+	, m_Comparison_Shapes_Vertex_Save{}
+	, m_Shapes_Vertex_Save{}
+	, m_Comparison{}
+	, m_BreakVertex(-1)
+	, m_SuperStarCount(0)
+	, m_nFeverPoint(0)
+	, m_fFeverPoint(0.0f)
+	, m_Partition(MAX_FEVER_POINT)
+	, m_Fever_Draw_Angle{}
+	, m_Fever_Draw_Angle_Count (FEVER_DRAW_ANGLE_COUNT)
+	, m_Fever_Player_Draw_Pos{}
+	, m_ShapesEffects_Pos{}
+	, m_Fever_Stop_Player_time(0.0f)
+	, m_Mode_Player_Move(0)
+	, m_Ally_Count(0)
+	, m_NowLine(0)
+	, m_Shapes_Draw_Time (0.0f)
+	, m_Now_Shapes_Draw (0)
+	, m_PlayerPos{}
+	, m_RoadStop(false)
 	, m_pBattle(nullptr)
 	, m_pPlayer(nullptr)
 	, m_pTex_SuperStar_Number{ nullptr }
@@ -130,26 +99,26 @@ CFieldVertex::CFieldVertex()
 	, m_pSprite_Ally_Number{ nullptr }
 	, m_pSprite_Ally_Count{ nullptr }
 	, m_pSprite_Shapes{ nullptr }
-	, g_pFeverEffects_Sprite(nullptr)
-	, g_pFeverEffects{nullptr}
-	, g_pLineEffects_Sprite( nullptr)
-	, g_pLineEffects{nullptr}
-	, g_pShapesEffects_Sprite(nullptr)
-	, g_pShapesEffects{nullptr}
+	, m_pFeverEffects_Sprite(nullptr)
+	, m_pFeverEffects{nullptr}
+	, m_pLineEffects_Sprite( nullptr)
+	, m_pLineEffects{nullptr}
+	, m_pShapesEffects_Sprite(nullptr)
+	, m_pShapesEffects{nullptr}
 	, m_pStar_Model{ nullptr }
 	, m_pStarLine(nullptr)
-	, Fever_Effects_Alpha(1.0f)
-	, Shapes_Pos{}
-    , Shapes_type_Angle{}
-	, Shapes_Angle_Save{}
-	, Shapes_Length{}
-	, Shapes_Color_Time{}
+	, m_Fever_Effects_Alpha(1.0f)
+	, m_Shapes_Pos{}
+    , m_Shapes_type_Angle{}
+	, m_Shapes_Angle_Save{}
+	, m_Shapes_Length{}
+	, m_Shapes_Color_Time{}
 {
 	//-----サウンドの初期化-----//
 	{
-		g_Fieldsound = new CSoundList(SE_COMPLETE);//サウンドのメモリ確保
-		g_Fieldsound->SetMasterVolume();//
-		g_FieldSe = g_Fieldsound->GetSound(false);//
+		m_Fieldsound = new CSoundList(SE_COMPLETE);//サウンドのメモリ確保
+		m_Fieldsound->SetMasterVolume();//
+		m_FieldSe = m_Fieldsound->GetSound(false);//
 	}
 
 	//-----スプライトのメモリ確保-----//
@@ -193,57 +162,53 @@ CFieldVertex::CFieldVertex()
 		{
 			m_pTex_Ally_Number[i] = new Texture();
 		}
-		/*for (int i = 0; i < 6; i++)
-		{
-			m_pTex_SuperStar_Number[i] = new Texture();
-		}*/
 	}
 
 	m_pStarLine = new StarLine();
 	
-	g_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
-	g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 10, 2.0f);
-	g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
+	m_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
+	m_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 10, 2.0f);
+	m_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
 
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
-		g_pShapesEffects[i] = new CEffectManager_sp(g_pShapesEffects_Sprite);
+		m_pShapesEffects[i] = new CEffectManager_sp(m_pShapesEffects_Sprite);
 	}
 	for (int i = 0; i < 32; i++)
 	{
-		g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
+		m_pFeverEffects[i] = new CEffectManager_sp(m_pFeverEffects_Sprite);
 	}
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
-		g_pLineEffects[i] = new CEffectManager_sp(g_pLineEffects_Sprite);
+		m_pLineEffects[i] = new CEffectManager_sp(m_pLineEffects_Sprite);
 	}
 
 	m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
 	m_pStar_Model[1] = new CModelEx(MODEL_PASS("Board_Star/Blue/Board_Star_Blue.fbx"));
 	m_pStar_Model[2] = new CModelEx(MODEL_PASS("Board_Star/Red/Board_Star_Red.fbx"));
 
-	StartVertex = START_PLAYER;	// 始点初期化
-	GoalVertex = START_PLAYER;	// 終点初期化
-	NowShapes = 0;				// 格納した図形の数初期化
+	m_StartVertex = START_PLAYER;	// 始点初期化
+	m_GoalVertex = START_PLAYER;	// 終点初期化
+	m_NowShapes = 0;				// 格納した図形の数初期化
 
 	Size = 0.0f;
 
 	// 各配列を-1で初期化
-	Fill(OrderVertex, -1);
-	Fill(Shapes_Size, -1.0f);
-	Fill(Comparison_Shapes_Vertex_Save, -1);
-	Fill(Shapes_Vertex, -1);
-	Fill(Effect_Shapes_Pos, -1.0f);
-	Fill(Shapes_Vertex_Save, -1);
-	Fill(Shapes_Count, -1);
-	Fill(Comparison, -1);
-	Fill(vtx_FieldLine, 0.0f);
-	Fill(Shapes_type_Angle, -1);
-	Fill(Shapes_Angle_Save, -1.0f);
-	Fill(Shapes_Length, -1.0f);
-	Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
-	Fill(g_pShapesEffects_Pos, -1.0f);
-	Fill(g_pShapesEffects_Pos_Add, 0.0f);
+	Fill(m_OrderVertex, -1);
+	Fill(m_Shapes_Size, -1.0f);
+	Fill(m_Comparison_Shapes_Vertex_Save, -1);
+	Fill(m_Shapes_Vertex, -1);
+	Fill(m_Effect_Shapes_Pos, -1.0f);
+	Fill(m_Shapes_Vertex_Save, -1);
+	Fill(m_Shapes_Count, -1);
+	Fill(m_Comparison, -1);
+	Fill(m_vtx_FieldLine, 0.0f);
+	Fill(m_Shapes_type_Angle, -1);
+	Fill(m_Shapes_Angle_Save, -1.0f);
+	Fill(m_Shapes_Length, -1.0f);
+	Fill(m_Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
+	Fill(m_ShapesEffects_Pos, -1.0f);
+	Fill(m_ShapesEffects_Pos_Add, 0.0f);
 
 	// 頂点２５個座標情報初期化
 	{
@@ -259,9 +224,8 @@ CFieldVertex::CFieldVertex()
 				Vertexp->Number = j * 5 + i;
 				Vertexp->Use = false;
 				Vertexp->SuperStar = false;
-				Vertexp->Angle[0] = 0.0f;
-				Vertexp->Angle[1] = 180.0f;
-				Vertexp->Angle[2] = 0.0f;
+				Vertexp->Angle = { 0.0f,180.0f,0.0f };
+
 				for (int k = 0; k < 8; k++)
 				{
 					Vertexp->Connect[k] = -1;
@@ -287,8 +251,8 @@ CFieldVertex::CFieldVertex()
 	}
 
 	//たどる順にプレイヤーの最初の位置保存
-	OrderVertex[0] = StartVertex;
-	OrderVertexCount = 1;//たどった頂点の数初期化
+	m_OrderVertex[0] = m_StartVertex;
+	m_OrderVertexCount = 1;//たどった頂点の数初期化
 
 	m_tVertex[START_PLAYER].Use = true;//最初の頂点を使用に
 
@@ -305,28 +269,6 @@ CFieldVertex::CFieldVertex()
 		if (FAILED(hrSummon_Log)) {
 			MessageBox(NULL, "Summon_Log_Square 画像", "Error", MB_OK);
 		}
-	}
-
-	//スーパースタの数字初期化
-	{
-		/*HRESULT hrSuperStar;
-		for (int i = 0; i < 6; i++)
-		{
-			switch (i)
-			{
-			case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
-			case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
-			case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
-			case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
-			case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
-			case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
-			default:
-				break;
-			}
-			if (FAILED(hrSuperStar)) {
-				MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
-			}
-		}*/
 	}
 
 	//召喚数の数字初期化
@@ -379,7 +321,7 @@ CFieldVertex::CFieldVertex()
 			MessageBox(NULL, "Fever_Player 画像", "Error", MB_OK);
 		}
 
-		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f};
+		m_Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f};
 	}
 
 	//召喚数のボード初期化
@@ -455,32 +397,32 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 
-	Xx = 0.0f;
-	Yy = 0.0f;
+	m_Efect_x = 0.0f;
+	m_Efect_y = 0.0f;
 }
 
 ////=====FieldVertexのデストラクタ=====//
 CFieldVertex::~CFieldVertex()
 {
-	g_FieldSe->Stop();
-	g_FieldSe = nullptr;
-	delete g_Fieldsound;
-	g_FieldSe = nullptr;
+	m_FieldSe->Stop();
+	m_FieldSe = nullptr;
+	delete m_Fieldsound;
+	m_FieldSe = nullptr;
 
-	SAFE_DELETE(g_pShapesEffects_Sprite);
+	SAFE_DELETE(m_pShapesEffects_Sprite);
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
-		g_pShapesEffects[i] = nullptr;
+		m_pShapesEffects[i] = nullptr;
 	}
-	SAFE_DELETE(g_pFeverEffects_Sprite);
+	SAFE_DELETE(m_pFeverEffects_Sprite);
 	for (int i = 0; i < 32; i++)
 	{
-		g_pFeverEffects[i] = nullptr;
+		m_pFeverEffects[i] = nullptr;
 	}
-	SAFE_DELETE(g_pLineEffects_Sprite);
+	SAFE_DELETE(m_pLineEffects_Sprite);
 	for (int i = 0; i < MAX_ALLY; i++)
 	{
-		g_pLineEffects[i] = nullptr;
+		m_pLineEffects[i] = nullptr;
 	}
 
 	SAFE_DELETE(m_pTex_Fever_Gage[0]);
@@ -502,14 +444,8 @@ CFieldVertex::~CFieldVertex()
 	{
 		SAFE_DELETE(m_pTex_Ally_Number[i]);
 	}
-	/*for (int i = 0; i < 6; i++)
-	{
-		SAFE_DELETE(m_pTex_SuperStar_Number[i]);
-	}*/
 
 	SAFE_DELETE(m_pStarLine);
-
-	/*SAFE_DELETE(m_pSprite_SuperStar_Number);*/
 	SAFE_DELETE(m_pSprite_Fever_Gage[0]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[1]);
 	SAFE_DELETE(m_pSprite_Fever_Gage[2]);
@@ -537,7 +473,7 @@ void CFieldVertex::Update()
 	FieldVertex* Vertexp;
 	CenterVertex* CenterVertexp;
 	//プレイヤーの位置の情報を取得
-	PlayerPos = m_pPlayer->GetPlayerPos();
+	m_PlayerPos = m_pPlayer->GetPlayerPos();
 
 	//頂点の壊れる情報取得
 	//BreakVertex = ;
@@ -574,54 +510,54 @@ void CFieldVertex::Update()
 	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
 	{
 		//プレイヤーと頂点の場所が同じで、かつ、最終地点が今の地点でないとき
-		if (PlayerPos.x == Vertexp->Pos.x && PlayerPos.y == Vertexp->Pos.y && m_tVertex[GoalVertex].Number != Vertexp->Number && Vertexp->Number != BreakVertex)
+		if (m_PlayerPos.x == Vertexp->Pos.x && m_PlayerPos.y == Vertexp->Pos.y && m_tVertex[m_GoalVertex].Number != Vertexp->Number && Vertexp->Number != m_BreakVertex)
 		{
-			OrderVertex[OrderVertexCount] = Vertexp->Number;//着いた頂点の番号を保存
-			OrderVertexCount++;//次の場所にカウントアップする
+			m_OrderVertex[m_OrderVertexCount] = Vertexp->Number;//着いた頂点の番号を保存
+			m_OrderVertexCount++;//次の場所にカウントアップする
 
 			int ConnectSave[2] = { -1,-1 };//コネクトを保存する位置を保存する
 
 			//前の頂点とつなげる
 			for (int j = 7; j >= 0; j--)//頂点の格納位置を決定する
 			{
-				if (m_tVertex[GoalVertex].Connect[j] == -1)ConnectSave[0] = j;
+				if (m_tVertex[m_GoalVertex].Connect[j] == -1)ConnectSave[0] = j;
 				if (Vertexp->Connect[j] == -1)ConnectSave[1] = j;
 			}
 
 			//お互いの頂点をつなげる
-			m_tVertex[GoalVertex].Connect[ConnectSave[0]] = Vertexp->Number;
-			Vertexp->Connect[ConnectSave[1]] = m_tVertex[GoalVertex].Number;
+			m_tVertex[m_GoalVertex].Connect[ConnectSave[0]] = Vertexp->Number;
+			Vertexp->Connect[ConnectSave[1]] = m_tVertex[m_GoalVertex].Number;
 
 			//交点重複判定
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + Vertexp->Pos.x) / 2.0f == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + Vertexp->Pos.y) / 2.0f == CenterVertexp->Pos.y))
+				if (((m_tVertex[m_GoalVertex].Pos.x + Vertexp->Pos.x) / 2.0f == CenterVertexp->Pos.x) && ((m_tVertex[m_GoalVertex].Pos.y + Vertexp->Pos.y) / 2.0f == CenterVertexp->Pos.y))
 				{
 					if (!CenterVertexp->Use)CenterVertexp->Use = true;
 				}
 			}
 
 			//コネクト処理が終わったので終点を今の地点に設定
-			GoalVertex = Vertexp->Number;
+			m_GoalVertex = Vertexp->Number;
 
 			for (int i = 0; i < MAX_LINE + 1; i++)
 			{
-				if (OrderVertex[i] > 24)
+				if (m_OrderVertex[i] > 24)
 				{
 					MessageBox(NULL, "存在しない頂点をたどっています!", "Error", MB_OK);
 				}
 			}
 
 			//多角形判定
-			if (OrderVertex[3] != -1 && Vertexp->Use)//たどってきた頂点が４つ以上ならかつ今の頂点が過去に使われた時、多角形判定
+			if (m_OrderVertex[3] != -1 && Vertexp->Use)//たどってきた頂点が４つ以上ならかつ今の頂点が過去に使われた時、多角形判定
 			{
-				ShapesCheck(m_tVertex[StartVertex]);//再帰処理(開始頂点のみ)
+				ShapesCheck(m_tVertex[m_StartVertex]);//再帰処理(開始頂点のみ)
 			}
 			Vertexp->Use = true;//頂点が追加されたので今の頂点をtureに
-			Vertexp->Angle[1] = 181.0f;
-			NowLine++;//線の数増やす
+			Vertexp->Angle.y = 181.0f;
+			m_NowLine++;//線の数増やす
 		}
 	}
 
@@ -644,15 +580,15 @@ void CFieldVertex::Update()
 	PosA[3].x = Size.x * 0.5f * cosf(TORAD(45 * PlayerDestination)) - (Size.y * 0.5f) * sinf(TORAD(45 * PlayerDestination));
 	PosA[3].y = Size.x * 0.5f * sinf(TORAD(45 * PlayerDestination)) + (Size.y * 0.5f) * cosf(TORAD(45 * PlayerDestination));
 
-	vtx_FieldLine[NowLine][0].pos[0] = PlayerPos.x + PosA[0].x;//左上のｘ座標
-	vtx_FieldLine[NowLine][0].pos[1] = PlayerPos.y + PosA[0].y;//左上のｙ座標
-	vtx_FieldLine[NowLine][2].pos[0] = PlayerPos.x + PosA[2].x;//右上のｘ座標
-	vtx_FieldLine[NowLine][2].pos[1] = PlayerPos.y + PosA[2].y;//右上のｙ座標
-
-	vtx_FieldLine[NowLine][1].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
-	vtx_FieldLine[NowLine][1].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
-	vtx_FieldLine[NowLine][3].pos[0] = m_tVertex[GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
-	vtx_FieldLine[NowLine][3].pos[1] = m_tVertex[GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
+	m_vtx_FieldLine[m_NowLine][0].pos[0] = m_PlayerPos.x + PosA[0].x;//左上のｘ座標
+	m_vtx_FieldLine[m_NowLine][0].pos[1] = m_PlayerPos.y + PosA[0].y;//左上のｙ座標
+	m_vtx_FieldLine[m_NowLine][2].pos[0] = m_PlayerPos.x + PosA[2].x;//右上のｘ座標
+	m_vtx_FieldLine[m_NowLine][2].pos[1] = m_PlayerPos.y + PosA[2].y;//右上のｙ座標
+					
+	m_vtx_FieldLine[m_NowLine][1].pos[0] = m_tVertex[m_GoalVertex].Pos.x + PosA[1].x;//左下のｘ座標
+	m_vtx_FieldLine[m_NowLine][1].pos[1] = m_tVertex[m_GoalVertex].Pos.y + PosA[1].y;//左下のｙ座標
+	m_vtx_FieldLine[m_NowLine][3].pos[0] = m_tVertex[m_GoalVertex].Pos.x + PosA[3].x;//右下のｘ座標
+	m_vtx_FieldLine[m_NowLine][3].pos[1] = m_tVertex[m_GoalVertex].Pos.y + PosA[3].y;//右下のｙ座標
 }
 
 ////=====図形から召喚のエフェクトの描画
@@ -661,51 +597,51 @@ void CFieldVertex::ShapesEffectDraw()
 	//-----Effectの描画-----//
 	{
 		SetRender2D();
-		if (!g_pShapesEffects[0]->IsPlay())
+		if (!m_pShapesEffects[0]->IsPlay())
 		{
-			for (int i = 0; i < Effect_NowShapes; i++)
+			for (int i = 0; i < m_Effect_NowShapes; i++)
 			{
 				for (int j = 0; j < 3; j++)
 				{
-					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
+					if (m_ShapesEffects_Pos[i][j].z != -1.0f)
 					{
 						float X = -110;
 						float Y = 0;
-						for (int i = 0; i < Effect_NowShapes; i++)
+						for (int i = 0; i < m_Effect_NowShapes; i++)
 						{
-							g_pShapesEffects_Pos_Add[i][0] = (g_pShapesEffects_Pos[i][0].x - X) / (60.0f * 2.0f);
-							g_pShapesEffects_Pos_Add[i][1] = (g_pShapesEffects_Pos[i][0].y - Y) / (60.0f * 2.0f);
+							m_ShapesEffects_Pos_Add[i][0] = (m_ShapesEffects_Pos[i][0].x - X) / (60.0f * 2.0f);
+							m_ShapesEffects_Pos_Add[i][1] = (m_ShapesEffects_Pos[i][0].y - Y) / (60.0f * 2.0f);
 						}
-						g_pShapesEffects[i]->SetSize({ 10.0f,10.0f, 0.0f });
-						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
-						g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-						g_pShapesEffects[i]->Play(false);
+						m_pShapesEffects[i]->SetSize({ 10.0f,10.0f, 0.0f });
+						m_pShapesEffects[i]->SetPos({ m_ShapesEffects_Pos[i][j].x , m_ShapesEffects_Pos[i][j].y , 0.0f });
+						m_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+						m_pShapesEffects[i]->Play(false);
 					}
 				}
 			}
 		}
-		for (int i = 0; i < Effect_NowShapes; i++)
+		for (int i = 0; i < m_Effect_NowShapes; i++)
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				if (g_pShapesEffects[i]->IsPlay())
+				if (m_pShapesEffects[i]->IsPlay())
 				{
-					if (g_pShapesEffects_Pos[i][j].z != -1.0f)
+					if (m_ShapesEffects_Pos[i][j].z != -1.0f)
 					{
 						switch (j)
 						{
-						case 0:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+						case 0:m_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 							break;
-						case 1:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,0.5f });
+						case 1:m_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,0.5f });
 							break;
-						case 2:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,0.25f });
+						case 2:m_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,0.25f });
 							break;
-						default:g_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+						default:m_pShapesEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 							break;
 						}
-						g_pShapesEffects[i]->SetPos({ g_pShapesEffects_Pos[i][j].x , g_pShapesEffects_Pos[i][j].y , 0.0f });
-						g_pShapesEffects[i]->Update();
-						g_pShapesEffects[i]->Draw();
+						m_pShapesEffects[i]->SetPos({ m_ShapesEffects_Pos[i][j].x , m_ShapesEffects_Pos[i][j].y , 0.0f });
+						m_pShapesEffects[i]->Update();
+						m_pShapesEffects[i]->Draw();
 					}
 				}
 			}
@@ -714,21 +650,21 @@ void CFieldVertex::ShapesEffectDraw()
 	}
 
 	//過去の座標を保存する
-	for (int i = 0; i < Effect_NowShapes; i++)
+	for (int i = 0; i < m_Effect_NowShapes; i++)
 	{
 		for (int j = 2; j > 0; j--)
 		{
-			g_pShapesEffects_Pos[i][j].x = g_pShapesEffects_Pos[i][j - 1].x;
-			g_pShapesEffects_Pos[i][j].y = g_pShapesEffects_Pos[i][j - 1].y;
-			if (g_pShapesEffects_Pos[i][j - 1].z != -1.0f)g_pShapesEffects_Pos[i][j].z = 0.0f;
+			m_ShapesEffects_Pos[i][j].x = m_ShapesEffects_Pos[i][j - 1].x;
+			m_ShapesEffects_Pos[i][j].y = m_ShapesEffects_Pos[i][j - 1].y;
+			if (m_ShapesEffects_Pos[i][j - 1].z != -1.0f)m_ShapesEffects_Pos[i][j].z = 0.0f;
 		}
 	}
 
 	//新しい座標に更新する
-	for (int i = 0; i < Effect_NowShapes; i++)
+	for (int i = 0; i < m_Effect_NowShapes; i++)
 	{
-		g_pShapesEffects_Pos[i][0].x -= g_pShapesEffects_Pos_Add[i][0];
-		g_pShapesEffects_Pos[i][0].y -= g_pShapesEffects_Pos_Add[i][1];
+		m_ShapesEffects_Pos[i][0].x -= m_ShapesEffects_Pos_Add[i][0];
+		m_ShapesEffects_Pos[i][0].y -= m_ShapesEffects_Pos_Add[i][1];
 	}
 
 	
@@ -742,52 +678,50 @@ void CFieldVertex::Draw()
 		SetRender2D();
 		for (int i = 0; i < 32; i++)
 		{
-			if (!g_pFeverEffects[i]->IsPlay())
+			if (!m_pFeverEffects[i]->IsPlay())
 			{
-				g_pFeverEffects[i]->SetPos({ -100.0f + 30.0f * (i % 8),90.0f - 30.0f * (i / 8),0.0f });
-				g_pFeverEffects[i]->SetSize({ 50.0f,50.0f,0.0f });
+				m_pFeverEffects[i]->SetPos({ -100.0f + 30.0f * (i % 8),90.0f - 30.0f * (i / 8),0.0f });
+				m_pFeverEffects[i]->SetSize({ 50.0f,50.0f,0.0f });
 
-				g_pFeverEffects[i]->Play(true);
+				m_pFeverEffects[i]->Play(true);
 			}
-			g_pFeverEffects[i]->SetColor({ 1.0f,1.0f,1.0f,Fever_Effects_Alpha });
-			g_pFeverEffects[i]->Update();
-			g_pFeverEffects[i]->Draw();
+			m_pFeverEffects[i]->SetColor({ 1.0f,1.0f,1.0f,m_Fever_Effects_Alpha });
+			m_pFeverEffects[i]->Update();
+			m_pFeverEffects[i]->Draw();
 		}
 
-		Xx = powf(2.71828, 1.0f - Yy);
-		Yy += (15.0f / (60.0f * 10.0f));
-		Fever_Effects_Alpha = Xx;
-		//Fever_Effects_Alpha -= 1.0f / (60.0f * 10.0f);
-		if (Fever_Effects_Alpha < 0.2f)Fever_Effects_Alpha = 0.2f;
+		//エフェクトの表示時間をイージングで表現
+		m_Efect_x = powf(2.71828, 1.0f - m_Efect_y);
+		m_Efect_y += (15.0f / (60.0f * 10.0f));
+		m_Fever_Effects_Alpha = m_Efect_x;
+		if (m_Fever_Effects_Alpha < 0.2f)m_Fever_Effects_Alpha = 0.2f;
 	}
 
 	SetRender3D();//3D描画準備
 
 	//-----線の描画-----//
 	{
-		/*if (GetFeverMode())m_pStarLine->SetLineMode(1);
-		else m_pStarLine->SetLineMode(0);*/
-		for (int i = 0; i <= NowLine; i++)
+		for (int i = 0; i <= m_NowLine; i++)
 		{
 			m_pStarLine->SetLineInfo(//頂点情報格納
 			{
-					vtx_FieldLine[i][1].pos[0],
-					vtx_FieldLine[i][1].pos[1],
+					m_vtx_FieldLine[i][1].pos[0],
+					m_vtx_FieldLine[i][1].pos[1],
 					0.0f
 			},
 		    {
-			        vtx_FieldLine[i][3].pos[0],
-			        vtx_FieldLine[i][3].pos[1],
+					m_vtx_FieldLine[i][3].pos[0],
+					m_vtx_FieldLine[i][3].pos[1],
 			        0.0f
 		    },
 		    {
-			        vtx_FieldLine[i][0].pos[0],
-			        vtx_FieldLine[i][0].pos[1],
+					m_vtx_FieldLine[i][0].pos[0],
+					m_vtx_FieldLine[i][0].pos[1],
 			        0.0f
 		    },
 		    {
-			        vtx_FieldLine[i][2].pos[0],
-			        vtx_FieldLine[i][2].pos[1],
+					m_vtx_FieldLine[i][2].pos[0],
+					m_vtx_FieldLine[i][2].pos[1],
 			        0.0f
 		    });
 			m_pStarLine->DispLine();//線の描画
@@ -813,25 +747,16 @@ void CFieldVertex::Draw()
 
 	//-----召喚ログ-----//
 	{
-		for (int i = 0; i < NowSummonLog; i++)
+		for (int i = 0; i < m_NowSummonLog; i++)
 		{
 			m_pSprite_Summon_Log->SetUVPos({ 0.0f, 0.0f });
-			DrawSetting(SummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, {0.0f,0.0f,0.0f},m_pSprite_Summon_Log);//座標と大きさの設定
-			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,SummonLog[i].Alpha });//色と透明度の設定
-			if (SummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
+			DrawSetting(m_tSummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, {0.0f,0.0f,0.0f},m_pSprite_Summon_Log);//座標と大きさの設定
+			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,m_tSummonLog[i].Alpha });//色と透明度の設定
+			if (m_tSummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
 			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//四角形のテクスチャ設定ログ
 			if (i < MAX_DRAW_LOG)m_pSprite_Summon_Log->Draw();//15個のみ描画
 		}
 		m_pSprite_Summon_Log->ReSetSprite();//スプライトのリセット
-	}
-
-	//-----ステラの数描画-----//
-	{
-		//DrawSetting({ -53.0f, 65.0f,10.0f }, { 20.0f,20.0f,1.0f }, m_pSprite_SuperStar_Number);//座標と大きさの設定
-		//m_pSprite_SuperStar_Number->SetColor({ 1.0f,0.2f,0.2f,1.0f });//色と透明度の設定
-		//m_pSprite_SuperStar_Number->SetTexture(m_pTex_SuperStar_Number[SuperStarCount]);//任意の数字のテクスチャ設定
-		//m_pSprite_SuperStar_Number->Draw();//描画
-		//m_pSprite_SuperStar_Number->ReSetSprite();//スプライトのリセット
 	}
 
 	//-----フィーバーゲージ描画-----//
@@ -839,49 +764,49 @@ void CFieldVertex::Draw()
 		//フィーバー背景//
 		if (GetFeverMode())
 		{
-			Fever_Draw_Angle.y += (360.0f / (60.0f * FEVER_DRAW_ANGLE_TIME));//1.0f秒で１回転
-			if (Fever_Draw_Angle.y >= 360.0f)
+			m_Fever_Draw_Angle.y += (360.0f / (60.0f * FEVER_DRAW_ANGLE_TIME));//1.0f秒で１回転
+			if (m_Fever_Draw_Angle.y >= 360.0f)
 			{
-				Fever_Draw_Angle.y = 0.0f;
-				Fever_Draw_Angle_Count++;
+				m_Fever_Draw_Angle.y = 0.0f;
+				m_Fever_Draw_Angle_Count++;
 			}
-			if (Fever_Draw_Angle_Count >= FEVER_DRAW_ANGLE_COUNT)
+			if (m_Fever_Draw_Angle_Count >= FEVER_DRAW_ANGLE_COUNT)
 			{
-				Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+				m_Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
 			}
 		}
 		else
 		{
-			Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+			m_Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
 		}
 		float Fever_Gage_Size = 50.0f;
 		if (GetFeverMode())//フィーバータイムの時、後の背景出現
 		{
-			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
+			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
 			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
 			m_pSprite_Fever_Gage[2]->Draw();//描画
 			m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
 		}
 
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[0]->Draw();//描画
 		m_pSprite_Fever_Gage[0]->ReSetSprite();//スプライトのリセット
 
 
-		if (!GetFeverMode())fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
-		if (fFeverPoint > nFeverPoint)fFeverPoint = nFeverPoint;//値の補正
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / Partition) * fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
-		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - fFeverPoint / Partition });//UVの座標設定
+		if (!GetFeverMode())m_fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
+		if (m_fFeverPoint > m_nFeverPoint)m_fFeverPoint = m_nFeverPoint;//値の補正
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / m_Partition) * m_fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - m_fFeverPoint / m_Partition });//UVの座標設定
 		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UVの大きさ設定
 		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[1]->SetTexture(m_pTex_Fever_Gage[1]);//星形のフィーバーゲージのテクスチャ設定
 		m_pSprite_Fever_Gage[1]->Draw();//描画
 		m_pSprite_Fever_Gage[1]->ReSetSprite();//スプライトのリセット
 
-		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, Fever_Draw_Angle, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
 		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//星形の背景のテクスチャ設定
 		m_pSprite_Fever_Gage[3]->Draw();//描画
@@ -975,24 +900,24 @@ void CFieldVertex::Draw()
 
 	//-----Effectの描画-----//
 	{
-		for (int i = Effect_NowShapes; i < MAX_ALLY; i++)
+		for (int i = m_Effect_NowShapes; i < MAX_ALLY; i++)
 		{
-			if (Shapes_Count[i] != -1)
+			if (m_Shapes_Count[i] != -1)
 			{
-				g_pLineEffects[Effect_NowShapes]->SetSize({ 100.0f + Shapes_Size[Effect_NowShapes] * 20.0f,100.0f + Shapes_Size[Effect_NowShapes] * 20.0f, 0.0f });
-				g_pLineEffects[Effect_NowShapes]->SetPos({ Effect_Shapes_Pos[Effect_NowShapes].x - 0.766f, Effect_Shapes_Pos[Effect_NowShapes].y - 1.8f, 0.0f });
-				if (Shapes_Count[i] == 3)g_pLineEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-				else g_pLineEffects[i]->SetColor({ 0.0f,0.3f,1.0f,1.0f });
-				g_pLineEffects[Effect_NowShapes]->Play(false);
-				Effect_NowShapes++;
+				m_pLineEffects[m_Effect_NowShapes]->SetSize({ 100.0f + m_Shapes_Size[m_Effect_NowShapes] * 20.0f,100.0f + m_Shapes_Size[m_Effect_NowShapes] * 20.0f, 0.0f });
+				m_pLineEffects[m_Effect_NowShapes]->SetPos({ m_Effect_Shapes_Pos[m_Effect_NowShapes].x - 0.766f, m_Effect_Shapes_Pos[m_Effect_NowShapes].y - 1.8f, 0.0f });
+				if (m_Shapes_Count[i] == 3)m_pLineEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+				else m_pLineEffects[i]->SetColor({ 0.0f,0.3f,1.0f,1.0f });
+				m_pLineEffects[m_Effect_NowShapes]->Play(false);
+				m_Effect_NowShapes++;
 			}
 		}
-		for (int i = 0; i < Effect_NowShapes; i++)
+		for (int i = 0; i < m_Effect_NowShapes; i++)
 		{
-			if (g_pLineEffects[i]->IsPlay())
+			if (m_pLineEffects[i]->IsPlay())
 			{	
-				g_pLineEffects[i]->Update();
-				g_pLineEffects[i]->Draw();
+				m_pLineEffects[i]->Update();
+				m_pLineEffects[i]->Draw();
 			}
 		}
 	}	
@@ -1006,33 +931,33 @@ void CFieldVertex::FeverDraw()
 		if (GetFeverMode())
 		{	
 			SetRender2D();
-			switch (Mode_Player_Move)
+			switch (m_Mode_Player_Move)
 			{
 			case 0:
-				Fever_Player_Draw_Pos.y += 240.0f / 60.0f;
-				if (Fever_Player_Draw_Pos.y > -27.0f)Mode_Player_Move = 1;
+				m_Fever_Player_Draw_Pos.y += 240.0f / 60.0f;
+				if (m_Fever_Player_Draw_Pos.y > -27.0f)m_Mode_Player_Move = 1;
 				break;
 
 			case 1:
-				Fever_Stop_Player_time += 1.0f / 60.0f;
-				Fever_Player_Draw_Pos.y -= 240.0f / 60.0f;
-				if (Fever_Player_Draw_Pos.y < -30.0f)
+				m_Fever_Stop_Player_time += 1.0f / 60.0f;
+				m_Fever_Player_Draw_Pos.y -= 240.0f / 60.0f;
+				if (m_Fever_Player_Draw_Pos.y < -30.0f)
 				{
-					Fever_Player_Draw_Pos.y = -30.0f;
+					m_Fever_Player_Draw_Pos.y = -30.0f;
 				}
-				if (Fever_Stop_Player_time >= FEVER_STOP_PLAYER_TIME)
+				if (m_Fever_Stop_Player_time >= FEVER_STOP_PLAYER_TIME)
 				{
-					Fever_Stop_Player_time = 0.0f;
-					Mode_Player_Move = 2;
+					m_Fever_Stop_Player_time = 0.0f;
+					m_Mode_Player_Move = 2;
 				}
 				break;
 
 			case 2:
-				Fever_Player_Draw_Pos.y -= 360.0f / 60.0f;
-				if (Fever_Player_Draw_Pos.y < FEVER_PLAYER_DRAW_POS_Y)
+				m_Fever_Player_Draw_Pos.y -= 360.0f / 60.0f;
+				if (m_Fever_Player_Draw_Pos.y < FEVER_PLAYER_DRAW_POS_Y)
 				{
-					Fever_Player_Draw_Pos.y = FEVER_PLAYER_DRAW_POS_Y;
-					Mode_Player_Move = 3;
+					m_Fever_Player_Draw_Pos.y = FEVER_PLAYER_DRAW_POS_Y;
+					m_Mode_Player_Move = 3;
 				}
 				break;
 
@@ -1040,7 +965,7 @@ void CFieldVertex::FeverDraw()
 			default:
 				break;
 			}
-			DrawSetting(Fever_Player_Draw_Pos, { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
+			DrawSetting(m_Fever_Player_Draw_Pos, { 100.0f,150.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Fever_Player);//座標と大きさの設定
 			m_pSprite_Fever_Player->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
 			m_pSprite_Fever_Player->SetTexture(m_pTex_Fever_Player);//星形の背景のテクスチャ設定
 			m_pSprite_Fever_Player->Draw();//描画
@@ -1053,272 +978,272 @@ void CFieldVertex::ShapesDraw()
 {
 	SetRender2D();
 	float size = 0.0f;
-	for (int i = 0;i < Effect_NowShapes;i++)
+	for (int i = 0;i < m_Effect_NowShapes;i++)
 	{
 		m_pSprite_Shapes->SetUVPos({ 0.0f,0.0f });		
 		m_pSprite_Shapes->SetColor({ 0.5f,0.5f,0.5f,1.0f });
-		if(Shapes_Color_Time[i] > 0.0f)m_pSprite_Shapes->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-		if (Shapes_Count[i] == 3)//三角形なら
+		if(m_Shapes_Color_Time[i] > 0.0f)m_pSprite_Shapes->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		if (m_Shapes_Count[i] == 3)//三角形なら
 		{
-			if (Shapes_type_Angle[i][0] == 0)//直角二等辺三角形
+			if (m_Shapes_type_Angle[i][0] == 0)//直角二等辺三角形
 			{
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(m_Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size + (TRIANGLE_SIZE + size) * (sqrtf(m_Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-m_Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[0]);
 			}
-			if (Shapes_type_Angle[i][0] == 1)//上向きの直角二等辺三角形
+			if (m_Shapes_type_Angle[i][0] == 1)//上向きの直角二等辺三角形
 			{
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(m_Shapes_Size[i] * 2.0f) - 1.0f),TRIANGLE_SIZE + size - 30.0f + (TRIANGLE_SIZE + size - 30.0f) * (sqrtf(m_Shapes_Size[i] * 2.0f) - 1.0f),1.0f }, { 0.0f,0.0f,-m_Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[1]);
 			}
 		}
 		else //四角形なら
 		{
-			switch (Shapes_type_Angle[i][0])
+			switch (m_Shapes_type_Angle[i][0])
 			{
 			case 2://正方形
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(m_Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(m_Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
 			case 3://ひし形
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,45.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(m_Shapes_Size[i]) - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (sqrtf(m_Shapes_Size[i]) - 1),1.0f }, { 0.0f,0.0f,45.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
 			case 4://長方形 
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (Shapes_Length[i][0] - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (Shapes_Length[i][1] - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SQUARE_SIZE + size + (SQUARE_SIZE + size) * (m_Shapes_Length[i][0] - 1),SQUARE_SIZE + size + (SQUARE_SIZE + size) * (m_Shapes_Length[i][1] - 1),1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
 			case 5://斜めの長方形
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SQUARE_SIZE + size) * 1.4142f * (Shapes_Length[i][0]),(SQUARE_SIZE + size) * 1.4142f * (Shapes_Length[i][1]),1.0f }, { 0.0f,0.0f,-45.0f * Shapes_type_Angle[i][1] }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SQUARE_SIZE + size) * 1.4142f * (m_Shapes_Length[i][0]),(SQUARE_SIZE + size) * 1.4142f * (m_Shapes_Length[i][1]),1.0f }, { 0.0f,0.0f,-45.0f * m_Shapes_type_Angle[i][1] }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
 			case 6://台形 //斜めの台形考える必要あり
-				if (Shapes_type_Angle[i][1] < 4)
+				if (m_Shapes_type_Angle[i][1] < 4)
 				{
-					if (Shapes_Length[i][0] - 1 == 0)//1:3
+					if (m_Shapes_Length[i][0] - 1 == 0)//1:3
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-m_Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[3]);
 					}
 					else //3:4
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f,-m_Shapes_type_Angle[i][1] * 90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[4]);
 					}
 				}
 				else //斜めの台形
 				{
-					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
+					if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f)//1:2
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (m_Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
 					}
-					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
+					if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f)//1:3
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (m_Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[6]);
 					}
-					if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f)//1:4
+					if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f)//1:4
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (m_Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[7]);
 					}
-					if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f)//2:3
+					if (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f)//2:3
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (m_Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[8]);
 					}
-					if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f)//2:4
+					if (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 4.0f)//2:4
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (TRAPEZOID_SIZE + size) * 2.0f ,(TRAPEZOID_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (TRAPEZOID_SIZE + size) * 2.0f ,(TRAPEZOID_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, (m_Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[5]);
 					}
-					if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f)//3:4//大きさ変更必要
+					if (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 4.0f)//3:4//大きさ変更必要
 					{
-						DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+						DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { TRAPEZOID_SIZE + size ,TRAPEZOID_SIZE + size,1.0f }, { 0.0f,0.0f, (m_Shapes_type_Angle[i][1] - 4) * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 						m_pSprite_Shapes->SetTexture(m_pTex_Shapes[9]);
 					}
 				}
 				break;
 			case 7://平行四辺形(右下から左上)
-				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
+				if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 1.0f)//1:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
 				}
-				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
+				if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f)//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[11]);
 				}
-				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
+				if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f)//1:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[12]);
 				}
-				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
+				if (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f)//3:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[13]);
 				}
-				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
+				if (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f)//2:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[14]);
 				}
-				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
+				if (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 2.0f)//2:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[10]);
 				}
 				break;
 			case 8://平行四辺形(左下から右上)
-				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 1.0f)//1:1
+				if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 1.0f)//1:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
 				}
-				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f)//1:2
+				if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f)//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[16]);
 				}
-				if (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f)//1:3
+				if (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f)//1:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[17]);
 				}
-				if (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f)//3:1
+				if (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f)//3:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size ,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[18]);
 				}
-				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f)//2:1
+				if (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f)//2:1
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { PARALLELOGRAM_SIZE + size,PARALLELOGRAM_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[19]);
 				}
-				if (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 2.0f)//2:2
+				if (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 2.0f)//2:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (PARALLELOGRAM_SIZE + size) * 2.0f ,(PARALLELOGRAM_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[15]);
 				}
 				break;
 			case 9://カッター型(左尖り)
 				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f))//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
+				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 2.0f))//2:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[21]);
 				}
-				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
+				if ((m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 3.0f))//3:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[22]);
 				}
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f))//1:3
 				{
 					m_pSprite_Shapes->SetUVPos({ 0.085f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[23]);
 				}
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 1.0f))//1:4
 				{
 					m_pSprite_Shapes->SetUVPos({ 0.13f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[24]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4//大きさ変更
+				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 2.0f))//2:4//大きさ変更
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
 				}
 				break;
 			case 10://カッター型(右尖り)
 				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:2
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f))//1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f))//2:3
+				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 2.0f))//2:3
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[26]);
 				}
-				if ((Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 3.0f))//3:4
+				if ((m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 3.0f))//3:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 2.0f,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[27]);
 				}
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f))//1:3
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f))//1:3
 				{
 					m_pSprite_Shapes->SetUVPos({ -0.085f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size ,SPECIAL_SHAPE_SIZE + size,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[28]);
 				}
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//1:4
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 1.0f))//1:4
 				{
 					m_pSprite_Shapes->SetUVPos({ -0.13f,0.0f });
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { SPECIAL_SHAPE_SIZE + size + 1.0f,SPECIAL_SHAPE_SIZE + size + 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[29]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 2.0f))//2:4
+				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 2.0f))//2:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				}
 				break;
 			case 11://new図形左
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[30]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
+				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { 50.0f * m_Shapes_Size[i],50.0f * m_Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				}
 				break;
 			case 12://new図形右
-				if ((Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 1.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
+				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[31]);
 				}
-				if ((Shapes_Length[i][0] == 2.0f && Shapes_Length[i][1] == 3.0f) || (Shapes_Length[i][0] == 3.0f && Shapes_Length[i][1] == 2.0f) || (Shapes_Length[i][0] == 1.0f && Shapes_Length[i][1] == 4.0f) || (Shapes_Length[i][0] == 4.0f && Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
+				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
 				{
-					DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { 50.0f * m_Shapes_Size[i],50.0f * m_Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
 					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				}
 				break;
 			case 13:
 				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 225.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f + 225.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[25]);
 				break;
 			case 14:
 				m_pSprite_Shapes->SetUVPos({ -0.04f,0.0f });
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 225.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f + 225.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[26]);
 				break;
 			case 15:
 				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 135.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f + 135.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[20]);
 				break;
 			case 16:
 				m_pSprite_Shapes->SetUVPos({ 0.04f,0.0f });
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, Shapes_type_Angle[i][1] * -90.0f + 135.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 1.4142f ,(SPECIAL_SHAPE_SIZE + size) * 1.4142f ,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f + 135.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[21]);
 				break;
 			default:
-				DrawSetting({ Shapes_Pos[i].x, Shapes_Pos[i].y ,10.0f }, { 50.0f * Shapes_Size[i],50.0f * Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
+				DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { 50.0f * m_Shapes_Size[i],50.0f * m_Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
 				m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
 				break;
 			}
@@ -1329,20 +1254,10 @@ void CFieldVertex::ShapesDraw()
 
 void CFieldVertex::ShapesUpdate()
 {
-	for (int i = 0; i < Effect_NowShapes;i++)
+	for (int i = 0; i < m_Effect_NowShapes;i++)
 	{
-		if(Shapes_Color_Time[i] > 0.0f)Shapes_Color_Time[i] -= 1.0f / (60.0f * MAX_SHAPES_DRAW_TIME);
+		if(m_Shapes_Color_Time[i] > 0.0f)m_Shapes_Color_Time[i] -= 1.0f / (60.0f * MAX_SHAPES_DRAW_TIME);
 	}
-	//Shapes_Draw_Time += 1.0f / 60.0f;
-	////Size += (40.0f / (60.0f * MAX_SHAPES_DRAW_TIME));
-	//if (Shapes_Draw_Time >= MAX_SHAPES_DRAW_TIME)
-	//{
-	//	Now_Shapes_Draw++;
-	//	Shapes_Draw_Time = 0.0f;
-	//	//Size = 0.0f;
-	//}
-	//if (Now_Shapes_Draw > Effect_NowShapes)return false;//全部描画しきったら終了フラグ返す
-	//return true;
 }
 
 ////=====ログの更新処理の関数=====//
@@ -1351,64 +1266,63 @@ void CFieldVertex::LogUpdate()
 	int DeleteCount = 0;//削除する数を格納する変数
 
 	//スタートログの間隔タイマー処理//
-	if (MoveFlagStartTime > 0.0f)MoveFlagStartTime += 1.0f / 60.0f;
-	if (MoveFlagStartTime > FADE_LOG_TIME)
+	if (m_MoveFlagStartTime > 0.0f)m_MoveFlagStartTime += 1.0f / 60.0f;
+	if (m_MoveFlagStartTime > FADE_LOG_TIME)
 	{
-		MoveFlagStartTime = 0.0f;
-		MoveFlagStart = true;
+		m_MoveFlagStartTime = 0.0f;
+		m_MoveFlagStart = true;
 	}
 
 	//エンドログの間隔タイマー処理//
-	if (MoveFlagEndTime > 0.0f)MoveFlagEndTime += 1.0f / 60.0f;
-	if (MoveFlagEndTime > FADE_LOG_TIME)
+	if (m_MoveFlagEndTime > 0.0f)m_MoveFlagEndTime += 1.0f / 60.0f;
+	if (m_MoveFlagEndTime > FADE_LOG_TIME)
 	{
-		MoveFlagEndTime = 0.0f;
-		MoveFlagEnd = true;
+		m_MoveFlagEndTime = 0.0f;
+		m_MoveFlagEnd = true;
 	}
 
 	int SDC = 0;//３の処理の数を格納する変数
-	for (int i = 0; SummonLog[i].MoveType == 3; i++)SDC++;//３の処理の数をふやす
+	for (int i = 0; m_tSummonLog[i].MoveType == 3; i++)SDC++;//３の処理の数をふやす
 
-	for (int i = 0; i < NowSummonLog; i++)
+	for (int i = 0; i < m_NowSummonLog; i++)
 	{
 		if (i - SDC < MAX_DRAW_LOG)
 		{
-			switch (SummonLog[i].MoveType)
+			switch (m_tSummonLog[i].MoveType)
 			{
 			case 1://スタートログの処理
-				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
-				SummonLog[i].Alpha += 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
-				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
-				if (SummonLog[i].Pos.x < 97.0f)SummonLog[i].Pos.x = 97.0f;//値の補正
-				if (SummonLog[i].time <= 0.0f && MoveFlagStart)
+				m_tSummonLog[i].time -= 1.0f / 60.0f;//タイマー
+				m_tSummonLog[i].Alpha += 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
+				m_tSummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
+				if (m_tSummonLog[i].Pos.x < 97.0f)m_tSummonLog[i].Pos.x = 97.0f;//値の補正
+				if (m_tSummonLog[i].time <= 0.0f && m_MoveFlagStart)
 				{
 					//１の処理を抜けて２の処理の初期化
-					SummonLog[i].MoveType = 2;
-					SummonLog[i].time = DRAW_MAIN_LOG_TIME;
-					SummonLog[i].Alpha = 1.0f;
-					MoveFlagStartTime += 1.0f / 60.0f;
-					MoveFlagStart = false;
+					m_tSummonLog[i].MoveType = 2;
+					m_tSummonLog[i].time = DRAW_MAIN_LOG_TIME;
+					m_tSummonLog[i].Alpha = 1.0f;
+					m_MoveFlagStartTime += 1.0f / 60.0f;
+					m_MoveFlagStart = false;
 				}
 				break;
 			case 2://メインログの処理
-				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
-				SummonLog[i].Pos.y += 0.5f;//ログの移動
-				if (SummonLog[i].Pos.y > 100.0f - (i - SDC) * 5.0f)SummonLog[i].Pos.y -= 0.5f;//値の補正
-				if (SummonLog[i].time <= 0.0f && SummonLog[i].Pos.y == 100.0f && MoveFlagEnd)
+				m_tSummonLog[i].time -= 1.0f / 60.0f;//タイマー
+				m_tSummonLog[i].Pos.y += 0.5f;//ログの移動
+				if (m_tSummonLog[i].Pos.y > 100.0f - (i - SDC) * 5.0f)m_tSummonLog[i].Pos.y -= 0.5f;//値の補正
+				if (m_tSummonLog[i].time <= 0.0f && m_tSummonLog[i].Pos.y == 100.0f && m_MoveFlagEnd)
 				{
 					//２の処理を抜けて３の処理の初期化
-					SummonLog[i].MoveType = 3;
-					SummonLog[i].time = DRAW_LOG_TIME;
-					MoveFlagEnd = false;
-					MoveFlagEndTime += 1.0f / 60.0f;
+					m_tSummonLog[i].MoveType = 3;
+					m_tSummonLog[i].time = DRAW_LOG_TIME;
+					m_MoveFlagEnd = false;
+					m_MoveFlagEndTime += 1.0f / 60.0f;
 				}
 				break;
 			case 3://エンドログの処理
-				SummonLog[i].time -= 1.0f / 60.0f;//タイマー
-				SummonLog[i].Alpha -= 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
-				SummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
-				//SummonLog[i].Pos.y += 40.0f / (60.0f * 1.0f);
-				if (SummonLog[i].time <= 0.0f && SummonLog[i].Alpha <= 0.0f)DeleteCount = i + 1;//削除対象をカウント
+				m_tSummonLog[i].time -= 1.0f / 60.0f;//タイマー
+				m_tSummonLog[i].Alpha -= 1.0f / (60.0f * FADE_LOG_SPEED);//透明度
+				m_tSummonLog[i].Pos.x -= 40.0f / (60.0f * FADE_LOG_SPEED);//ログの移動
+				if (m_tSummonLog[i].time <= 0.0f && m_tSummonLog[i].Alpha <= 0.0f)DeleteCount = i + 1;//削除対象をカウント
 				break;
 			default:
 				break;
@@ -1419,11 +1333,11 @@ void CFieldVertex::LogUpdate()
 	//削除の数配列を前にずらす
 	if (DeleteCount > 0)
 	{
-		for (int i = 0, j = DeleteCount; j < NowSummonLog; i++, j++)
+		for (int i = 0, j = DeleteCount; j < m_NowSummonLog; i++, j++)
 		{
-			SummonLog[i] = SummonLog[j];
+			m_tSummonLog[i] = m_tSummonLog[j];
 		}
-		NowSummonLog -= DeleteCount;
+		m_NowSummonLog -= DeleteCount;
 	}
 }
 
@@ -1437,156 +1351,156 @@ DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
 bool CFieldVertex::GetRoadStop(int Direction)
 {
 	CenterVertex* CenterVertexp;//交点の情報を格納するポインター
-	RoadStop = false;//初期化
+	m_RoadStop = false;//初期化
 
 	//行けない方向を判別
 	switch (Direction)
 	{
 	case 0://上
-		if (GoalVertex - 5 < 0)RoadStop = true;//頂点の番号が０より小さい時
+		if (m_GoalVertex - 5 < 0)m_RoadStop = true;//頂点の番号が０より小さい時
 		else
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex - 5].Number)m_RoadStop = true;
 			}
-			if (GoalVertex - 5 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex - 5 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 1://右上
-		if (GoalVertex - 5 + 1 < 0 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が０より小さい時または今いるとこが右端の時
+		if (m_GoalVertex - 5 + 1 < 0 || m_GoalVertex % 5 == 4)m_RoadStop = true;//頂点の番号が０より小さい時または今いるとこが右端の時
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex - 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex - 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
+				if (((m_tVertex[m_GoalVertex].Pos.x + m_tVertex[m_GoalVertex - 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[m_GoalVertex].Pos.y + m_tVertex[m_GoalVertex - 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
+					if (CenterVertexp->Use)m_RoadStop = true;//交点使っていたら行けない
 					break;
 				}
 			}
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 + 1].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex - 5 + 1].Number)m_RoadStop = true;
 			}
-			if (GoalVertex - 5 + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex - 5 + 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 2://右
-		if (GoalVertex + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
+		if (m_GoalVertex + 1 > 24 || m_GoalVertex % 5 == 4)m_RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
 		else
 		{
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 1].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex + 1].Number)m_RoadStop = true;
 			}
-			if (GoalVertex + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex + 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 3://右下
-		if (GoalVertex + 5 + 1 > 24 || GoalVertex % 5 == 4)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
+		if (m_GoalVertex + 5 + 1 > 24 || m_GoalVertex % 5 == 4)m_RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex + 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex + 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
+				if (((m_tVertex[m_GoalVertex].Pos.x + m_tVertex[m_GoalVertex + 5 + 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[m_GoalVertex].Pos.y + m_tVertex[m_GoalVertex + 5 + 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
+					if (CenterVertexp->Use)m_RoadStop = true;//交点使っていたら行けない
 					break;
 				}
 			}
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 + 1].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex + 5 + 1].Number)m_RoadStop = true;
 			}
-			if (GoalVertex + 5 + 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex + 5 + 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 4://下
-		if (GoalVertex + 5 > 24)RoadStop = true;//頂点の番号が24より大きい時
+		if (m_GoalVertex + 5 > 24)m_RoadStop = true;//頂点の番号が24より大きい時
 		else
 		{
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex + 5].Number)m_RoadStop = true;
 			}
-			if (GoalVertex + 5 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex + 5 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 5://左下
-		if (GoalVertex + 5 - 1 > 24 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が24より大きい時または今いるとこが左端の時
+		if (m_GoalVertex + 5 - 1 > 24 || m_GoalVertex % 5 == 0)m_RoadStop = true;//頂点の番号が24より大きい時または今いるとこが左端の時
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex + 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex + 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
+				if (((m_tVertex[m_GoalVertex].Pos.x + m_tVertex[m_GoalVertex + 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[m_GoalVertex].Pos.y + m_tVertex[m_GoalVertex + 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
+					if (CenterVertexp->Use)m_RoadStop = true;//交点使っていたら行けない
 					break;
 				}
 			}
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex + 5 - 1].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex + 5 - 1].Number)m_RoadStop = true;
 			}
-			if (GoalVertex + 5 - 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex + 5 - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 6://左
-		if (GoalVertex - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
+		if (m_GoalVertex - 1 < 0 || m_GoalVertex % 5 == 0)m_RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
 		else
 		{
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 1].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex - 1].Number)m_RoadStop = true;
 			}
-			if (GoalVertex - 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	case 7://左上
-		if (GoalVertex - 5 - 1 < 0 || GoalVertex % 5 == 0)RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
+		if (m_GoalVertex - 5 - 1 < 0 || m_GoalVertex % 5 == 0)m_RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
 		else
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
 			{
 				//繋がっている２点の中心がセンター頂点と等しいかどうか
-				if (((m_tVertex[GoalVertex].Pos.x + m_tVertex[GoalVertex - 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[GoalVertex].Pos.y + m_tVertex[GoalVertex - 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
+				if (((m_tVertex[m_GoalVertex].Pos.x + m_tVertex[m_GoalVertex - 5 - 1].Pos.x) / 2 == CenterVertexp->Pos.x) && ((m_tVertex[m_GoalVertex].Pos.y + m_tVertex[m_GoalVertex - 5 - 1].Pos.y) / 2 == CenterVertexp->Pos.y))
 				{
-					if (CenterVertexp->Use)RoadStop = true;//交点使っていたら行けない
+					if (CenterVertexp->Use)m_RoadStop = true;//交点使っていたら行けない
 					break;
 				}
 			}
 			//行きたい方向の頂点と繋がっていたらtrue
 			for (int i = 0; i < 8; i++)
 			{
-				if (m_tVertex[GoalVertex].Connect[i] == m_tVertex[GoalVertex - 5 - 1].Number)RoadStop = true;
+				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex - 5 - 1].Number)m_RoadStop = true;
 			}
-			if (GoalVertex - 5 - 1 == BreakVertex)RoadStop = true;//行き先が壊れた頂点なら
+			if(m_GoalVertex - 5 - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
 		break;
 	default:
 		break;
 	}
 
-	return RoadStop;//いけるかいけないかを返す
+	return m_RoadStop;//いけるかいけないかを返す
 }
 
 void CFieldVertex::SetFeverPoint()
 {
-	fFeverPoint = nFeverPoint;
+	m_fFeverPoint = m_nFeverPoint;
 }
 
 ////=====CBattleクラスのアドレス情報をセットする関数=====//
@@ -1608,7 +1522,7 @@ void CFieldVertex::SetStarLineAddress(StarLine* InAddress)
 
 void CFieldVertex::SetMasterVolume()
 {
-	g_Fieldsound->SetMasterVolume();
+	m_Fieldsound->SetMasterVolume();
 }
 
 ////=====FieldVertexの頂点情報などを初期化する関数=====//
@@ -1621,9 +1535,7 @@ void CFieldVertex::InitFieldVertex()
 		for (int j = 0; j < MAX_VERTEX; j++, Vertexp++)
 		{
 			Vertexp->Use = false;
-			Vertexp->Angle[0] = 0.0f;
-			Vertexp->Angle[1] = 180.0f;
-			Vertexp->Angle[2] = 0.0f;
+			Vertexp->Angle = { 0.0f,180.0f,0.0f };
 			for (int k = 0; k < 8; k++)
 			{
 				Vertexp->Connect[k] = -1;
@@ -1643,48 +1555,48 @@ void CFieldVertex::InitFieldVertex()
 
 	//-----その他必要な初期化処理-----//
 	{
-		Fever_Stop_Player_time = 0.0f;
-		Mode_Player_Move = 0;
-		Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f };
-		GoalVertex = m_pPlayer->GetNowVertex();
-		StartVertex = GoalVertex;//始点を今の地点に初期化
-		NowShapes = 0;//格納した図形の数初期化
-		Effect_NowShapes = 0;
-		Fever_Effects_Alpha = 1.0f;
-		Shapes_Draw_Time = 0.0f;
-		Now_Shapes_Draw = 0;
+		m_Fever_Stop_Player_time = 0.0f;
+		m_Mode_Player_Move = 0;
+		m_Fever_Player_Draw_Pos = { FEVER_PLAYER_DRAW_POS_X,FEVER_PLAYER_DRAW_POS_Y,0.0f };
+		m_GoalVertex = m_pPlayer->GetNowVertex();
+		m_StartVertex = m_GoalVertex;//始点を今の地点に初期化
+		m_NowShapes = 0;//格納した図形の数初期化
+		m_Effect_NowShapes = 0;
+		m_Fever_Effects_Alpha = 1.0f;
+		m_Shapes_Draw_Time = 0.0f;
+		m_Now_Shapes_Draw = 0;
 		Size = 0.0f;
 
-		Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
-		Fever_Draw_Angle_Count = 0.0f;
+		m_Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+		m_Fever_Draw_Angle_Count = 0.0f;
 
-		Fill(OrderVertex, -1);//配列-1で初期化
-		Fill(Shapes_Size, -1.0f);
-		Fill(Comparison_Shapes_Vertex_Save, -1);
-		Fill(Shapes_Vertex_Save, -1);
-		Fill(Effect_Shapes_Pos, -1.0f);
-		Fill(Shapes_Vertex, -1);
-		Fill(Shapes_Count, -1);
-		Fill(Comparison, -1);
-		Fill(vtx_FieldLine, 0.0f);
-		Fill(Shapes_Pos, -1.0f);
-		Fill(Shapes_type_Angle, -1);
-		Fill(Shapes_Angle_Save, -1.0f);
-		Fill(Shapes_Length, -1.0f);
-		Fill(Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
-		Fill(g_pShapesEffects_Pos, -1.0f);
-		Fill(g_pShapesEffects_Pos_Add, 0.0f);
+		Fill(m_OrderVertex, -1);//配列-1で初期化
+		Fill(m_Shapes_Size, -1.0f);
+		Fill(m_Comparison_Shapes_Vertex_Save, -1);
+		Fill(m_Shapes_Vertex_Save, -1);
+		Fill(m_Effect_Shapes_Pos, -1.0f);
+		Fill(m_Shapes_Vertex, -1);
+		Fill(m_Shapes_Count, -1);
+		Fill(m_Comparison, -1);
+		Fill(m_vtx_FieldLine, 0.0f);
+		Fill(m_Shapes_Pos, -1.0f);
+		Fill(m_Shapes_type_Angle, -1);
+		Fill(m_Shapes_Angle_Save, -1.0f);
+		Fill(m_Shapes_Length, -1.0f);
+		Fill(m_Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
+		Fill(m_ShapesEffects_Pos, -1.0f);
+		Fill(m_ShapesEffects_Pos_Add, 0.0f);
 	
-		OrderVertex[0] = StartVertex;//たどる順にプレイヤーの最初の位置保存
-		OrderVertexCount = 1;//たどった頂点の数初期化
-		m_tVertex[StartVertex].Use = true;//最初の頂点を使用に
+		m_OrderVertex[0] = m_StartVertex;//たどる順にプレイヤーの最初の位置保存
+		m_OrderVertexCount = 1;//たどった頂点の数初期化
+		m_tVertex[m_StartVertex].Use = true;//最初の頂点を使用に
 
-		NowLine = 0;//線の情報を初期化
+		m_NowLine = 0;//線の情報を初期化
 
-		SuperStarCount = 0;//ステラのカウントを初期化
+		m_SuperStarCount = 0;//ステラのカウントを初期化
 
-		Xx = 0.0f;
-		Yy = 0.0f;
+		m_Efect_x = 0.0f;
+		m_Efect_y = 0.0f;
 	}
 }
 
@@ -1707,7 +1619,7 @@ void CFieldVertex::SetSuperStar()
 	{
 		int Vertex;//ステラの頂点保存用変数
 		Vertex = rand() % 25;//0～24でランダムにセット
-		if (!m_tVertex[Vertex].SuperStar && Vertex != GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
+		if (!m_tVertex[Vertex].SuperStar && Vertex != m_GoalVertex && !m_tVertex[Vertex].Use)//既にスーパースターか今いる頂点か既に使用している頂点ならもう一度抽選
 		{
 			m_tVertex[Vertex].SuperStar = true;
 			i++;
@@ -1719,17 +1631,17 @@ void CFieldVertex::SetSuperStar()
 ////=====音を止める関数=====//
 void CFieldVertex::SoundStop()
 {
-	g_FieldSe->Stop();
+	m_FieldSe->Stop();
 }
 
 ////=====フィーバー中にフィーバーゲージを減らす関数=====//
 void CFieldVertex::SubtractFeverPoint()
 {
-	fFeverPoint -= (MAX_FEVER_POINT / 60.0f) / FEVER_TIME;
-	if (fFeverPoint < 0.0f)//値の補正
+	m_fFeverPoint -= (MAX_FEVER_POINT / 60.0f) / FEVER_TIME;
+	if (m_fFeverPoint < 0.0f)//値の補正
 	{
-		nFeverPoint = 0;
-		fFeverPoint = 0.0f;
+		m_nFeverPoint = 0;
+		m_fFeverPoint = 0.0f;
 	}
 }
 
@@ -1739,7 +1651,6 @@ void CFieldVertex::InitTextureModel()
 
 	//-----スプライトのメモリ確保-----//
 	{
-	  /*m_pSprite_SuperStar_Number = new Sprite();*/
 		m_pSprite_Fever_Gage[0] = new Sprite();
 		m_pSprite_Fever_Gage[1] = new Sprite();
 		m_pSprite_Fever_Gage[2] = new Sprite();
@@ -1778,28 +1689,24 @@ void CFieldVertex::InitTextureModel()
 		{
 			m_pTex_Ally_Number[i] = new Texture();
 		}
-	  /*for (int i = 0; i < 6; i++)
-		{
-			m_pTex_SuperStar_Number[i] = new Texture();
-		}*/
 
 		m_pStarLine = new StarLine();
 
-		g_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
-		g_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
-		g_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
+		m_pShapesEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/SikakuEffect.png"), 5, 10, 2.0f);
+		m_pFeverEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/fever.png"), 5, 11, 2.0f);
+		m_pLineEffects_Sprite = new CEffectManager_sp(EFFECT_PASS("Sprite/CreateDiagram.png"), 4, 8, 1.0f);
 
 		for (int i = 0; i < MAX_ALLY; i++)
 		{
-			g_pShapesEffects[i] = new CEffectManager_sp(g_pShapesEffects_Sprite);
+			m_pShapesEffects[i] = new CEffectManager_sp(m_pShapesEffects_Sprite);
 		}
 		for (int i = 0; i < 32; i++)
 		{
-			g_pFeverEffects[i] = new CEffectManager_sp(g_pFeverEffects_Sprite);
+			m_pFeverEffects[i] = new CEffectManager_sp(m_pFeverEffects_Sprite);
 		}
 		for (int i = 0; i < MAX_ALLY; i++)
 		{
-			g_pLineEffects[i] = new CEffectManager_sp(g_pLineEffects_Sprite);
+			m_pLineEffects[i] = new CEffectManager_sp(m_pLineEffects_Sprite);
 		}
 
 		m_pStar_Model[0] = new CModelEx(MODEL_PASS("Board_Star/Orange/Board_Star_Orange.fbx"));
@@ -1818,28 +1725,6 @@ void CFieldVertex::InitTextureModel()
 		if (FAILED(hrSummon_Log)) {
 			MessageBox(NULL, "Summon_Log_Square 画像", "Error", MB_OK);
 		}
-	}
-
-	//スーパースターの個数の数字初期化
-	{
-		/*HRESULT hrSuperStar;
-		for (int i = 0; i < 6; i++)
-		{
-			switch (i)
-			{
-			case 0:hrSuperStar = m_pTex_SuperStar_Number[0]->Create(TEX_PASS("Numbers/number_0.png")); break;
-			case 1:hrSuperStar = m_pTex_SuperStar_Number[1]->Create(TEX_PASS("Numbers/number_1.png")); break;
-			case 2:hrSuperStar = m_pTex_SuperStar_Number[2]->Create(TEX_PASS("Numbers/number_2.png")); break;
-			case 3:hrSuperStar = m_pTex_SuperStar_Number[3]->Create(TEX_PASS("Numbers/number_3.png")); break;
-			case 4:hrSuperStar = m_pTex_SuperStar_Number[4]->Create(TEX_PASS("Numbers/number_4.png")); break;
-			case 5:hrSuperStar = m_pTex_SuperStar_Number[5]->Create(TEX_PASS("Numbers/number_5.png")); break;
-			default:
-				break;
-			}
-			if (FAILED(hrSuperStar)) {
-				MessageBox(NULL, "Vertex 画像", "Error", MB_OK);
-			}
-		}*/
 	}
 
 	//召喚数の数字の初期化
@@ -1966,24 +1851,24 @@ void CFieldVertex::InitTextureModel()
 
 void CFieldVertex::InitSound()
 {
-	SAFE_DELETE(g_Fieldsound);
-	g_Fieldsound = new CSoundList(SE_COMPLETE);
-	g_Fieldsound->SetMasterVolume();
-	g_FieldSe = g_Fieldsound->GetSound(false);
+	SAFE_DELETE(m_Fieldsound);
+	m_Fieldsound = new CSoundList(SE_COMPLETE);
+	m_Fieldsound->SetMasterVolume();
+	m_FieldSe = m_Fieldsound->GetSound(false);
 }
 
 ////=====フィーバーポイントをリセットする関数=====//
 void CFieldVertex::ResetFeverPoint()
 {
-	nFeverPoint = 0;
-	fFeverPoint = 0.0f;
+	m_nFeverPoint = 0;
+	m_fFeverPoint = 0.0f;
 }
 
 ////=====一番最後の線を表示しない用にする関数=====//
 void CFieldVertex::SetNowLine()
 {
-	NowLine = NowLine - 1;
-	if (NowLine < 0)NowLine = 0;
+	m_NowLine = m_NowLine - 1;
+	if (m_NowLine < 0)m_NowLine = 0;
 }
 
 ////=====図形判定の再帰処理関数=====//
@@ -1995,18 +1880,18 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 	for (int k = 0; k < MAX_VERTEX; k++)
 	{
-		if (NowShapes >= 200)
+		if (m_NowShapes >= 200)
 		{
 			MessageBox(NULL, "200以上の図形が保存されました!これ以上保存できません!!", "Error", MB_OK);
 		}
-		if (Comparison[k] == VertexNumber.Number)//過去に自分と同じ頂点が格納されていたら図形としてみなし格納する	
+		if (m_Comparison[k] == VertexNumber.Number)//過去に自分と同じ頂点が格納されていたら図形としてみなし格納する	
 		{
 			int Comparison2[MAX_VERTEX];//過去に自分と同じ頂点が格納されている場所から今の場所までの頂点を保存する//降順に並び替える
 			int Comparison3[MAX_VERTEX];//降順にする前の頂点情報
 			for (int l = k; l < MAX_VERTEX; l++)
 			{
-				Comparison2[l - k] = Comparison[l];//Comparison2の先頭から格納する
-				Comparison3[l - k] = Comparison[l];
+				Comparison2[l - k] = m_Comparison[l];//Comparison2の先頭から格納する
+				Comparison3[l - k] = m_Comparison[l];
 			}
 			for (int l = 0; l < k; l++)
 			{
@@ -2025,12 +1910,12 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 				}
 			}
-			for (int l = 0; l < NowShapes; l++)//保存する図形が保存済みかどうか
+			for (int l = 0; l < m_NowShapes; l++)//保存する図形が保存済みかどうか
 			{
 				int EqualCount = 0;//等しい回数
 				for (int m = 0; m < MAX_VERTEX; m++)
 				{
-					if (Comparison_Shapes_Vertex_Save[l][m] == Comparison2[m])EqualCount++;//等しければカウント増やす
+					if (m_Comparison_Shapes_Vertex_Save[l][m] == Comparison2[m])EqualCount++;//等しければカウント増やす
 					if (EqualCount == MAX_VERTEX)ShapesFlag = true;//全て等しいなら図形を保存してはいけないフラグ立てる
 				}
 			}
@@ -2038,8 +1923,8 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 			{
 				for (int l = 0; l < MAX_VERTEX; l++)
 				{
-					Comparison_Shapes_Vertex_Save[NowShapes][l] = Comparison2[l];//図形の頂点を保存
-					Shapes_Vertex_Save[NowShapes][l] = Comparison3[l];//Draw順の図形頂点保存
+					m_Comparison_Shapes_Vertex_Save[m_NowShapes][l] = Comparison2[l];//図形の頂点を保存
+					m_Shapes_Vertex_Save[m_NowShapes][l] = Comparison3[l];//Draw順の図形頂点保存
 				}
 				//何角形か判定
 				int Count = 0;
@@ -2055,7 +1940,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[l]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[l]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
-								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//角の頂点番号を保存
+								m_Shapes_Vertex[m_NowShapes][Count] = Comparison3[l - 1];//角の頂点番号を保存
 								Count++;//辺が繋がってないとき角ができてる
 							}
 						}
@@ -2071,7 +1956,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[l - 2]].Pos.x) * (m_tVertex[Comparison3[0]].Pos.y - m_tVertex[Comparison3[l - 1]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[l - 2]].Pos.y) * (m_tVertex[Comparison3[0]].Pos.x - m_tVertex[Comparison3[l - 1]].Pos.x))
 							{
-								Shapes_Vertex[NowShapes][Count] = Comparison3[l - 1];//角の頂点番号を保存
+								m_Shapes_Vertex[m_NowShapes][Count] = Comparison3[l - 1];//角の頂点番号を保存
 								Count++;//辺が繋がってないとき角ができてる	
 							}
 						}
@@ -2084,7 +1969,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if ((m_tVertex[Comparison3[l - 1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x) * (m_tVertex[Comparison3[1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y)
 								!= (m_tVertex[Comparison3[l - 1]].Pos.y - m_tVertex[Comparison3[0]].Pos.y) * (m_tVertex[Comparison3[1]].Pos.x - m_tVertex[Comparison3[0]].Pos.x))
 							{
-								Shapes_Vertex[NowShapes][Count] = Comparison3[0];//角の頂点番号を保存
+								m_Shapes_Vertex[m_NowShapes][Count] = Comparison3[0];//角の頂点番号を保存
 								Count++;//辺が繋がってないとき角ができてる
 							}
 						}
@@ -2136,13 +2021,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							{
 								if (AngleSave[AngleCount] < 180.0f)
 								{
-									Shapes_Angle_Save[NowShapes][Save][0] = AngleSave[AngleCount];
-									Shapes_Angle_Save[NowShapes][Save][1] = Comparison3[l - 1];
+									m_Shapes_Angle_Save[m_NowShapes][Save][0] = AngleSave[AngleCount];
+									m_Shapes_Angle_Save[m_NowShapes][Save][1] = Comparison3[l - 1];
 								}
 								else
 								{
-									Shapes_Angle_Save[NowShapes][Save][0] = 360.0f - AngleSave[AngleCount];
-									Shapes_Angle_Save[NowShapes][Save][1] = Comparison3[l - 1];
+									m_Shapes_Angle_Save[m_NowShapes][Save][0] = 360.0f - AngleSave[AngleCount];
+									m_Shapes_Angle_Save[m_NowShapes][Save][1] = Comparison3[l - 1];
 								}
 								Save++;
 							}
@@ -2180,13 +2065,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							{
 								if (AngleSave[AngleCount] < 180.0f)
 								{
-									Shapes_Angle_Save[NowShapes][Save][0] = AngleSave[AngleCount];
-									Shapes_Angle_Save[NowShapes][Save][1] = Comparison3[l - 1];
+									m_Shapes_Angle_Save[m_NowShapes][Save][0] = AngleSave[AngleCount];
+									m_Shapes_Angle_Save[m_NowShapes][Save][1] = Comparison3[l - 1];
 								}
 								else
 								{
-									Shapes_Angle_Save[NowShapes][Save][0] = 360.0f - AngleSave[AngleCount];
-									Shapes_Angle_Save[NowShapes][Save][1] = Comparison3[l - 1];
+									m_Shapes_Angle_Save[m_NowShapes][Save][0] = 360.0f - AngleSave[AngleCount];
+									m_Shapes_Angle_Save[m_NowShapes][Save][1] = Comparison3[l - 1];
 								}
 								Save++;
 							}
@@ -2221,13 +2106,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							{
 								if (AngleSave[AngleCount] < 180.0f)
 								{
-									Shapes_Angle_Save[NowShapes][Save][0] = AngleSave[AngleCount];
-									Shapes_Angle_Save[NowShapes][Save][1] = Comparison3[0];
+									m_Shapes_Angle_Save[m_NowShapes][Save][0] = AngleSave[AngleCount];
+									m_Shapes_Angle_Save[m_NowShapes][Save][1] = Comparison3[0];
 								}
 								else
 								{
-									Shapes_Angle_Save[NowShapes][Save][0] = 360.0f - AngleSave[AngleCount];
-									Shapes_Angle_Save[NowShapes][Save][1] = Comparison3[0];
+									m_Shapes_Angle_Save[m_NowShapes][Save][0] = 360.0f - AngleSave[AngleCount];
+									m_Shapes_Angle_Save[m_NowShapes][Save][1] = Comparison3[0];
 								}
 								Save++;
 							}
@@ -2243,14 +2128,14 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 				if (Count > 4)BadShapes = true;//図形とみなさない(9角形以上の凹角形が存在しないため)BadShapesをtrueにする
 				if (BadShapes)//ダメな図形を保存しない（消去する)
 				{
-					Fill(Shapes_Vertex[NowShapes], -1);
-					Fill(Comparison_Shapes_Vertex_Save[NowShapes], -1);
-					Fill(Shapes_Vertex_Save[NowShapes], -1);
-					Fill(Shapes_Angle_Save[NowShapes], -1);
+					Fill(m_Shapes_Vertex[m_NowShapes], -1);
+					Fill(m_Comparison_Shapes_Vertex_Save[m_NowShapes], -1);
+					Fill(m_Shapes_Vertex_Save[m_NowShapes], -1);
+					Fill(m_Shapes_Angle_Save[m_NowShapes], -1);
 				}
 				if (!BadShapes)
 				{
-					Shapes_Count[NowShapes] = Count;
+					m_Shapes_Count[m_NowShapes] = Count;
 					float InVertex = 0;//中の頂点
 					float OutVertex = 0;//辺上の頂点
 					int l = 0;
@@ -2338,61 +2223,32 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (UpVertex && DownVertex && LeftVertex && RightVertex)InVertex++;//全方向に使っている頂点があれば囲まれているので内側の頂点
 						}
 					}
-					Shapes_Size[NowShapes] = InVertex + OutVertex / 2.0f - 1.0f;//ピックの定理から面積を導く
-					m_pBattle->SaveAllyData(Shapes_Count[NowShapes]);//図形の頂点と角数を渡す
+					m_Shapes_Size[m_NowShapes] = InVertex + OutVertex / 2.0f - 1.0f;//ピックの定理から面積を導く
+					m_pBattle->SaveAllyData(m_Shapes_Count[m_NowShapes]);//図形の頂点と角数を渡す
 
-					//std::thread Th_Ally_Load(LoadAllyTextureThread);
-					//Th_Ally_Load.join();
-
-					Ally_Count++;//召喚数増やす
+					m_Ally_Count++;//召喚数増やす
 					//召喚ログセット
-					//SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(140.0f, 100.0f - 5.0f * NowSummonLog, 10.0f);
-					SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
-					SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
-					SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
-					SummonLog[NowSummonLog].Alpha = 0.0f;
-					SummonLog[NowSummonLog].MoveType = 1;
-					NowSummonLog++;//召喚ログを増やす
-					//if (Shapes_Count[NowShapes] == 3)//三角形なら
-					//{
-					//	DirectX::XMFLOAT2 pos[3];
-					//	for (int m = 0; m < 3; m++)
-					//	{
-					//		pos[m].x = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.x;
-					//		pos[m].y = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.y;
-					//	}
-					//	Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
-					//	Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
-					//}
-					//else
-					//{
-					//	DirectX::XMFLOAT2 pos[4];
-					//	for (int m = 0; m < 4; m++)
-					//	{
-					//		pos[m].x = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.x;
-					//		pos[m].y = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.y;
-					//	}
-					//	Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
-					//	Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
-					//}
+					m_tSummonLog[m_NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
+					m_tSummonLog[m_NowSummonLog].time = DRAW_LOG_TIME;
+					m_tSummonLog[m_NowSummonLog].type = m_Shapes_Count[m_NowShapes] - 3;//画数から引く (0か1)
+					m_tSummonLog[m_NowSummonLog].Alpha = 0.0f;
+					m_tSummonLog[m_NowSummonLog].MoveType = 1;
+					m_NowSummonLog++;//召喚ログを増やす
 
-					if (Shapes_Count[NowShapes] == 3)//三角形なら
+					if (m_Shapes_Count[m_NowShapes] == 3)//三角形なら
 					{
 						//三角形の外心の座標を求める
 						DirectX::XMFLOAT2 pos[3];
 						for (int m = 0; m < 3; m++)
 						{
-							pos[m].x = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.x;
-							pos[m].y = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.y;
+							pos[m].x = m_tVertex[m_Shapes_Vertex[m_NowShapes][m]].Pos.x;
+							pos[m].y = m_tVertex[m_Shapes_Vertex[m_NowShapes][m]].Pos.y;
 						}
-						
-						//Shapes_Pos[NowShapes].x = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].y - pos[2].y) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].y - pos[0].y) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].y - pos[1].y)) / (2.0f * ((pos[0].x - pos[1].x) * (pos[1].y - pos[2].y) - (pos[1].x - pos[2].x) * (pos[0].y - pos[1].y)));
-						//Shapes_Pos[NowShapes].y = ((powf(pos[0].x, 2) + powf(pos[0].y, 2)) * (pos[1].x - pos[2].x) + (powf(pos[1].x, 2) + powf(pos[1].y, 2)) * (pos[2].x - pos[0].x) + (powf(pos[2].x, 2) + powf(pos[2].y, 2)) * (pos[0].x - pos[1].x)) / (2.0f * ((pos[1].x - pos[2].x) * (pos[0].y - pos[1].y) - (pos[0].x - pos[1].x) * (pos[1].y - pos[2].y)));
-						Effect_Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
-						Effect_Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
-						g_pShapesEffects_Pos[NowShapes][0].x = Effect_Shapes_Pos[NowShapes].x;
-						g_pShapesEffects_Pos[NowShapes][0].y = Effect_Shapes_Pos[NowShapes].y;
-						g_pShapesEffects_Pos[NowShapes][0].z = 0.0f;
+						m_Effect_Shapes_Pos[m_NowShapes].x = (pos[0].x + pos[1].x + pos[2].x) / 3.0f;
+						m_Effect_Shapes_Pos[m_NowShapes].y = (pos[0].y + pos[1].y + pos[2].y) / 3.0f;
+						m_ShapesEffects_Pos[m_NowShapes][0].x = m_Effect_Shapes_Pos[m_NowShapes].x;
+						m_ShapesEffects_Pos[m_NowShapes][0].y = m_Effect_Shapes_Pos[m_NowShapes].y;
+						m_ShapesEffects_Pos[m_NowShapes][0].z = 0.0f;
 						bool typeflag = false;
 						float CornerAngle = -1.0f;
 						int CornerNumber = -1;
@@ -2403,41 +2259,41 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						float Py = 0.0f;
 						for (int m = 0,n = 0; m < 3; m++)
 						{
-							if (Shapes_Angle_Save[NowShapes][m][0] == 90.0f)
+							if (m_Shapes_Angle_Save[m_NowShapes][m][0] == 90.0f)
 							{
 								typeflag = true;
 								CornerAngle = 90.0f;
-								CornerNumber = Shapes_Angle_Save[NowShapes][m][1];
+								CornerNumber = m_Shapes_Angle_Save[m_NowShapes][m][1];
 							}
 							else
 							{						
-								VertexSub[n] = Shapes_Angle_Save[NowShapes][m][1];
+								VertexSub[n] = m_Shapes_Angle_Save[m_NowShapes][m][1];
 								n++;
 							}
 						}
 						Px = m_tVertex[VertexSub[0]].Pos.x + m_tVertex[VertexSub[1]].Pos.x;
 						Py = m_tVertex[VertexSub[0]].Pos.y + m_tVertex[VertexSub[1]].Pos.y;
-						Shapes_Pos[NowShapes].x = Px / 2.0f;
-						Shapes_Pos[NowShapes].y = Py / 2.0f;
+						m_Shapes_Pos[m_NowShapes].x = Px / 2.0f;
+						m_Shapes_Pos[m_NowShapes].y = Py / 2.0f;
 						Vx = m_tVertex[VertexSub[0]].Pos.x - m_tVertex[CornerNumber].Pos.x + m_tVertex[VertexSub[1]].Pos.x - m_tVertex[CornerNumber].Pos.x;
 						Vy = m_tVertex[VertexSub[0]].Pos.y - m_tVertex[CornerNumber].Pos.y + m_tVertex[VertexSub[1]].Pos.y - m_tVertex[CornerNumber].Pos.y;
 						//横向きの直角二等辺三角形なら type 0
 						if ((Vx > 0.0f && Vy > 0.0f) || (Vx > 0.0f && Vy < 0.0f)|| (Vx < 0.0f && Vy < 0.0f) || (Vx < 0.0f && Vy > 0.0f))
 						{
-							if (Vx > 0.0f && Vy > 0.0f)Shapes_type_Angle[NowShapes][1] = 0;
-							if (Vx > 0.0f && Vy < 0.0f)Shapes_type_Angle[NowShapes][1] = 1;
-							if (Vx < 0.0f && Vy < 0.0f)Shapes_type_Angle[NowShapes][1] = 2;
-							if (Vx < 0.0f && Vy > 0.0f)Shapes_type_Angle[NowShapes][1] = 3;
-							Shapes_type_Angle[NowShapes][0] = 0;
+							if (Vx > 0.0f && Vy > 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 0;
+							if (Vx > 0.0f && Vy < 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 1;
+							if (Vx < 0.0f && Vy < 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 2;
+							if (Vx < 0.0f && Vy > 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 3;
+							m_Shapes_type_Angle[m_NowShapes][0] = 0;
 						}
 						//上向きの直角二等辺三角形なら type 1
 						if ((Vx == 0.0f && Vy > 0.0f)|| (Vx > 0.0f && Vy == 0.0f)|| (Vx == 0.0f && Vy < 0.0f) || (Vx < 0.0f && Vy == 0.0f))
 						{
-							if (Vx == 0.0f && Vy > 0.0f)Shapes_type_Angle[NowShapes][1] = 2;
-							if (Vx > 0.0f && Vy == 0.0f)Shapes_type_Angle[NowShapes][1] = 3;
-							if (Vx == 0.0f && Vy < 0.0f)Shapes_type_Angle[NowShapes][1] = 0;
-							if (Vx < 0.0f && Vy == 0.0f)Shapes_type_Angle[NowShapes][1] = 1;
-							Shapes_type_Angle[NowShapes][0] = 1;
+							if (Vx == 0.0f && Vy > 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 2;
+							if (Vx > 0.0f && Vy == 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 3;
+							if (Vx == 0.0f && Vy < 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 0;
+							if (Vx < 0.0f && Vy == 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 1;
+							m_Shapes_type_Angle[m_NowShapes][0] = 1;
 						}	
 					}
 					else//四角形なら
@@ -2445,16 +2301,16 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						DirectX::XMFLOAT2 pos[4];
 						for (int m = 0; m < 4; m++)
 						{
-							pos[m].x = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.x;
-							pos[m].y = m_tVertex[Shapes_Vertex[NowShapes][m]].Pos.y;
+							pos[m].x = m_tVertex[m_Shapes_Vertex[m_NowShapes][m]].Pos.x;
+							pos[m].y = m_tVertex[m_Shapes_Vertex[m_NowShapes][m]].Pos.y;
 						}
-						Shapes_Pos[NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
-						Shapes_Pos[NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
-						Effect_Shapes_Pos[NowShapes].x = Shapes_Pos[NowShapes].x;
-						Effect_Shapes_Pos[NowShapes].y = Shapes_Pos[NowShapes].y;
-						g_pShapesEffects_Pos[NowShapes][0].x = Effect_Shapes_Pos[NowShapes].x;
-						g_pShapesEffects_Pos[NowShapes][0].y = Effect_Shapes_Pos[NowShapes].y;
-						g_pShapesEffects_Pos[NowShapes][0].z = 0.0f;
+						m_Shapes_Pos[m_NowShapes].x = (pos[0].x + pos[1].x + pos[2].x + pos[3].x) / 4.0f;
+						m_Shapes_Pos[m_NowShapes].y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
+						m_Effect_Shapes_Pos[m_NowShapes].x = m_Shapes_Pos[m_NowShapes].x;
+						m_Effect_Shapes_Pos[m_NowShapes].y = m_Shapes_Pos[m_NowShapes].y;
+						m_ShapesEffects_Pos[m_NowShapes][0].x = m_Effect_Shapes_Pos[m_NowShapes].x;
+						m_ShapesEffects_Pos[m_NowShapes][0].y = m_Effect_Shapes_Pos[m_NowShapes].y;
+						m_ShapesEffects_Pos[m_NowShapes][0].z = 0.0f;
 
 						float Length[4][2];//四辺の長さを求める
 						for (int m = 0; m < 3; m++)
@@ -2495,7 +2351,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							}
 						}
 						//正方形か長方形またはひし形の時
-						if (Shapes_Angle_Save[NowShapes][0][0] == 90.0f && Shapes_Angle_Save[NowShapes][1][0] == 90.0f && Shapes_Angle_Save[NowShapes][2][0] == 90.0f && Shapes_Angle_Save[NowShapes][3][0] == 90.0f)
+						if (m_Shapes_Angle_Save[m_NowShapes][0][0] == 90.0f && m_Shapes_Angle_Save[m_NowShapes][1][0] == 90.0f && m_Shapes_Angle_Save[m_NowShapes][2][0] == 90.0f && m_Shapes_Angle_Save[m_NowShapes][3][0] == 90.0f)
 						{
 
 							//各辺の長さによって図形の形を区別する
@@ -2503,13 +2359,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							{
 								if ((int)Length[0][0] % 15 == 0)//上下の頂点の間隔と同じなら正方形
 								{
-									Shapes_type_Angle[NowShapes][0] = 2;//正方形
-									Shapes_type_Angle[NowShapes][1] = 0;
+									m_Shapes_type_Angle[m_NowShapes][0] = 2;//正方形
+									m_Shapes_type_Angle[m_NowShapes][1] = 0;
 								}
 								else
 								{
-									Shapes_type_Angle[NowShapes][0] = 3;//ひし形
-									Shapes_type_Angle[NowShapes][1] = 0;
+									m_Shapes_type_Angle[m_NowShapes][0] = 3;//ひし形
+									m_Shapes_type_Angle[m_NowShapes][1] = 0;
 								}
 							}
 							else
@@ -2517,17 +2373,17 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 
 								if (pos[0].x == pos[1].x || pos[0].y == pos[1].y)
 								{
-									Shapes_type_Angle[NowShapes][0] = 4;//長方形
-									Shapes_type_Angle[NowShapes][1] = 0;
+									m_Shapes_type_Angle[m_NowShapes][0] = 4;//長方形
+									m_Shapes_type_Angle[m_NowShapes][1] = 0;
 									if (Length[0][1] == 0)
 									{
-										Shapes_Length[NowShapes][0] = Length[0][0] / 15.0f;
-										Shapes_Length[NowShapes][1] = Length[1][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][0] = Length[0][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][1] = Length[1][0] / 15.0f;
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[1][0] / 15.0f;
-										Shapes_Length[NowShapes][1] = Length[0][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][0] = Length[1][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][1] = Length[0][0] / 15.0f;
 									}
 								}
 								else
@@ -2538,23 +2394,23 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									dir.y = (pos[0].y + pos[1].y + pos[2].y + pos[3].y) / 4.0f;
 									if ((pos[0].x - dir.x > 0.0f && pos[0].y - dir.y > 0.0f) || (pos[0].x - dir.x < 0.0f && pos[0].y - dir.y < 0.0f))//左から右
 									{
-										Shapes_type_Angle[NowShapes][0] = 5;//斜めの長方形
-										Shapes_type_Angle[NowShapes][1] = -1;
+										m_Shapes_type_Angle[m_NowShapes][0] = 5;//斜めの長方形
+										m_Shapes_type_Angle[m_NowShapes][1] = -1;
 									}
 									else
 									{
-										Shapes_type_Angle[NowShapes][0] = 5;//斜めの長方形
-										Shapes_type_Angle[NowShapes][1] = 1;
+										m_Shapes_type_Angle[m_NowShapes][0] = 5;//斜めの長方形
+										m_Shapes_type_Angle[m_NowShapes][1] = 1;
 									}
 									if (Length[0][0] == 0)
 									{
-										Shapes_Length[NowShapes][0] = Length[0][0] / sqrtf(450.0f);
-										Shapes_Length[NowShapes][1] = Length[1][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][0] = Length[0][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][1] = Length[1][0] / sqrtf(450.0f);
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[1][0] / sqrtf(450.0f);
-										Shapes_Length[NowShapes][1] = Length[0][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][0] = Length[1][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][1] = Length[0][0] / sqrtf(450.0f);
 									}
 								}
 							}
@@ -2565,7 +2421,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 							if (Length[0][0] != Length[2][0] || Length[1][0] != Length[3][0])
 							{
 								//一つでも直角があればカッター型
-								if (Shapes_Angle_Save[NowShapes][0][0] == 90.0f || Shapes_Angle_Save[NowShapes][1][0] == 90.0f || Shapes_Angle_Save[NowShapes][2][0] == 90.0f || Shapes_Angle_Save[NowShapes][3][0] == 90.0f)
+								if (m_Shapes_Angle_Save[m_NowShapes][0][0] == 90.0f || m_Shapes_Angle_Save[m_NowShapes][1][0] == 90.0f || m_Shapes_Angle_Save[m_NowShapes][2][0] == 90.0f || m_Shapes_Angle_Save[m_NowShapes][3][0] == 90.0f)
 								{
 									//図形の中点を求める
 									DirectX::XMFLOAT2 dir;
@@ -2584,7 +2440,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 											Length[m][0] = Length[m][0] / sqrtf(450.0f);
 										}
 								
-										if(Shapes_Angle_Save[NowShapes][m][0] < 90.0f)
+										if(m_Shapes_Angle_Save[m_NowShapes][m][0] < 90.0f)
 										{
 											AngleNumber = m;
 										}
@@ -2594,42 +2450,42 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									//各辺の長さを求める(対辺の比が等しくないものがその図形の辺の比になる)
 									if (Length[0][0] == Length[2][0])
 									{
-										Shapes_Length[NowShapes][0] = Length[1][0];
-										Shapes_Length[NowShapes][1] = Length[3][0];
+										m_Shapes_Length[m_NowShapes][0] = Length[1][0];
+										m_Shapes_Length[m_NowShapes][1] = Length[3][0];
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[0][0];
-										Shapes_Length[NowShapes][1] = Length[2][0];
+										m_Shapes_Length[m_NowShapes][0] = Length[0][0];
+										m_Shapes_Length[m_NowShapes][1] = Length[2][0];
 									}
 									if (pos[AngleNumber].x - dir.x > 0.0f && pos[AngleNumber].y - dir.y > 0.0f)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) > fabsf(pos[AngleNumber].y - dir.y))
 										{
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
-												Shapes_type_Angle[NowShapes][1] = 2;
+												m_Shapes_type_Angle[m_NowShapes][0] = 11;//new型(左凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 2;
 											}
 											else
 											{
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-													Shapes_type_Angle[NowShapes][1] = 2;
+													m_Shapes_type_Angle[m_NowShapes][0] = 9;//カッター型(左凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 2;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 2;
+														m_Shapes_type_Angle[m_NowShapes][0] = 13;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 2;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 2;
+														m_Shapes_type_Angle[m_NowShapes][0] = 14;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 2;
 													}
 												}
 											}
@@ -2637,30 +2493,30 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 										else
 										{
 
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
-												Shapes_type_Angle[NowShapes][1] = 3;
+												m_Shapes_type_Angle[m_NowShapes][0] = 12;//new型(右凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 3;
 											}
 											else
 											{	
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-													Shapes_type_Angle[NowShapes][1] = 3;
+													m_Shapes_type_Angle[m_NowShapes][0] = 10;//カッター型(右凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 3;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 3;
+														m_Shapes_type_Angle[m_NowShapes][0] = 15;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 3;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 3;
+														m_Shapes_type_Angle[m_NowShapes][0] = 16;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 3;
 													}
 												}
 											}
@@ -2671,60 +2527,60 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 										if (fabsf(pos[AngleNumber].x - dir.x) < fabsf(pos[AngleNumber].y - dir.y))
 										{
 
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
-												Shapes_type_Angle[NowShapes][1] = 3;
+												m_Shapes_type_Angle[m_NowShapes][0] = 11;//new型(左凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 3;
 											}
 											else
 											{												
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-													Shapes_type_Angle[NowShapes][1] = 3;
+													m_Shapes_type_Angle[m_NowShapes][0] = 9;//カッター型(左凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 3;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 3;
+														m_Shapes_type_Angle[m_NowShapes][0] = 13;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 3;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 3;
+														m_Shapes_type_Angle[m_NowShapes][0] = 14;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 3;
 													}
 												}
 											}
 										}
 										else
 										{
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
-												Shapes_type_Angle[NowShapes][1] = 0;
+												m_Shapes_type_Angle[m_NowShapes][0] = 12;//new型(右凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 0;
 											}
 											else
 											{												
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-													Shapes_type_Angle[NowShapes][1] = 0;
+													m_Shapes_type_Angle[m_NowShapes][0] = 10;//カッター型(右凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 0;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 0;
+														m_Shapes_type_Angle[m_NowShapes][0] = 15;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 0;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 0;
+														m_Shapes_type_Angle[m_NowShapes][0] = 16;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 0;
 													}
 												}
 											}
@@ -2734,61 +2590,61 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) > fabsf(pos[AngleNumber].y - dir.y))
 										{
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
-												Shapes_type_Angle[NowShapes][1] = 0;
+												m_Shapes_type_Angle[m_NowShapes][0] = 11;//new型(左凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 0;
 											}
 											else
 											{
 												
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-													Shapes_type_Angle[NowShapes][1] = 0;
+													m_Shapes_type_Angle[m_NowShapes][0] = 9;//カッター型(左凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 0;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 0;
+														m_Shapes_type_Angle[m_NowShapes][0] = 13;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 0;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 0;
+														m_Shapes_type_Angle[m_NowShapes][0] = 14;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 0;
 													}
 												}
 											}
 										}
 										else
 										{
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
-												Shapes_type_Angle[NowShapes][1] = 1;
+												m_Shapes_type_Angle[m_NowShapes][0] = 12;//new型(右凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 1;
 											}
 											else
 											{											
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-													Shapes_type_Angle[NowShapes][1] = 1;
+													m_Shapes_type_Angle[m_NowShapes][0] = 10;//カッター型(右凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 1;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 1;
+														m_Shapes_type_Angle[m_NowShapes][0] = 15;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 1;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 1;
+														m_Shapes_type_Angle[m_NowShapes][0] = 16;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 1;
 													}
 												}
 											}
@@ -2798,61 +2654,61 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									{
 										if (fabsf(pos[AngleNumber].x - dir.x) < fabsf(pos[AngleNumber].y - dir.y))
 										{
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 11;//new型(左凸)
-												Shapes_type_Angle[NowShapes][1] = 1;
+												m_Shapes_type_Angle[m_NowShapes][0] = 11;//new型(左凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 1;
 											}
 											else
 											{
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 9;//カッター型(左凸)
-													Shapes_type_Angle[NowShapes][1] = 1;
+													m_Shapes_type_Angle[m_NowShapes][0] = 9;//カッター型(左凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 1;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 13;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 1;
+														m_Shapes_type_Angle[m_NowShapes][0] = 13;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 1;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 14;//カッター型(右凸)
-														Shapes_type_Angle[NowShapes][1] = 1;
+														m_Shapes_type_Angle[m_NowShapes][0] = 14;//カッター型(右凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 1;
 													}
 												}
 											}
 										}
 										else
 										{
-											if (Shapes_Angle_Save[NowShapes][0][0] == Shapes_Angle_Save[NowShapes][2][0] || Shapes_Angle_Save[NowShapes][1][0] == Shapes_Angle_Save[NowShapes][3][0])
+											if (m_Shapes_Angle_Save[m_NowShapes][0][0] == m_Shapes_Angle_Save[m_NowShapes][2][0] || m_Shapes_Angle_Save[m_NowShapes][1][0] == m_Shapes_Angle_Save[m_NowShapes][3][0])
 											{
-												Shapes_type_Angle[NowShapes][0] = 12;//new型(右凸)
-												Shapes_type_Angle[NowShapes][1] = 2;
+												m_Shapes_type_Angle[m_NowShapes][0] = 12;//new型(右凸)
+												m_Shapes_type_Angle[m_NowShapes][1] = 2;
 											}
 											else
 											{
 												
 												if (!Diagonal)//斜めの図形でないなら
 												{
-													Shapes_type_Angle[NowShapes][0] = 10;//カッター型(右凸)
-													Shapes_type_Angle[NowShapes][1] = 2;
+													m_Shapes_type_Angle[m_NowShapes][0] = 10;//カッター型(右凸)
+													m_Shapes_type_Angle[m_NowShapes][1] = 2;
 												}
 												else
 												{
 													int SumLength = Length[0][0] + Length[1][0] + Length[2][0] + Length[3][0];//全体の辺の比の合計を求める
 													if (SumLength == 6)
 													{
-														Shapes_type_Angle[NowShapes][0] = 15;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 2;
+														m_Shapes_type_Angle[m_NowShapes][0] = 15;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 2;
 													}
 													else
 													{
-														Shapes_type_Angle[NowShapes][0] = 16;//カッター型(左凸)
-														Shapes_type_Angle[NowShapes][1] = 2;
+														m_Shapes_type_Angle[m_NowShapes][0] = 16;//カッター型(左凸)
+														m_Shapes_type_Angle[m_NowShapes][1] = 2;
 													}
 												}
 											}
@@ -2861,7 +2717,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 								}
 								else //台形
 								{
-									Shapes_type_Angle[NowShapes][0] = 6;//台形
+									m_Shapes_type_Angle[m_NowShapes][0] = 6;//台形
 									float Num[2];
 									Num[0] = Length[0][0];
 									Num[1] = 0;
@@ -2888,25 +2744,25 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 										dirpos.x = (pos[(int)Num[1]].x + pos[(int)Num[1] + 1].x) / 2.0f;
 										dirpos.y = (pos[(int)Num[1]].y + pos[(int)Num[1] + 1].y) / 2.0f;
 									}
-									dirpos.x = dirpos.x - Shapes_Pos[NowShapes].x;
-									dirpos.y = dirpos.y - Shapes_Pos[NowShapes].y;
-									if (dirpos.x == 0.0f && dirpos.y > 0.0f)Shapes_type_Angle[NowShapes][1] = 0;
-									if (dirpos.x > 0.0f && dirpos.y == 0.0f)Shapes_type_Angle[NowShapes][1] = 1;
-									if (dirpos.x == 0.0f && dirpos.y < 0.0f)Shapes_type_Angle[NowShapes][1] = 2;
-									if (dirpos.x < 0.0f && dirpos.y == 0.0f)Shapes_type_Angle[NowShapes][1] = 3;
-									if (dirpos.x > 0.0f && dirpos.y > 0.0f)Shapes_type_Angle[NowShapes][1] = 4;
-									if (dirpos.x > 0.0f && dirpos.y < 0.0f)Shapes_type_Angle[NowShapes][1] = 5;
-									if (dirpos.x < 0.0f && dirpos.y < 0.0f)Shapes_type_Angle[NowShapes][1] = 6;
-									if (dirpos.x < 0.0f && dirpos.y > 0.0f)Shapes_type_Angle[NowShapes][1] = 7;
-									if (Shapes_type_Angle[NowShapes][1] < 4)
+									dirpos.x = dirpos.x - m_Shapes_Pos[m_NowShapes].x;
+									dirpos.y = dirpos.y - m_Shapes_Pos[m_NowShapes].y;
+									if (dirpos.x == 0.0f && dirpos.y > 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 0;
+									if (dirpos.x > 0.0f && dirpos.y == 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 1;
+									if (dirpos.x == 0.0f && dirpos.y < 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 2;
+									if (dirpos.x < 0.0f && dirpos.y == 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 3;
+									if (dirpos.x > 0.0f && dirpos.y > 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 4;
+									if (dirpos.x > 0.0f && dirpos.y < 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 5;
+									if (dirpos.x < 0.0f && dirpos.y < 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 6;
+									if (dirpos.x < 0.0f && dirpos.y > 0.0f)m_Shapes_type_Angle[m_NowShapes][1] = 7;
+									if (m_Shapes_type_Angle[m_NowShapes][1] < 4)
 									{
-										Shapes_Length[NowShapes][0] = Length[(int)Num[1]][0]/ 15.0f;//上底の長さ保存
-										Shapes_Length[NowShapes][1] = Num[0] / 15.0f;//下底の長さ保存
+										m_Shapes_Length[m_NowShapes][0] = Length[(int)Num[1]][0]/ 15.0f;//上底の長さ保存
+										m_Shapes_Length[m_NowShapes][1] = Num[0] / 15.0f;//下底の長さ保存
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[(int)Num[1]][0] / sqrtf(450.0f);//上底の長さ保存
-										Shapes_Length[NowShapes][1] = Num[0] / sqrtf(450.0f);//下底の長さ保存
+										m_Shapes_Length[m_NowShapes][0] = Length[(int)Num[1]][0] / sqrtf(450.0f);//上底の長さ保存
+										m_Shapes_Length[m_NowShapes][1] = Num[0] / sqrtf(450.0f);//下底の長さ保存
 									}
 								}
 							}
@@ -2927,23 +2783,23 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									//下の条件を満たせば左下から右上の平行四辺形
 									if ((pos[SaveNumber].x - dir.x > 0.0f && pos[SaveNumber].y - dir.y > 0.0f) || (pos[SaveNumber].x - dir.x < 0.0f && pos[SaveNumber].y - dir.y < 0.0f))
 									{
-										Shapes_type_Angle[NowShapes][0] = 8;
-										Shapes_type_Angle[NowShapes][1] = 0;
+										m_Shapes_type_Angle[m_NowShapes][0] = 8;
+										m_Shapes_type_Angle[m_NowShapes][1] = 0;
 									}
 									else//右下から左上の平行四辺形
 									{
-										Shapes_type_Angle[NowShapes][0] = 7;
-										Shapes_type_Angle[NowShapes][1] = 0;
+										m_Shapes_type_Angle[m_NowShapes][0] = 7;
+										m_Shapes_type_Angle[m_NowShapes][1] = 0;
 									}
 									if ((int)Length[0][0] % 15 == 0)
 									{
-										Shapes_Length[NowShapes][0] = Length[0][0] / 15.0f;
-										Shapes_Length[NowShapes][1] = Length[1][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][0] = Length[0][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][1] = Length[1][0] / sqrtf(450.0f);
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[1][0] / 15.0f;
-										Shapes_Length[NowShapes][1] = Length[0][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][0] = Length[1][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][1] = Length[0][0] / sqrtf(450.0f);
 									}
 								}
 								else //角度９０の平行四辺形
@@ -2951,23 +2807,23 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 									//x,y共にプラスが1つでもあるなら左下から右上の平行四辺形
 									if ((pos[SaveNumber].x - dir.x > 0.0f && pos[SaveNumber].y - dir.y > 0.0f) || (pos[SaveNumber].x - dir.x < 0.0f && pos[SaveNumber].y - dir.y < 0.0f))
 									{
-										Shapes_type_Angle[NowShapes][0] = 7;
-										Shapes_type_Angle[NowShapes][1] = 1;
+										m_Shapes_type_Angle[m_NowShapes][0] = 7;
+										m_Shapes_type_Angle[m_NowShapes][1] = 1;
 									}
 									else
 									{
-										Shapes_type_Angle[NowShapes][0] = 8;
-										Shapes_type_Angle[NowShapes][1] = 1;
+										m_Shapes_type_Angle[m_NowShapes][0] = 8;
+										m_Shapes_type_Angle[m_NowShapes][1] = 1;
 									}
 									if ((int)Length[0][0] % 15 == 0)
 									{
-										Shapes_Length[NowShapes][0] = Length[0][0] / 15.0f;
-										Shapes_Length[NowShapes][1] = Length[1][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][0] = Length[0][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][1] = Length[1][0] / sqrtf(450.0f);
 									}
 									else
 									{
-										Shapes_Length[NowShapes][0] = Length[1][0] / 15.0f;
-										Shapes_Length[NowShapes][1] = Length[0][0] / sqrtf(450.0f);
+										m_Shapes_Length[m_NowShapes][0] = Length[1][0] / 15.0f;
+										m_Shapes_Length[m_NowShapes][1] = Length[0][0] / sqrtf(450.0f);
 									}
 								}
 							}
@@ -2975,13 +2831,13 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 
 					//音を再生
-					g_FieldSe->Stop();
+					m_FieldSe->Stop();
 					XAUDIO2_BUFFER buffer;
-					buffer =g_Fieldsound->GetBuffer(false);
-					g_FieldSe->FlushSourceBuffers();
-					g_FieldSe->SubmitSourceBuffer(&buffer);
-					if(g_FieldSe)SetVolumeSE(g_FieldSe);
-					g_FieldSe->Start();
+					buffer = m_Fieldsound->GetBuffer(false);
+					m_FieldSe->FlushSourceBuffers();
+					m_FieldSe->SubmitSourceBuffer(&buffer);
+					if(m_FieldSe)SetVolumeSE(m_FieldSe);
+					m_FieldSe->Start();
 
 					for (int m = 0; Comparison2[m] != -1; m++)
 					{
@@ -2990,41 +2846,41 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 						if (m_tVertex[Comparison2[m]].SuperStar)
 						{
 							m_tVertex[Comparison2[m]].SuperStarUse = true;
-							SuperStarCount++;
+							m_SuperStarCount++;
 							if (GetFeverMode())
 							{
-								fFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
+								m_fFeverPoint += (MAX_FEVER_POINT / FEVER_TIME) * FEVER_ADD_TIME;
 								float PointAjust = 0.0f;
-								if (fFeverPoint > MAX_FEVER_POINT)
+								if (m_fFeverPoint > MAX_FEVER_POINT)
 								{
-									PointAjust = MAX_FEVER_POINT - fFeverPoint;
-									fFeverPoint = MAX_FEVER_POINT;
+									PointAjust = MAX_FEVER_POINT - m_fFeverPoint;
+									m_fFeverPoint = MAX_FEVER_POINT;
 								}
 								SetFeverStellaTime(FEVER_ADD_TIME * 60.0f - PointAjust);
 							}
 							SetSuperStar();
 							if (!GetFeverMode())
 							{
-								nFeverPoint += 1.0f;
-								m_pBattle->SaveAllyData(Shapes_Count[NowShapes],true);//図形の頂点と角数を渡す
-								Ally_Count++;//召喚数増やす
-								SummonLog[NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
-								SummonLog[NowSummonLog].time = DRAW_LOG_TIME;
-								SummonLog[NowSummonLog].type = Shapes_Count[NowShapes] - 3;//画数から引く (0か1)
-								SummonLog[NowSummonLog].Alpha = 0.0f;
-								SummonLog[NowSummonLog].MoveType = 1;
-								NowSummonLog++;//召喚ログを増やす
+								m_nFeverPoint += 1.0f;
+								m_pBattle->SaveAllyData(m_Shapes_Count[m_NowShapes],true);//図形の頂点と角数を渡す
+								m_Ally_Count++;//召喚数増やす
+								m_tSummonLog[m_NowSummonLog].Pos = DirectX::XMFLOAT3(137.0f, 50.0f, 10.0f);
+								m_tSummonLog[m_NowSummonLog].time = DRAW_LOG_TIME;
+								m_tSummonLog[m_NowSummonLog].type = m_Shapes_Count[m_NowShapes] - 3;//画数から引く (0か1)
+								m_tSummonLog[m_NowSummonLog].Alpha = 0.0f;
+								m_tSummonLog[m_NowSummonLog].MoveType = 1;
+								m_NowSummonLog++;//召喚ログを増やす
 							}
 						}
-						m_tVertex[Comparison2[m]].Angle[1] = 181.0f;
+						m_tVertex[Comparison2[m]].Angle.y = 181.0f;
 					}
 					if (!GetFeverMode())
 					{
-						nFeverPoint += 1.0f;
+						m_nFeverPoint += 1.0f;
 					}
-					if (nFeverPoint > MAX_FEVER_POINT)nFeverPoint = MAX_FEVER_POINT;
+					if (m_nFeverPoint > MAX_FEVER_POINT)m_nFeverPoint = MAX_FEVER_POINT;
 					
-					NowShapes++;//保存場所を次の場所にする
+					m_NowShapes++;//保存場所を次の場所にする
 				}
 				
 			}
@@ -3034,9 +2890,9 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 		}
 		else
 		{
-			if (Comparison[k] == -1)
+			if (m_Comparison[k] == -1)
 			{
-				Comparison[k] = VertexNumber.Number;//図形の頂点保存に探索時の頂点を保存する
+				m_Comparison[k] = VertexNumber.Number;//図形の頂点保存に探索時の頂点を保存する
 				NowVertex = k;//仮頂点保存配列の何番目に格納したのかを保存
 				break;
 			}
@@ -3053,10 +2909,10 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 			}
 			else
 			{
-				if (VertexNumber.Connect[k] != -1 && VertexNumber.Connect[k] != Comparison[NowVertex - 1])ShapesCheck(m_tVertex[VertexNumber.Connect[k]]);
+				if (VertexNumber.Connect[k] != -1 && VertexNumber.Connect[k] != m_Comparison[NowVertex - 1])ShapesCheck(m_tVertex[VertexNumber.Connect[k]]);
 			}
 		}
-		Comparison[NowVertex] = -1;//繋がっている頂点が無ければ行き止まりなので一つ前の頂点に戻る
+		m_Comparison[NowVertex] = -1;//繋がっている頂点が無ければ行き止まりなので一つ前の頂点に戻る
 	}
 }
 
@@ -3093,8 +2949,8 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 	//-----描画関連の処理-----//
 	{
 		m_pStar_Model[color]->SetPostion(m_tVertex[Vertex].Pos.x, m_tVertex[Vertex].Pos.y, 10.0f);//座標設定
-		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle[0]), TORAD(m_tVertex[Vertex].Angle[1]), TORAD(m_tVertex[Vertex].Angle[2]));//角度設定
-		m_pStar_Model[color]->SetScale(STAR_SIZE, STAR_SIZE, STAR_SIZE);//大きさ設定
+		m_pStar_Model[color]->SetRotation(TORAD(m_tVertex[Vertex].Angle.x), TORAD(m_tVertex[Vertex].Angle.y), TORAD(m_tVertex[Vertex].Angle.z));//角度設定
+		m_pStar_Model[color]->SetScale(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE);//大きさ設定
 		m_pStar_Model[color]->SetViewMatrix(GetView());//view情報をセット
 		m_pStar_Model[color]->SetProjectionMatrix(GetProj());//proj情報をセット
 		m_pStar_Model[color]->Draw();//描画
@@ -3104,37 +2960,19 @@ void CFieldVertex::DrawStarModel(int color, int Vertex)
 	{
 		if (m_tVertex[Vertex].SuperStar)//ステラは常に回転
 		{
-			m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f) * 0.75f;
+			m_tVertex[Vertex].Angle.y += (360.0f / 60.0f) * 0.75f;
 		}
 		else
 		{
-			if (!(m_tVertex[Vertex].Angle[1] == 180.0f))
+			if (!(m_tVertex[Vertex].Angle.y == 180.0f))
 			{
-				m_tVertex[Vertex].Angle[1] += (360.0f / 60.0f);//１周で止める
+				m_tVertex[Vertex].Angle.y += (360.0f / 60.0f);//１周で止める
 			}
 		}
-		if (m_tVertex[Vertex].Angle[1] > 360.0f)
+		if (m_tVertex[Vertex].Angle.y > 360.0f)
 		{
-			m_tVertex[Vertex].Angle[1] = 0.0f;//値の補正
+			m_tVertex[Vertex].Angle.y = 0.0f;//値の補正
 		}
-		//if (GetFeverMode())
-		//{
-		//	//m_tVertex[Vertex].Angle[0] += (360.0 / 30.0f);
-		//	m_tVertex[Vertex].Angle[2] += (360.0 / 60.0f);
-		//	/*if (m_tVertex[Vertex].Angle[0] > 360.0f)
-		//	{
-		//		m_tVertex[Vertex].Angle[0] = 0.0f;
-		//	}*/
-		//	if (m_tVertex[Vertex].Angle[2] > 360.0f)
-		//	{
-		//		m_tVertex[Vertex].Angle[2] = 0.0f;
-		//	}
-		//}
-		//else
-		//{
-		//	m_tVertex[Vertex].Angle[0] = 0.0f;
-		//	m_tVertex[Vertex].Angle[2] = 0.0f;
-		//}
 	}
 }
 
