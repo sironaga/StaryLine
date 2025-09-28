@@ -198,5 +198,5 @@ private:
 	bool m_bTutorialStop;
 public:
 	// チュートリアルストップフラグを変える
-	void ChangeTutorialStopFlag() { m_bTutorialStop = !m_bTutorialStop; }
+	void ChangeTutorialStopFlag(bool isStop) { m_bTutorialStop = isStop; }
 };

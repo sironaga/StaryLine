@@ -16,11 +16,13 @@ constexpr int ce_nMaxPage[(int)TutorialSection::Max] =
 
 };
 
+
+
 CSceneTutorial::CSceneTutorial(StageType StageNum)
 	: m_bEnd(false)
 	, m_eSection(TutorialSection::Section1)
 	, m_pTextureArray{}, m_pBackGround(nullptr)
-	, m_nCurrentPage(0)
+	, m_nCurrentPage(0), m_fTime(0.0f)
 {
 	std::string section = "Assets/Texture/Tutorial/Section";
 	for (int i = 0; i < (int)TutorialSection::Max; i++)
@@ -67,6 +69,16 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_pFieldVertex->SetPlayerAddress(m_pPlayer);
 	m_pPlayer->SetFieldVertexAddress(m_pFieldVertex);
 	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
+
+	ID3D11SamplerState* pGameSPSampler;
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	HRESULT hr = GetDevice()->CreateSamplerState(&samplerDesc, &pGameSPSampler);
+	if (FAILED(hr)) { return; }
+	GetContext()->PSSetSamplers(0, 1, &pGameSPSampler);
 }
 
 CSceneTutorial::~CSceneTutorial()
@@ -95,6 +107,29 @@ void CSceneTutorial::Update()
 	{
 		m_bEnd = true;
 		SetNext(STAGE_SELECT);
+	}
+
+	switch (m_eSection)
+	{
+	case TutorialSection::Section1:
+		UpdateSection1();
+		break;
+	case TutorialSection::Section2:
+		break;
+	case TutorialSection::Section3:
+		break;
+	case TutorialSection::Section4:
+		break;
+	case TutorialSection::Section5:
+		break;
+	case TutorialSection::Section6:
+		break;
+	case TutorialSection::Section7:
+		break;
+	case TutorialSection::Max:
+		break;
+	default:
+		break;
 	}
 
 #ifdef _DEBUG
@@ -130,7 +165,6 @@ void CSceneTutorial::Update()
 		}
 	}
 #endif // _DEBUG
-
 }
 
 void CSceneTutorial::Draw()
@@ -187,4 +221,38 @@ void CSceneTutorial::BackPage()
 		m_eSection = (TutorialSection)section;
 		m_nCurrentPage = ce_nMaxPage[(int)m_eSection] - 1;
 	}
+}
+
+void CSceneTutorial::UpdateSection1()
+{
+
+	switch (m_nCurrentPage)
+	{
+	case 0:
+		for (int i = 0; i < MAX_VERTEX; i++)
+		{
+			m_pFieldVertex->SetVertexStop(true, i);
+		}
+		m_pFieldVertex->SetVertexStop(false, 11);
+		if (m_fTime >= 2.0f)
+		{
+			NextPage();
+			m_fTime = 0.0f;
+		}
+		break;
+	case 1:
+		m_pFieldVertex->SetFeverInclease(false);
+		m_pFieldVertex->Update();
+		m_pBattle->ChangeTutorialStopFlag(false);
+		m_pBattle->Update();
+		m_pPlayer->Update();
+		break;
+	case 2:
+		break;
+
+	default:
+		break;
+	}
+
+	m_fTime += 1.0f / fFPS;
 }

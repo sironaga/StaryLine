@@ -52,6 +52,9 @@ public:
 	void InitTextureModel();//TextureとModelの初期化
 
 	void InitSound();//音の初期化
+
+	void SetFeverInclease(bool isExec) { m_bFeverGaugeInclease = isExec; }
+	void SetVertexStop(bool isMove, int Index) { m_bVertexLoadStop[Index] = isMove; }
 private:
 
 	// ログの構造体 //
@@ -143,6 +146,8 @@ private:
 	float m_Fever_Effects_Alpha;//フィーバーEffectの透明度
 	float m_Efect_x = 0.0f;//フィーバーエフェクトの表示時間のイージング保存用
 	float m_Efect_y = 0.0f;//フィーバーエフェクトの表示時間のイージング保存用
+	bool m_bFeverGaugeInclease = true;
+	bool m_bVertexLoadStop[MAX_VERTEX];
 	
 	//----- 線・プレイヤー -----
 	int m_NowLine;//今何個目の線か

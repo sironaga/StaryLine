@@ -209,6 +209,7 @@ CFieldVertex::CFieldVertex()
 	Fill(m_Shapes_Color_Time, MAX_SHAPES_DRAW_TIME);
 	Fill(m_ShapesEffects_Pos, -1.0f);
 	Fill(m_ShapesEffects_Pos_Add, 0.0f);
+	Fill(m_bVertexLoadStop, false);
 
 	// 頂点２５個座標情報初期化
 	{
@@ -1350,6 +1351,7 @@ DirectX::XMFLOAT3 CFieldVertex::GetVertexPos(int VertexNumber)
 ////=====引数でもらった方向が進めるかどうかの情報を渡す関数=====//
 bool CFieldVertex::GetRoadStop(int Direction)
 {
+
 	CenterVertex* CenterVertexp;//交点の情報を格納するポインター
 	m_RoadStop = false;//初期化
 
@@ -1358,7 +1360,7 @@ bool CFieldVertex::GetRoadStop(int Direction)
 	{
 	case 0://上
 		if (m_GoalVertex - 5 < 0)m_RoadStop = true;//頂点の番号が０より小さい時
-		else
+		else  if(!m_bVertexLoadStop[m_GoalVertex - 5])
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -1366,10 +1368,11 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex - 5 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else  m_RoadStop = true;
 		break;
 	case 1://右上
 		if (m_GoalVertex - 5 + 1 < 0 || m_GoalVertex % 5 == 4)m_RoadStop = true;//頂点の番号が０より小さい時または今いるとこが右端の時
-		else
+		else if (!m_bVertexLoadStop[m_GoalVertex - 5 + 1])
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
@@ -1388,10 +1391,15 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex - 5 + 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else
+		{
+			m_RoadStop = true;
+		}
+
 		break;
 	case 2://右
 		if (m_GoalVertex + 1 > 24 || m_GoalVertex % 5 == 4)m_RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
-		else
+		else if (!m_bVertexLoadStop[m_GoalVertex + 1])
 		{
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
@@ -1400,10 +1408,11 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex + 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else m_RoadStop = true;
 		break;
 	case 3://右下
 		if (m_GoalVertex + 5 + 1 > 24 || m_GoalVertex % 5 == 4)m_RoadStop = true;//頂点の番号が24より大きい時または今いるとこが右端の時
-		else
+		else if (!m_bVertexLoadStop[m_GoalVertex + 5 + 1])
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
@@ -1422,10 +1431,11 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex + 5 + 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else  m_RoadStop = true;
 		break;
 	case 4://下
 		if (m_GoalVertex + 5 > 24)m_RoadStop = true;//頂点の番号が24より大きい時
-		else
+		else if(!m_bVertexLoadStop[m_GoalVertex + 5])
 		{
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
@@ -1434,10 +1444,15 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex + 5 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else
+		{
+			m_RoadStop = true;
+		}
 		break;
+
 	case 5://左下
 		if (m_GoalVertex + 5 - 1 > 24 || m_GoalVertex % 5 == 0)m_RoadStop = true;//頂点の番号が24より大きい時または今いるとこが左端の時
-		else
+		else if (!m_bVertexLoadStop[m_GoalVertex + 5 - 1])
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
@@ -1456,10 +1471,11 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex + 5 - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else m_RoadStop = true;
 		break;
 	case 6://左
 		if (m_GoalVertex - 1 < 0 || m_GoalVertex % 5 == 0)m_RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
-		else
+		else if (!m_bVertexLoadStop[m_GoalVertex - 1])
 		{
 			//行きたい方向の頂点と繋がっていたら
 			for (int i = 0; i < 8; i++)
@@ -1468,10 +1484,11 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			}
 			if (m_GoalVertex - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else m_RoadStop = true;
 		break;
 	case 7://左上
 		if (m_GoalVertex - 5 - 1 < 0 || m_GoalVertex % 5 == 0)m_RoadStop = true;//頂点の番号が0より小さい時または今いるとこが左端の時
-		else
+		else if (!m_bVertexLoadStop[m_GoalVertex - 5 - 1])
 		{
 			CenterVertexp = m_tCenter_Vertex;
 			for (int j = 0; j < MAX_CENTER_VERTEX; j++, CenterVertexp++)
@@ -1488,8 +1505,9 @@ bool CFieldVertex::GetRoadStop(int Direction)
 			{
 				if (m_tVertex[m_GoalVertex].Connect[i] == m_tVertex[m_GoalVertex - 5 - 1].Number)m_RoadStop = true;
 			}
-			if(m_GoalVertex - 5 - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
+			if (m_GoalVertex - 5 - 1 == m_BreakVertex)m_RoadStop = true;//行き先が壊れた頂点なら
 		}
+		else m_RoadStop = true;
 		break;
 	default:
 		break;
@@ -2876,7 +2894,7 @@ void CFieldVertex::ShapesCheck(FieldVertex VertexNumber)
 					}
 					if (!GetFeverMode())
 					{
-						m_nFeverPoint += 1.0f;
+						if (m_bFeverGaugeInclease)m_nFeverPoint += 1.0f;
 					}
 					if (m_nFeverPoint > MAX_FEVER_POINT)m_nFeverPoint = MAX_FEVER_POINT;
 					
