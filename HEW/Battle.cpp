@@ -212,7 +212,7 @@ void CBattle::Update(void)
 	//音の設定
 	m_pSound->SetMasterVolume();
 	CCharacterManager::GetInstance()->SetCharacterMasterVolume();
-	
+
 	//戦闘時間軸処理
 	TimeLapse();
 	//敵生成処理
@@ -329,12 +329,13 @@ void CBattle::Update(void)
 	}
 	//範囲外に出ていたら範囲内に補正
 	ScopeMove();
+
 	//生存判定
 	Alive();
 	//キャラクターの更新処理
 	CharacterUpdate();
 	//戦闘時間の更新
-	m_nBattleTime++;
+	if(!m_bTutorialStop)m_nBattleTime++;
 
 	/*勝敗判定*/
 	//シーンがゲームだったら
@@ -578,6 +579,9 @@ void CBattle::CreateAlly(void)
 // 敵の生成処理
 void CBattle::CreateEnemy(void)
 {
+	// チュートリアル停止フラグが立っていたら処理しない
+	if (!m_bTutorialStop)return;
+
 	//生成予定数分処理する
 	while (m_nCreateEnemyNum)
 	{
@@ -690,6 +694,9 @@ void CBattle::Search(CFighter* Searcher)
 // 移動処理
 void CBattle::Move(CFighter* Mover)
 {
+	// チュートリアル停止フラグが立っていたら処理しない
+	if (!m_bTutorialStop)return;
+
 	//リーダーを標的にしているかどうか
 	bool IsLeaderTargetFlag = true;
 
@@ -822,6 +829,9 @@ void CBattle::Move(CFighter* Mover)
 // 重なっていた場合の補正移動処理
 bool CBattle::OverlapMove(CFighter* Mover)
 {
+	// チュートリアル停止フラグが立っていたら処理しない
+	if (!m_bTutorialStop)return;
+
 	//移動先の座標保存変数
 	DirectX::XMFLOAT3 m_tMovePos;
 	float comparison;
@@ -877,6 +887,9 @@ bool CBattle::OverlapMove(CFighter* Mover)
 // 範囲内補正処理
 void CBattle::ScopeMove()
 {	
+	// チュートリアル停止フラグが立っていたら処理しない
+	if (!m_bTutorialStop)return;
+
 	// 兵士
 	for (auto fighter : m_pFighter)
 	{

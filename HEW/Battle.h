@@ -34,7 +34,7 @@ public:
 	//コンストラクタ
 	CBattle(StageType In_StageType);
 	//デストラクタ
-	~CBattle();	
+	~CBattle();
 	//更新処理
 	void Update(void);
 	//キャラクターたちの更新
@@ -42,7 +42,7 @@ public:
 	//Linieの描画
 	void LinieDraw(void);
 	//描画処理
-	void Draw(void);		
+	void Draw(void);
 	//リザルトにいく
 	bool GetEnd();
 	//テクスチャの再読み込み
@@ -186,9 +186,17 @@ public:
 	void SaveAllyLogDraw(void);
 
 	/*＝＝＝＝＝＝＝＝＝＝＝＝＝音関係＝＝＝＝＝＝＝＝＝＝＝＝＝＝*/
-	public:
-		void ReloadSound();
-	private:
-		CSoundList* m_pSound;
-		IXAudio2SourceVoice* m_pDeathSE;
+public:
+	void ReloadSound();
+private:
+	CSoundList* m_pSound;
+	IXAudio2SourceVoice* m_pDeathSE;
+
+	/*＝＝＝＝＝＝＝＝＝＝＝チュートリアル関係＝＝＝＝＝＝＝＝＝＝＝＝*/
+private:
+	// チュートリアル時に止めるフラグ
+	bool m_bTutorialStop;
+public:
+	// チュートリアルストップフラグを変える
+	void ChangeTutorialStopFlag() { m_bTutorialStop = !m_bTutorialStop; }
 };
