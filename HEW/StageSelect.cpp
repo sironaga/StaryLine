@@ -1102,7 +1102,10 @@ void CStageSelect::UpdateSelect()
 	{
 		if (m_pToTutorial->IsPlayTutorial() && isTrans)
 		{
-			SetNext(SCENE_TUTORIAL);
+			StageType type;
+			type.StageMainNumber = 1;
+			type.StageSubNumber = 1;
+			SetNext(SCENE_TUTORIAL, type);
 			isTrans = false;
 			m_bEnd = true;
 		}
@@ -1122,6 +1125,7 @@ void CStageSelect::UpdateSelect()
 					else if (IsKeyTrigger(VK_ESCAPE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_B)))
 					{
 						StartFade();
+
 						SetNext(SCENE_TITLE, g_Select_type);
 						m_bEnd = true;
 					}

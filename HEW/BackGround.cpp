@@ -28,6 +28,7 @@ CBackGround::CBackGround()
 	case STAGE_SELECT:
 		 m_pBGSprite->Create(BGPass[STAGE_SELECT]);
 		break;
+	case SCENE_TUTORIAL:
 	case SCENE_GAME:
 		m_pBGSprite->Create(BGPass[SCENE_GAME]);
 		break;
@@ -76,6 +77,7 @@ void CBackGround::Draw(bool isAjust)
 		S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);
 		break;
 	case STAGE_SELECT:
+	case SCENE_TUTORIAL:
 	case SCENE_GAME:
 		size = { 1.0f, 1.0f };
 		Sprite::SetView(GetView());
