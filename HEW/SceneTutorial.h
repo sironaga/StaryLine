@@ -49,4 +49,7 @@ private:
 	StarLine* m_pStarLine;
 	CPlayer* m_pPlayer;
 
+	void UpdateSection1();
+
+	float m_fTime;
 };

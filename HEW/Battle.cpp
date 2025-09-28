@@ -829,9 +829,6 @@ void CBattle::Move(CFighter* Mover)
 // 重なっていた場合の補正移動処理
 bool CBattle::OverlapMove(CFighter* Mover)
 {
-	// チュートリアル停止フラグが立っていたら処理しない
-	if (!m_bTutorialStop)return;
-
 	//移動先の座標保存変数
 	DirectX::XMFLOAT3 m_tMovePos;
 	float comparison;

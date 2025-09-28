@@ -51,7 +51,7 @@ CPlayer::CPlayer()
 	, m_pTimerTex{}
 	, m_eArrowState{}
 	, m_tArrowCenterPos{}, m_tAjustPos{}
-	, m_bStop(false), m_fDrawTime(DRAW_TIME)
+	, m_bStop(false)
 	, m_bReCharge(false), m_bSwap(true), m_pEffect(nullptr), m_tEffectParam{}
 
 	// FieldVertexアドレスの初期化処理

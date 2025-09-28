@@ -66,8 +66,7 @@ private:
 	float m_fBrushSize;						// プレイヤー(筆)のサイズ
 	float m_fBrushSpeed;					// プレイヤー(筆)の速度
 	float m_fAddSpeed;						// 速度の加算
-	float m_fDrawTime;
-
+	
 	int m_nNowVertex;						// 今の頂点
 	int m_nDestination;						// 目的地の頂点
 	bool m_bCanMoveCheck;					// 目的地へ行けるかどうか
@@ -121,6 +120,8 @@ public:
 	// 再作図開始のための設定
 	void SetPlayerStop();
 	void SetMoveStop();
+	void SetNowVertex(int inVertex) { m_nNowVertex = inVertex; }
+	void SetPos(DirectX::XMFLOAT3 inPos) { m_tBrushPos = inPos; }
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:
