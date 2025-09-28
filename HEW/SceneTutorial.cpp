@@ -226,9 +226,14 @@ void CSceneTutorial::BackPage()
 void CSceneTutorial::UpdateSection1()
 {
 
+		m_pFieldVertex->SetFeverInclease(false);
+		m_pFieldVertex->Update();
+
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_pPlayer->SetNowVertex(12);
+		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
 		for (int i = 0; i < MAX_VERTEX; i++)
 		{
 			m_pFieldVertex->SetVertexStop(true, i);
@@ -241,13 +246,45 @@ void CSceneTutorial::UpdateSection1()
 		}
 		break;
 	case 1:
-		m_pFieldVertex->SetFeverInclease(false);
-		m_pFieldVertex->Update();
+		switch (m_pPlayer->GetNowVertex())
+		{
+		case 11:
+			m_pFieldVertex->SetVertexStop(false, 6);
+			break;
+		case 6:
+			m_pFieldVertex->SetVertexStop(false, 1);
+			break;
+		case 1:
+			m_pFieldVertex->SetVertexStop(false, 5);
+			break;
+		case 5:
+			m_pFieldVertex->SetVertexStop(false, 10);
+			break;
+		case 10:
+			m_pFieldVertex->SetVertexStop(false, 16);
+			break;
+		case 16:
+			m_pFieldVertex->SetVertexStop(false, 20);
+
+			break;
+		case 20:
+			m_fTime = 0.0f;
+			NextPage();
+		default:
+			break;
+		}
+
 		m_pBattle->ChangeTutorialStopFlag(false);
 		m_pBattle->Update();
 		m_pPlayer->Update();
+		m_pPlayer->TimerReCharge();
 		break;
 	case 2:
+		if (m_fTime >= 2.0f)
+		{
+			NextPage();
+			m_fTime = 0.0f;
+		}
 		break;
 
 	default:

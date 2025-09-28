@@ -120,6 +120,8 @@ public:
 	// 再作図開始のための設定
 	void SetPlayerStop();
 	void SetMoveStop();
+	void SetNowVertex(int inVertex) { m_nNowVertex = inVertex; }
+	void SetPos(DirectX::XMFLOAT3 inPos) { m_tBrushPos = inPos; }
 
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:
