@@ -2,6 +2,12 @@
 #include "Scene.h"
 #include "Texture.h"
 #include <array>
+#include "Field.h"
+#include "FieldVertex.h"
+#include "Battle.h"
+#include "BackGround.h"
+#include "StarLine.h"
+#include "Player.h"
 
 enum class TutorialSection
 {
@@ -19,7 +25,7 @@ enum class TutorialSection
 class CSceneTutorial : public CScene
 {
 public:
-	CSceneTutorial();
+	CSceneTutorial(StageType StageNum);
 	~CSceneTutorial();
 	void Update()override;
 	void Draw()override;
@@ -35,5 +41,12 @@ private:
 	SpriteParam m_tTextParam;
 	Texture* m_pBackGround;
 	SpriteParam m_tBackParam;
+
+	Field* m_pField;
+	CFieldVertex* m_pFieldVertex;
+	CBattle* m_pBattle;
+	CBackGround* m_pBackGround2;
+	StarLine* m_pStarLine;
+	CPlayer* m_pPlayer;
 
 };
