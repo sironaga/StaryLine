@@ -16,7 +16,7 @@ constexpr int ce_nMaxPage[(int)TutorialSection::Max] =
 
 };
 
-CSceneTutorial::CSceneTutorial()
+CSceneTutorial::CSceneTutorial(StageType StageNum)
 	: m_bEnd(false)
 	, m_eSection(TutorialSection::Section1)
 	, m_pTextureArray{}, m_pBackGround(nullptr)
@@ -52,6 +52,21 @@ CSceneTutorial::CSceneTutorial()
 	m_tTextParam.world = Get2DWorld();
 	m_tTextParam.view = Get2DView();
 	m_tTextParam.proj = Get2DProj();
+
+	CCharacterManager::GetInstance()->InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
+	
+	m_pBackGround2 = new CBackGround();
+	m_pFieldVertex = new CFieldVertex();
+	m_pBattle = new CBattle(StageNum);
+	m_pPlayer = new CPlayer();
+	m_pField = new Field(StageNum);
+	m_pStarLine = new StarLine();
+
+
+	m_pFieldVertex->SetBattleAddress(m_pBattle);
+	m_pFieldVertex->SetPlayerAddress(m_pPlayer);
+	m_pPlayer->SetFieldVertexAddress(m_pFieldVertex);
+	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
 }
 
 CSceneTutorial::~CSceneTutorial()
@@ -64,7 +79,14 @@ CSceneTutorial::~CSceneTutorial()
 		}
 	}
 
+	SAFE_DELETE(m_pPlayer);
+	SAFE_DELETE(m_pFieldVertex);
+	SAFE_DELETE(m_pBattle);
+	SAFE_DELETE(m_pField);
+	SAFE_DELETE(m_pBackGround2);
 	SAFE_DELETE(m_pBackGround);
+
+	CCharacterManager::GetInstance()->UnInitCharacterTexture();
 }
 
 void CSceneTutorial::Update()
@@ -113,6 +135,12 @@ void CSceneTutorial::Update()
 
 void CSceneTutorial::Draw()
 {
+	m_pBackGround2->Draw();
+	m_pField->Draw();
+	m_pFieldVertex->ShapesDraw();
+	m_pFieldVertex->Draw();
+	m_pPlayer->Draw();
+
 	SetRender2D();
 	Sprite::ReSetSprite();
 	Sprite::SetParam(m_tBackParam);

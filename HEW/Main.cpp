@@ -95,7 +95,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	g_pOption = new COption();
 	// シーン作成 
-	g_pScene = new CSceneTutorial();
+	g_pScene = new CSceneTutorial(g_stage);
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 	g_pScene->SetGameDirection(g_pDirection);
 	g_nEvent = NOMAL_CAMERA;
@@ -181,7 +181,7 @@ void Update()
 			break;
 		case SCENE_GAME:g_pScene = new CSceneGame(g_stage);g_pDirection->SetTimer(4.5f); break; // GAME 
 		case SCENE_RESULT:g_pScene = new CSceneResult(); break;
-		case SCENE_TUTORIAL:g_pScene = new CSceneTutorial(); break;
+		case SCENE_TUTORIAL:g_pScene = new CSceneTutorial(g_stage); break;
 		case SCENE_RANKING:g_pScene = new CSceneRanking(); break;
 		case SCENE_DEBUGROOM:g_pScene = new CSceneDebug(); break;
 		}
