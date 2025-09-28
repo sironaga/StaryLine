@@ -142,6 +142,9 @@ CBattle::CBattle(StageType In_StageType)
 	, m_nSummonAllyCount(0)
 	, m_bWinCommand{false}
 	, m_bLoseCommand{false}
+	, m_bTutorialMoveStop(false)
+	, m_bTutorialStopAllySpown(false)
+	, m_bTutorialStopEnemySpown(false)
 {
 	//数字テクスチャの読み込み
 	HRESULT hr;
@@ -335,7 +338,7 @@ void CBattle::Update(void)
 	//キャラクターの更新処理
 	CharacterUpdate();
 	//戦闘時間の更新
-	if(!m_bTutorialStop)m_nBattleTime++;
+	if(!m_bTutorialStopEnemySpown)m_nBattleTime++;
 
 	/*勝敗判定*/
 	//シーンがゲームだったら
@@ -559,6 +562,9 @@ void CBattle::TimeLapse(void)
 // 味方の生成処理
 void CBattle::CreateAlly(void)
 {
+	// チュートリアル停止フラグが立っていたら処理しない
+	if (m_bTutorialStopAllySpown)return;
+
 	if (m_pAllyLeader)
 	{
 		m_pAllyLeader->SetSummonFlag(true);
@@ -580,7 +586,7 @@ void CBattle::CreateAlly(void)
 void CBattle::CreateEnemy(void)
 {
 	// チュートリアル停止フラグが立っていたら処理しない
-	if (!m_bTutorialStop)return;
+	if (m_bTutorialStopEnemySpown)return;
 
 	//生成予定数分処理する
 	while (m_nCreateEnemyNum)
@@ -695,7 +701,7 @@ void CBattle::Search(CFighter* Searcher)
 void CBattle::Move(CFighter* Mover)
 {
 	// チュートリアル停止フラグが立っていたら処理しない
-	if (!m_bTutorialStop)return;
+	if (m_bTutorialMoveStop)return;
 
 	//リーダーを標的にしているかどうか
 	bool IsLeaderTargetFlag = true;
@@ -885,7 +891,7 @@ bool CBattle::OverlapMove(CFighter* Mover)
 void CBattle::ScopeMove()
 {	
 	// チュートリアル停止フラグが立っていたら処理しない
-	if (!m_bTutorialStop)return;
+	if (m_bTutorialMoveStop)return;
 
 	// 兵士
 	for (auto fighter : m_pFighter)
@@ -1713,6 +1719,14 @@ void CBattle::ReloadSound()
 	m_pSound = new CSoundList(SE_DEATH);
 	m_pSound->SetMasterVolume();
 	m_pDeathSE = m_pSound->GetSound(false);
+}
+
+// チュートリアル関係のフラグをすべてクリアする
+void CBattle::AllTutorialFlagClear()
+{
+	m_bTutorialMoveStop = false;
+	m_bTutorialStopAllySpown = false;
+	m_bTutorialStopEnemySpown = false;
 }
 
 //移動方向計算関数

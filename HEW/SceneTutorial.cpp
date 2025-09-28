@@ -69,6 +69,7 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_pFieldVertex->SetPlayerAddress(m_pPlayer);
 	m_pPlayer->SetFieldVertexAddress(m_pFieldVertex);
 	m_pFieldVertex->SetStarLineAddress(m_pStarLine);
+	
 
 	ID3D11SamplerState* pGameSPSampler;
 	D3D11_SAMPLER_DESC samplerDesc = {};
@@ -105,9 +106,12 @@ void CSceneTutorial::Update()
 {
 	if (IsKeyTrigger(VK_ESCAPE) && !m_bEnd)
 	{
+		m_pBattle->AllTutorialFlagClear();
 		m_bEnd = true;
 		SetNext(STAGE_SELECT);
 	}
+
+	CCharacterManager::GetInstance()->ModelUpDate();
 
 	switch (m_eSection)
 	{
@@ -175,6 +179,10 @@ void CSceneTutorial::Draw()
 	m_pFieldVertex->Draw();
 	m_pPlayer->Draw();
 
+	std::thread Th_BattleDraw([this]() { this->m_pBattle->Draw(); });
+	Th_BattleDraw.join();
+	//m_pBattle->Draw();
+
 	SetRender2D();
 	Sprite::ReSetSprite();
 	Sprite::SetParam(m_tBackParam);
@@ -226,8 +234,8 @@ void CSceneTutorial::BackPage()
 void CSceneTutorial::UpdateSection1()
 {
 
-		m_pFieldVertex->SetFeverInclease(false);
-		m_pFieldVertex->Update();
+	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->Update();
 
 	switch (m_nCurrentPage)
 	{
@@ -246,6 +254,7 @@ void CSceneTutorial::UpdateSection1()
 		}
 		break;
 	case 1:
+		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
 		switch (m_pPlayer->GetNowVertex())
 		{
 		case 11:
@@ -274,7 +283,8 @@ void CSceneTutorial::UpdateSection1()
 			break;
 		}
 
-		m_pBattle->ChangeTutorialStopFlag(false);
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
 		m_pBattle->Update();
 		m_pPlayer->Update();
 		m_pPlayer->TimerReCharge();

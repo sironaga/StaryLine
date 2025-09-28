@@ -195,8 +195,16 @@ private:
 	/*＝＝＝＝＝＝＝＝＝＝＝チュートリアル関係＝＝＝＝＝＝＝＝＝＝＝＝*/
 private:
 	// チュートリアル時に止めるフラグ
-	bool m_bTutorialStop;
+	bool m_bTutorialMoveStop;
+	// チュートリアル時に召喚処理を行わないようにするフラグ
+	bool m_bTutorialStopAllySpown;
+	bool m_bTutorialStopEnemySpown;
 public:
-	// チュートリアルストップフラグを変える
-	void ChangeTutorialStopFlag(bool isStop) { m_bTutorialStop = isStop; }
+	// チュートリアル関係のフラグをすべてクリアする
+	void AllTutorialFlagClear();
+
+	// チュートリアル時に移動を止めるフラグ
+	void SetTutorialMoveFlag(bool isStop) { m_bTutorialMoveStop = isStop; }
+	// チュートリアルで召喚を行うかどうかのフラグのSet
+	void SetTutorialSpownFlag(bool isSpown) { m_bTutorialStopAllySpown = isSpown; m_bTutorialStopEnemySpown = isSpown; }
 };
