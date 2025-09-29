@@ -41,6 +41,7 @@ private:
 	SpriteParam m_tTextParam;
 	Texture* m_pBackGround;
 	SpriteParam m_tBackParam;
+	int m_nBeforeVertex;
 
 	Field* m_pField;
 	CFieldVertex* m_pFieldVertex;
@@ -50,6 +51,12 @@ private:
 	CPlayer* m_pPlayer;
 
 	void UpdateSection1();
+	void UpdateSection2();
+	void UpdateSection3();
+	void UpdateSection4();
+	void UpdateSection5();
+	void UpdateSection6();
+	void UpdateSection7();
 
 	float m_fTime;
 };

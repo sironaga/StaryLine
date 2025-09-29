@@ -25,7 +25,7 @@ public:
 
 	void Reload();
 	void TimerReCharge();
-
+	void TimerSetMax();
 	/*“à•”ˆ—*/
 	/* ƒvƒŒƒCƒ„[ */
 private:
