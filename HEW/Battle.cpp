@@ -1729,6 +1729,19 @@ void CBattle::AllTutorialFlagClear()
 	m_bTutorialStopEnemySpown = false;
 }
 
+// 全ての兵士の情報をクリアする
+void CBattle::AllFighterClear()
+{
+	for (int i = 0; i < m_pFighter.size(); i++)
+	{
+		if (!m_pFighter[i])continue;
+		delete m_pFighter[i];
+		m_pFighter[i] = nullptr;
+	}
+	m_pFighter.clear();
+}
+
+
 //移動方向計算関数
 MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos)
 {

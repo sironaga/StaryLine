@@ -23,6 +23,7 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	, m_eSection(TutorialSection::Section1)
 	, m_pTextureArray{}, m_pBackGround(nullptr)
 	, m_nCurrentPage(0), m_fTime(0.0f)
+	, m_nBeforeVertex(-1), m_bSpownEffectDraw(false)
 {
 	std::string section = "Assets/Texture/Tutorial/Section";
 	for (int i = 0; i < (int)TutorialSection::Max; i++)
@@ -182,22 +183,25 @@ void CSceneTutorial::Draw()
 	m_pBackGround2->Draw();
 	m_pField->Draw();
 	m_pFieldVertex->ShapesDraw();
+	if (m_bSpownEffectDraw)m_pFieldVertex->ShapesEffectDraw();
 	m_pFieldVertex->Draw();
 	m_pPlayer->Draw();
 
 	std::thread Th_BattleDraw([this]() { this->m_pBattle->Draw(); });
 	Th_BattleDraw.join();
-	//m_pBattle->Draw();
 
-	SetRender2D();
-	Sprite::ReSetSprite();
-	Sprite::SetParam(m_tBackParam);
-	Sprite::SetTexture(m_pBackGround);
-	Sprite::Draw();
-	Sprite::ReSetSprite();
-	Sprite::SetParam(m_tTextParam);
-	Sprite::SetTexture(m_pTextureArray[(int)m_eSection][m_nCurrentPage]);
-	Sprite::Draw();
+	if (!m_bSpownEffectDraw)
+	{
+		SetRender2D();
+		Sprite::ReSetSprite();
+		Sprite::SetParam(m_tBackParam);
+		Sprite::SetTexture(m_pBackGround);
+		Sprite::Draw();
+		Sprite::ReSetSprite();
+		Sprite::SetParam(m_tTextParam);
+		Sprite::SetTexture(m_pTextureArray[(int)m_eSection][m_nCurrentPage]);
+		Sprite::Draw();
+	}
 }
 
 void CSceneTutorial::SetInstance()
@@ -411,6 +415,12 @@ void CSceneTutorial::UpdateSection3()
 		}
 		break;
 	case 1:
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
+		m_pBattle->Update();
+		m_pPlayer->Update();
+		m_pPlayer->TimerReCharge();
+
 		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
 		switch (m_pPlayer->GetNowVertex())
 		{
@@ -454,6 +464,7 @@ void CSceneTutorial::UpdateSection3()
 			{
 				m_fTime = 0.0f;
 				NextPage();
+				m_pPlayer->TimerSetValue(3.0f);
 			}
 			else
 			{
@@ -462,12 +473,6 @@ void CSceneTutorial::UpdateSection3()
 		default:
 			break;
 		}
-
-		m_pBattle->SetTutorialMoveFlag(true);
-		m_pBattle->SetTutorialSpownFlag(true);
-		m_pBattle->Update();
-		m_pPlayer->Update();
-		m_pPlayer->TimerReCharge();
 		break;
 
 	default:
@@ -479,7 +484,58 @@ void CSceneTutorial::UpdateSection3()
 
 void CSceneTutorial::UpdateSection4()
 {
+	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->Update();
 
+	switch (m_nCurrentPage)
+	{
+	case 0:
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
+		m_pBattle->Update();
+		
+		//　タイマーを減らす更新処理
+		m_pPlayer->TutorialTimerUpdate();
+		
+		// 決定キーで次のページへ
+		if (IsKeyTrigger(VK_SPACE))
+		{
+			NextPage();
+			m_fTime = 0.0f;
+		}
+		break;
+	case 1:
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(false);
+		m_pBattle->Update();
+
+		if (m_fTime >= 11.0f)
+		{
+			// 最後のページなので次のセクションへ
+			NextPage();
+			// エフェクトを消す
+			m_bSpownEffectDraw = false;
+			m_pFieldVertex->InitFieldVertex();
+			m_fTime = 0.0f;
+			m_pBattle->AllFighterClear();
+			m_pPlayer->TimerSetMax();
+		}
+		else if (m_fTime >= 6.0f)
+		{
+			// 3秒時に味方を生成
+			m_pBattle->CreateAlly();
+		}
+		else if (m_fTime >= 3.0f)
+		{
+			// 0~3秒からエフェクトを描画
+			m_bSpownEffectDraw = true;
+		}
+		break;
+	default:
+		break;
+	}
+
+	m_fTime += 1.0f / fFPS;
 }
 
 void CSceneTutorial::UpdateSection5()

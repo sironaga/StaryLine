@@ -25,7 +25,10 @@ public:
 
 	void Reload();
 	void TimerReCharge();
+	// ’Ç‰Á(—¤“l)
 	void TimerSetMax();
+	void TimerSetValue(float inValue);
+	void TutorialTimerUpdate();
 	/*“à•”ˆ—*/
 	/* ƒvƒŒƒCƒ„[ */
 private:
