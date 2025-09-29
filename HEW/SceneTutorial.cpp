@@ -329,6 +329,7 @@ void CSceneTutorial::UpdateSection2()
 			m_pFieldVertex->SetVertexStop(true, i);
 		}
 		m_pFieldVertex->SetVertexStop(false, 13);
+		m_pFieldVertex->SetVertexStop(false, 7);
 		if (m_fTime >= 2.0f)
 		{
 			NextPage();
@@ -340,27 +341,32 @@ void CSceneTutorial::UpdateSection2()
 		switch (m_pPlayer->GetNowVertex())
 		{
 		case 13:
+			if (m_nBeforeVertex == 12) { m_pFieldVertex->SetVertexStop(false, 14); m_pFieldVertex->SetVertexStop(true, 7); }
+			else if (m_nBeforeVertex == 14)m_pFieldVertex->SetVertexStop(false, 12);
 			m_nBeforeVertex = 13;
-			m_pFieldVertex->SetVertexStop(false, 14);
 			break;
 		case 14:
+			if(m_nBeforeVertex == 13)m_pFieldVertex->SetVertexStop(false, 8);
+			else if (m_nBeforeVertex == 8)m_pFieldVertex->SetVertexStop(false, 13);
 			m_nBeforeVertex = 14;
-			m_pFieldVertex->SetVertexStop(false, 8);
 			break;
 		case 8:
+			if(m_nBeforeVertex == 14)m_pFieldVertex->SetVertexStop(false, 2);
+			else if (m_nBeforeVertex == 2)m_pFieldVertex->SetVertexStop(false, 14);
 			m_nBeforeVertex = 8;
-			m_pFieldVertex->SetVertexStop(false, 2);
 			break;
 		case 2:
+			if(m_nBeforeVertex == 8)m_pFieldVertex->SetVertexStop(false, 7);
+			else if (m_nBeforeVertex == 7)m_pFieldVertex->SetVertexStop(false, 8);
 			m_nBeforeVertex = 2;
-			m_pFieldVertex->SetVertexStop(false, 7);
 			break;
 		case 7:
+			if(m_nBeforeVertex == 2)m_pFieldVertex->SetVertexStop(false, 12);
+			else if (m_nBeforeVertex == 12) { m_pFieldVertex->SetVertexStop(false, 2); m_pFieldVertex->SetVertexStop(true, 13); }
 			m_nBeforeVertex = 7;
-			m_pFieldVertex->SetVertexStop(false, 12);
 			break;
 		case 12:
-			if (m_nBeforeVertex == 7)
+			if (m_nBeforeVertex == 7 || m_nBeforeVertex == 13)
 			{
 				m_fTime = 0.0f;
 				NextPage();
@@ -397,6 +403,7 @@ void CSceneTutorial::UpdateSection3()
 	case 0:
 		m_pPlayer->TimerSetMax();
 		m_pFieldVertex->SetVertexStop(false, 17);
+		m_pFieldVertex->SetVertexStop(false, 11);
 		if (m_fTime >= 2.0f)
 		{
 			NextPage();
@@ -408,35 +415,42 @@ void CSceneTutorial::UpdateSection3()
 		switch (m_pPlayer->GetNowVertex())
 		{
 		case 17:
+			if (m_nBeforeVertex == 12) { m_pFieldVertex->SetVertexStop(false, 22); m_pFieldVertex->SetVertexStop(true, 11); }
+			else if (m_nBeforeVertex == 22)m_pFieldVertex->SetVertexStop(false, 12);
 			m_nBeforeVertex = 17;
-			m_pFieldVertex->SetVertexStop(false, 22);
 			break;
 		case 22:
+			if (m_nBeforeVertex == 17)m_pFieldVertex->SetVertexStop(false, 21);
+			else if (m_nBeforeVertex == 21)m_pFieldVertex->SetVertexStop(false, 17);
 			m_nBeforeVertex = 22;
-			m_pFieldVertex->SetVertexStop(false, 21);
 			break;
 		case 21:
+			if(m_nBeforeVertex == 22)m_pFieldVertex->SetVertexStop(false, 20);
+			else if (m_nBeforeVertex == 20)m_pFieldVertex->SetVertexStop(false, 22);
 			m_nBeforeVertex = 21;
-			m_pFieldVertex->SetVertexStop(false, 20);
 			break;
 		case 20:
+			if(m_nBeforeVertex == 21)m_pFieldVertex->SetVertexStop(false, 15);
+			else if (m_nBeforeVertex == 15)m_pFieldVertex->SetVertexStop(false, 21);
 			m_nBeforeVertex = 20;
-			m_pFieldVertex->SetVertexStop(false, 15);
 			break;
 		case 15:
+			if(m_nBeforeVertex == 20)m_pFieldVertex->SetVertexStop(false, 10);
+			else if (m_nBeforeVertex == 10)m_pFieldVertex->SetVertexStop(false, 20);
 			m_nBeforeVertex = 15;
-			m_pFieldVertex->SetVertexStop(false, 10);
 			break;
 		case 10:
+			if(m_nBeforeVertex == 15)m_pFieldVertex->SetVertexStop(false, 11);
+			else if (m_nBeforeVertex == 11)m_pFieldVertex->SetVertexStop(false, 15);
 			m_nBeforeVertex = 10;
-			m_pFieldVertex->SetVertexStop(false, 11);
 			break;
 		case 11:
+			if(m_nBeforeVertex == 10)m_pFieldVertex->SetVertexStop(false, 12);
+			else if (m_nBeforeVertex == 12) { m_pFieldVertex->SetVertexStop(false, 10); m_pFieldVertex->SetVertexStop(true, 17); }
 			m_nBeforeVertex = 11;
-			m_pFieldVertex->SetVertexStop(false, 12);
 			break;
 		case 12:
-			if (m_nBeforeVertex == 11)
+			if (m_nBeforeVertex == 11 || m_nBeforeVertex == 17)
 			{
 				m_fTime = 0.0f;
 				NextPage();
