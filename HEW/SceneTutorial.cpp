@@ -119,16 +119,22 @@ void CSceneTutorial::Update()
 		UpdateSection1();
 		break;
 	case TutorialSection::Section2:
+		UpdateSection2();
 		break;
 	case TutorialSection::Section3:
+		UpdateSection3();
 		break;
 	case TutorialSection::Section4:
+		UpdateSection4();
 		break;
 	case TutorialSection::Section5:
+		UpdateSection5();
 		break;
 	case TutorialSection::Section6:
+		UpdateSection6();
 		break;
 	case TutorialSection::Section7:
+		UpdateSection7();
 		break;
 	case TutorialSection::Max:
 		break;
@@ -294,6 +300,7 @@ void CSceneTutorial::UpdateSection1()
 		{
 			NextPage();
 			m_fTime = 0.0f;
+			m_pPlayer->TimerSetMax();
 		}
 		break;
 
@@ -302,4 +309,176 @@ void CSceneTutorial::UpdateSection1()
 	}
 
 	m_fTime += 1.0f / fFPS;
+}
+
+void CSceneTutorial::UpdateSection2()
+{
+	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->Update();
+
+	switch (m_nCurrentPage)
+	{
+	case 0:
+		
+		m_pPlayer->SetNowVertex(12);
+		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
+		m_pFieldVertex->InitFieldVertex();
+
+		for (int i = 0; i < MAX_VERTEX; i++)
+		{
+			m_pFieldVertex->SetVertexStop(true, i);
+		}
+		m_pFieldVertex->SetVertexStop(false, 13);
+		if (m_fTime >= 2.0f)
+		{
+			NextPage();
+			m_fTime = 0.0f;
+		}
+		break;
+	case 1:
+		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
+		switch (m_pPlayer->GetNowVertex())
+		{
+		case 13:
+			m_nBeforeVertex = 13;
+			m_pFieldVertex->SetVertexStop(false, 14);
+			break;
+		case 14:
+			m_nBeforeVertex = 14;
+			m_pFieldVertex->SetVertexStop(false, 8);
+			break;
+		case 8:
+			m_nBeforeVertex = 8;
+			m_pFieldVertex->SetVertexStop(false, 2);
+			break;
+		case 2:
+			m_nBeforeVertex = 2;
+			m_pFieldVertex->SetVertexStop(false, 7);
+			break;
+		case 7:
+			m_nBeforeVertex = 7;
+			m_pFieldVertex->SetVertexStop(false, 12);
+			break;
+		case 12:
+			if (m_nBeforeVertex == 7)
+			{
+				m_fTime = 0.0f;
+				NextPage();
+			}
+			else
+			{
+				m_nBeforeVertex = 12;
+			}
+		default:
+			break;
+		}
+
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
+		m_pBattle->Update();
+		m_pPlayer->Update();
+		m_pPlayer->TimerReCharge();
+		break;
+
+	default:
+		break;
+	}
+
+	m_fTime += 1.0f / fFPS;
+}
+
+void CSceneTutorial::UpdateSection3()
+{
+	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->Update();
+
+	switch (m_nCurrentPage)
+	{
+	case 0:
+		m_pPlayer->TimerSetMax();
+		m_pFieldVertex->SetVertexStop(false, 17);
+		if (m_fTime >= 2.0f)
+		{
+			NextPage();
+			m_fTime = 0.0f;
+		}
+		break;
+	case 1:
+		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
+		switch (m_pPlayer->GetNowVertex())
+		{
+		case 17:
+			m_nBeforeVertex = 17;
+			m_pFieldVertex->SetVertexStop(false, 22);
+			break;
+		case 22:
+			m_nBeforeVertex = 22;
+			m_pFieldVertex->SetVertexStop(false, 21);
+			break;
+		case 21:
+			m_nBeforeVertex = 21;
+			m_pFieldVertex->SetVertexStop(false, 20);
+			break;
+		case 20:
+			m_nBeforeVertex = 20;
+			m_pFieldVertex->SetVertexStop(false, 15);
+			break;
+		case 15:
+			m_nBeforeVertex = 15;
+			m_pFieldVertex->SetVertexStop(false, 10);
+			break;
+		case 10:
+			m_nBeforeVertex = 10;
+			m_pFieldVertex->SetVertexStop(false, 11);
+			break;
+		case 11:
+			m_nBeforeVertex = 11;
+			m_pFieldVertex->SetVertexStop(false, 12);
+			break;
+		case 12:
+			if (m_nBeforeVertex == 11)
+			{
+				m_fTime = 0.0f;
+				NextPage();
+			}
+			else
+			{
+				m_nBeforeVertex = 12;
+			}
+		default:
+			break;
+		}
+
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
+		m_pBattle->Update();
+		m_pPlayer->Update();
+		m_pPlayer->TimerReCharge();
+		break;
+
+	default:
+		break;
+	}
+
+	m_fTime += 1.0f / fFPS;
+}
+
+void CSceneTutorial::UpdateSection4()
+{
+
+}
+
+void CSceneTutorial::UpdateSection5()
+{
+
+}
+
+void CSceneTutorial::UpdateSection6()
+{
+
+}
+
+void CSceneTutorial::UpdateSection7()
+{
+
 }

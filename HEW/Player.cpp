@@ -399,6 +399,12 @@ void CPlayer::TimerReCharge()
 	}
 }
 
+void CPlayer::TimerSetMax()
+{
+	m_bDrawing = true;	// 作図中を解除
+	m_tTimerParam[Timer_Gauge].size.y = TIMER_BARSIZE_Y;
+}
+
 void CPlayer::UpdateStop()
 {
 	g_pWalkSe->Stop();

@@ -154,6 +154,14 @@ void Update()
 		g_bResolution = false;
 	}
 	
+#ifdef _DEBUG
+
+	if (IsKeyTrigger(VK_F5))
+	{
+		ShowCursor(TRUE);
+	}
+#endif
+
 	// --- ゲームモードによる分岐処理
 	g_pScene->RootUpdate();
 
