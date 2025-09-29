@@ -403,6 +403,31 @@ void CPlayer::TimerSetMax()
 {
 	m_bDrawing = true;	// 作図中を解除
 	m_tTimerParam[Timer_Gauge].size.y = TIMER_BARSIZE_Y;
+	m_tTimerParam[Timer_Gauge].pos.y = TIMER_BAR_OFFSET_Y + m_tTimerParam[Timer_Gauge].size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
+}
+
+void CPlayer::TimerSetValue(float inValue)
+{
+	m_bDrawing = true;
+	if (inValue < 0.0f)inValue = 0.0f;
+	if (inValue > DRAW_TIME)inValue = DRAW_TIME;
+	m_tTimerParam[Timer_Gauge].size.y = (TIMER_BARSIZE_Y / DRAW_TIME) * inValue;
+	m_tTimerParam[Timer_Gauge].pos.y = TIMER_BAR_OFFSET_Y + m_tTimerParam[Timer_Gauge].size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
+}
+
+void CPlayer::TutorialTimerUpdate()
+{
+	if (m_bDrawing)
+	{
+		m_tTimerParam[Timer_Gauge].size.y -= TIMER_BARSIZE_Y / (DRAW_TIME * 60.0f);	// 時間ごとにタイマーを下げる
+		if (m_tTimerParam[Timer_Gauge].size.y <= 0.0f)
+		{
+			m_tTimerParam[Timer_Gauge].size.y = 0.0f;	// 下がり切ったらその位置で固定する
+			m_bDrawing = false;				// 作図を終わる
+
+		}
+	}
+	m_tTimerParam[Timer_Gauge].pos.y = TIMER_BAR_OFFSET_Y + m_tTimerParam[Timer_Gauge].size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
 }
 
 void CPlayer::UpdateStop()

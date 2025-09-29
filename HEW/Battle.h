@@ -202,6 +202,8 @@ private:
 public:
 	// チュートリアル関係のフラグをすべてクリアする
 	void AllTutorialFlagClear();
+	// すべてのファイターのクリア
+	void AllFighterClear();
 
 	// チュートリアル時に移動を止めるフラグ
 	void SetTutorialMoveFlag(bool isStop) { m_bTutorialMoveStop = isStop; }

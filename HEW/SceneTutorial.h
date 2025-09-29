@@ -41,7 +41,11 @@ private:
 	SpriteParam m_tTextParam;
 	Texture* m_pBackGround;
 	SpriteParam m_tBackParam;
+
+	// 移動する前の頂点番号
 	int m_nBeforeVertex;
+	// 生成処理のエフェクト描画フラグ
+	bool m_bSpownEffectDraw;
 
 	Field* m_pField;
 	CFieldVertex* m_pFieldVertex;
