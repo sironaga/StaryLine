@@ -21,7 +21,8 @@ constexpr int ce_nMaxPage[(int)TutorialSection::Max] =
 CSceneTutorial::CSceneTutorial(StageType StageNum)
 	: m_bEnd(false)
 	, m_eSection(TutorialSection::Section1)
-	, m_pTextureArray{}, m_pBackGround(nullptr)
+	, m_pTextureArray{}, m_pBackGround(nullptr),m_pExplanationScreen(nullptr)
+	, m_bExplanationDraw(false)
 	, m_nCurrentPage(0), m_fTime(0.0f)
 	, m_nBeforeVertex(-1), m_bSpownEffectDraw(false)
 {
@@ -42,7 +43,11 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_pBackGround = new Texture();
 	if (FAILED(m_pBackGround->Create(TEX_PASS("Tutorial/TutorialBack.png"))))
 		MessageBox(NULL, "Tutorial/TutorialBack.png", "LoadError", MB_OK);
-	
+
+	m_pExplanationScreen = new Texture();
+	if (FAILED(m_pExplanationScreen->Create(TEX_PASS("Tutorial/ExplanationScreen.png"))))
+		MessageBox(NULL, "Tutorial/ExplanationScreen.png", "LoadError", MB_OK);
+
 	m_tBackParam = SpriteParam();
 	m_tBackParam.size = DirectX::XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT);
 	m_tBackParam.world = Get2DWorld();
@@ -55,6 +60,13 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_tTextParam.world = Get2DWorld();
 	m_tTextParam.view = Get2DView();
 	m_tTextParam.proj = Get2DProj();
+
+	m_tExplanationParam = SpriteParam();
+	m_tExplanationParam.pos = DirectX::XMFLOAT2(SCREEN_WIDTH, 100.0f);
+	m_tExplanationParam.size = DirectX::XMFLOAT2(SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.7f);
+	m_tExplanationParam.world = Get2DWorld();
+	m_tExplanationParam.view = Get2DView();
+	m_tExplanationParam.proj = Get2DProj();
 
 	CCharacterManager::GetInstance()->InitCharacterTexture(StageNum);//キャラクターテクスチャ～の初期化
 	
@@ -200,6 +212,14 @@ void CSceneTutorial::Draw()
 		Sprite::ReSetSprite();
 		Sprite::SetParam(m_tTextParam);
 		Sprite::SetTexture(m_pTextureArray[(int)m_eSection][m_nCurrentPage]);
+		Sprite::Draw();
+	}
+	if (m_bExplanationDraw)
+	{
+		SetRender2D();
+		Sprite::ReSetSprite();
+		Sprite::SetParam(m_tExplanationParam);
+		Sprite::SetTexture(m_pExplanationScreen);
 		Sprite::Draw();
 	}
 }
@@ -519,6 +539,7 @@ void CSceneTutorial::UpdateSection4()
 			m_fTime = 0.0f;
 			m_pBattle->AllFighterClear();
 			m_pPlayer->TimerSetMax();
+			m_bExplanationDraw = true;
 		}
 		else if (m_fTime >= 6.0f)
 		{
@@ -540,7 +561,14 @@ void CSceneTutorial::UpdateSection4()
 
 void CSceneTutorial::UpdateSection5()
 {
-
+	m_tExplanationParam.pos.x -= 30.0f;
+	if (m_tExplanationParam.pos.x < 0)m_tExplanationParam.pos.x = 0.0f;	
+	// 決定キーで次のページへ
+	if (IsKeyTrigger(VK_SPACE))
+	{
+		m_bExplanationDraw = false;
+		NextPage();
+	}
 }
 
 void CSceneTutorial::UpdateSection6()

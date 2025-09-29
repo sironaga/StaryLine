@@ -41,6 +41,11 @@ private:
 	SpriteParam m_tTextParam;
 	Texture* m_pBackGround;
 	SpriteParam m_tBackParam;
+	Texture* m_pExplanationScreen;
+	SpriteParam m_tExplanationParam;
+
+	//セクション５の画像描画フラグ
+	bool m_bExplanationDraw;
 
 	// 移動する前の頂点番号
 	int m_nBeforeVertex;
