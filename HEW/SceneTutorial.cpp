@@ -491,38 +491,44 @@ void CSceneTutorial::UpdateSection4()
 	{
 	case 0:
 		m_pBattle->SetTutorialMoveFlag(true);
-		m_pBattle->SetTutorialSpownFlag(false);
+		m_pBattle->SetTutorialSpownFlag(true);
 		m_pBattle->Update();
 		
+		//　タイマーを減らす更新処理
 		m_pPlayer->TutorialTimerUpdate();
 		
-		if (m_fTime >= 3.0f)
+		// 決定キーで次のページへ
+		if (IsKeyTrigger(VK_SPACE))
 		{
-			m_bSpownEffectDraw = true;
-			if (m_fTime > 6.0f)
-			{
-				m_pBattle->CreateAlly();
-				NextPage();
-				m_fTime = 0.0f;
-			}
+			NextPage();
+			m_fTime = 0.0f;
 		}
 		break;
 	case 1:
 		m_pBattle->SetTutorialMoveFlag(true);
-		m_pBattle->SetTutorialSpownFlag(true);
+		m_pBattle->SetTutorialSpownFlag(false);
 		m_pBattle->Update();
-		//m_pPlayer->Update();
-		if (m_fTime >= 8.0f)
+
+		if (m_fTime >= 11.0f)
 		{
+			// 最後のページなので次のセクションへ
 			NextPage();
+			// エフェクトを消す
+			m_bSpownEffectDraw = false;
+			m_pFieldVertex->InitFieldVertex();
 			m_fTime = 0.0f;
 			m_pBattle->AllFighterClear();
 			m_pPlayer->TimerSetMax();
 		}
-		else if (m_fTime >= 4.0f)
+		else if (m_fTime >= 6.0f)
 		{
-			m_bSpownEffectDraw = false;
-			m_pFieldVertex->InitFieldVertex();
+			// 3秒時に味方を生成
+			m_pBattle->CreateAlly();
+		}
+		else if (m_fTime >= 3.0f)
+		{
+			// 0~3秒からエフェクトを描画
+			m_bSpownEffectDraw = true;
 		}
 		break;
 	default:
