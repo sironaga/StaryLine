@@ -1646,6 +1646,19 @@ void CFieldVertex::SetSuperStar()
 
 }
 
+////=====ステラの情報を初期化する関数=====//
+void CFieldVertex::ClearSuperStar()
+{
+	FieldVertex* Vertexp;//頂点の情報格納ポインター
+	Vertexp = m_tVertex;//先頭のアドレスをセット
+	for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+	{
+		//初期化//
+		Vertexp->SuperStar = false;
+		Vertexp->SuperStarUse = false;
+	}
+}
+
 ////=====音を止める関数=====//
 void CFieldVertex::SoundStop()
 {
