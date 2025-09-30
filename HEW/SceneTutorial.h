@@ -30,6 +30,8 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	void TextParamSetting();
+
 	void SetInstance();
 	void NextPage();
 	void BackPage();
@@ -38,7 +40,8 @@ private:
 	TutorialSection m_eSection;
 	int m_nCurrentPage;
 	std::array<std::vector<Texture*>, (int)TutorialSection::Max> m_pTextureArray;
-	SpriteParam m_tTextParam;
+	std::array<std::vector<SpriteParam>, (int)TutorialSection::Max> m_tTextParam;
+
 	Texture* m_pBackGround;
 	SpriteParam m_tBackParam;
 	Texture* m_pExplanationScreen;
