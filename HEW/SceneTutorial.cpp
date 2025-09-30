@@ -16,6 +16,8 @@ constexpr int ce_nMaxPage[(int)TutorialSection::Max] =
 
 };
 
+
+
 CSceneTutorial::CSceneTutorial(StageType StageNum)
 	: m_bEnd(false)
 	, m_eSection(TutorialSection::Section1)
@@ -53,14 +55,12 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_tBackParam.view = Get2DView();
 	m_tBackParam.proj = Get2DProj();
 	
-	//m_tTextParam = SpriteParam();
-	//m_tTextParam.pos = DirectX::XMFLOAT2(0.0f, -460.0f);
-	//m_tTextParam.size = DirectX::XMFLOAT2(SCREEN_WIDTH - 950.0f, 80.0f);
-	//m_tTextParam.world = Get2DWorld();
-	//m_tTextParam.view = Get2DView();
-	//m_tTextParam.proj = Get2DProj();
-
-	TextParamSetting();
+	m_tTextParam = SpriteParam();
+	m_tTextParam.pos = DirectX::XMFLOAT2(0.0f, -460.0f);
+	m_tTextParam.size = DirectX::XMFLOAT2(SCREEN_WIDTH - 950.0f, 80.0f);
+	m_tTextParam.world = Get2DWorld();
+	m_tTextParam.view = Get2DView();
+	m_tTextParam.proj = Get2DProj();
 
 	m_tExplanationParam = SpriteParam();
 	m_tExplanationParam.pos = DirectX::XMFLOAT2(SCREEN_WIDTH, 100.0f);
@@ -218,7 +218,7 @@ void CSceneTutorial::Draw()
 		Sprite::SetTexture(m_pBackGround);
 		Sprite::Draw();
 		Sprite::ReSetSprite();
-		Sprite::SetParam(m_tTextParam[(int)m_eSection][m_nCurrentPage]);
+		Sprite::SetParam(m_tTextParam);
 		Sprite::SetTexture(m_pTextureArray[(int)m_eSection][m_nCurrentPage]);
 		Sprite::Draw();
 	}
@@ -230,30 +230,6 @@ void CSceneTutorial::Draw()
 		Sprite::SetTexture(m_pExplanationScreen);
 		Sprite::Draw();
 	}
-}
-
-// テキストのパラメータ設定
-void CSceneTutorial::TextParamSetting()
-{
-	// 一括初期化
-	for (int i = 0; i < (int)TutorialSection::Max; i++)
-	{
-		m_tTextParam[i].resize(ce_nMaxPage[i]);
-		for (int j = 0; j < ce_nMaxPage[i]; j++)
-		{
-			m_tTextParam[i][j] = SpriteParam();
-			m_tTextParam[i][j].pos = { 0.0f, -460.0f };
-			m_tTextParam[i][j].size = { SCREEN_WIDTH - 950.0f, 80.0f };
-			m_tTextParam[i][j].world = Get2DWorld();
-			m_tTextParam[i][j].view = Get2DView();
-			m_tTextParam[i][j].proj = Get2DProj();
-		}
-	}
-
-	// 例外設定
-	
-	//m_tTextParam[(int)TutorialSection::Section1][0].pos = { 0.0f, -400.0f };
-	//m_tTextParam[(int)TutorialSection::Section1][0].size = { 0.0f, -400.0f };
 }
 
 void CSceneTutorial::SetInstance()
