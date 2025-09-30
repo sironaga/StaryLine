@@ -16,6 +16,7 @@ constexpr int ce_nMaxPage[(int)TutorialSection::Max] =
 
 };
 
+constexpr int MAX_DUMMYLINE = 4;
 
 
 CSceneTutorial::CSceneTutorial(StageType StageNum)
@@ -94,6 +95,27 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	HRESULT hr = GetDevice()->CreateSamplerState(&samplerDesc, &pGameSPSampler);
 	if (FAILED(hr)) { return; }
 	GetContext()->PSSetSamplers(0, 1, &pGameSPSampler);
+
+	for (int i = 0; i < MAX_DUMMYLINE; i++)
+	{
+		m_bDrawDummyLine[i] = false;
+		m_pDummyLineTexture[i] = new Texture();
+		std::string path = "Assets/Texture/Tutorial/DummyLine/Line"+ std::to_string(i + 1) + ".png";
+		if (FAILED(m_pDummyLineTexture[i]->Create(path.c_str())))
+			MessageBox(NULL, path.c_str(), "LoadError", MB_OK);
+		m_tDummyLineParam[i] = SpriteParam();
+		m_tDummyLineParam[i].world = Get2DWorld();
+		m_tDummyLineParam[i].view = Get2DView();
+		m_tDummyLineParam[i].proj = Get2DProj();
+	}
+	m_tDummyLineParam[0].pos = DirectX::XMFLOAT2(-120.0f, 170.0f);
+	m_tDummyLineParam[0].size = DirectX::XMFLOAT2(250.0f, 500.0f);
+	m_tDummyLineParam[1].pos = DirectX::XMFLOAT2(125.0f, 290.0f);
+	m_tDummyLineParam[1].size = DirectX::XMFLOAT2(260.0f, 260.0f);
+	m_tDummyLineParam[2].pos = DirectX::XMFLOAT2(-120.0f, 35.0f);
+	m_tDummyLineParam[2].size = DirectX::XMFLOAT2(250.0f, 250.0f);
+	m_tDummyLineParam[3].pos = DirectX::XMFLOAT2(60.0f, 100.0f);
+	m_tDummyLineParam[3].size = DirectX::XMFLOAT2(125.0f, 125.0f);
 }
 
 CSceneTutorial::~CSceneTutorial()
@@ -204,6 +226,19 @@ void CSceneTutorial::Draw()
 	m_pField->Draw();
 	m_pFieldVertex->ShapesDraw();
 	if (m_bSpownEffectDraw)m_pFieldVertex->ShapesEffectDraw();
+	
+	for (int i = 0; i < MAX_DUMMYLINE; i++)
+	{
+		if (m_bDrawDummyLine[i])
+		{
+			SetRender2D();
+			Sprite::ReSetSprite();
+			Sprite::SetParam(m_tDummyLineParam[i]);
+			Sprite::SetTexture(m_pDummyLineTexture[i]);
+			Sprite::Draw();
+		}
+	}
+
 	m_pFieldVertex->Draw();
 	m_pPlayer->Draw();
 
@@ -279,6 +314,7 @@ void CSceneTutorial::UpdateSection1()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bDrawDummyLine[0] = true;
 		m_pPlayer->SetNowVertex(12);
 		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
 		for (int i = 0; i < MAX_VERTEX; i++)
@@ -331,6 +367,7 @@ void CSceneTutorial::UpdateSection1()
 	case 2:
 		if (m_fTime >= 2.0f)
 		{
+			m_bDrawDummyLine[0] = false;
 			NextPage();
 			m_fTime = 0.0f;
 			m_pPlayer->TimerSetMax();
@@ -353,7 +390,7 @@ void CSceneTutorial::UpdateSection2()
 	switch (m_nCurrentPage)
 	{
 	case 0:
-		
+		m_bDrawDummyLine[1] = true;
 		m_pPlayer->SetNowVertex(12);
 		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
 		m_pFieldVertex->InitFieldVertex();
@@ -436,6 +473,7 @@ void CSceneTutorial::UpdateSection3()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bDrawDummyLine[2] = true;
 		m_pPlayer->TimerSetMax();
 		m_pFieldVertex->SetVertexStop(false, 17);
 		m_pFieldVertex->SetVertexStop(false, 11);
@@ -496,6 +534,8 @@ void CSceneTutorial::UpdateSection3()
 				m_fTime = 0.0f;
 				NextPage();
 				m_pPlayer->TimerSetValue(3.0f);
+				m_bDrawDummyLine[1] = false;
+				m_bDrawDummyLine[2] = false;
 			}
 			else
 			{
@@ -590,6 +630,7 @@ void CSceneTutorial::UpdateSection5()
 		m_pFieldVertex->SetVertexStop(false, 13);
 		m_pFieldVertex->SetVertexStop(false, 17);
 		m_pFieldVertex->SetVertexStop(false, 18);
+		m_bDrawDummyLine[3] = true;
 
 		m_pPlayer->TimerSetMax();
 		m_pPlayer->SetNowVertex(12);
@@ -675,6 +716,7 @@ void CSceneTutorial::UpdateSection6()
 		case 18:
 			if (m_nPassVertexCount == 5)
 			{
+				m_bDrawDummyLine[3] = false;
 				m_fTime = 0.0f;
 				NextPage();
 				m_nPassVertexCount = 0;

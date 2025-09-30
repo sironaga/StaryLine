@@ -55,6 +55,11 @@ private:
 	// 生成処理のエフェクト描画フラグ
 	bool m_bSpownEffectDraw;
 
+	// ダミー線(ガイド)
+	bool m_bDrawDummyLine[4];
+	Texture* m_pDummyLineTexture[4];
+	SpriteParam m_tDummyLineParam[4];
+
 	Field* m_pField;
 	CFieldVertex* m_pFieldVertex;
 	CBattle* m_pBattle;
