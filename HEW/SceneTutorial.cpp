@@ -56,7 +56,7 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_tBackParam.proj = Get2DProj();
 	
 	m_tTextParam = SpriteParam();
-	m_tTextParam.pos = DirectX::XMFLOAT2(0.0f, -460.0f);
+	m_tTextParam.pos = DirectX::XMFLOAT2(20.0f, -460.0f);
 	m_tTextParam.size = DirectX::XMFLOAT2(SCREEN_WIDTH - 950.0f, 80.0f);
 	m_tTextParam.world = Get2DWorld();
 	m_tTextParam.view = Get2DView();
