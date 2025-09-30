@@ -44,6 +44,7 @@ public:
 
 	void SetNowLine();//一番最後の線を表示しない用にする関数
 	void SetSuperStar();//スーパースター(綺羅星)の位置を設定する関数
+	void ClearSuperStar();//スーパースター(綺羅星)をクリアする関数
 
 	void SoundStop();//FieldVertexの音を止める関数
 
@@ -148,6 +149,7 @@ private:
 	float m_Efect_y = 0.0f;//フィーバーエフェクトの表示時間のイージング保存用
 	bool m_bFeverGaugeInclease = true;
 	bool m_bVertexLoadStop[MAX_VERTEX];
+	bool m_bFaverStarCreate;
 	
 	//----- 線・プレイヤー -----
 	int m_NowLine;//今何個目の線か

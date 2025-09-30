@@ -47,6 +47,9 @@ private:
 	//セクション５の画像描画フラグ
 	bool m_bExplanationDraw;
 
+	//セクション6の通過頂点数
+	int m_nPassVertexCount;
+
 	// 移動する前の頂点番号
 	int m_nBeforeVertex;
 	// 生成処理のエフェクト描画フラグ

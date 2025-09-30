@@ -25,6 +25,7 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	, m_bExplanationDraw(false)
 	, m_nCurrentPage(0), m_fTime(0.0f)
 	, m_nBeforeVertex(-1), m_bSpownEffectDraw(false)
+	, m_nPassVertexCount(0)
 {
 	std::string section = "Assets/Texture/Tutorial/Section";
 	for (int i = 0; i < (int)TutorialSection::Max; i++)
@@ -187,6 +188,13 @@ void CSceneTutorial::Update()
 			m_nCurrentPage = ce_nMaxPage[(int)m_eSection] - 1;
 		}
 	}
+	if (IsKeyTrigger(VK_UP))
+	{
+		int section = (int)m_eSection;
+		section--;
+		m_eSection = (TutorialSection)section;
+		m_nCurrentPage = 0;
+	}
 #endif // _DEBUG
 }
 
@@ -265,6 +273,7 @@ void CSceneTutorial::UpdateSection1()
 {
 
 	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->ClearSuperStar();
 	m_pFieldVertex->Update();
 
 	switch (m_nCurrentPage)
@@ -338,6 +347,7 @@ void CSceneTutorial::UpdateSection1()
 void CSceneTutorial::UpdateSection2()
 {
 	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->ClearSuperStar();
 	m_pFieldVertex->Update();
 
 	switch (m_nCurrentPage)
@@ -354,7 +364,7 @@ void CSceneTutorial::UpdateSection2()
 		}
 		m_pFieldVertex->SetVertexStop(false, 13);
 		m_pFieldVertex->SetVertexStop(false, 7);
-		if (m_fTime >= 2.0f)
+		if (IsKeyTrigger(VK_SPACE))
 		{
 			NextPage();
 			m_fTime = 0.0f;
@@ -420,6 +430,7 @@ void CSceneTutorial::UpdateSection2()
 void CSceneTutorial::UpdateSection3()
 {
 	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->ClearSuperStar();
 	m_pFieldVertex->Update();
 
 	switch (m_nCurrentPage)
@@ -428,7 +439,7 @@ void CSceneTutorial::UpdateSection3()
 		m_pPlayer->TimerSetMax();
 		m_pFieldVertex->SetVertexStop(false, 17);
 		m_pFieldVertex->SetVertexStop(false, 11);
-		if (m_fTime >= 2.0f)
+		if (IsKeyTrigger(VK_SPACE))
 		{
 			NextPage();
 			m_fTime = 0.0f;
@@ -505,6 +516,7 @@ void CSceneTutorial::UpdateSection3()
 void CSceneTutorial::UpdateSection4()
 {
 	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->ClearSuperStar();
 	m_pFieldVertex->Update();
 
 	switch (m_nCurrentPage)
@@ -568,12 +580,168 @@ void CSceneTutorial::UpdateSection5()
 	{
 		m_bExplanationDraw = false;
 		NextPage();
+
+		m_pFieldVertex->InitFieldVertex();
+
+		for (int i = 0; i < MAX_VERTEX; i++)
+		{
+			m_pFieldVertex->SetVertexStop(true, i);
+		}
+		m_pFieldVertex->SetVertexStop(false, 13);
+		m_pFieldVertex->SetVertexStop(false, 17);
+		m_pFieldVertex->SetVertexStop(false, 18);
+
+		m_pPlayer->TimerSetMax();
+		m_pPlayer->SetNowVertex(12);
+		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
+		m_fTime = 0.0f;
+		m_nBeforeVertex = -1;
+		m_nPassVertexCount = 0;
+		m_bSpownEffectDraw = false;
 	}
 }
 
 void CSceneTutorial::UpdateSection6()
 {
+	m_pFieldVertex->SetFeverInclease(false);
+	m_pFieldVertex->ClearSuperStar();
+	m_pFieldVertex->Update();
 
+	switch (m_nCurrentPage)
+	{
+	case 0:
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
+		m_pBattle->Update();
+		m_pPlayer->Update();
+		m_pPlayer->TimerReCharge();
+
+		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
+		switch (m_pPlayer->GetNowVertex())
+		{
+		case 12:
+			if (m_nBeforeVertex == 13)
+			{
+				m_pFieldVertex->SetVertexStop(false, 17);
+				m_pFieldVertex->SetVertexStop(false, 18);
+				m_nPassVertexCount++;
+			}
+			else if (m_nBeforeVertex == 17)
+			{
+				m_pFieldVertex->SetVertexStop(false, 13);
+				m_pFieldVertex->SetVertexStop(false, 18);
+				m_nPassVertexCount++;
+			}
+			else if (m_nBeforeVertex == 18)
+			{
+				m_pFieldVertex->SetVertexStop(false, 13);
+				m_pFieldVertex->SetVertexStop(false, 17);
+				m_nPassVertexCount++;
+			}
+			m_nBeforeVertex = 12;
+			break;
+		case 13:
+			if (m_nBeforeVertex == 12)
+			{
+				m_pFieldVertex->SetVertexStop(false, 18);
+				m_pFieldVertex->SetVertexStop(true, 17);
+				m_nPassVertexCount++;
+			}
+			else if (m_nBeforeVertex == 18)
+			{
+				m_pFieldVertex->SetVertexStop(false, 12);
+				m_pFieldVertex->SetVertexStop(true, 13);
+				m_pFieldVertex->SetVertexStop(true, 17);
+				m_nPassVertexCount++;
+			}
+			m_nBeforeVertex = 13;
+			break;
+		case 17:
+			if (m_nBeforeVertex == 12)
+			{
+				m_pFieldVertex->SetVertexStop(false, 18);
+				m_pFieldVertex->SetVertexStop(true, 13);
+				m_nPassVertexCount++;
+			}
+			else if (m_nBeforeVertex == 18)
+			{
+				m_pFieldVertex->SetVertexStop(false, 12);
+				m_pFieldVertex->SetVertexStop(true, 13);
+				m_pFieldVertex->SetVertexStop(true, 17);
+				m_nPassVertexCount++;
+			}
+			m_nBeforeVertex = 17;
+			break;
+		case 18:
+			if (m_nPassVertexCount == 5)
+			{
+				m_fTime = 0.0f;
+				NextPage();
+				m_nPassVertexCount = 0;
+			}
+			else
+			{
+				if (m_nBeforeVertex == 12)
+				{
+					m_pFieldVertex->SetVertexStop(false, 13);
+					m_pFieldVertex->SetVertexStop(false, 17);
+					m_nPassVertexCount++;
+				}
+				else if (m_nBeforeVertex == 13)
+				{
+					m_pFieldVertex->SetVertexStop(false, 12);
+					m_pFieldVertex->SetVertexStop(false, 17);
+					m_nPassVertexCount++;
+				}
+				else if (m_nBeforeVertex == 17)
+				{
+					m_pFieldVertex->SetVertexStop(false, 12);
+					m_pFieldVertex->SetVertexStop(false, 13);
+					m_nPassVertexCount++;
+				}
+				m_nBeforeVertex = 18;
+			}
+			break;
+		}
+		break;
+	case 1:
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(false);
+		m_pBattle->Update();
+		//　タイマーを減らす更新処理
+		m_pPlayer->TutorialTimerUpdate();
+
+		if (m_fTime >= 11.0f)
+		{
+			m_bSpownEffectDraw = false;
+			if (IsKeyTrigger(VK_SPACE))
+			{
+				// 最後のページなので次のセクションへ
+				NextPage();
+				// エフェクトを消す
+				m_pFieldVertex->InitFieldVertex();
+				m_fTime = 0.0f;
+				m_pBattle->AllFighterClear();
+				m_pPlayer->TimerSetMax();
+				m_bExplanationDraw = true;
+			}
+		}
+		else if (m_fTime >= 6.0f)
+		{
+			// 3秒時に味方を生成
+			m_pBattle->CreateAlly();
+		}
+		else if (m_fTime >= 3.0f)
+		{
+			// 0~3秒からエフェクトを描画
+			m_bSpownEffectDraw = true;
+		}
+		break;
+	default:
+		break;
+	}
+
+	m_fTime += 1.0f / fFPS;
 }
 
 void CSceneTutorial::UpdateSection7()
