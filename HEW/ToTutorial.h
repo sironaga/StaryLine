@@ -36,5 +36,6 @@ private:
 	SpriteParam m_tParam[(int)TutorialTextures::Max];
 	ScreenMove m_eMove;
 	float m_fTime;
+	float m_fSizeTime;
 	int m_nSelect;
 };

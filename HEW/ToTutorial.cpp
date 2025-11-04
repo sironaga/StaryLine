@@ -17,7 +17,8 @@ constexpr DirectX::XMFLOAT2 ce_f2NoButtonOffSet = DirectX::XMFLOAT2(0.0f, -400.0
 
 CToTutorial::CToTutorial()
 	: m_pTexture{}, m_tParam{}
-	, m_eMove(ScreenMove::None), m_fTime(0.0f)
+	, m_eMove(ScreenMove::None)
+	, m_fTime(0.0f), m_fSizeTime(0.0f)
 	, m_nSelect(1)
 {
 	const char* chPath[(int)TutorialTextures::Max] =
@@ -62,6 +63,13 @@ void CToTutorial::Update()
 	{
 	case ScreenMove::None:
 		m_fTime = 0.0f;
+		m_fSizeTime += 1.0f / 60.0f;
+		
+		m_tParam[(int)TutorialTextures::Select].size = DirectX::XMFLOAT2(
+			450.0f + 100 * (0.1f * fabsf(sinf(DirectX::XMConvertToRadians(m_fSizeTime * 180.0f)))),
+			80.0f + 100.0f * (0.1f * fabsf(sinf(DirectX::XMConvertToRadians(m_fSizeTime * 180.0f))))
+		);
+		
 		break;
 	case ScreenMove::ScreenUp:
 		m_tParam[(int)TutorialTextures::Back].pos = ((ce_f2UpPos - ce_f2DownPos) * EaseOutQuint(m_fTime, MOVE_SPEED)) + ce_f2DownPos;
