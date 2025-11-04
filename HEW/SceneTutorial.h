@@ -44,6 +44,12 @@ private:
 	Texture* m_pExplanationScreen;
 	SpriteParam m_tExplanationParam;
 
+	
+	bool m_bIsClickMove;			// 現在のページがボタン入力で進むかどうか
+	SpriteParam m_tPenButtonParam;// 
+	Texture* m_pPenButtonTexture;
+	float m_fButtonMoveTime = 0.0f;
+
 	//セクション５の画像描画フラグ
 	bool m_bExplanationDraw;
 

@@ -27,6 +27,7 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	, m_nCurrentPage(0), m_fTime(0.0f)
 	, m_nBeforeVertex(-1), m_bSpownEffectDraw(false)
 	, m_nPassVertexCount(0), m_bFever(false), m_bOnButton(false), m_BattleFlag(false)
+	, m_bIsClickMove(true)
 {
 	std::string section = "Assets/Texture/Tutorial/Section";
 	for (int i = 0; i < (int)TutorialSection::Max; i++)
@@ -79,6 +80,14 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_pField = new Field(StageNum);
 	m_pStarLine = new StarLine();
 
+
+	m_tPenButtonParam.pos = DirectX::XMFLOAT2(800.0f, -460.0f);
+	m_tPenButtonParam.size = DirectX::XMFLOAT2(100.0f, 100.0f);
+	m_tPenButtonParam.world = Get2DWorld();
+	m_tPenButtonParam.view = Get2DView();
+	m_tPenButtonParam.proj = Get2DProj();
+	m_pPenButtonTexture = new Texture();
+	m_pPenButtonTexture->Create(TEX_PASS("Tutorial/Pen.png"));
 
 	m_pFieldVertex->SetBattleAddress(m_pBattle);
 	m_pFieldVertex->SetPlayerAddress(m_pPlayer);
@@ -134,6 +143,7 @@ CSceneTutorial::~CSceneTutorial()
 	SAFE_DELETE(m_pField);
 	SAFE_DELETE(m_pBackGround2);
 	SAFE_DELETE(m_pBackGround);
+	SAFE_DELETE(m_pPenButtonTexture);
 
 	CCharacterManager::GetInstance()->UnInitCharacterTexture();
 }
@@ -177,7 +187,10 @@ void CSceneTutorial::Update()
 	default:
 		break;
 	}
+	if (m_bIsClickMove) m_fButtonMoveTime += 1.0f / 60.0f;
+	else m_fButtonMoveTime = 0.0f;
 
+	m_tPenButtonParam.pos.y = -460.0f + 10.0f * sinf(DirectX::XMConvertToRadians(m_fButtonMoveTime * 180.0f));
 #ifdef _DEBUG
 	// デバッグ用進行キー
 	if (IsKeyTrigger(VK_RIGHT))
@@ -265,6 +278,15 @@ void CSceneTutorial::Draw()
 		Sprite::SetTexture(m_pExplanationScreen);
 		Sprite::Draw();
 	}
+
+	if (m_bIsClickMove)
+	{
+		SetRender2D();
+		Sprite::ReSetSprite();
+		Sprite::SetParam(m_tPenButtonParam);
+		Sprite::SetTexture(m_pPenButtonTexture);
+		Sprite::Draw();
+	}
 }
 
 void CSceneTutorial::SetInstance()
@@ -314,6 +336,7 @@ void CSceneTutorial::UpdateSection1()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bIsClickMove = true;
 		m_bDrawDummyLine[0] = true;
 		m_pPlayer->SetNowVertex(12);
 		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
@@ -322,13 +345,14 @@ void CSceneTutorial::UpdateSection1()
 			m_pFieldVertex->SetVertexStop(true, i);
 		}
 		m_pFieldVertex->SetVertexStop(false, 11);
-		if (m_fTime >= 2.0f)
+		if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 		{
 			NextPage();
 			m_fTime = 0.0f;
 		}
 		break;
 	case 1:
+		m_bIsClickMove = false;
 		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
 		switch (m_pPlayer->GetNowVertex())
 		{
@@ -354,6 +378,7 @@ void CSceneTutorial::UpdateSection1()
 		case 20:
 			m_fTime = 0.0f;
 			NextPage();
+			
 		default:
 			break;
 		}
@@ -365,7 +390,8 @@ void CSceneTutorial::UpdateSection1()
 		m_pPlayer->TimerReCharge();
 		break;
 	case 2:
-		if (m_fTime >= 2.0f)
+		m_bIsClickMove = true;
+		if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 		{
 			m_bDrawDummyLine[0] = false;
 			NextPage();
