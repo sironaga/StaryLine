@@ -26,7 +26,7 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	, m_bExplanationDraw(false)
 	, m_nCurrentPage(0), m_fTime(0.0f)
 	, m_nBeforeVertex(-1), m_bSpownEffectDraw(false)
-	, m_nPassVertexCount(0)
+	, m_nPassVertexCount(0), m_bFever(false), m_bOnButton(false), m_BattleFlag(false)
 {
 	std::string section = "Assets/Texture/Tutorial/Section";
 	for (int i = 0; i < (int)TutorialSection::Max; i++)
@@ -239,7 +239,7 @@ void CSceneTutorial::Draw()
 		}
 	}
 
-	m_pFieldVertex->Draw();
+	m_pFieldVertex->DrawTutorial();
 	m_pPlayer->Draw();
 
 	std::thread Th_BattleDraw([this]() { this->m_pBattle->Draw(); });
@@ -764,8 +764,6 @@ void CSceneTutorial::UpdateSection6()
 				m_pFieldVertex->InitFieldVertex();
 				m_fTime = 0.0f;
 				m_pBattle->AllFighterClear();
-				m_pPlayer->TimerSetMax();
-				m_bExplanationDraw = true;
 			}
 		}
 		else if (m_fTime >= 6.0f)
@@ -788,5 +786,74 @@ void CSceneTutorial::UpdateSection6()
 
 void CSceneTutorial::UpdateSection7()
 {
+	m_pFieldVertex->Update();
+	m_pPlayer->Update();
+	m_pBattle->Update();
+	if(!m_bSpownEffectDraw)m_pPlayer->TimerReCharge();
+	
 
+	if (IsKeyTrigger(VK_SPACE) && !m_bOnButton)
+	{
+		m_pFieldVertex->AddFeverPoint();
+		m_bOnButton = true;
+		for (int i = 0; i < MAX_VERTEX; i++)
+		{
+			m_pFieldVertex->SetVertexStop(false, i);
+		}
+		m_fTime = 0.0f;
+	}
+	if (m_pFieldVertex->GetFever() && !m_bFever)
+	{
+		m_bFever = true;
+		NextPage();
+		m_pStarLine->SetLineMode(1);
+		m_pFieldVertex->InitFieldVertex();	// ŽŸ‚Ìì}‚É•K—p‚È‰Šú‰»ˆ—	
+		m_pFieldVertex->SetFeverPoint();
+	}
+	if (m_bFever)
+	{
+		m_pFieldVertex->SubtractFeverPoint();
+		if (m_pFieldVertex->GetFeverPoint() == 0)
+		{
+			
+			m_pBattle->SetTutorialMoveFlag(false);
+			m_pBattle->SetTutorialSpownFlag(false);
+			m_bFever = false;
+		}
+	}
+	else
+	{
+		if (m_pFieldVertex->GetFeverPoint() == 0 && m_bOnButton && !m_BattleFlag)
+		{
+			m_pPlayer->Reset();
+			//m_pFieldVertex->InitFieldVertex();
+			m_bSpownEffectDraw = true;
+		}
+	}
+	if (m_bSpownEffectDraw || m_BattleFlag)
+	{
+		m_fTime += 1.0f / fFPS;
+	}
+	if (m_fTime >= 20.0f && !m_BattleFlag)
+	{
+		NextPage();
+		m_pBattle->SetTutorialMoveFlag(true);
+		m_pBattle->SetTutorialSpownFlag(true);
+		m_pPlayer->SetMoveStop();
+		m_BattleFlag = true;
+		m_bSpownEffectDraw = false;
+	}
+	else if (m_fTime >= 3.0f)
+	{
+		// 3•bŽž‚É–¡•û‚ð¶¬
+		m_pBattle->CreateAlly();
+		m_pFieldVertex->InitFieldVertex();
+	}	
+
+	if (m_fTime >= 25.0f && !m_bEnd)
+	{
+		m_pBattle->AllTutorialFlagClear();
+		SetNext(STAGE_SELECT);
+		m_bEnd = true;
+	}
 }

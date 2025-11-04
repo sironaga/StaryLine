@@ -10,6 +10,7 @@
 #define MAX_SHAPE_VERTEX (8)//このゲームでつくれる最大N角形
 #define MAX_LINE (85)//最大の線の本数
 #define MAX_LOG (300) //ログの最大数
+#define MAX_SHAPE_TYPE (34)
 
 class CPlayer;//前方宣言(プレイヤーのアドレス保存用の変数を作成するため)
 
@@ -24,6 +25,7 @@ public:
 
 	void ShapesEffectDraw();//図形から召喚のエフェクト
 	void Draw();//FieldVertexのメイン描画処理
+	void DrawTutorial();//FieldVertexのメイン描画処理(tutorial用)
 	void FeverDraw();//フィーバー時の描画用関数
 
 	void ShapesUpdate();//できた図形を更新する関数
@@ -32,6 +34,7 @@ public:
 	DirectX::XMFLOAT3 GetVertexPos(int);//引数の頂点番号の座標を返す関数
 	bool GetRoadStop(int);//引数でもらった方向が進めるかどうかの情報を渡す関数
 	float GetFeverPoint() { return m_nFeverPoint; }//フィーバーポイントを取得する関数
+	bool GetFever() { return m_bFever; }
 	void SetFeverPoint();//フィーバーポイント同期
 
 	void SetBattleAddress(CBattle*);//CBattleクラスのアドレス情報をセットする関数
@@ -49,6 +52,7 @@ public:
 	void SoundStop();//FieldVertexの音を止める関数
 
 	void SubtractFeverPoint();//フィーバー中にフィーバーゲージを減らす関数
+	void AddFeverPoint(); //フィーバーゲージを増やす関数(チュートリアルで使う)
 
 	void InitTextureModel();//TextureとModelの初期化
 
@@ -135,6 +139,7 @@ private:
 	float m_Shapes_Length[MAX_ALLY][2];//縦と横の長さ
 	
 	//----- フィーバー・綺羅星 -----
+	bool m_bFever;//フィーバー中かどうか
 	int m_SuperStarCount;//スーパースターの個数
 	int m_nFeverPoint;//ポイントカウント(int型)
 	float m_fFeverPoint;//ポイントをちょっとづつ増やす用(float型)
@@ -173,7 +178,7 @@ private:
 	Texture* m_pTex_Summon_Log[2];
 	Texture* m_pTex_Ally_Count[4];
 	Texture* m_pTex_Ally_Number[10];
-	Texture* m_pTex_Shapes[32];
+	Texture* m_pTex_Shapes[MAX_SHAPE_TYPE];
 
 	Sprite* m_pSprite_SuperStar_Number;//スーパースターの数
 	Sprite* m_pSprite_Fever_Gage[4];//フィーバースター
@@ -188,7 +193,7 @@ private:
 	CEffectManager_sp* m_pShapesEffects_Sprite;
 	CEffectManager_sp* m_pShapesEffects[MAX_ALLY];
 	CEffectManager_sp* m_pFeverEffects_Sprite;
-	CEffectManager_sp* m_pFeverEffects[32];
+	CEffectManager_sp* m_pFeverEffects[MAX_SHAPE_TYPE];
 
 	CModelEx* m_pStar_Model[3];//Starのモデル
 	

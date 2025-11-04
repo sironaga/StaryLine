@@ -55,6 +55,15 @@ private:
 	// 生成処理のエフェクト描画フラグ
 	bool m_bSpownEffectDraw;
 
+	//フィーバーかどうか(行っているかと行った後か)
+	bool m_bFever;
+
+	//ボタンが押されたかどうか
+	bool m_bOnButton;
+
+	//敵と味方がちょうど戦った時
+	bool m_BattleFlag;
+
 	// ダミー線(ガイド)
 	bool m_bDrawDummyLine[4];
 	Texture* m_pDummyLineTexture[4];

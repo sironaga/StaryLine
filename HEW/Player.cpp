@@ -143,7 +143,7 @@ void CPlayer::Update()
 	// タイマー処理
 	TimeProcess();
 	m_tEffectParam.pos = m_tBrushPos;
-	if (GetFeverMode())m_tEffectParam.color = { 1.0f,0.0f,0.0f,1.0f };
+	if (GetFeverMode() || m_pFieldVtx->GetFever())m_tEffectParam.color = { 1.0f,0.0f,0.0f,1.0f };
 	else m_tEffectParam.color = { 1.0f,1.0f,1.0f,1.0f };
 
 	// 状態別更新処理
@@ -487,7 +487,7 @@ void CPlayer::UpdateStop()
 
 void CPlayer::UpdateMove()
 {
-	if (GetFeverMode())m_fBrushSpeed = BRUSH_SPEED_FEVER;
+	if (GetFeverMode() || m_pFieldVtx->GetFever())m_fBrushSpeed = BRUSH_SPEED_FEVER;
 	else m_fBrushSpeed = BRUSH_SPEED;
 
 	m_pEffect->Update();
@@ -676,7 +676,7 @@ void CPlayer::SetMoveStop()
 void CPlayer::TimeProcess()
 {
 	//タイマースタート
-	if (GetFeverMode())m_bDrawing = true;
+	if (GetFeverMode() || m_pFieldVtx->GetFever())m_bDrawing = true;
 	else
 	{
  		if (m_bDrawing && GetTimeStart())	// 作図中のとき

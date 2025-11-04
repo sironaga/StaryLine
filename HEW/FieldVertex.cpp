@@ -3,6 +3,7 @@
 #include "FieldVertex.h"
 #include "Player.h"
 #include "SceneGame.h"
+#include "SceneTutorial.h"
 
 //↓FieldVertexのまだやってない事↓
 //コンストラクタとupdateのクリーンアップ
@@ -15,6 +16,8 @@
 #define TRAPEZOID_SIZE (80.0f) //台形のサイズ
 #define PARALLELOGRAM_SIZE (80.0f) //平行四辺形のサイズ
 #define SPECIAL_SHAPE_SIZE (80.0f) //カッター型の図形のサイズ
+#define NEW_SPECIAL_SHAPE_SIZE1 (92.0f)//新しい図形１のサイズ
+#define NEW_SPECIAL_SHAPE_SIZE2 (90.0f)//新しい図形１のサイズ
 
 //----- 線・星 -----
 #define LINE_SIZE (0.1f) //線のサイズ
@@ -83,6 +86,7 @@ CFieldVertex::CFieldVertex()
 	, m_Now_Shapes_Draw (0)
 	, m_PlayerPos{}
 	, m_RoadStop(false)
+	, m_bFever(false)
 	, m_pBattle(nullptr)
 	, m_pPlayer(nullptr)
 	, m_pTex_SuperStar_Number{ nullptr }
@@ -154,7 +158,7 @@ CFieldVertex::CFieldVertex()
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
-		for (int i = 0; i < 32; i++)
+		for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 		{
 			m_pTex_Shapes[i] = new Texture();
 		}
@@ -174,7 +178,7 @@ CFieldVertex::CFieldVertex()
 	{
 		m_pShapesEffects[i] = new CEffectManager_sp(m_pShapesEffects_Sprite);
 	}
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 	{
 		m_pFeverEffects[i] = new CEffectManager_sp(m_pFeverEffects_Sprite);
 	}
@@ -345,7 +349,7 @@ CFieldVertex::CFieldVertex()
 		}
 	}
 	HRESULT hrShapes;
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 	{
 		switch (i)
 		{
@@ -386,8 +390,10 @@ CFieldVertex::CFieldVertex()
 		case 28:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq31.png")); break;//1:3 
 		case 29:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq33.png")); break;//1:4
 
-		case 30:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq37.png")); break;//new図形
-		case 31:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq38.png")); break;//new図形
+		case 30:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq39.png")); break;//new図形
+		case 31:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq40.png")); break;//new図形
+		case 32:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq41.png")); break;//new図形
+		case 33:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq42.png")); break;//new図形
 		default:
 			break;
 		}
@@ -416,7 +422,7 @@ CFieldVertex::~CFieldVertex()
 		m_pShapesEffects[i] = nullptr;
 	}
 	SAFE_DELETE(m_pFeverEffects_Sprite);
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 	{
 		m_pFeverEffects[i] = nullptr;
 	}
@@ -437,7 +443,7 @@ CFieldVertex::~CFieldVertex()
 	SAFE_DELETE(m_pTex_Ally_Count[1]);
 	SAFE_DELETE(m_pTex_Ally_Count[2]);
 	SAFE_DELETE(m_pTex_Ally_Count[3]);
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 	{
 		SAFE_DELETE(m_pTex_Shapes[i]);
 	}
@@ -924,6 +930,261 @@ void CFieldVertex::Draw()
 	}	
 }
 
+void CFieldVertex::DrawTutorial()
+{
+	if (m_bFever)
+	{
+		SetRender2D();
+		for (int i = 0; i < MAX_SHAPE_TYPE; i++)
+		{
+			if (!m_pFeverEffects[i]->IsPlay())
+			{
+				m_pFeverEffects[i]->SetPos({ -100.0f + 30.0f * (i % 8),90.0f - 30.0f * (i / 8),0.0f });
+				m_pFeverEffects[i]->SetSize({ 50.0f,50.0f,0.0f });
+
+				m_pFeverEffects[i]->Play(true);
+			}
+			m_pFeverEffects[i]->SetColor({ 1.0f,1.0f,1.0f,m_Fever_Effects_Alpha });
+			m_pFeverEffects[i]->Update();
+			m_pFeverEffects[i]->Draw();
+		}
+
+		//エフェクトの表示時間をイージングで表現
+		m_Efect_x = powf(2.71828, 1.0f - m_Efect_y);
+		m_Efect_y += (15.0f / (60.0f * 10.0f));
+		m_Fever_Effects_Alpha = m_Efect_x;
+		if (m_Fever_Effects_Alpha < 0.2f)m_Fever_Effects_Alpha = 0.2f;
+	}
+	else
+	{
+		if (m_fFeverPoint >= MAX_FEVER_POINT)m_bFever = true;
+	}
+	SetRender3D();//3D描画準備
+
+	//-----線の描画-----//
+	{
+		for (int i = 0; i <= m_NowLine; i++)
+		{
+			m_pStarLine->SetLineInfo(//頂点情報格納
+				{
+						m_vtx_FieldLine[i][1].pos[0],
+						m_vtx_FieldLine[i][1].pos[1],
+						0.0f
+				},
+			{
+					m_vtx_FieldLine[i][3].pos[0],
+					m_vtx_FieldLine[i][3].pos[1],
+					0.0f
+			},
+			{
+					m_vtx_FieldLine[i][0].pos[0],
+					m_vtx_FieldLine[i][0].pos[1],
+					0.0f
+			},
+			{
+					m_vtx_FieldLine[i][2].pos[0],
+					m_vtx_FieldLine[i][2].pos[1],
+					0.0f
+			});
+			m_pStarLine->DispLine();//線の描画
+		}
+	}
+
+	//-----頂点(星)の描画-----//
+	{
+		FieldVertex* Vertexp;//頂点の情報格納ポインター
+		Vertexp = m_tVertex;//先頭の情報格納
+		for (int i = 0; i < MAX_VERTEX; i++, Vertexp++)
+		{
+			if (Vertexp->SuperStar)DrawStarModel(2, i);//ステラの描画(レッド)
+			else
+			{
+				if (Vertexp->Use)DrawStarModel(1, i);//使用中の頂点(星)の描画(ブルー)
+				else DrawStarModel(0, i);//未使用の頂点(星)の描画(オレンジ)
+			}
+		}
+	}
+
+	SetRender2D();//2D描画準備
+
+	//-----召喚ログ-----//
+	{
+		for (int i = 0; i < m_NowSummonLog; i++)
+		{
+			m_pSprite_Summon_Log->SetUVPos({ 0.0f, 0.0f });
+			DrawSetting(m_tSummonLog[i].Pos, { SUMMON_LOG_SIZE_X,SUMMON_LOG_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Summon_Log);//座標と大きさの設定
+			m_pSprite_Summon_Log->SetColor({ 1.0f,1.0f,1.0f,m_tSummonLog[i].Alpha });//色と透明度の設定
+			if (m_tSummonLog[i].type == 0)m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[0]);//三角形のテクスチャ設定
+			else m_pSprite_Summon_Log->SetTexture(m_pTex_Summon_Log[1]);//四角形のテクスチャ設定ログ
+			if (i < MAX_DRAW_LOG)m_pSprite_Summon_Log->Draw();//15個のみ描画
+		}
+		m_pSprite_Summon_Log->ReSetSprite();//スプライトのリセット
+	}
+
+	//-----フィーバーゲージ描画-----//
+	{
+		//フィーバー背景//
+		if (m_bFever)
+		{
+			m_Fever_Draw_Angle.y += (360.0f / (60.0f * FEVER_DRAW_ANGLE_TIME));//1.0f秒で１回転
+			if (m_Fever_Draw_Angle.y >= 360.0f)
+			{
+				m_Fever_Draw_Angle.y = 0.0f;
+				m_Fever_Draw_Angle_Count++;
+			}
+			if (m_Fever_Draw_Angle_Count >= FEVER_DRAW_ANGLE_COUNT)
+			{
+				m_Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+			}
+		}
+		else
+		{
+			m_Fever_Draw_Angle = { 0.0f,0.0f,0.0f };
+		}
+		float Fever_Gage_Size = 50.0f;
+		if (m_bFever)//フィーバータイムの時、後の背景出現
+		{
+			DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[2]);//座標と大きさの設定
+			m_pSprite_Fever_Gage[2]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+			m_pSprite_Fever_Gage[2]->SetTexture(m_pTex_Fever_Gage[2]);//星形の背景のテクスチャ設定
+			m_pSprite_Fever_Gage[2]->Draw();//描画
+			m_pSprite_Fever_Gage[2]->ReSetSprite();//スプライトのリセット
+		}
+
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[0]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[0]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[0]->SetTexture(m_pTex_Fever_Gage[0]);//星形の背景のテクスチャ設定
+		m_pSprite_Fever_Gage[0]->Draw();//描画
+		m_pSprite_Fever_Gage[0]->ReSetSprite();//スプライトのリセット
+
+
+		if (!m_bFever)m_fFeverPoint += 0.2f;//フィーバータイムじゃないときふやす
+		if (m_fFeverPoint > m_nFeverPoint)m_fFeverPoint = m_nFeverPoint;//値の補正
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y - Fever_Gage_Size + (Fever_Gage_Size / m_Partition) * m_fFeverPoint  ,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[1]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[1]->SetUVPos({ 0.0f,1.0f - m_fFeverPoint / m_Partition });//UVの座標設定
+		m_pSprite_Fever_Gage[1]->SetUVScale({ 1.0f,1.0f });//UVの大きさ設定
+		m_pSprite_Fever_Gage[1]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[1]->SetTexture(m_pTex_Fever_Gage[1]);//星形のフィーバーゲージのテクスチャ設定
+		m_pSprite_Fever_Gage[1]->Draw();//描画
+		m_pSprite_Fever_Gage[1]->ReSetSprite();//スプライトのリセット
+
+		DrawSetting({ FEVER_GAGE_POS_X, FEVER_GAGE_POS_Y,10.0f }, { Fever_Gage_Size,Fever_Gage_Size,1.0f }, m_Fever_Draw_Angle, m_pSprite_Fever_Gage[3]);//座標と大きさの設定
+		m_pSprite_Fever_Gage[3]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+		m_pSprite_Fever_Gage[3]->SetTexture(m_pTex_Fever_Gage[3]);//星形の背景のテクスチャ設定
+		m_pSprite_Fever_Gage[3]->Draw();//描画
+		m_pSprite_Fever_Gage[3]->ReSetSprite();//スプライトのリセット
+	}
+
+	//-----現在のキャラクターの数描画のボード-----//
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			switch (i)
+			{
+			case 0:DrawSetting({ -107.0f, 52.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			case 1:DrawSetting({ -107.0f, 78.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			case 2:DrawSetting({ 67.0f, 55.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			case 3:DrawSetting({ 67.0f, 75.0f,10.0f }, { BOARD_SIZE_X,BOARD_SIZE_Y,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Count[i]);//座標と大きさの設定
+				break;
+			default:
+				break;
+			}
+
+			m_pSprite_Ally_Count[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+			m_pSprite_Ally_Count[i]->SetTexture(m_pTex_Ally_Count[i]);//星形の背景のテクスチャ設定
+			m_pSprite_Ally_Count[i]->Draw();//描画
+			m_pSprite_Ally_Count[i]->ReSetSprite();//スプライトのリセット
+		}
+	}
+
+	//-----現在のキャラクターの数描画-----//
+	{
+		int Ally_Enemy_Count[4];
+		Ally_Enemy_Count[0] = m_pBattle->GetAllyTypeCount(0);
+		Ally_Enemy_Count[1] = m_pBattle->GetAllyTypeCount(1);
+		Ally_Enemy_Count[2] = m_pBattle->GetEnemyTypeCount(0);
+		Ally_Enemy_Count[3] = m_pBattle->GetEnemyTypeCount(1);
+
+		float M = 0.0f;
+		float Pos_Y[4];
+		Pos_Y[0] = 52.0f;
+		Pos_Y[1] = 78.0f;
+		Pos_Y[2] = 55.0f;
+		Pos_Y[3] = 75.0f;
+		for (int i = 0; i < 4; i++)
+		{
+			if (i == 2)M = 174.0f;
+			if (Ally_Enemy_Count[i] / 100 >= 1)
+			{
+				DrawSetting({ -107.0f + M - 4.0f, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 100]);//星形の背景のテクスチャ設定
+				m_pSprite_Ally_Number[i]->Draw();//描画
+
+				DrawSetting({ -107.0f + M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[(Ally_Enemy_Count[i] % 100) / 10]);//星形の背景のテクスチャ設定
+				m_pSprite_Ally_Number[i]->Draw();//描画
+
+				DrawSetting({ -107.0f + M + 3.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+				m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+				m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
+				m_pSprite_Ally_Number[i]->Draw();//描画
+			}
+			else
+			{
+				if (Ally_Enemy_Count[i] / 10 >= 1)
+				{
+					DrawSetting({ -107.0f + M - 2.5f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] / 10]);//星形の背景のテクスチャ設定
+					m_pSprite_Ally_Number[i]->Draw();//描画
+
+					DrawSetting({ -107.0f + M + 2.0f, Pos_Y[i] ,10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
+					m_pSprite_Ally_Number[i]->Draw();//描画
+				}
+				else
+				{
+					DrawSetting({ -107.0f + M, Pos_Y[i],10.0f }, { 10.0f,10.0f,1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Ally_Number[i]);//座標と大きさの設定
+					m_pSprite_Ally_Number[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });//色と透明度の設定
+					m_pSprite_Ally_Number[i]->SetTexture(m_pTex_Ally_Number[Ally_Enemy_Count[i] % 10]);//星形の背景のテクスチャ設定
+					m_pSprite_Ally_Number[i]->Draw();//描画
+				}
+			}
+			m_pSprite_Ally_Number[i]->ReSetSprite();//スプライトのリセット
+		}
+	}
+
+	//-----Effectの描画-----//
+	{
+		for (int i = m_Effect_NowShapes; i < MAX_ALLY; i++)
+		{
+			if (m_Shapes_Count[i] != -1)
+			{
+				m_pLineEffects[m_Effect_NowShapes]->SetSize({ 100.0f + m_Shapes_Size[m_Effect_NowShapes] * 20.0f,100.0f + m_Shapes_Size[m_Effect_NowShapes] * 20.0f, 0.0f });
+				m_pLineEffects[m_Effect_NowShapes]->SetPos({ m_Effect_Shapes_Pos[m_Effect_NowShapes].x - 0.766f, m_Effect_Shapes_Pos[m_Effect_NowShapes].y - 1.8f, 0.0f });
+				if (m_Shapes_Count[i] == 3)m_pLineEffects[i]->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+				else m_pLineEffects[i]->SetColor({ 0.0f,0.3f,1.0f,1.0f });
+				m_pLineEffects[m_Effect_NowShapes]->Play(false);
+				m_Effect_NowShapes++;
+			}
+		}
+		for (int i = 0; i < m_Effect_NowShapes; i++)
+		{
+			if (m_pLineEffects[i]->IsPlay())
+			{
+				m_pLineEffects[i]->Update();
+				m_pLineEffects[i]->Draw();
+			}
+		}
+	}
+}
+
 void CFieldVertex::FeverDraw()
 {
 	//-----フィーバープレイヤーの描画-----//
@@ -1200,27 +1461,33 @@ void CFieldVertex::ShapesDraw()
 				}
 				break;
 			case 11://new図形左
+				m_pSprite_Shapes->SetUVPos({ 0.09f,0.040f });
 				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
 				{
-					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[30]);
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { NEW_SPECIAL_SHAPE_SIZE1,NEW_SPECIAL_SHAPE_SIZE1,1.0f}, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[31]);
+					break;
 				}
+				m_pSprite_Shapes->SetUVPos({ 0.125f,0.040f });
 				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
 				{
-					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { 50.0f * m_Shapes_Size[i],50.0f * m_Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { NEW_SPECIAL_SHAPE_SIZE2,NEW_SPECIAL_SHAPE_SIZE2,1.0f }, { 0.0f,0.0f,m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[33]);
 				}
 				break;
 			case 12://new図形右
+				m_pSprite_Shapes->SetUVPos({ -0.09f,0.040f });
 				if ((m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 1.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 1.0f))//1:3 || 1:2
 				{
-					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { (SPECIAL_SHAPE_SIZE + size + 1.0f) * 2.0f ,(SPECIAL_SHAPE_SIZE + size) * 2.0f,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[31]);
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { NEW_SPECIAL_SHAPE_SIZE1,NEW_SPECIAL_SHAPE_SIZE1,1.0f }, { 0.0f,0.0f, m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[30]);
+					break;
 				}
+				m_pSprite_Shapes->SetUVPos({ -0.125f,0.040f });
 				if ((m_Shapes_Length[i][0] == 2.0f && m_Shapes_Length[i][1] == 3.0f) || (m_Shapes_Length[i][0] == 3.0f && m_Shapes_Length[i][1] == 2.0f) || (m_Shapes_Length[i][0] == 1.0f && m_Shapes_Length[i][1] == 4.0f) || (m_Shapes_Length[i][0] == 4.0f && m_Shapes_Length[i][1] == 1.0f))//2:3 || 1:4
 				{
-					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { 50.0f * m_Shapes_Size[i],50.0f * m_Shapes_Size[i],1.0f }, { 0.0f,0.0f,0.0f }, m_pSprite_Shapes);//座標と大きさの設定
-					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[2]);
+					DrawSetting({ m_Shapes_Pos[i].x, m_Shapes_Pos[i].y ,10.0f }, { NEW_SPECIAL_SHAPE_SIZE2,NEW_SPECIAL_SHAPE_SIZE2,1.0f }, { 0.0f,0.0f,m_Shapes_type_Angle[i][1] * -90.0f }, m_pSprite_Shapes);//座標と大きさの設定
+					m_pSprite_Shapes->SetTexture(m_pTex_Shapes[32]);
 				}
 				break;
 			case 13:
@@ -1673,7 +1940,13 @@ void CFieldVertex::SubtractFeverPoint()
 	{
 		m_nFeverPoint = 0;
 		m_fFeverPoint = 0.0f;
+		m_bFever = false;
 	}
+}
+
+void CFieldVertex::AddFeverPoint()
+{
+	m_nFeverPoint = MAX_FEVER_POINT;
 }
 
 ////=====モデルの初期化をする関数=====//
@@ -1712,7 +1985,7 @@ void CFieldVertex::InitTextureModel()
 		m_pTex_Ally_Count[1] = new Texture();
 		m_pTex_Ally_Count[2] = new Texture();
 		m_pTex_Ally_Count[3] = new Texture();
-		for (int i = 0; i < 31; i++)
+		for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 		{
 			m_pTex_Shapes[i] = new Texture();
 		}
@@ -1731,7 +2004,7 @@ void CFieldVertex::InitTextureModel()
 		{
 			m_pShapesEffects[i] = new CEffectManager_sp(m_pShapesEffects_Sprite);
 		}
-		for (int i = 0; i < 32; i++)
+		for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 		{
 			m_pFeverEffects[i] = new CEffectManager_sp(m_pFeverEffects_Sprite);
 		}
@@ -1826,7 +2099,7 @@ void CFieldVertex::InitTextureModel()
 	}
 
 	HRESULT hrShapes;
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_SHAPE_TYPE; i++)
 	{
 		switch (i)
 		{
@@ -1867,8 +2140,10 @@ void CFieldVertex::InitTextureModel()
 		case 28:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq31.png")); break;//1:3 
 		case 29:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq33.png")); break;//1:4
 
-		case 30:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq37.png")); break;//new
-		case 31:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq38.png")); break;//new
+		case 30:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq39.png")); break;//new
+		case 31:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq40.png")); break;//new
+		case 32:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq41.png")); break;//new
+		case 33:hrShapes = m_pTex_Shapes[i]->Create(TEX_PASS("Shapes/Sq42.png")); break;//new
 		default:
 			break;
 		}
