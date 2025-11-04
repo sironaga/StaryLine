@@ -245,7 +245,7 @@ void CSceneTutorial::Draw()
 	std::thread Th_BattleDraw([this]() { this->m_pBattle->Draw(); });
 	Th_BattleDraw.join();
 
-	if (!m_bSpownEffectDraw)
+	//if (!m_bSpownEffectDraw)
 	{
 		SetRender2D();
 		Sprite::ReSetSprite();
@@ -813,9 +813,9 @@ void CSceneTutorial::UpdateSection7()
 	if (m_bFever)
 	{
 		m_pFieldVertex->SubtractFeverPoint();
+		if (!m_pPlayer->TutorialBoolMove())m_pFieldVertex->SetZeroFeverPoint();
 		if (m_pFieldVertex->GetFeverPoint() == 0)
-		{
-			
+		{			
 			m_pBattle->SetTutorialMoveFlag(false);
 			m_pBattle->SetTutorialSpownFlag(false);
 			m_bFever = false;
@@ -828,15 +828,16 @@ void CSceneTutorial::UpdateSection7()
 			m_pPlayer->Reset();
 			//m_pFieldVertex->InitFieldVertex();
 			m_bSpownEffectDraw = true;
+			NextPage();
 		}
 	}
 	if (m_bSpownEffectDraw || m_BattleFlag)
 	{
 		m_fTime += 1.0f / fFPS;
 	}
-	if (m_fTime >= 20.0f && !m_BattleFlag)
+	if (m_fTime >= 20.0f  && !m_BattleFlag)
 	{
-		NextPage();
+		
 		m_pBattle->SetTutorialMoveFlag(true);
 		m_pBattle->SetTutorialSpownFlag(true);
 		m_pPlayer->SetMoveStop();

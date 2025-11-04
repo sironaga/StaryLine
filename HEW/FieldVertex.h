@@ -36,6 +36,7 @@ public:
 	float GetFeverPoint() { return m_nFeverPoint; }//フィーバーポイントを取得する関数
 	bool GetFever() { return m_bFever; }
 	void SetFeverPoint();//フィーバーポイント同期
+	void SetZeroFeverPoint();
 
 	void SetBattleAddress(CBattle*);//CBattleクラスのアドレス情報をセットする関数
 	void SetPlayerAddress(CPlayer*);//CPlayerクラスのアドレス情報をセットする関数

@@ -29,6 +29,7 @@ public:
 	void TimerSetMax();
 	void TimerSetValue(float inValue);
 	void TutorialTimerUpdate();
+	bool TutorialBoolMove();
 	/*“à•”ˆ—*/
 	/* ƒvƒŒƒCƒ„[ */
 private:

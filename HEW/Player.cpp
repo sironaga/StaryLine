@@ -430,6 +430,23 @@ void CPlayer::TutorialTimerUpdate()
 	m_tTimerParam[Timer_Gauge].pos.y = TIMER_BAR_OFFSET_Y + m_tTimerParam[Timer_Gauge].size.y / 2.0f - TIMER_BARSIZE_Y / 2.0f;
 }
 
+bool CPlayer::TutorialBoolMove()
+{
+	for (int i = 0, Count = 0; i < 8; i++)
+	{
+		// 8方向に行けるかどうかチェック
+		// 行けない方向がある場合、その度にカウントを増やす
+		if (m_pFieldVtx->GetRoadStop(i)) Count++;
+
+		// 8方向全てに移動が出来ないなら
+		if (Count == 8)
+		{
+			return false;							// 関数を抜ける
+		}
+	}
+	return true;				// 移動可能かのチェック終了
+}
+
 void CPlayer::UpdateStop()
 {
 	g_pWalkSe->Stop();

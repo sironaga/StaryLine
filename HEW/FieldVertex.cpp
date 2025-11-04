@@ -1788,6 +1788,12 @@ void CFieldVertex::SetFeverPoint()
 	m_fFeverPoint = m_nFeverPoint;
 }
 
+void CFieldVertex::SetZeroFeverPoint()
+{
+	m_fFeverPoint = 0.0f;
+	m_nFeverPoint = 0;
+}
+
 ////=====CBattleクラスのアドレス情報をセットする関数=====//
 void CFieldVertex::SetBattleAddress(CBattle* InAddress)
 {
