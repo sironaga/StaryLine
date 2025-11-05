@@ -790,6 +790,18 @@ void CSceneTutorial::UpdateSection6()
 				m_pFieldVertex->InitFieldVertex();
 				m_fTime = 0.0f;
 				m_pBattle->AllFighterClear();
+
+				// 次のセクション用の初期化処理
+				// あらかじめ味方を生成しておく
+				for (int i = 0; i < 15; i++)
+				{
+					// 3と4の交互に配置
+					int nCorner = i % 2 ? 3 : 4;
+
+					// 味方データを保存
+					m_pBattle->SaveAllyData(nCorner);
+				}
+				m_pBattle->CreateAlly();
 			}
 		}
 		else if (m_fTime >= 6.0f)
