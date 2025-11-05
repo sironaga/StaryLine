@@ -254,7 +254,6 @@ void CEnemy::BattleUpdate(void)
 				m_pSourceNormalAttack->FlushSourceBuffers();
 				m_pSourceNormalAttack->SubmitSourceBuffer(&buffer);
 				if (m_pSourceNormalAttack)SetVolumeSE(m_pSourceNormalAttack);
-				m_pSourceNormalAttack->SetVolume(1.0f);
 				m_pSourceNormalAttack->Start();
 				m_bTimeSoundStart = true;
 			}

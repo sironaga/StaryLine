@@ -8,6 +8,7 @@
 #include "BackGround.h"
 #include "StarLine.h"
 #include "Player.h"
+#include "SoundList.h"
 
 enum class TutorialSection
 {
@@ -43,7 +44,10 @@ private:
 	SpriteParam m_tBackParam;
 	Texture* m_pExplanationScreen;
 	SpriteParam m_tExplanationParam;
-
+	IXAudio2SourceVoice* m_pSourseTutorialBGM;
+	CSoundList* m_TutorialSoundBGM;
+	IXAudio2SourceVoice* m_pSourseTutorialSE;
+	CSoundList* m_TutorialSoundSE;
 	
 	bool m_bIsClickMove;			// 現在のページがボタン入力で進むかどうか
 	SpriteParam m_tPenButtonParam;// 
