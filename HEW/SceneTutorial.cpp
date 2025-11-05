@@ -874,7 +874,7 @@ void CSceneTutorial::UpdateSection7()
 	{
 		m_fTime += 1.0f / fFPS;
 	}
-	if (m_fTime >= 7.0f  && !m_BattleFlag)
+	if (m_fTime >= 7.5f  && !m_BattleFlag)
 	{
 		
 		m_pBattle->SetTutorialMoveFlag(true);
@@ -882,6 +882,10 @@ void CSceneTutorial::UpdateSection7()
 		m_pPlayer->SetMoveStop();
 		m_BattleFlag = true;
 		m_bSpownEffectDraw = false;
+		m_pBattle->AllTutorialFlagClear();
+		SetNext(STAGE_SELECT);
+		m_bEnd = true;
+
 	}
 	else if (m_fTime >= 3.0f)
 	{
@@ -892,8 +896,5 @@ void CSceneTutorial::UpdateSection7()
 
 	if (m_fTime >= 12.0f && !m_bEnd)
 	{
-		m_pBattle->AllTutorialFlagClear();
-		SetNext(STAGE_SELECT);
-		m_bEnd = true;
 	}
 }
