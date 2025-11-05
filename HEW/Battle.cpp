@@ -64,9 +64,15 @@ enum class ENEMYCREATE_POSX
 #define MOVESPEED(Speed) Speed / 10
 //移動力
 #define MOVEPOWER (0.4f)
+// チュートリアル用：高速移動
+#define TUTORIAL_MOVEPOWER (0.8f)
 
 //時間の計算マクロ
 #define Time(Num) Num * 60
+
+// チュートリアル用の移動フラグ
+bool g_bTutorialMoveFlag;
+
 
 //次に敵が生成される間隔
 enum class NEXTSPAWN
@@ -1721,12 +1727,19 @@ void CBattle::ReloadSound()
 	m_pDeathSE = m_pSound->GetSound(false);
 }
 
+// チュートリアル移動力アップフラグを立てる
+void CBattle::SetTutorialMoveFlagTrue(const bool In_bFlag)
+{
+	g_bTutorialMoveFlag = In_bFlag;
+}
+
 // チュートリアル関係のフラグをすべてクリアする
 void CBattle::AllTutorialFlagClear()
 {
 	m_bTutorialMoveStop = false;
 	m_bTutorialStopAllySpown = false;
 	m_bTutorialStopEnemySpown = false;
+	g_bTutorialMoveFlag = false;	
 }
 
 // 全ての兵士の情報をクリアする
@@ -1771,8 +1784,10 @@ MovePower MoveCalculation(DirectX::XMFLOAT3 nPos, DirectX::XMFLOAT3 nEnemyPos)
 
 	float absXZ = absX + absZ;
 
-	Movepower.x = (MOVESPEED(MOVEPOWER) * NorX) / absXZ;
-	Movepower.z = (MOVESPEED(MOVEPOWER) * NorZ) / absXZ;
+	float fMovePower = g_bTutorialMoveFlag ? MOVEPOWER : TUTORIAL_MOVEPOWER;
+
+	Movepower.x = (MOVESPEED(fMovePower) * NorX) / absXZ;
+	Movepower.z = (MOVESPEED(fMovePower) * NorZ) / absXZ;
 
 	return Movepower;
 }

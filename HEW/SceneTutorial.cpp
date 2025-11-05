@@ -802,6 +802,7 @@ void CSceneTutorial::UpdateSection6()
 					m_pBattle->SaveAllyData(nCorner);
 				}
 				m_pBattle->CreateAlly();
+				m_pBattle->SetTutorialMoveFlag(true);
 			}
 		}
 		else if (m_fTime >= 6.0f)
@@ -873,7 +874,7 @@ void CSceneTutorial::UpdateSection7()
 	{
 		m_fTime += 1.0f / fFPS;
 	}
-	if (m_fTime >= 20.0f  && !m_BattleFlag)
+	if (m_fTime >= 7.0f  && !m_BattleFlag)
 	{
 		
 		m_pBattle->SetTutorialMoveFlag(true);
@@ -889,7 +890,7 @@ void CSceneTutorial::UpdateSection7()
 		m_pFieldVertex->InitFieldVertex();
 	}	
 
-	if (m_fTime >= 25.0f && !m_bEnd)
+	if (m_fTime >= 12.0f && !m_bEnd)
 	{
 		m_pBattle->AllTutorialFlagClear();
 		SetNext(STAGE_SELECT);
