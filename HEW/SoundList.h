@@ -37,6 +37,8 @@ enum NAME
 	, SE_DEATH
 	//ロック音
 	, SE_LOCK
+	//チュートリアルSE
+	,SE_TUTORIAL
 	//タイトルBGM
 	, BGM_TITLE
 	//セレクトBGM
@@ -53,6 +55,8 @@ enum NAME
 	, BGM_GAMEOVER
 	//ゲームクリアBGM
 	, BGM_GAMECLEAR
+	//チュートリアルBGM
+	, BGM_TUTORIAL
 };
 class CSoundList
 {

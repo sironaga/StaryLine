@@ -125,6 +125,19 @@ CSceneTutorial::CSceneTutorial(StageType StageNum)
 	m_tDummyLineParam[2].size = DirectX::XMFLOAT2(250.0f, 250.0f);
 	m_tDummyLineParam[3].pos = DirectX::XMFLOAT2(60.0f, 100.0f);
 	m_tDummyLineParam[3].size = DirectX::XMFLOAT2(125.0f, 125.0f);
+
+	m_TutorialSoundSE = new CSoundList(SE_TUTORIAL);
+
+	m_TutorialSoundSE->SetMasterVolume();
+	if(m_TutorialSoundSE)m_pSourseTutorialSE = m_TutorialSoundSE->GetSound(false);
+	
+	m_TutorialSoundBGM = new CSoundList(BGM_TUTORIAL);
+	
+	m_TutorialSoundBGM->SetMasterVolume();
+	if (m_TutorialSoundBGM)m_pSourseTutorialBGM = m_TutorialSoundBGM->GetSound(true);
+
+	if (m_pSourseTutorialBGM)SetVolumeBGM(m_pSourseTutorialBGM);
+	m_pSourseTutorialBGM->Start();
 }
 
 CSceneTutorial::~CSceneTutorial()
@@ -144,6 +157,18 @@ CSceneTutorial::~CSceneTutorial()
 	SAFE_DELETE(m_pBackGround2);
 	SAFE_DELETE(m_pBackGround);
 	SAFE_DELETE(m_pPenButtonTexture);
+	if (m_pSourseTutorialSE)
+	{
+		m_pSourseTutorialSE->Stop();
+		m_pSourseTutorialSE = nullptr;
+	}
+	SAFE_DELETE(m_TutorialSoundSE);
+	if (m_pSourseTutorialBGM)
+	{
+		m_pSourseTutorialBGM->Stop();
+		m_pSourseTutorialBGM = nullptr;
+	}
+	SAFE_DELETE(m_TutorialSoundBGM);
 
 	CCharacterManager::GetInstance()->UnInitCharacterTexture();
 }
@@ -347,6 +372,13 @@ void CSceneTutorial::UpdateSection1()
 		m_pFieldVertex->SetVertexStop(false, 11);
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 		{
+			//音の再生
+			XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+			m_pSourseTutorialSE->FlushSourceBuffers();
+			m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+			if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+			m_pSourseTutorialSE->Start();
+
 			NextPage();
 			m_fTime = 0.0f;
 		}
@@ -393,6 +425,13 @@ void CSceneTutorial::UpdateSection1()
 		m_bIsClickMove = true;
 		if (IsKeyTrigger(VK_RETURN) || IsKeyTrigger(VK_SPACE) || CGetButtonsTriger(COption::GetTypeAB(COption::GetControllerSetting(), XINPUT_GAMEPAD_A)))
 		{
+			//音の再生
+			XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+			m_pSourseTutorialSE->FlushSourceBuffers();
+			m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+			if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+			m_pSourseTutorialSE->Start();
+
 			m_bDrawDummyLine[0] = false;
 			NextPage();
 			m_fTime = 0.0f;
@@ -429,6 +468,12 @@ void CSceneTutorial::UpdateSection2()
 		m_pFieldVertex->SetVertexStop(false, 7);
 		if (IsKeyTrigger(VK_SPACE))
 		{
+			//音の再生
+			XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+			m_pSourseTutorialSE->FlushSourceBuffers();
+			m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+			if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+			m_pSourseTutorialSE->Start();
 			NextPage();
 			m_fTime = 0.0f;
 		}
@@ -505,6 +550,12 @@ void CSceneTutorial::UpdateSection3()
 		m_pFieldVertex->SetVertexStop(false, 11);
 		if (IsKeyTrigger(VK_SPACE))
 		{
+			//音の再生
+			XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+			m_pSourseTutorialSE->FlushSourceBuffers();
+			m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+			if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+			m_pSourseTutorialSE->Start();
 			NextPage();
 			m_fTime = 0.0f;
 		}
@@ -558,6 +609,7 @@ void CSceneTutorial::UpdateSection3()
 			if (m_nBeforeVertex == 11 || m_nBeforeVertex == 17)
 			{
 				m_fTime = 0.0f;
+				m_pPlayer->SetSoundStop();
 				NextPage();
 				m_pPlayer->TimerSetValue(3.0f);
 				m_bDrawDummyLine[1] = false;
@@ -598,6 +650,12 @@ void CSceneTutorial::UpdateSection4()
 		// 決定キーで次のページへ
 		if (IsKeyTrigger(VK_SPACE))
 		{
+			//音の再生
+			XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+			m_pSourseTutorialSE->FlushSourceBuffers();
+			m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+			if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+			m_pSourseTutorialSE->Start();
 			NextPage();
 			m_fTime = 0.0f;
 		}
@@ -644,6 +702,13 @@ void CSceneTutorial::UpdateSection5()
 	// 決定キーで次のページへ
 	if (IsKeyTrigger(VK_SPACE))
 	{
+		//音の再生
+		XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+		m_pSourseTutorialSE->FlushSourceBuffers();
+		m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+		if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+		m_pSourseTutorialSE->Start();
+
 		m_bExplanationDraw = false;
 		NextPage();
 
@@ -784,6 +849,13 @@ void CSceneTutorial::UpdateSection6()
 			m_bSpownEffectDraw = false;
 			if (IsKeyTrigger(VK_SPACE))
 			{
+				//音の再生
+				XAUDIO2_BUFFER buffer = m_TutorialSoundSE->GetBuffer(false);
+				m_pSourseTutorialSE->FlushSourceBuffers();
+				m_pSourseTutorialSE->SubmitSourceBuffer(&buffer);
+				if (m_pSourseTutorialSE)SetVolumeSE(m_pSourseTutorialSE);
+				m_pSourseTutorialSE->Start();
+
 				// 最後のページなので次のセクションへ
 				NextPage();
 				// エフェクトを消す

@@ -126,7 +126,7 @@ public:
 	void SetMoveStop();
 	void SetNowVertex(int inVertex) { m_nNowVertex = inVertex; }
 	void SetPos(DirectX::XMFLOAT3 inPos) { m_tBrushPos = inPos; }
-
+	void SetSoundStop();
 	/*＝＝＝＝＝＝＝＝＝＝タイマー＝＝＝＝＝＝＝＝＝＝*/
 private:
 	void TimeProcess();						// タイマーの処理

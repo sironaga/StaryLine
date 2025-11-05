@@ -690,6 +690,11 @@ void CPlayer::SetMoveStop()
 	m_bStop = false;
 }
 
+void CPlayer::SetSoundStop()
+{
+	g_pWalkSe->Stop();
+}
+
 void CPlayer::TimeProcess()
 {
 	//タイマースタート

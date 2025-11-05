@@ -21,6 +21,7 @@
 #define FILENAME_SUMMONENEMYSE (L"Assets/Sound/SummonEnemy.wav") 
 #define FILENAME_DEATHSE (L"Assets/Sound/death.wav")  
 #define FILENAME_LOCKSE (L"Assets/Sound/lock.wav") 
+#define FILENAME_TUTORIALSE (L"Assets/Sound/Tutorial_selected.wav") 
 
 #define FILENAME_TITLEBGM (L"Assets/Sound/title.wav")
 #define FILENAME_SELECTEBGM (L"Assets/Sound/StageSelect.wav")
@@ -30,6 +31,8 @@
 #define FILENAME_FEVERBGM (L"Assets/Sound/fever.wav")
 #define FILENAME_GAMEOVERBGM (L"Assets/Sound/gameover.wav")
 #define FILENAME_GAMECLEARBGM (L"Assets/Sound/gameclear.wav")
+#define FILENAME_TUTORIALBGM (L"Assets/Sound/Tutorial_BGM.wav") 
+
 float g_volumeBGM = 0.5f;
 float g_volumeSE = 0.5f;
 float g_masterSound = 0.5f;
@@ -86,6 +89,9 @@ CSoundList::CSoundList(NAME inName)
 	case SE_LOCK:
 		m_sound = new CSound(FILENAME_LOCKSE);
 		break;
+	case SE_TUTORIAL:
+		m_sound = new CSound(FILENAME_TUTORIALSE);
+		break;
 	case BGM_TITLE:
 		m_sound = new CSound(FILENAME_TITLEBGM);
 		break;
@@ -109,6 +115,9 @@ CSoundList::CSoundList(NAME inName)
 		break;
 	case BGM_GAMECLEAR:
 		m_sound = new CSound(FILENAME_GAMECLEARBGM);
+		break;
+	case BGM_TUTORIAL:
+		m_sound = new CSound(FILENAME_TUTORIALBGM);
 		break;
 	default:
 		break;
