@@ -279,6 +279,7 @@ void CSceneTutorial::Draw()
 
 	m_pFieldVertex->DrawTutorial();
 	m_pPlayer->Draw();
+	if (!m_bIsClickMove)m_pPlayer->DrawMoveRenderers();
 
 	std::thread Th_BattleDraw([this]() { this->m_pBattle->Draw(); });
 	Th_BattleDraw.join();

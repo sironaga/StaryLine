@@ -21,6 +21,7 @@ public:
 	~CPlayer();		// デストラクタ
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
+	void DrawMoveRenderers();
 	void Reset();
 
 	void Reload();
