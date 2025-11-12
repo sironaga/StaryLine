@@ -456,6 +456,7 @@ void CSceneTutorial::UpdateSection2()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bIsClickMove = true;
 		m_bDrawDummyLine[1] = true;
 		m_pPlayer->SetNowVertex(12);
 		m_pPlayer->SetPos(m_pFieldVertex->GetVertexPos(12));
@@ -480,6 +481,7 @@ void CSceneTutorial::UpdateSection2()
 		}
 		break;
 	case 1:
+		m_bIsClickMove = false;
 		m_pFieldVertex->SetVertexStop(true, m_pPlayer->GetNowVertex());
 		switch (m_pPlayer->GetNowVertex())
 		{
@@ -513,6 +515,7 @@ void CSceneTutorial::UpdateSection2()
 			{
 				m_fTime = 0.0f;
 				NextPage();
+				m_bIsClickMove = true;
 			}
 			else
 			{
@@ -545,6 +548,7 @@ void CSceneTutorial::UpdateSection3()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bIsClickMove = true;
 		m_bDrawDummyLine[2] = true;
 		m_pPlayer->TimerSetMax();
 		m_pFieldVertex->SetVertexStop(false, 17);
@@ -562,6 +566,7 @@ void CSceneTutorial::UpdateSection3()
 		}
 		break;
 	case 1:
+		m_bIsClickMove = false;
 		m_pBattle->SetTutorialMoveFlag(true);
 		m_pBattle->SetTutorialSpownFlag(true);
 		m_pBattle->Update();
@@ -615,6 +620,7 @@ void CSceneTutorial::UpdateSection3()
 				m_pPlayer->TimerSetValue(3.0f);
 				m_bDrawDummyLine[1] = false;
 				m_bDrawDummyLine[2] = false;
+				m_bIsClickMove = true;
 			}
 			else
 			{
@@ -641,6 +647,7 @@ void CSceneTutorial::UpdateSection4()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bIsClickMove = false;
 		m_pBattle->SetTutorialMoveFlag(true);
 		m_pBattle->SetTutorialSpownFlag(true);
 		m_pBattle->Update();
@@ -743,6 +750,7 @@ void CSceneTutorial::UpdateSection6()
 	switch (m_nCurrentPage)
 	{
 	case 0:
+		m_bIsClickMove = false;
 		m_pBattle->SetTutorialMoveFlag(true);
 		m_pBattle->SetTutorialSpownFlag(true);
 		m_pBattle->Update();
@@ -839,6 +847,7 @@ void CSceneTutorial::UpdateSection6()
 		}
 		break;
 	case 1:
+		m_bIsClickMove = true;
 		m_pBattle->SetTutorialMoveFlag(true);
 		m_pBattle->SetTutorialSpownFlag(false);
 		m_pBattle->Update();
@@ -916,6 +925,7 @@ void CSceneTutorial::UpdateSection7()
 	}
 	if (m_pFieldVertex->GetFever() && !m_bFever)
 	{
+		m_bIsClickMove = false;
 		m_bFever = true;
 		NextPage();
 		m_pStarLine->SetLineMode(1);
@@ -941,6 +951,7 @@ void CSceneTutorial::UpdateSection7()
 			//m_pFieldVertex->InitFieldVertex();
 			m_bSpownEffectDraw = true;
 			NextPage();
+			m_bIsClickMove = true;
 		}
 	}
 	if (m_bSpownEffectDraw || m_BattleFlag)
@@ -949,7 +960,6 @@ void CSceneTutorial::UpdateSection7()
 	}
 	if (m_fTime >= 7.5f  && !m_BattleFlag)
 	{
-		
 		m_pBattle->SetTutorialMoveFlag(true);
 		m_pBattle->SetTutorialSpownFlag(true);
 		m_pPlayer->SetMoveStop();

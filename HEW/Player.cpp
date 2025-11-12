@@ -248,6 +248,7 @@ void CPlayer::Draw()
 
 	if (GetTimeStart() || GetTime() == -1.0f)
 	{
+		SetRender3D();
 		DrawMoveRenderers();
 	}
 	/* プレイヤーの描画 */
@@ -305,7 +306,7 @@ void CPlayer::DrawMoveRenderers()
 	m_pArrowParam.size = { ARROW_SIZE ,ARROW_SIZE,ARROW_SIZE };
 
 	m_pArrowModel->SetPostion(arrowPos.x, arrowPos.y, m_tBrushPos.z);
-	m_pArrowModel->SetScale(m_pArrowParam.size.x, m_pArrowParam.size.y, m_pArrowParam.size.z);
+   	m_pArrowModel->SetScale(m_pArrowParam.size.x, m_pArrowParam.size.y, m_pArrowParam.size.z);
 	m_pArrowModel->SetRotation(m_pArrowParam.rotate.x, m_pArrowParam.rotate.y, -m_pArrowParam.rotate.z);
 	m_pArrowModel->SetViewMatrix(GetView());
 	m_pArrowModel->SetProjectionMatrix(GetProj());
